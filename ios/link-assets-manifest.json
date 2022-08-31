@@ -1,0 +1,29 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/Averta-Bold-Italic.otf",
+      "sha1": "8fe5c0a66622dcc1a20cb844c71c8779ada11819"
+    },
+    {
+      "path": "src/assets/fonts/Averta-Bold.otf",
+      "sha1": "f10de0c1e2462349236a41eaf27c028d1786fd5a"
+    },
+    {
+      "path": "src/assets/fonts/Averta-Regular-Italic.otf",
+      "sha1": "277b3381bc2dcbbdd16fed24c19f5c3cfa9274f4"
+    },
+    {
+      "path": "src/assets/fonts/Averta-Regular.otf",
+      "sha1": "97ed3eb2c6867cad6a3dcc8bdb9af722aa91030e"
+    },
+    {
+      "path": "src/assets/fonts/Averta-Semibold-Italic.otf",
+      "sha1": "b612ba3dec07c3d38497918c111dc8940f22c3cb"
+    },
+    {
+      "path": "src/assets/fonts/Averta-Semibold.otf",
+      "sha1": "8f07e8e8fd904f8f63f57491b165212f877893da"
+    }
+  ]
+}

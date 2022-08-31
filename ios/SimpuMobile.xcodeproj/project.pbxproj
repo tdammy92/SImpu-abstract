@@ -1,0 +1,884 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 54;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		00E356F31AD99517003FC87E /* SimpuMobileTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* SimpuMobileTests.m */; };
+		0C80B921A6F3F58F76C31292 /* libPods-SimpuMobile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-SimpuMobile.a */; };
+		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
+		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		36FFE952B1664C04886D5663 /* Averta-Regular-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = A8ABFFF9B5654548BC33D249 /* Averta-Regular-Italic.otf */; };
+		40F39EB7F3B0437DB4BCBC53 /* Averta-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = A9BF341D75B04A54B6E9A8BD /* Averta-Regular.otf */; };
+		4B57AE1984684AC2AE8A10E3 /* Averta-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3BDAA318EE7042A99767FE42 /* Averta-Bold.otf */; };
+		6555520D4EC849488180D5E2 /* Averta-Semibold-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = E3093C13497B405EB867AAA6 /* Averta-Semibold-Italic.otf */; };
+		7699B88040F8A987B510C191 /* libPods-SimpuMobile-SimpuMobileTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-SimpuMobile-SimpuMobileTests.a */; };
+		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		A0FD5BFE51684398BADE3225 /* Averta-Bold-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 6A40FFDD7ED34CB5846CA16F /* Averta-Bold-Italic.otf */; };
+		A62941E828BD2FCE00E0F26E /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A62941E728BD2FCE00E0F26E /* BootSplash.storyboard */; };
+		A6CDDCBF28BF62D600E8F77C /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCAF28BF62D600E8F77C /* Fontisto.ttf */; };
+		A6CDDCC028BF62D600E8F77C /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCB028BF62D600E8F77C /* Octicons.ttf */; };
+		A6CDDCC128BF62D600E8F77C /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCB128BF62D600E8F77C /* Feather.ttf */; };
+		A6CDDCC228BF62D600E8F77C /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCB228BF62D600E8F77C /* Entypo.ttf */; };
+		A6CDDCC328BF62D600E8F77C /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCB328BF62D600E8F77C /* FontAwesome5_Brands.ttf */; };
+		A6CDDCC428BF62D600E8F77C /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCB428BF62D600E8F77C /* MaterialCommunityIcons.ttf */; };
+		A6CDDCC528BF62D600E8F77C /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCB528BF62D600E8F77C /* AntDesign.ttf */; };
+		A6CDDCC628BF62D600E8F77C /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCB628BF62D600E8F77C /* Foundation.ttf */; };
+		A6CDDCC728BF62D600E8F77C /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCB728BF62D600E8F77C /* Ionicons.ttf */; };
+		A6CDDCC828BF62D600E8F77C /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCB828BF62D600E8F77C /* FontAwesome5_Solid.ttf */; };
+		A6CDDCC928BF62D600E8F77C /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCB928BF62D600E8F77C /* FontAwesome5_Regular.ttf */; };
+		A6CDDCCA28BF62D600E8F77C /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCBA28BF62D600E8F77C /* FontAwesome.ttf */; };
+		A6CDDCCB28BF62D600E8F77C /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCBB28BF62D600E8F77C /* Zocial.ttf */; };
+		A6CDDCCC28BF62D600E8F77C /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCBC28BF62D600E8F77C /* EvilIcons.ttf */; };
+		A6CDDCCD28BF62D600E8F77C /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCBD28BF62D600E8F77C /* SimpleLineIcons.ttf */; };
+		A6CDDCCE28BF62D600E8F77C /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCBE28BF62D600E8F77C /* MaterialIcons.ttf */; };
+		A6CDDCE028BF630800E8F77C /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCD028BF630800E8F77C /* Fontisto.ttf */; };
+		A6CDDCE128BF630800E8F77C /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCD128BF630800E8F77C /* Octicons.ttf */; };
+		A6CDDCE228BF630800E8F77C /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCD228BF630800E8F77C /* Feather.ttf */; };
+		A6CDDCE328BF630800E8F77C /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCD328BF630800E8F77C /* Entypo.ttf */; };
+		A6CDDCE428BF630800E8F77C /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCD428BF630800E8F77C /* FontAwesome5_Brands.ttf */; };
+		A6CDDCE528BF630800E8F77C /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCD528BF630800E8F77C /* MaterialCommunityIcons.ttf */; };
+		A6CDDCE628BF630800E8F77C /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCD628BF630800E8F77C /* AntDesign.ttf */; };
+		A6CDDCE728BF630800E8F77C /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCD728BF630800E8F77C /* Foundation.ttf */; };
+		A6CDDCE828BF630800E8F77C /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCD828BF630800E8F77C /* Ionicons.ttf */; };
+		A6CDDCE928BF630800E8F77C /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCD928BF630800E8F77C /* FontAwesome5_Solid.ttf */; };
+		A6CDDCEA28BF630800E8F77C /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCDA28BF630800E8F77C /* FontAwesome5_Regular.ttf */; };
+		A6CDDCEB28BF630800E8F77C /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCDB28BF630800E8F77C /* FontAwesome.ttf */; };
+		A6CDDCEC28BF630800E8F77C /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCDC28BF630800E8F77C /* Zocial.ttf */; };
+		A6CDDCED28BF630800E8F77C /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCDD28BF630800E8F77C /* EvilIcons.ttf */; };
+		A6CDDCEE28BF630800E8F77C /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCDE28BF630800E8F77C /* SimpleLineIcons.ttf */; };
+		A6CDDCEF28BF630800E8F77C /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCDF28BF630800E8F77C /* MaterialIcons.ttf */; };
+		D0481A56E2D643EDB1E2F2DB /* Averta-Semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 939BBF1FE4C54A92BF6A62B1 /* Averta-Semibold.otf */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		00E356F41AD99517003FC87E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
+			remoteInfo = SimpuMobile;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		00E356EE1AD99517003FC87E /* SimpuMobileTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SimpuMobileTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		00E356F21AD99517003FC87E /* SimpuMobileTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SimpuMobileTests.m; sourceTree = "<group>"; };
+		13B07F961A680F5B00A75B9A /* SimpuMobile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpuMobile.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = SimpuMobile/AppDelegate.h; sourceTree = "<group>"; };
+		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = SimpuMobile/AppDelegate.mm; sourceTree = "<group>"; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = SimpuMobile/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = SimpuMobile/Info.plist; sourceTree = "<group>"; };
+		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = SimpuMobile/main.m; sourceTree = "<group>"; };
+		19F6CBCC0A4E27FBF8BF4A61 /* libPods-SimpuMobile-SimpuMobileTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SimpuMobile-SimpuMobileTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3B4392A12AC88292D35C810B /* Pods-SimpuMobile.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimpuMobile.debug.xcconfig"; path = "Target Support Files/Pods-SimpuMobile/Pods-SimpuMobile.debug.xcconfig"; sourceTree = "<group>"; };
+		3BDAA318EE7042A99767FE42 /* Averta-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Averta-Bold.otf"; path = "../src/assets/fonts/Averta-Bold.otf"; sourceTree = "<group>"; };
+		5709B34CF0A7D63546082F79 /* Pods-SimpuMobile.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimpuMobile.release.xcconfig"; path = "Target Support Files/Pods-SimpuMobile/Pods-SimpuMobile.release.xcconfig"; sourceTree = "<group>"; };
+		5B7EB9410499542E8C5724F5 /* Pods-SimpuMobile-SimpuMobileTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimpuMobile-SimpuMobileTests.debug.xcconfig"; path = "Target Support Files/Pods-SimpuMobile-SimpuMobileTests/Pods-SimpuMobile-SimpuMobileTests.debug.xcconfig"; sourceTree = "<group>"; };
+		5DCACB8F33CDC322A6C60F78 /* libPods-SimpuMobile.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SimpuMobile.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6A40FFDD7ED34CB5846CA16F /* Averta-Bold-Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Averta-Bold-Italic.otf"; path = "../src/assets/fonts/Averta-Bold-Italic.otf"; sourceTree = "<group>"; };
+		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = SimpuMobile/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		89C6BE57DB24E9ADA2F236DE /* Pods-SimpuMobile-SimpuMobileTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimpuMobile-SimpuMobileTests.release.xcconfig"; path = "Target Support Files/Pods-SimpuMobile-SimpuMobileTests/Pods-SimpuMobile-SimpuMobileTests.release.xcconfig"; sourceTree = "<group>"; };
+		939BBF1FE4C54A92BF6A62B1 /* Averta-Semibold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Averta-Semibold.otf"; path = "../src/assets/fonts/Averta-Semibold.otf"; sourceTree = "<group>"; };
+		A62941E728BD2FCE00E0F26E /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = SimpuMobile/BootSplash.storyboard; sourceTree = "<group>"; };
+		A6CDDCAF28BF62D600E8F77C /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
+		A6CDDCB028BF62D600E8F77C /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
+		A6CDDCB128BF62D600E8F77C /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Feather.ttf; sourceTree = "<group>"; };
+		A6CDDCB228BF62D600E8F77C /* Entypo.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Entypo.ttf; sourceTree = "<group>"; };
+		A6CDDCB328BF62D600E8F77C /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Brands.ttf; sourceTree = "<group>"; };
+		A6CDDCB428BF62D600E8F77C /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialCommunityIcons.ttf; sourceTree = "<group>"; };
+		A6CDDCB528BF62D600E8F77C /* AntDesign.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = AntDesign.ttf; sourceTree = "<group>"; };
+		A6CDDCB628BF62D600E8F77C /* Foundation.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Foundation.ttf; sourceTree = "<group>"; };
+		A6CDDCB728BF62D600E8F77C /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Ionicons.ttf; sourceTree = "<group>"; };
+		A6CDDCB828BF62D600E8F77C /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Solid.ttf; sourceTree = "<group>"; };
+		A6CDDCB928BF62D600E8F77C /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Regular.ttf; sourceTree = "<group>"; };
+		A6CDDCBA28BF62D600E8F77C /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.ttf; sourceTree = "<group>"; };
+		A6CDDCBB28BF62D600E8F77C /* Zocial.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Zocial.ttf; sourceTree = "<group>"; };
+		A6CDDCBC28BF62D600E8F77C /* EvilIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = EvilIcons.ttf; sourceTree = "<group>"; };
+		A6CDDCBD28BF62D600E8F77C /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SimpleLineIcons.ttf; sourceTree = "<group>"; };
+		A6CDDCBE28BF62D600E8F77C /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialIcons.ttf; sourceTree = "<group>"; };
+		A6CDDCD028BF630800E8F77C /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
+		A6CDDCD128BF630800E8F77C /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
+		A6CDDCD228BF630800E8F77C /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Feather.ttf; sourceTree = "<group>"; };
+		A6CDDCD328BF630800E8F77C /* Entypo.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Entypo.ttf; sourceTree = "<group>"; };
+		A6CDDCD428BF630800E8F77C /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Brands.ttf; sourceTree = "<group>"; };
+		A6CDDCD528BF630800E8F77C /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialCommunityIcons.ttf; sourceTree = "<group>"; };
+		A6CDDCD628BF630800E8F77C /* AntDesign.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = AntDesign.ttf; sourceTree = "<group>"; };
+		A6CDDCD728BF630800E8F77C /* Foundation.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Foundation.ttf; sourceTree = "<group>"; };
+		A6CDDCD828BF630800E8F77C /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Ionicons.ttf; sourceTree = "<group>"; };
+		A6CDDCD928BF630800E8F77C /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Solid.ttf; sourceTree = "<group>"; };
+		A6CDDCDA28BF630800E8F77C /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Regular.ttf; sourceTree = "<group>"; };
+		A6CDDCDB28BF630800E8F77C /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.ttf; sourceTree = "<group>"; };
+		A6CDDCDC28BF630800E8F77C /* Zocial.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Zocial.ttf; sourceTree = "<group>"; };
+		A6CDDCDD28BF630800E8F77C /* EvilIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = EvilIcons.ttf; sourceTree = "<group>"; };
+		A6CDDCDE28BF630800E8F77C /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SimpleLineIcons.ttf; sourceTree = "<group>"; };
+		A6CDDCDF28BF630800E8F77C /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialIcons.ttf; sourceTree = "<group>"; };
+		A8ABFFF9B5654548BC33D249 /* Averta-Regular-Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Averta-Regular-Italic.otf"; path = "../src/assets/fonts/Averta-Regular-Italic.otf"; sourceTree = "<group>"; };
+		A9BF341D75B04A54B6E9A8BD /* Averta-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Averta-Regular.otf"; path = "../src/assets/fonts/Averta-Regular.otf"; sourceTree = "<group>"; };
+		E3093C13497B405EB867AAA6 /* Averta-Semibold-Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Averta-Semibold-Italic.otf"; path = "../src/assets/fonts/Averta-Semibold-Italic.otf"; sourceTree = "<group>"; };
+		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		00E356EB1AD99517003FC87E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7699B88040F8A987B510C191 /* libPods-SimpuMobile-SimpuMobileTests.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		13B07F8C1A680F5B00A75B9A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0C80B921A6F3F58F76C31292 /* libPods-SimpuMobile.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		00E356EF1AD99517003FC87E /* SimpuMobileTests */ = {
+			isa = PBXGroup;
+			children = (
+				00E356F21AD99517003FC87E /* SimpuMobileTests.m */,
+				00E356F01AD99517003FC87E /* Supporting Files */,
+			);
+			path = SimpuMobileTests;
+			sourceTree = "<group>";
+		};
+		00E356F01AD99517003FC87E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				00E356F11AD99517003FC87E /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		13B07FAE1A68108700A75B9A /* SimpuMobile */ = {
+			isa = PBXGroup;
+			children = (
+				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
+				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
+				13B07FB51A68108700A75B9A /* Images.xcassets */,
+				A62941E728BD2FCE00E0F26E /* BootSplash.storyboard */,
+				13B07FB61A68108700A75B9A /* Info.plist */,
+				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
+				13B07FB71A68108700A75B9A /* main.m */,
+			);
+			name = SimpuMobile;
+			sourceTree = "<group>";
+		};
+		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
+				5DCACB8F33CDC322A6C60F78 /* libPods-SimpuMobile.a */,
+				19F6CBCC0A4E27FBF8BF4A61 /* libPods-SimpuMobile-SimpuMobileTests.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Libraries;
+			sourceTree = "<group>";
+		};
+		83CBB9F61A601CBA00E9B192 = {
+			isa = PBXGroup;
+			children = (
+				A6CDDCAE28BF62D600E8F77C /* Fonts */,
+				13B07FAE1A68108700A75B9A /* SimpuMobile */,
+				832341AE1AAA6A7D00B99B32 /* Libraries */,
+				00E356EF1AD99517003FC87E /* SimpuMobileTests */,
+				83CBBA001A601CBA00E9B192 /* Products */,
+				2D16E6871FA4F8E400B85C8A /* Frameworks */,
+				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				D9AE344140C24571B6E554A7 /* Resources */,
+			);
+			indentWidth = 2;
+			sourceTree = "<group>";
+			tabWidth = 2;
+			usesTabs = 0;
+		};
+		83CBBA001A601CBA00E9B192 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				13B07F961A680F5B00A75B9A /* SimpuMobile.app */,
+				00E356EE1AD99517003FC87E /* SimpuMobileTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A6CDDCAE28BF62D600E8F77C /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				A6CDDCCF28BF630800E8F77C /* Fonts */,
+				A6CDDCAF28BF62D600E8F77C /* Fontisto.ttf */,
+				A6CDDCB028BF62D600E8F77C /* Octicons.ttf */,
+				A6CDDCB128BF62D600E8F77C /* Feather.ttf */,
+				A6CDDCB228BF62D600E8F77C /* Entypo.ttf */,
+				A6CDDCB328BF62D600E8F77C /* FontAwesome5_Brands.ttf */,
+				A6CDDCB428BF62D600E8F77C /* MaterialCommunityIcons.ttf */,
+				A6CDDCB528BF62D600E8F77C /* AntDesign.ttf */,
+				A6CDDCB628BF62D600E8F77C /* Foundation.ttf */,
+				A6CDDCB728BF62D600E8F77C /* Ionicons.ttf */,
+				A6CDDCB828BF62D600E8F77C /* FontAwesome5_Solid.ttf */,
+				A6CDDCB928BF62D600E8F77C /* FontAwesome5_Regular.ttf */,
+				A6CDDCBA28BF62D600E8F77C /* FontAwesome.ttf */,
+				A6CDDCBB28BF62D600E8F77C /* Zocial.ttf */,
+				A6CDDCBC28BF62D600E8F77C /* EvilIcons.ttf */,
+				A6CDDCBD28BF62D600E8F77C /* SimpleLineIcons.ttf */,
+				A6CDDCBE28BF62D600E8F77C /* MaterialIcons.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
+		A6CDDCCF28BF630800E8F77C /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				A6CDDCD028BF630800E8F77C /* Fontisto.ttf */,
+				A6CDDCD128BF630800E8F77C /* Octicons.ttf */,
+				A6CDDCD228BF630800E8F77C /* Feather.ttf */,
+				A6CDDCD328BF630800E8F77C /* Entypo.ttf */,
+				A6CDDCD428BF630800E8F77C /* FontAwesome5_Brands.ttf */,
+				A6CDDCD528BF630800E8F77C /* MaterialCommunityIcons.ttf */,
+				A6CDDCD628BF630800E8F77C /* AntDesign.ttf */,
+				A6CDDCD728BF630800E8F77C /* Foundation.ttf */,
+				A6CDDCD828BF630800E8F77C /* Ionicons.ttf */,
+				A6CDDCD928BF630800E8F77C /* FontAwesome5_Solid.ttf */,
+				A6CDDCDA28BF630800E8F77C /* FontAwesome5_Regular.ttf */,
+				A6CDDCDB28BF630800E8F77C /* FontAwesome.ttf */,
+				A6CDDCDC28BF630800E8F77C /* Zocial.ttf */,
+				A6CDDCDD28BF630800E8F77C /* EvilIcons.ttf */,
+				A6CDDCDE28BF630800E8F77C /* SimpleLineIcons.ttf */,
+				A6CDDCDF28BF630800E8F77C /* MaterialIcons.ttf */,
+			);
+			name = Fonts;
+			sourceTree = "<group>";
+		};
+		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				3B4392A12AC88292D35C810B /* Pods-SimpuMobile.debug.xcconfig */,
+				5709B34CF0A7D63546082F79 /* Pods-SimpuMobile.release.xcconfig */,
+				5B7EB9410499542E8C5724F5 /* Pods-SimpuMobile-SimpuMobileTests.debug.xcconfig */,
+				89C6BE57DB24E9ADA2F236DE /* Pods-SimpuMobile-SimpuMobileTests.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		D9AE344140C24571B6E554A7 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				6A40FFDD7ED34CB5846CA16F /* Averta-Bold-Italic.otf */,
+				3BDAA318EE7042A99767FE42 /* Averta-Bold.otf */,
+				A8ABFFF9B5654548BC33D249 /* Averta-Regular-Italic.otf */,
+				A9BF341D75B04A54B6E9A8BD /* Averta-Regular.otf */,
+				E3093C13497B405EB867AAA6 /* Averta-Semibold-Italic.otf */,
+				939BBF1FE4C54A92BF6A62B1 /* Averta-Semibold.otf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		00E356ED1AD99517003FC87E /* SimpuMobileTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "SimpuMobileTests" */;
+			buildPhases = (
+				A55EABD7B0C7F3A422A6CC61 /* [CP] Check Pods Manifest.lock */,
+				00E356EA1AD99517003FC87E /* Sources */,
+				00E356EB1AD99517003FC87E /* Frameworks */,
+				00E356EC1AD99517003FC87E /* Resources */,
+				C59DA0FBD6956966B86A3779 /* [CP] Embed Pods Frameworks */,
+				F6A41C54EA430FDDC6A6ED99 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				00E356F51AD99517003FC87E /* PBXTargetDependency */,
+			);
+			name = SimpuMobileTests;
+			productName = SimpuMobileTests;
+			productReference = 00E356EE1AD99517003FC87E /* SimpuMobileTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		13B07F861A680F5B00A75B9A /* SimpuMobile */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "SimpuMobile" */;
+			buildPhases = (
+				C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */,
+				FD10A7F022414F080027D42C /* Start Packager */,
+				13B07F871A680F5B00A75B9A /* Sources */,
+				13B07F8C1A680F5B00A75B9A /* Frameworks */,
+				13B07F8E1A680F5B00A75B9A /* Resources */,
+				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
+				00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */,
+				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SimpuMobile;
+			productName = SimpuMobile;
+			productReference = 13B07F961A680F5B00A75B9A /* SimpuMobile.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		83CBB9F71A601CBA00E9B192 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1210;
+				TargetAttributes = {
+					00E356ED1AD99517003FC87E = {
+						CreatedOnToolsVersion = 6.2;
+						TestTargetID = 13B07F861A680F5B00A75B9A;
+					};
+					13B07F861A680F5B00A75B9A = {
+						LastSwiftMigration = 1120;
+					};
+				};
+			};
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "SimpuMobile" */;
+			compatibilityVersion = "Xcode 12.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 83CBB9F61A601CBA00E9B192;
+			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				13B07F861A680F5B00A75B9A /* SimpuMobile */,
+				00E356ED1AD99517003FC87E /* SimpuMobileTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		00E356EC1AD99517003FC87E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		13B07F8E1A680F5B00A75B9A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A6CDDCE928BF630800E8F77C /* FontAwesome5_Solid.ttf in Resources */,
+				A6CDDCC028BF62D600E8F77C /* Octicons.ttf in Resources */,
+				A6CDDCEC28BF630800E8F77C /* Zocial.ttf in Resources */,
+				A6CDDCC428BF62D600E8F77C /* MaterialCommunityIcons.ttf in Resources */,
+				A6CDDCCE28BF62D600E8F77C /* MaterialIcons.ttf in Resources */,
+				A6CDDCC928BF62D600E8F77C /* FontAwesome5_Regular.ttf in Resources */,
+				A6CDDCE828BF630800E8F77C /* Ionicons.ttf in Resources */,
+				A6CDDCED28BF630800E8F77C /* EvilIcons.ttf in Resources */,
+				A6CDDCEA28BF630800E8F77C /* FontAwesome5_Regular.ttf in Resources */,
+				A6CDDCC728BF62D600E8F77C /* Ionicons.ttf in Resources */,
+				A6CDDCE328BF630800E8F77C /* Entypo.ttf in Resources */,
+				A6CDDCE628BF630800E8F77C /* AntDesign.ttf in Resources */,
+				A6CDDCCC28BF62D600E8F77C /* EvilIcons.ttf in Resources */,
+				A6CDDCCD28BF62D600E8F77C /* SimpleLineIcons.ttf in Resources */,
+				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				A6CDDCE428BF630800E8F77C /* FontAwesome5_Brands.ttf in Resources */,
+				A6CDDCE028BF630800E8F77C /* Fontisto.ttf in Resources */,
+				A6CDDCC128BF62D600E8F77C /* Feather.ttf in Resources */,
+				A6CDDCE128BF630800E8F77C /* Octicons.ttf in Resources */,
+				A6CDDCCB28BF62D600E8F77C /* Zocial.ttf in Resources */,
+				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				A6CDDCBF28BF62D600E8F77C /* Fontisto.ttf in Resources */,
+				A6CDDCCA28BF62D600E8F77C /* FontAwesome.ttf in Resources */,
+				A6CDDCE528BF630800E8F77C /* MaterialCommunityIcons.ttf in Resources */,
+				A6CDDCC528BF62D600E8F77C /* AntDesign.ttf in Resources */,
+				A6CDDCC828BF62D600E8F77C /* FontAwesome5_Solid.ttf in Resources */,
+				A6CDDCC328BF62D600E8F77C /* FontAwesome5_Brands.ttf in Resources */,
+				A0FD5BFE51684398BADE3225 /* Averta-Bold-Italic.otf in Resources */,
+				A62941E828BD2FCE00E0F26E /* BootSplash.storyboard in Resources */,
+				A6CDDCC228BF62D600E8F77C /* Entypo.ttf in Resources */,
+				4B57AE1984684AC2AE8A10E3 /* Averta-Bold.otf in Resources */,
+				A6CDDCEB28BF630800E8F77C /* FontAwesome.ttf in Resources */,
+				A6CDDCE228BF630800E8F77C /* Feather.ttf in Resources */,
+				A6CDDCE728BF630800E8F77C /* Foundation.ttf in Resources */,
+				36FFE952B1664C04886D5663 /* Averta-Regular-Italic.otf in Resources */,
+				40F39EB7F3B0437DB4BCBC53 /* Averta-Regular.otf in Resources */,
+				A6CDDCC628BF62D600E8F77C /* Foundation.ttf in Resources */,
+				A6CDDCEF28BF630800E8F77C /* MaterialIcons.ttf in Resources */,
+				A6CDDCEE28BF630800E8F77C /* SimpleLineIcons.ttf in Resources */,
+				6555520D4EC849488180D5E2 /* Averta-Semibold-Italic.otf in Resources */,
+				D0481A56E2D643EDB1E2F2DB /* Averta-Semibold.otf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/.xcode.env.local",
+				"$(SRCROOT)/.xcode.env",
+			);
+			name = "Bundle React Native code and images";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
+		};
+		00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SimpuMobile/Pods-SimpuMobile-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SimpuMobile/Pods-SimpuMobile-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SimpuMobile/Pods-SimpuMobile-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A55EABD7B0C7F3A422A6CC61 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SimpuMobile-SimpuMobileTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SimpuMobile-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C59DA0FBD6956966B86A3779 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SimpuMobile-SimpuMobileTests/Pods-SimpuMobile-SimpuMobileTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SimpuMobile-SimpuMobileTests/Pods-SimpuMobile-SimpuMobileTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SimpuMobile-SimpuMobileTests/Pods-SimpuMobile-SimpuMobileTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E235C05ADACE081382539298 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SimpuMobile/Pods-SimpuMobile-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SimpuMobile/Pods-SimpuMobile-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SimpuMobile/Pods-SimpuMobile-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F6A41C54EA430FDDC6A6ED99 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SimpuMobile-SimpuMobileTests/Pods-SimpuMobile-SimpuMobileTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SimpuMobile-SimpuMobileTests/Pods-SimpuMobile-SimpuMobileTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SimpuMobile-SimpuMobileTests/Pods-SimpuMobile-SimpuMobileTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FD10A7F022414F080027D42C /* Start Packager */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Start Packager";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export RCT_METRO_PORT=\"${RCT_METRO_PORT:=8081}\"\necho \"export RCT_METRO_PORT=${RCT_METRO_PORT}\" > \"${SRCROOT}/../node_modules/react-native/scripts/.packager.env\"\nif [ -z \"${RCT_NO_LAUNCH_PACKAGER+xxx}\" ] ; then\n  if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then\n    if ! curl -s \"http://localhost:${RCT_METRO_PORT}/status\" | grep -q \"packager-status:running\" ; then\n      echo \"Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly\"\n      exit 2\n    fi\n  else\n    open \"$SRCROOT/../node_modules/react-native/scripts/launchPackager.command\" || echo \"Can't start packager automatically\"\n  fi\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		00E356EA1AD99517003FC87E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00E356F31AD99517003FC87E /* SimpuMobileTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		13B07F871A680F5B00A75B9A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
+				13B07FC11A68108700A75B9A /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 13B07F861A680F5B00A75B9A /* SimpuMobile */;
+			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		00E356F61AD99517003FC87E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5B7EB9410499542E8C5724F5 /* Pods-SimpuMobile-SimpuMobileTests.debug.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = SimpuMobileTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-lc++",
+					"$(inherited)",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimpuMobile.app/SimpuMobile";
+			};
+			name = Debug;
+		};
+		00E356F71AD99517003FC87E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 89C6BE57DB24E9ADA2F236DE /* Pods-SimpuMobile-SimpuMobileTests.release.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COPY_PHASE_STRIP = NO;
+				INFOPLIST_FILE = SimpuMobileTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-lc++",
+					"$(inherited)",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimpuMobile.app/SimpuMobile";
+			};
+			name = Release;
+		};
+		13B07F941A680F5B00A75B9A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3B4392A12AC88292D35C810B /* Pods-SimpuMobile.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_BITCODE = NO;
+				INFOPLIST_FILE = SimpuMobile/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.0.1;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.simpu.inbox;
+				PRODUCT_NAME = SimpuMobile;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		13B07F951A680F5B00A75B9A /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5709B34CF0A7D63546082F79 /* Pods-SimpuMobile.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = SimpuMobile/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.0.1;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.simpu.inbox;
+				PRODUCT_NAME = SimpuMobile;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		83CBBA201A601CBA00E9B192 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					/usr/lib/swift,
+					"$(inherited)",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"\"$(SDKROOT)/usr/lib/swift\"",
+					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
+					"\"$(inherited)\"",
+				);
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-DFOLLY_NO_CONFIG",
+					"-DFOLLY_MOBILE=1",
+					"-DFOLLY_USE_LIBCPP=1",
+				);
+				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		83CBBA211A601CBA00E9B192 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					/usr/lib/swift,
+					"$(inherited)",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"\"$(SDKROOT)/usr/lib/swift\"",
+					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
+					"\"$(inherited)\"",
+				);
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-DFOLLY_NO_CONFIG",
+					"-DFOLLY_MOBILE=1",
+					"-DFOLLY_USE_LIBCPP=1",
+				);
+				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "SimpuMobileTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00E356F61AD99517003FC87E /* Debug */,
+				00E356F71AD99517003FC87E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "SimpuMobile" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				13B07F941A680F5B00A75B9A /* Debug */,
+				13B07F951A680F5B00A75B9A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "SimpuMobile" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				83CBBA201A601CBA00E9B192 /* Debug */,
+				83CBBA211A601CBA00E9B192 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
+}
