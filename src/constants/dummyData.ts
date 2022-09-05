@@ -9,6 +9,8 @@ const userFour =
   'https://media-exp1.licdn.com/dms/image/C4D03AQGh_IDtPB8qoA/profile-displayphoto-shrink_800_800/0/1520650378082?e=1666828800&v=beta&t=OoiAFqiAaPI8QRc5tiQNSCKDXw7NC05JUg5b15_3s3s';
 const userFive =
   'https://media-exp1.licdn.com/dms/image/C4E03AQFgKNlIPyGFvA/profile-displayphoto-shrink_800_800/0/1655743817049?e=1666828800&v=beta&t=eYHmGGxoGi5MTgLcgfT12LPXgfrwTNWJ9rngq3DaP4U';
+const userSix =
+  'https://media-exp1.licdn.com/dms/image/C4E03AQFv7MLdqnZQcA/profile-displayphoto-shrink_800_800/0/1655896038473?e=1667433600&v=beta&t=d_Lpy8xPUXKpT9VjJz3KBvn7jKbmi0f9pet7BrtXyuI';
 
 export default [
   {
@@ -25,6 +27,7 @@ export default [
         id: '11',
         text: 'am at you location',
         type: 'text',
+        IsRead: true,
       },
       {
         author: {id: '1234'},
@@ -32,6 +35,7 @@ export default [
         id: '12',
         text: 'Completed your task',
         type: 'text',
+        IsRead: false,
       },
       {
         author: {id: '1'},
@@ -39,6 +43,7 @@ export default [
         id: '13',
         text: 'lets have a meeting by 12pm',
         type: 'text',
+        IsRead: true,
       },
     ],
   },
@@ -56,6 +61,7 @@ export default [
         id: '11',
         text: 'am at you location',
         type: 'text',
+        IsRead: false,
       },
       {
         author: {id: '2'},
@@ -63,6 +69,7 @@ export default [
         id: '12',
         text: 'Completed your task',
         type: 'text',
+        IsRead: false,
       },
       {
         author: {id: '2'},
@@ -70,6 +77,7 @@ export default [
         id: '13',
         text: 'lets have a meeting by 12pm',
         type: 'text',
+        IsRead: true,
       },
     ],
   },
@@ -88,6 +96,7 @@ export default [
         id: '11',
         text: 'am at you location',
         type: 'text',
+        IsRead: false,
       },
       {
         author: {id: '1234'},
@@ -95,6 +104,7 @@ export default [
         id: '12',
         text: 'Completed your task',
         type: 'text',
+        IsRead: true,
       },
       {
         author: {id: '3'},
@@ -102,6 +112,7 @@ export default [
         id: '13',
         text: 'lets have a meeting by 12pm',
         type: 'text',
+        IsRead: false,
       },
     ],
   },
@@ -119,6 +130,7 @@ export default [
         id: '11',
         text: 'am at you location',
         type: 'text',
+        IsRead: false,
       },
       {
         author: {id: '4'},
@@ -126,6 +138,7 @@ export default [
         id: '12',
         text: 'Completed your task',
         type: 'text',
+        IsRead: true,
       },
       {
         author: {id: '1234'},
@@ -133,6 +146,7 @@ export default [
         id: '13',
         text: 'lets have a meeting by 12pm',
         type: 'text',
+        IsRead: true,
       },
     ],
   },
@@ -148,8 +162,10 @@ export default [
         author: {id: '5'},
         createdAt: '2019-08-01T07:20:16Z',
         id: '11',
+
         text: 'am at you location',
         type: 'text',
+        IsRead: false,
       },
       {
         author: {id: '1234'},
@@ -157,6 +173,7 @@ export default [
         id: '12',
         text: 'Completed your task',
         type: 'text',
+        IsRead: false,
       },
       {
         author: {id: '5'},
@@ -164,6 +181,42 @@ export default [
         id: '13',
         text: 'lets have a meeting by 12pm',
         type: 'text',
+        IsRead: true,
+      },
+    ],
+  },
+  {
+    id: '6',
+    name: 'Inioluwa A',
+    lastMesssage: `Welcome to Simpu!`,
+    avatar: userSix,
+    channelType: 'whatsapp',
+    time: '2021-11-14T07:20:16Z',
+    chats: [
+      {
+        author: {id: '5'},
+        createdAt: '2019-08-01T07:20:16Z',
+        id: '11',
+
+        text: 'am at you location',
+        type: 'text',
+        IsRead: false,
+      },
+      {
+        author: {id: '1234'},
+        createdAt: '2020-3-06T07:20:16Z',
+        id: '12',
+        text: 'Completed your task',
+        type: 'text',
+        IsRead: false,
+      },
+      {
+        author: {id: '5'},
+        createdAt: '2021-08-14T07:20:16Z',
+        id: '13',
+        text: 'lets have a meeting by 12pm',
+        type: 'text',
+        IsRead: true,
       },
     ],
   },

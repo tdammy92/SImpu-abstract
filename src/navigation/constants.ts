@@ -11,6 +11,7 @@ export enum SCREEN_NAME {
   unassigned = 'app.screen.unassigned',
   mentions = 'app.screen.mentions',
   closed = 'app.screen.closed',
+  draft = 'app.screen.draft',
 
   login = 'app.screen.login',
   phoneLogin = 'app.screen.login.phone',
@@ -43,6 +44,7 @@ export type MainStackParamList = {
   [SCREEN_NAME.assigned]: undefined;
   [SCREEN_NAME.unassigned]: undefined;
   [SCREEN_NAME.closed]: undefined;
+  [SCREEN_NAME.draft]: undefined;
   [SCREEN_NAME.mentions]: undefined;
   [SCREEN_NAME.unassigned]: undefined;
   [SCREEN_NAME.profile]: undefined;

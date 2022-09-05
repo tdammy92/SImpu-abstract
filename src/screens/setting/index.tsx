@@ -17,18 +17,19 @@ import AboutIcon from '../../assets/images/Love_Circled.svg';
 import LogOut from '../../assets/images/Export.svg';
 import {MainStackParamList, SCREEN_NAME} from 'src/navigation/constants';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useSelector, useDispatch} from 'react-redux';
+// import {useSelector, useDispatch} from 'react-redux';
 import {Avatar as avatar} from '../../constants/general';
 import {StoreState} from 'src/@types/store';
-import {logOutUser} from '../../store/user/userReducer';
+// import {logOutUser} from '../../store/user/userReducer';
 import {hp, wp} from 'src/utils';
 interface Props
   extends NativeStackScreenProps<MainStackParamList, SCREEN_NAME.settings> {}
 
 const Setting = (props: Props): JSX.Element => {
   const {navigation} = props;
-  const dispatch = useDispatch();
-  const user = useSelector((state: StoreState) => state.user.profile);
+  // const dispatch = useDispatch();
+  // const user = useSelector((state: StoreState) => state.user.profile);
+
   const [checked, setChecked] = React.useState(false);
   const [notifyCheck, setNotifyCheck] = React.useState(false);
 
@@ -61,8 +62,8 @@ const Setting = (props: Props): JSX.Element => {
         {
           text: 'yes',
           onPress: () => {
-            dispatch(logOutUser()),
-              navigation.reset({index: 0, routes: [{name: SCREEN_NAME.login}]});
+            // dispatch(logOutUser()),
+            navigation.reset({index: 0, routes: [{name: SCREEN_NAME.login}]});
           },
         },
       ],

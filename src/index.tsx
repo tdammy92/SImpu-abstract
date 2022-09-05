@@ -28,11 +28,7 @@ export default (): JSX.Element => {
     useRef<NavigationContainerRef<MainStackParamList>>(null);
   const routeNameRef = useRef<string>();
 
-  // LogBox.ignoreLogs([
-  //   "[react-native-gesture-handler] Seems like you\'re using an old API with gesture components, check out new Gestures system!",
-  // ]);
-
-  LogBox.ignoreAllLogs();
+  // LogBox.ignoreAllLogs();
 
   const onReady = useCallback(() => {
     routeNameRef.current = navigationRef.current?.getCurrentRoute()?.name;
@@ -60,22 +56,20 @@ export default (): JSX.Element => {
       <IconRegistry icons={[EvaIconsPack]} />
       {/* <PersistGate persistor={persistor}> */}
       <UIKittenProvider {...eva} theme={{...eva.light, ...theme}}>
-        <SafeAreaProvider>
-          {/* {Platform.OS !== 'android' && ( */}
+        <>
           <StatusBar
             barStyle="dark-content"
             translucent={true}
             backgroundColor={'transparent'}
-            // hidden={Platform.OS === 'android' ? false : true}
           />
-          {/* )} */}
+
           <NavigationContainer
             // linking={linking}
             ref={navigationRef}
             onReady={onReady}>
             <RootStack />
           </NavigationContainer>
-        </SafeAreaProvider>
+        </>
       </UIKittenProvider>
       {/* </PersistGate> */}
       {/* </QueryClientProvider> */}

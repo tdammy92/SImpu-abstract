@@ -8,11 +8,13 @@
 require('dotenv').config();
 const MetroConfig = require('@ui-kitten/metro-config');
 const defaultConfig = require('metro-config/src/defaults').getDefaultValues();
+
 const evaConfig = {
   evaPackage: '@eva-design/eva',
+  customMappingPath: './src/mapping.json',
 };
 
-module.exports = {
+module.exports = MetroConfig.create(evaConfig, {
   transformer: {
     getTransformOptions: async () => ({
       transform: {
@@ -34,4 +36,4 @@ module.exports = {
       : [...defaultConfig.resolver.sourceExts, 'svg'],
   },
   maxWorkers: 2,
-};
+});
