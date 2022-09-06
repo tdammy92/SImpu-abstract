@@ -25,7 +25,7 @@ import {hp} from 'src/utils';
 import SortSheet from '../component/SortSheet';
 import dummyData from 'src/constants/dummyData';
 
-const Unassigned = ({navigation}: any) => {
+const Social = ({navigation}: any) => {
   const SortSheetRef = useRef<any>(null);
   const styles = useStyleSheet(themedStyles);
   const [Message, setMessage] = useState(() => dummyData);
@@ -193,15 +193,14 @@ const Unassigned = ({navigation}: any) => {
     <SafeAreaView style={{flex: 1}}>
       <View>
         <MessageHeader
-          name="Unassigned"
+          name="Social"
           openSortSheet={openSheet}
           closeSortSheet={openSheet}
-          isSocial={false}
+          isSocial={true}
           isTeamInbox={false}
         />
         <View style={styles.container}>
           <SwipeListView
-            // useFlatList={true}
             data={Message}
             renderItem={renderItem}
             renderHiddenItem={renderHiddenItem}
@@ -227,4 +226,4 @@ const Unassigned = ({navigation}: any) => {
   );
 };
 
-export default Unassigned;
+export default Social;

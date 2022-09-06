@@ -19,6 +19,8 @@
     "@ui-kitten/components": "^5.1.2",
     "@ui-kitten/eva-icons": "^5.1.2",
     "@ui-kitten/metro-config": "^5.1.2",
+    "axios": "^0.27.2",
+    "date-fns": "^2.29.2",
     "deprecated-react-native-prop-types": "^2.3.0",
     "react": "18.0.0",
     "react-native": "0.69.5",
@@ -34,6 +36,7 @@
     "react-native-svg": "^13.1.0",
     "react-native-swipe-action-list": "^0.0.6",
     "react-native-swipe-list-view": "^3.2.9",
+    "react-native-user-avatar": "^1.0.8",
     "react-native-vector-icons": "^9.2.0",
     "react-redux": "^8.0.2",
     "redux-persist": "^6.0.0"

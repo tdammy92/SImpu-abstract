@@ -15,16 +15,19 @@ import FONTS from 'src/constants/fonts';
 import {Avatar} from '@ui-kitten/components';
 
 import Login from 'src/screens/auth';
-import Inbox from 'src/screens/Message/inbox';
+import Social from 'src/screens/Message/social';
 import Assigned from 'src/screens/Message/Assigned';
 import Unassigned from 'src/screens/Message/Unassigned';
 import Mentions from 'src/screens/Message/Mentions';
 import Closed from 'src/screens/Message/Closed';
 import Draft from 'src/screens/Message/draft';
 import Settings from 'src/screens/setting/index';
+import EditProfile from 'src/screens/setting/editProfile';
+import Chat from 'src/screens/Message/chat';
 
 //icons
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import Assign from 'src/assets/images/ssigned.svg';
 import Unassign from 'src/assets/images/unassigned.svg';
@@ -43,28 +46,9 @@ import {Avatar as avatar} from 'src/constants/general';
 
 const Stack = createNativeStackNavigator<MainStackParamList>();
 
-const AuthStack = createStackNavigator<MainStackParamList>();
 const Drawer = createDrawerNavigator();
 
 const SettingsStack = createStackNavigator<MainStackParamList>();
-
-//settings navigator
-// const AuthStackNavigator = (): JSX.Element => {
-//   return (
-//     <AuthStack.Navigator
-//       screenOptions={() => ({
-//         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-//       })}>
-//       <AuthStack.Screen
-//         name={SCREEN_NAME.auth}
-//         component={Login}
-//         options={{
-//           headerShown: false,
-//         }}
-//       />
-//     </AuthStack.Navigator>
-//   );
-// };
 
 //drawer navigator
 function DrawerMenu() {
@@ -81,13 +65,24 @@ function DrawerMenu() {
       }}>
       <Drawer.Screen
         options={{
-          title: 'Inbox',
+          title: 'Socials',
           drawerIcon: ({color}) => (
-            <AntDesign name="inbox" color={color} size={25} />
+            <Ionicons name="chatbubbles-outline" color={color} size={25} />
           ),
         }}
-        name={SCREEN_NAME.inbox}
-        component={Inbox}
+        name={SCREEN_NAME.social}
+        component={Social}
+      />
+
+      <Drawer.Screen
+        options={{
+          title: 'Unassigned',
+          drawerIcon: ({color}) => (
+            <Unassign width={25} height={25} color={color} />
+          ),
+        }}
+        name={SCREEN_NAME.unassigned}
+        component={Unassigned}
       />
       <Drawer.Screen
         options={{
@@ -98,16 +93,6 @@ function DrawerMenu() {
         }}
         name={SCREEN_NAME.assigned}
         component={Assigned}
-      />
-      <Drawer.Screen
-        options={{
-          title: 'Unassigned',
-          drawerIcon: ({color}) => (
-            <Unassign width={25} height={25} color={color} />
-          ),
-        }}
-        name={SCREEN_NAME.unassigned}
-        component={Unassigned}
       />
       <Drawer.Screen
         options={{
@@ -159,6 +144,16 @@ const SettingsStackNavigator = (): JSX.Element => {
         }}
         component={Settings}
       />
+      {/* <SettingsStack.Screen
+        //@ts-ignore
+        name={SCREEN_NAME.editprofile}
+        options={{
+          title: '',
+          headerBackTitle: '',
+          headerBackTitleVisible: false,
+        }}
+        component={EditProfile}
+      /> */}
     </SettingsStack.Navigator>
   );
 };
@@ -177,6 +172,13 @@ export const RootStack = (): JSX.Element => {
       <Stack.Screen
         name={SCREEN_NAME.main}
         component={DrawerMenu}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name={SCREEN_NAME.chat}
+        component={Chat}
         options={{
           headerShown: false,
         }}

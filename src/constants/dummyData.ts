@@ -19,7 +19,7 @@ export default [
     lastMesssage: `Hey There!`,
     avatar: userOne,
     channelType: 'whatsapp',
-    time: '2021-11-14T07:20:16Z',
+    time: '2022-09-05T16:28:16.960Z',
     chats: [
       {
         author: {id: '1'},

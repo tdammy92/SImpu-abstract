@@ -2,6 +2,8 @@ import {StyleSheet, View, TouchableOpacity, Alert} from 'react-native';
 import React, {useState} from 'react';
 import {Text} from '@ui-kitten/components';
 import {useNavigation} from '@react-navigation/native';
+//@ts-ignore
+import UserAvatar from 'react-native-user-avatar';
 import {hp, wp} from 'src/utils';
 import {
   DrawerContentScrollView,
@@ -60,13 +62,18 @@ const CustomDrawer = (props: any): JSX.Element => {
     );
   };
 
+  const User = {
+    name: 'Collins Tompson',
+    image: avatar,
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={styles.userDetails}>
-          <Avatar source={{uri: avatar}} style={{height: 50, width: 50}} />
+          <UserAvatar size={50} name={User.name} src={User.image} />
           <View style={{paddingLeft: 5}}>
-            <Text style={styles.userName}>Collins Tompson</Text>
+            <Text style={styles.userName}>{User.name}</Text>
             <Text>Available</Text>
           </View>
         </View>

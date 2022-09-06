@@ -28,7 +28,7 @@ export default (): JSX.Element => {
     useRef<NavigationContainerRef<MainStackParamList>>(null);
   const routeNameRef = useRef<string>();
 
-  // LogBox.ignoreAllLogs();
+  LogBox.ignoreAllLogs();
 
   const onReady = useCallback(() => {
     routeNameRef.current = navigationRef.current?.getCurrentRoute()?.name;

@@ -6,7 +6,7 @@ export enum SCREEN_NAME {
   auth = 'app.screen.auth',
   welcome = 'app.screen.auth.welcome',
   profile = 'app.screen.auth.profile',
-  inbox = 'app.screen.inbox',
+  social = 'app.screen.social',
   assigned = 'app.screen.assigned',
   unassigned = 'app.screen.unassigned',
   mentions = 'app.screen.mentions',
@@ -15,7 +15,7 @@ export enum SCREEN_NAME {
 
   login = 'app.screen.login',
   phoneLogin = 'app.screen.login.phone',
-  otpLogin = 'app.screen.login.otp',
+
   main = 'app.screen.main',
   inner = 'app.screen.inner',
   contact = 'app.screen.contact',
@@ -34,7 +34,7 @@ export enum SCREEN_NAME {
   socialWeb = 'app.screen.webview',
   quickreplies = 'app.screen.quickreplies',
   channel = 'app.screen.inbox.channel',
-  chat = 'app.screen.inbox.chat',
+  chat = 'app.screen.chat',
 }
 
 export type MainStackParamList = {
@@ -51,22 +51,23 @@ export type MainStackParamList = {
 
   [SCREEN_NAME.login]: undefined;
   [SCREEN_NAME.phoneLogin]: undefined;
-  [SCREEN_NAME.otpLogin]: {PhoneNumber: string; transaction_id: string};
+
   [SCREEN_NAME.main]: undefined;
   [SCREEN_NAME.inner]: undefined;
   [SCREEN_NAME.contact]: undefined;
-  [SCREEN_NAME.inbox]: undefined;
+  [SCREEN_NAME.social]: undefined;
   [SCREEN_NAME.options]: undefined;
   [SCREEN_NAME.settings]: undefined;
   [SCREEN_NAME.simpupay]: undefined;
   [SCREEN_NAME.channel]: undefined;
-  [SCREEN_NAME.chat]: {
-    name: string;
-    channel: string;
-    avatar: string;
-    threadId: string;
-    chat: []; //remove line when making api calls
-  };
+  [SCREEN_NAME.chat]: undefined;
+  // [SCREEN_NAME.chat]: {
+  //   name: string;
+  //   channel: string;
+  //   avatar: string;
+  //   threadId: string;
+  //   chat: []; //remove line when making api calls
+  // };
   [SCREEN_NAME.request]: undefined;
   [SCREEN_NAME.reviewpay]: undefined;
   [SCREEN_NAME.editprofile]: undefined;
