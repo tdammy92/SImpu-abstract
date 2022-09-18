@@ -5,84 +5,86 @@ import {
   ScrollView,
   View,
 } from 'react-native';
-import {
-  StyledComponentProps,
-  Text,
-  Input,
-  Icon,
-  useStyleSheet,
-} from '@ui-kitten/components';
+import {Text} from '@ui-kitten/components';
 import React, {useState} from 'react';
 import {useNavigation, DrawerActions} from '@react-navigation/native';
-import LinearGradient from 'react-native-linear-gradient';
+
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Octicons from 'react-native-vector-icons/Octicons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {hp, wp} from 'src/utils';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import {colors, FONTS} from 'src/constants';
-// import {ScrollView} from 'react-native-gesture-handler';
+import {hp, wp} from 'src/utils';
+import dummyData from 'src/constants/dummyData';
 
-const AlertIcon = (props: any) => <Icon {...props} name="search-outline" />;
+import {SCREEN_NAME} from 'src/navigation/constants';
 
 const MessageHeader = (props: any) => {
   const navigation = useNavigation();
-
-  const {openSortSheet, isSocial, isTeamInbox, closeSortSheet} = props;
+  const {
+    openSortSheet,
+    messageOption,
+    shoMessageOptions,
+    handleSelectedIndex,
+    selectedIndex,
+    HandlePress,
+  } = props;
   const openDraw = () => navigation.dispatch(DrawerActions.openDrawer());
-
-  const [selectedIndex, setselectedIndex] = useState(0);
-  const [teamOptions, setteamOptions] = useState([
-    'Unassigned',
-    'Assigned',
-    'Closed',
-  ]);
-
-  const [socialOptions, setsocialOptions] = useState([
-    'All',
-    'Favorite',
-    'Snoozed',
-  ]);
-
-  const handleSelectedIndex = (index: number) => {
-    setselectedIndex(index);
-  };
+  //@ts-ignore
+  const openNotification = () => navigation.navigate(SCREEN_NAME.notification);
 
   return (
     <View style={styles.headerContainer}>
+      {/* top buttons */}
       <View
         style={{
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
         }}>
-        <TouchableOpacity onPress={openDraw}>
-          <AntDesign name="menu-fold" size={30} color="#000" />
+        <TouchableOpacity onPress={HandlePress ? HandlePress : openDraw}>
+          <AntDesign name="menu-fold" size={30} color={colors.primaryText} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={openDraw}>
+        <TouchableOpacity onPress={openNotification}>
           <View style={styles.badgeContainer}>
-            <Text style={styles.badgeText}>0</Text>
+            <Text style={styles.badgeText}>{dummyData?.length}</Text>
           </View>
           <Ionicons
             name="notifications-outline"
             size={30}
-            color="#000"
+            color={colors.primaryText}
             style={{transform: [{rotate: '35deg'}]}}
           />
         </TouchableOpacity>
       </View>
 
+      {/* input container */}
       <View style={styles.headerDetails}>
-        <View style={styles.inputWrapper}>
-          <Input placeholder="Search" accessoryLeft={AlertIcon} />
-        </View>
+        <TouchableOpacity
+          style={styles.inputWrapper}
+          //@ts-ignore
+          onPress={() => navigation.navigate(SCREEN_NAME.search)}>
+          <EvilIcons name="search" size={25} color="black" />
 
+          <Text
+            style={{
+              color: colors.primaryText,
+              fontFamily: FONTS.AVERTA_SEMI_BOLD,
+              fontSize: hp(16),
+            }}>
+            Search
+          </Text>
+        </TouchableOpacity>
+
+        {/* menu name view */}
         <View style={styles.sliderView}>
           <Text style={styles.headerTitleText}>
-            {props?.name !== 'Social' ? props?.name : ''}
+            {props?.name && props?.name}
           </Text>
-          {isTeamInbox && (
+
+          {shoMessageOptions && (
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {teamOptions.map((option, index) => {
+              {messageOption.map((option: any, index: any) => {
                 return (
                   <TouchableOpacity
                     key={index}
@@ -104,45 +106,13 @@ const MessageHeader = (props: any) => {
               })}
             </ScrollView>
           )}
-          {isSocial && (
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {socialOptions.map((option, index) => {
-                return (
-                  <TouchableOpacity
-                    key={index}
-                    style={{
-                      paddingVertical: 2,
-                      paddingHorizontal: hp(15),
-                    }}
-                    onPress={() => handleSelectedIndex(index)}>
-                    <View
-                      style={{
-                        borderBottomColor:
-                          selectedIndex === index ? '#026AE8' : '',
-                        borderBottomWidth: selectedIndex === index ? 3 : 0,
-                      }}>
-                      <Text style={[styles.sliderText, {}]}>{option}</Text>
-                    </View>
-                  </TouchableOpacity>
-                );
-              })}
-            </ScrollView>
-          )}
-          {/* <LinearGradient
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 0}}
-            colors={['#c4c4c4', 'rgba(255,255,255,0.1)']}
-            style={{
-              padding: 5,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}> */}
+
+          {/* sort option slider view */}
           <TouchableOpacity
             style={{marginTop: 0, backgroundColor: ''}}
             onPress={openSortSheet}>
             <Octicons name="sort-asc" size={23} color="#000" />
           </TouchableOpacity>
-          {/* </LinearGradient> */}
         </View>
       </View>
     </View>
@@ -156,6 +126,8 @@ const styles = StyleSheet.create({
     //@ts-ignore
     marginTop: hp(StatusBar.currentHeight + 30),
     marginHorizontal: wp(12),
+    elevation: 100,
+    zIndex: 100,
   },
 
   headerDetails: {
@@ -189,12 +161,18 @@ const styles = StyleSheet.create({
     color: colors.primaryText,
   },
   inputWrapper: {
+    flexDirection: 'row',
     marginVertical: hp(10),
+    height: 40,
+    paddingHorizontal: wp(7),
+    borderWidth: 1,
+    alignItems: 'center',
+    borderRadius: 10,
   },
+
   sliderView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    //     alignItems: 'flex-start',
   },
   sliderText: {
     fontFamily: FONTS.AVERTA_REGULAR,

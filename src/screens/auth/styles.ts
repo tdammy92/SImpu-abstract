@@ -1,5 +1,6 @@
 import {StyleService} from '@ui-kitten/components';
 import {ImageStyle, TextStyle, ViewStyle} from 'react-native';
+import {colors} from 'src/constants';
 import FONTS from 'src/constants/fonts';
 import {hp, wp} from 'src/utils';
 
@@ -14,6 +15,7 @@ interface Styles {
   googleText: TextStyle;
   footerLinkContainer: ViewStyle;
   linkText: TextStyle;
+  inputConatiner: ViewStyle;
 }
 const styles = StyleService.create<Styles>({
   container: {
@@ -28,7 +30,7 @@ const styles = StyleService.create<Styles>({
   },
 
   topContainer: {
-    //     flex: 0.4,
+    // flex: 1,
     alignItems: 'center',
   },
 
@@ -39,6 +41,8 @@ const styles = StyleService.create<Styles>({
     color: '#000',
   },
   btnContainer: {
+    // flex: 1,
+    marginTop: hp(20),
     marginVertical: hp(20),
     width: '100%',
     alignItems: 'center',
@@ -73,7 +77,7 @@ const styles = StyleService.create<Styles>({
 
   footerLinkContainer: {
     position: 'absolute',
-    bottom: hp(30),
+    bottom: hp(4),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
@@ -81,8 +85,12 @@ const styles = StyleService.create<Styles>({
   },
   linkText: {
     fontFamily: FONTS.AVERTA_REGULAR,
-    color: '#000',
+    color: colors.primaryText,
     fontSize: hp(19),
+  },
+
+  inputConatiner: {
+    width: '100%',
   },
 });
 export default styles;

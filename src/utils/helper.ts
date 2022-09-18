@@ -1,4 +1,4 @@
-import {formatDistance, formatDistanceToNow, subDays} from 'date-fns';
+import {formatDistance, format, formatDistanceToNow, subDays} from 'date-fns';
 
 export const FormatText = (text: string) => {
   return text.replace(/(^|\s)\S/g, (letter: string) => letter.toUpperCase());
@@ -17,4 +17,10 @@ export const messgeTimeFormater = (time: string) => {
   });
 
   return TimePased;
+};
+
+export const formatDate = (time: string) => {
+  const formatedDate = format(new Date(time), 'dd-MMM-yyyy h:m aaaa');
+
+  return formatedDate;
 };

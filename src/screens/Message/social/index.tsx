@@ -1,22 +1,13 @@
-import {
-  StyleSheet,
-  SafeAreaView,
-  ScrollView,
-  View,
-  FlatList,
-  Animated,
-  TouchableOpacity,
-  TouchableHighlight,
-  Image,
-} from 'react-native';
+import {SafeAreaView, View, Animated} from 'react-native';
 import {StyledComponentProps, Text, useStyleSheet} from '@ui-kitten/components';
 import React, {useState, useRef, useEffect, useCallback} from 'react';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 //@ts-ignore
 // import SwipeActionList from 'react-native-swipe-action-list';
 import {SwipeListView} from 'react-native-swipe-list-view';
 import MessageHeader from '../component/MessageHeader';
 import themedStyles from './styles';
+import HiddenItemWithActions from '../component/cardOptions/HiddenItemWithActions';
 
 import EmptyInbox from 'src/components/common/EmptyInbox';
 import MessageCard from '../component/message/MessageCard';
@@ -29,6 +20,16 @@ const Social = ({navigation}: any) => {
   const SortSheetRef = useRef<any>(null);
   const styles = useStyleSheet(themedStyles);
   const [Message, setMessage] = useState(() => dummyData);
+  const [messageOption, setMessageOption] = useState([
+    'All',
+    'Favorite',
+    'Snoozed',
+  ]);
+  const [selectedIndex, setselectedIndex] = useState(0);
+
+  const handleSelectedIndex = (index: number) => {
+    setselectedIndex(index);
+  };
 
   //open sheet code
   const openSheet = (channel: string) => {
@@ -54,11 +55,18 @@ const Social = ({navigation}: any) => {
   };
 
   const deleteRow = (rowMap: any, rowKey: any) => {
-    closeRow(rowMap, rowKey);
-    const newData = [...Message];
-    const prevIndex = Message.findIndex(item => item.id === rowKey);
-    newData.splice(prevIndex, 1);
-    setMessage(newData);
+    // console.log('**********************************');
+    // console.log('rowMap', rowMap.item);
+    // console.log('rowkey', rowKey.item);
+    // console.log('__________________________________');
+
+    const newMsg = Message.filter((item: any) => item.id !== rowKey.item.id);
+    setMessage(newMsg);
+    // closeRow(rowMap, rowKey);
+    // const newData = [...Message];
+    // const prevIndex = Message.findIndex(item => item.id === rowKey);
+    // console.log('prev index', prevIndex);
+    // newData.splice(prevIndex, 1);
   };
 
   const onRowDidOpen = (rowKey: any) => {
@@ -79,85 +87,6 @@ const Social = ({navigation}: any) => {
 
   const onLeftAction = (rowKey: any) => {
     console.log('onLeftAction', rowKey);
-  };
-
-  const HiddenItemWithActions = (props: any) => {
-    const {
-      swipeAnimatedValue,
-      leftActionActivated,
-      rightActionActivated,
-      rowActionAnimatedValue,
-      rowHeightAnimatedValue,
-      onClose,
-      onDelete,
-    } = props;
-
-    if (rightActionActivated) {
-      Animated.spring(rowActionAnimatedValue, {
-        toValue: 500,
-        useNativeDriver: false,
-      }).start();
-    } else {
-      Animated.spring(rowActionAnimatedValue, {
-        toValue: 75,
-        useNativeDriver: false,
-      }).start();
-    }
-
-    return (
-      <Animated.View style={[styles.rowBack, {height: rowHeightAnimatedValue}]}>
-        <Text>Left</Text>
-        {!leftActionActivated && (
-          <TouchableOpacity
-            style={[styles.backRightBtn, styles.backRightBtnLeft]}
-            onPress={onClose}>
-            <MaterialCommunityIcons
-              name="close-circle-outline"
-              size={28}
-              style={styles.trash}
-              color="#fff"
-            />
-          </TouchableOpacity>
-        )}
-        {!leftActionActivated && (
-          <Animated.View
-            style={[
-              styles.backRightBtn,
-              styles.backRightBtnRight,
-              {
-                flex: 1,
-                width: rowActionAnimatedValue,
-              },
-            ]}>
-            <TouchableOpacity
-              style={[styles.backRightBtn, styles.backRightBtnRight]}
-              onPress={onDelete}>
-              <Animated.View
-                style={[
-                  styles.trash,
-                  {
-                    transform: [
-                      {
-                        scale: swipeAnimatedValue.interpolate({
-                          inputRange: [-90, -45],
-                          outputRange: [1, 0],
-                          extrapolate: 'clamp',
-                        }),
-                      },
-                    ],
-                  },
-                ]}>
-                <MaterialCommunityIcons
-                  name="trash-can-outline"
-                  size={28}
-                  color="#fff"
-                />
-              </Animated.View>
-            </TouchableOpacity>
-          </Animated.View>
-        )}
-      </Animated.View>
-    );
   };
 
   const renderItem = (data: any, rowMap: any) => {
@@ -183,8 +112,8 @@ const Social = ({navigation}: any) => {
         rowMap={rowMap}
         rowActionAnimatedValue={rowActionAnimatedValue}
         rowHeightAnimatedValue={rowHeightAnimatedValue}
-        onClose={() => closeRow(rowMap, data.index)}
-        onDelete={() => deleteRow(rowMap, data.index)}
+        onClose={() => closeRow(rowMap, data)}
+        onDelete={() => deleteRow(rowMap, data)}
       />
     );
   };
@@ -193,29 +122,40 @@ const Social = ({navigation}: any) => {
     <SafeAreaView style={{flex: 1}}>
       <View>
         <MessageHeader
-          name="Social"
+          messageOption={messageOption}
+          handleSelectedIndex={handleSelectedIndex}
+          selectedIndex={selectedIndex}
           openSortSheet={openSheet}
-          closeSortSheet={openSheet}
-          isSocial={true}
-          isTeamInbox={false}
+          closeSortSheet={closeSheet}
+          shoMessageOptions={true}
         />
+
         <View style={styles.container}>
           <SwipeListView
             data={Message}
             renderItem={renderItem}
+            useFlatList={true}
+            showsVerticalScrollIndicator={true}
+            closeOnRowBeginSwipe
+            closeOnRowOpen
+            scrollEnabled
             renderHiddenItem={renderHiddenItem}
-            leftOpenValue={75}
-            rightOpenValue={-150}
-            disableRightSwipe
+            keyExtractor={item => item.id}
+            leftOpenValue={90}
+            rightOpenValue={-90}
             onRowDidOpen={onRowDidOpen}
             leftActivationValue={100}
             rightActivationValue={-200}
             leftActionValue={0}
-            rightActionValue={-500}
+            stopRightSwipe={-150}
+            stopLeftSwipe={150}
+            rightActionValue={-300}
             onLeftAction={onLeftAction}
             onRightAction={onRightAction}
             onLeftActionStatusChange={onLeftActionStatusChange}
             onRightActionStatusChange={onRightActionStatusChange}
+            ListEmptyComponent={<EmptyInbox />}
+            contentContainerStyle={{paddingBottom: 20}}
           />
         </View>
       </View>

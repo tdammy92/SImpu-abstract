@@ -2,6 +2,9 @@ import React from 'react';
 import {Text, Toggle, Button, Avatar} from '@ui-kitten/components';
 import {View, Image, Pressable, Linking, Alert} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
+
+//@ts-ignore
+import UserAvatar from 'react-native-user-avatar';
 import Labellist from 'src/components/common/Label';
 import {globalStyles} from 'src/styles';
 import styles from './styles';
@@ -63,7 +66,7 @@ const Setting = (props: Props): JSX.Element => {
           text: 'yes',
           onPress: () => {
             // dispatch(logOutUser()),
-            navigation.reset({index: 0, routes: [{name: SCREEN_NAME.login}]});
+            navigation.reset({index: 0, routes: [{name: SCREEN_NAME.auth}]});
           },
         },
       ],
@@ -109,9 +112,10 @@ const Setting = (props: Props): JSX.Element => {
           source={{uri: user?.image || Avatar}}
         /> */}
 
-        <Avatar
-          size="giant"
-          style={{width: wp(80), height: hp(82)}}
+        <UserAvatar
+          name="Collins Tompson"
+          size={60}
+          // style={{width: wp(70), height: hp(70)}}
           source={{uri: avatar}}
         />
 
@@ -121,7 +125,7 @@ const Setting = (props: Props): JSX.Element => {
 
         <Text style={styles.lowerText}>dev@Simpu.co</Text>
 
-        <Text style={styles.editText}>Update Profile</Text>
+        {/* <Text style={styles.editText}>Update Profile</Text> */}
       </Pressable>
 
       <View style={styles.cardList}>
@@ -151,7 +155,7 @@ const Setting = (props: Props): JSX.Element => {
           icon1={<QuoteLeft />}
           text="Quick Replies"
         />
-        <Labellist
+        {/* <Labellist
           onPress={navigateManageChannels}
           border
           icon2={<ArrowRight />}
@@ -163,22 +167,22 @@ const Setting = (props: Props): JSX.Element => {
           icon2={<ArrowRight />}
           icon1={<AccountIcon />}
           text="Manage Bank Account"
-        />
+        /> */}
       </View>
       <View style={styles.cardList}>
-        <Labellist
+        {/* <Labellist
           onPress={navigatePrivacy}
           icon2={<ArrowRight />}
           icon1={<PrivacyIcon />}
           text="Privacy and Security"
-        />
-        <Labellist
+        /> */}
+        {/* <Labellist
           onPress={navigateDataStorage}
           border
           icon2={<ArrowRight />}
           icon1={<DataStorage />}
           text="Data and Storage"
-        />
+        /> */}
         <Labellist
           border
           icon2={<ArrowRight />}

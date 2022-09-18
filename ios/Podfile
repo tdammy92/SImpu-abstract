@@ -23,7 +23,7 @@ target 'SimpuMobile' do
     :flipper_configuration => FlipperConfiguration.enabled,
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/..",
-    :path => '../node_modules/react-native-linear-gradient'
+    # :path => '../node_modules/react-native-linear-gradient'
   )
 
   target 'SimpuMobileTests' do

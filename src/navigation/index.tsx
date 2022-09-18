@@ -24,6 +24,9 @@ import Draft from 'src/screens/Message/draft';
 import Settings from 'src/screens/setting/index';
 import EditProfile from 'src/screens/setting/editProfile';
 import Chat from 'src/screens/Message/chat';
+import Search from 'src/screens/search';
+import Notification from 'src/screens/Message/notification';
+import TeamInbox from 'src/screens/Message/teamInbox';
 
 //icons
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -58,10 +61,11 @@ function DrawerMenu() {
       screenOptions={{
         headerShown: false,
         drawerLabelStyle: {marginLeft: hp(-22)},
-
-        drawerActiveBackgroundColor: '#c4c4c4',
+        drawerActiveBackgroundColor: '#c5c5c5',
         drawerActiveTintColor: '#000',
         drawerInactiveTintColor: 'gray',
+
+        swipeEnabled: false,
       }}>
       <Drawer.Screen
         options={{
@@ -124,6 +128,18 @@ function DrawerMenu() {
         name={SCREEN_NAME.draft}
         component={Draft}
       />
+      {/* <Drawer.Screen
+        options={{
+          title: '',
+          drawerIcon: ({color, focused}) => null,
+
+          // (
+          //   <Draf width={22} height={22} color={color} />
+          // ),
+        }}
+        name={SCREEN_NAME.teaminbox}
+        component={TeamInbox}
+      /> */}
     </Drawer.Navigator>
   );
 }
@@ -162,6 +178,7 @@ const SettingsStackNavigator = (): JSX.Element => {
 export const RootStack = (): JSX.Element => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
+      {/* <Stack.Group> */}
       <Stack.Screen
         name={SCREEN_NAME.auth}
         component={Login}
@@ -176,6 +193,15 @@ export const RootStack = (): JSX.Element => {
           headerShown: false,
         }}
       />
+
+      {/* <Stack.Screen
+        name={SCREEN_NAME.teaminbox}
+        component={TeamInbox}
+        options={{
+          headerShown: false,
+        }}
+      /> */}
+
       <Stack.Screen
         name={SCREEN_NAME.chat}
         component={Chat}
@@ -190,6 +216,32 @@ export const RootStack = (): JSX.Element => {
           headerShown: false,
         }}
       />
+      {/* </Stack.Group> */}
+
+      {/* <Stack.Group screenOptions={{presentation: 'modal'}}> */}
+      <Stack.Screen
+        name={SCREEN_NAME.search}
+        component={Search}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
+        name={SCREEN_NAME.notification}
+        component={Notification}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name={SCREEN_NAME.teaminbox}
+        component={TeamInbox}
+        options={{
+          headerShown: false,
+        }}
+      />
+      {/* </Stack.Group> */}
     </Stack.Navigator>
   );
 };

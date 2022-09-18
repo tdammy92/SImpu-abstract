@@ -1,4 +1,4 @@
-import {StyleSheet, View, Linking} from 'react-native';
+import {StyleSheet, View, Linking, TextInput} from 'react-native';
 import React from 'react';
 import {Text} from '@ui-kitten/components';
 import {KeyboardAwareScrollView} from 'src/components/common/KeyBoardAvoidingView';
@@ -10,6 +10,7 @@ import {Button} from 'src/components/common/Button';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {hp} from 'src/utils';
 import {SCREEN_NAME} from 'src/navigation/constants';
+import AuthInput from './component/AuthInput';
 
 const Login = ({navigation}: any) => {
   return (
@@ -21,14 +22,27 @@ const Login = ({navigation}: any) => {
             <Text style={styles.headerText}>Login to Simpu</Text>
           </View>
           <View style={styles.btnContainer}>
-            <TouchableOpacity style={[styles.googleButton]}>
+            {/* <TouchableOpacity style={[styles.googleButton]}>
               <Google width={20} height={20} />
               <Text style={styles.googleText}>Sign in with Google</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+
+            <View style={styles.inputConatiner}>
+              <AuthInput
+                label="Email address"
+                // error="Please enter email"
+              />
+              <AuthInput
+                label="Password"
+                error="Please enter password"
+                isPassword={true}
+              />
+            </View>
 
             <Button
               title="Continue with email"
               onPress={() => navigation.navigate(SCREEN_NAME.main)}
+              style={{marginTop: hp(8)}}
             />
           </View>
 
@@ -51,17 +65,22 @@ const Login = ({navigation}: any) => {
             </View> */}
 
             {/* bottoms link */}
-            <View style={styles.footerLinkContainer}>
-              <TouchableOpacity onPress={() => Linking.openURL('')}>
-                <Text style={styles.linkText}>© Simpu</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => Linking.openURL('')}>
-                <Text style={styles.linkText}>Privacy & Terms</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => Linking.openURL('')}>
-                <Text style={styles.linkText}>Contact Us</Text>
-              </TouchableOpacity>
-            </View>
+          </View>
+          <View style={styles.footerLinkContainer}>
+            <TouchableOpacity
+              onPress={() => Linking.openURL('https://simpu.co/')}>
+              <Text style={styles.linkText}>© Simpu</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                Linking.openURL('https://app.simpu.co/terms-conditions')
+              }>
+              <Text style={styles.linkText}>Privacy & Terms</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => Linking.openURL('https://simpu.co/sales')}>
+              <Text style={styles.linkText}>Contact Us</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </KeyboardAwareScrollView>

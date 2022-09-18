@@ -1,19 +1,19 @@
 import {StyleSheet, View, Dimensions} from 'react-native';
 import React from 'react';
-import EmptyInbo from 'src/assets/images/Empty.svg';
+import EmptyNotification from 'src/assets/images/EmptyNotification.svg';
 import {hp, wp} from 'src/utils';
 
 const {width, height} = Dimensions.get('screen');
 
-const EmptyInbox = () => {
+const EmptyNotify = () => {
   return (
     <View style={styles.emptyContainerView}>
-      <EmptyInbo height={hp(150)} width={wp(150)} />
+      <EmptyNotification height={hp(150)} width={wp(150)} />
     </View>
   );
 };
 
-export default EmptyInbox;
+export default EmptyNotify;
 
 const styles = StyleSheet.create({
   emptyContainerView: {

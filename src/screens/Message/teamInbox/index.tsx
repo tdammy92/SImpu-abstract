@@ -1,35 +1,35 @@
-import {
-  StyleSheet,
-  SafeAreaView,
-  ScrollView,
-  View,
-  FlatList,
-  Animated,
-  TouchableOpacity,
-  TouchableHighlight,
-  Image,
-} from 'react-native';
+import {SafeAreaView, View, Animated} from 'react-native';
 import {StyledComponentProps, Text, useStyleSheet} from '@ui-kitten/components';
 import React, {useState, useRef, useEffect, useCallback} from 'react';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 //@ts-ignore
 // import SwipeActionList from 'react-native-swipe-action-list';
 import {SwipeListView} from 'react-native-swipe-list-view';
 import MessageHeader from '../component/MessageHeader';
 import themedStyles from './styles';
+import HiddenItemWithActions from '../component/cardOptions/HiddenItemWithActions';
 
 import EmptyInbox from 'src/components/common/EmptyInbox';
 import MessageCard from '../component/message/MessageCard';
 import ComposeMessageBtn from '../component/ComposeMessageBtn';
-import HiddenItemWithActions from '../component/cardOptions/HiddenItemWithActions';
 import {hp} from 'src/utils';
 import SortSheet from '../component/SortSheet';
 import dummyData from 'src/constants/dummyData';
 
-const Unassigned = ({navigation}: any) => {
+const TeamInbox = ({navigation}: any) => {
   const SortSheetRef = useRef<any>(null);
   const styles = useStyleSheet(themedStyles);
   const [Message, setMessage] = useState(() => dummyData);
+  const [messageOption, setMessageOption] = useState([
+    'Unassigned',
+    'Assigned',
+    'Closed',
+  ]);
+  const [selectedIndex, setselectedIndex] = useState(0);
+
+  const handleSelectedIndex = (index: number) => {
+    setselectedIndex(index);
+  };
 
   //open sheet code
   const openSheet = (channel: string) => {
@@ -55,13 +55,18 @@ const Unassigned = ({navigation}: any) => {
   };
 
   const deleteRow = (rowMap: any, rowKey: any) => {
+    // console.log('**********************************');
+    // console.log('rowMap', rowMap.item);
+    // console.log('rowkey', rowKey.item);
+    // console.log('__________________________________');
+
     const newMsg = Message.filter((item: any) => item.id !== rowKey.item.id);
     setMessage(newMsg);
     // closeRow(rowMap, rowKey);
     // const newData = [...Message];
     // const prevIndex = Message.findIndex(item => item.id === rowKey);
+    // console.log('prev index', prevIndex);
     // newData.splice(prevIndex, 1);
-    // setMessage(newData);
   };
 
   const onRowDidOpen = (rowKey: any) => {
@@ -117,17 +122,20 @@ const Unassigned = ({navigation}: any) => {
     <SafeAreaView style={{flex: 1}}>
       <View>
         <MessageHeader
-          name="Unassigned"
+          messageOption={messageOption}
+          handleSelectedIndex={handleSelectedIndex}
+          selectedIndex={selectedIndex}
           openSortSheet={openSheet}
-          closeSortSheet={openSheet}
-          isSocial={false}
-          isTeamInbox={false}
+          closeSortSheet={closeSheet}
+          shoMessageOptions={true}
+          HandlePress={() => navigation.goBack()}
         />
+
         <View style={styles.container}>
           <SwipeListView
-            // useFlatList={true}
-            data={Message.slice(0, 4).reverse()}
+            data={Message.slice(0, 3).reverse()}
             renderItem={renderItem}
+            // useFlatList={true}
             showsVerticalScrollIndicator={true}
             closeOnRowBeginSwipe
             closeOnRowOpen
@@ -140,8 +148,8 @@ const Unassigned = ({navigation}: any) => {
             onRowDidOpen={onRowDidOpen}
             leftActivationValue={100}
             rightActivationValue={-200}
-            stopRightSwipe={-200}
             leftActionValue={0}
+            stopRightSwipe={-200}
             rightActionValue={-500}
             onLeftAction={onLeftAction}
             onRightAction={onRightAction}
@@ -158,4 +166,4 @@ const Unassigned = ({navigation}: any) => {
   );
 };
 
-export default Unassigned;
+export default TeamInbox;

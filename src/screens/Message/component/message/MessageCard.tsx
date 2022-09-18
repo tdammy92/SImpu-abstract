@@ -16,6 +16,7 @@ import {FONTS} from 'src/constants';
 import {colors} from 'src/constants';
 import {messgeTimeFormater} from 'src/utils';
 import {SCREEN_NAME} from 'src/navigation/constants';
+import ChannelIcon from 'src/components/common/ChannelIcon';
 
 const MessageCard = (props: any) => {
   const navigation = useNavigation();
@@ -28,6 +29,8 @@ const MessageCard = (props: any) => {
     rightActionState,
   } = props;
 
+  // console.log(item);
+
   if (rightActionState) {
     Animated.timing(rowHeightAnimatedValue, {
       toValue: 0,
@@ -38,10 +41,11 @@ const MessageCard = (props: any) => {
     });
   }
 
-  const handleNavigate = () => {
+  const handleNavigate = (user: any) => {
     // console.log('cliked');
 
-    navigation.navigate(SCREEN_NAME.chat as never);
+    //@ts-ignore
+    navigation.navigate(SCREEN_NAME.chat as never, {user: item});
   };
 
   return (
@@ -55,7 +59,12 @@ const MessageCard = (props: any) => {
       <TouchableOpacity style={[styles.cardContainer]} onPress={handleNavigate}>
         {/* left side of the card */}
         <View style={styles.leftSide}>
-          <UserAvatar name={item?.name} src={item?.avatar} size={40} />
+          <View style={{position: 'relative'}}>
+            <UserAvatar name={item?.name} src={item?.avatar} size={40} />
+            <View style={{position: 'absolute', bottom: -4, right: -4}}>
+              <ChannelIcon name={item.channelType} />
+            </View>
+          </View>
         </View>
 
         {/* right side of the card */}

@@ -1,4 +1,10 @@
-import {StyleSheet, View, TouchableOpacity, Alert} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Dimensions,
+  Alert,
+} from 'react-native';
 import React, {useState} from 'react';
 import {Text} from '@ui-kitten/components';
 import {useNavigation} from '@react-navigation/native';
@@ -31,9 +37,11 @@ const BrowserIcon = (props: any) => (
 
 const StarIcon = (props: any) => <Icon {...props} name="star-outline" />;
 
+const {height, width} = Dimensions.get('screen');
+
 const CustomDrawer = (props: any): JSX.Element => {
   const [selectedIndex, setSelectedIndex] = useState<any>();
-  const {navigate} = useNavigation();
+  const navigation = useNavigation();
 
   const handleLogout = () => {
     Alert.alert(
@@ -67,11 +75,26 @@ const CustomDrawer = (props: any): JSX.Element => {
     image: avatar,
   };
 
+  // const filteredProps = {
+  //   ...props,
+  //   state: {
+  //     ...props.state,
+  //     routeNames: props.state.routeNames.filter((routeName: any) => {
+  //       return routeName !== SCREEN_NAME.teaminbox;
+  //     }),
+  //     routes: props.state.routes.filter((route: any) => {
+  //       return route.name !== SCREEN_NAME.teaminbox;
+  //     }),
+  //   },
+  // };
+
+  // console.log(JSON.stringify(filteredProps));
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={styles.userDetails}>
-          <UserAvatar size={50} name={User.name} src={User.image} />
+          <UserAvatar size={40} name={User.name} src={User.image} />
           <View style={{paddingLeft: 5}}>
             <Text style={styles.userName}>{User.name}</Text>
             <Text>Available</Text>
@@ -84,8 +107,7 @@ const CustomDrawer = (props: any): JSX.Element => {
       </View>
 
       <Divider />
-
-      <View style={{flex: 0.7}}>
+      <View style={{flex: 0.65}}>
         <DrawerContentScrollView {...props}>
           <DrawerItemList {...props} />
         </DrawerContentScrollView>
@@ -97,12 +119,20 @@ const CustomDrawer = (props: any): JSX.Element => {
           selectedIndex={selectedIndex}
           onSelect={index => setSelectedIndex(index)}>
           <DrawerGroup title="Team Inbox" accessoryLeft={SmartphoneIcon}>
-            <DrawerItem title="Team" accessoryLeft={StarIcon} />
-            <DrawerItem title="Issues" accessoryLeft={StarIcon} />
+            <DrawerItem
+              title="Banks"
+              accessoryLeft={StarIcon}
+              //@ts-ignore
+              onPress={() => navigation.navigate(SCREEN_NAME.teaminbox)}
+            />
           </DrawerGroup>
           <DrawerGroup title="Tags" accessoryLeft={BrowserIcon}>
-            <DrawerItem title="Banks" accessoryLeft={StarIcon} />
-            <DrawerItem title="Merchants" accessoryLeft={StarIcon} />
+            <DrawerItem
+              title="Issues"
+              accessoryLeft={StarIcon}
+              //@ts-ignore
+              onPress={() => navigation.navigate(SCREEN_NAME.teaminbox)}
+            />
           </DrawerGroup>
         </Drawer>
       </View>
@@ -143,5 +173,10 @@ const styles = StyleSheet.create({
   userName: {
     fontFamily: FONTS.AVERTA_SEMI_BOLD,
   },
-  bottomView: {},
+  bottomView: {
+    // height: height * 0.25,
+    paddingVertical: hp(15),
+    // borderColor: 'red',
+    // borderWidth: 1,
+  },
 });
