@@ -57,11 +57,13 @@ const Unassigned = ({navigation}: any) => {
   const deleteRow = (rowMap: any, rowKey: any) => {
     const newMsg = Message.filter((item: any) => item.id !== rowKey.item.id);
     setMessage(newMsg);
-    // closeRow(rowMap, rowKey);
-    // const newData = [...Message];
-    // const prevIndex = Message.findIndex(item => item.id === rowKey);
-    // newData.splice(prevIndex, 1);
-    // setMessage(newData);
+  };
+
+  const ArchiveRow = (rowMap: any, rowKey: any) => {
+    // const newMsg = Message.filter((item: any) => item.id !== rowKey.item.id);
+    // setMessage(newMsg);
+    // console.log(rowKey.item);
+    console.log('Archive row', rowKey.item.name);
   };
 
   const onRowDidOpen = (rowKey: any) => {
@@ -109,13 +111,14 @@ const Unassigned = ({navigation}: any) => {
         rowHeightAnimatedValue={rowHeightAnimatedValue}
         onClose={() => closeRow(rowMap, data)}
         onDelete={() => deleteRow(rowMap, data)}
+        onArchive={() => ArchiveRow(rowMap, data)}
       />
     );
   };
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <View>
+      <View style={{height: '100%'}}>
         <MessageHeader
           name="Unassigned"
           openSortSheet={openSheet}
@@ -123,33 +126,36 @@ const Unassigned = ({navigation}: any) => {
           isSocial={false}
           isTeamInbox={false}
         />
-        <View style={styles.container}>
-          <SwipeListView
-            // useFlatList={true}
-            data={Message.slice(0, 4).reverse()}
-            renderItem={renderItem}
-            showsVerticalScrollIndicator={true}
-            closeOnRowBeginSwipe
-            closeOnRowOpen
-            scrollEnabled
-            renderHiddenItem={renderHiddenItem}
-            keyExtractor={item => item.id}
-            leftOpenValue={75}
-            rightOpenValue={-150}
-            disableRightSwipe
-            onRowDidOpen={onRowDidOpen}
-            leftActivationValue={100}
-            rightActivationValue={-200}
-            stopRightSwipe={-200}
-            leftActionValue={0}
-            rightActionValue={-500}
-            onLeftAction={onLeftAction}
-            onRightAction={onRightAction}
-            onLeftActionStatusChange={onLeftActionStatusChange}
-            onRightActionStatusChange={onRightActionStatusChange}
-            ListEmptyComponent={<EmptyInbox />}
-          />
-        </View>
+
+        <SwipeListView
+          data={Message.slice(0, 4).reverse()}
+          useAnimatedList={true}
+          renderItem={renderItem}
+          style={{marginBottom: 20}}
+          contentContainerStyle={{paddingVertical: hp(20)}}
+          contentInset={{bottom: hp(50)}}
+          useNativeDriver={false}
+          showsVerticalScrollIndicator={false}
+          closeOnRowBeginSwipe
+          closeOnRowOpen
+          scrollEnabled
+          renderHiddenItem={renderHiddenItem}
+          keyExtractor={item => item.id}
+          onRowDidOpen={onRowDidOpen}
+          leftOpenValue={90}
+          rightOpenValue={-90}
+          leftActivationValue={100}
+          rightActivationValue={-200}
+          leftActionValue={0}
+          rightActionValue={-100}
+          stopRightSwipe={-150}
+          stopLeftSwipe={150}
+          onLeftAction={onLeftAction}
+          onRightAction={onRightAction}
+          onLeftActionStatusChange={onLeftActionStatusChange}
+          onRightActionStatusChange={onRightActionStatusChange}
+          ListEmptyComponent={<EmptyInbox />}
+        />
       </View>
 
       <ComposeMessageBtn />

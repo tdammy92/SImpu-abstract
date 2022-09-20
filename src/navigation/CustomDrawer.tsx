@@ -22,6 +22,9 @@ import {
   DrawerGroup,
   DrawerItem,
   Icon,
+  Menu,
+  MenuGroup,
+  MenuItem,
 } from '@ui-kitten/components';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -40,7 +43,7 @@ const StarIcon = (props: any) => <Icon {...props} name="star-outline" />;
 const {height, width} = Dimensions.get('screen');
 
 const CustomDrawer = (props: any): JSX.Element => {
-  const [selectedIndex, setSelectedIndex] = useState<any>();
+  const [selectedIndex, setSelectedIndex] = useState<any>(null);
   const navigation = useNavigation();
 
   const handleLogout = () => {
@@ -107,7 +110,7 @@ const CustomDrawer = (props: any): JSX.Element => {
       </View>
 
       <Divider />
-      <View style={{flex: 0.65}}>
+      <View style={{flex: 0.75}}>
         <DrawerContentScrollView {...props}>
           <DrawerItemList {...props} />
         </DrawerContentScrollView>
@@ -115,26 +118,26 @@ const CustomDrawer = (props: any): JSX.Element => {
       <Divider />
 
       <View style={styles.bottomView}>
-        <Drawer
+        <Menu
           selectedIndex={selectedIndex}
           onSelect={index => setSelectedIndex(index)}>
-          <DrawerGroup title="Team Inbox" accessoryLeft={SmartphoneIcon}>
-            <DrawerItem
+          <MenuGroup title="Team Inbox" accessoryLeft={SmartphoneIcon}>
+            <MenuItem
               title="Banks"
               accessoryLeft={StarIcon}
               //@ts-ignore
               onPress={() => navigation.navigate(SCREEN_NAME.teaminbox)}
             />
-          </DrawerGroup>
-          <DrawerGroup title="Tags" accessoryLeft={BrowserIcon}>
-            <DrawerItem
+          </MenuGroup>
+          <MenuGroup title="Tags" accessoryLeft={BrowserIcon}>
+            <MenuItem
               title="Issues"
               accessoryLeft={StarIcon}
               //@ts-ignore
               onPress={() => navigation.navigate(SCREEN_NAME.teaminbox)}
             />
-          </DrawerGroup>
-        </Drawer>
+          </MenuGroup>
+        </Menu>
       </View>
       <Divider />
 
@@ -174,9 +177,6 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.AVERTA_SEMI_BOLD,
   },
   bottomView: {
-    // height: height * 0.25,
     paddingVertical: hp(15),
-    // borderColor: 'red',
-    // borderWidth: 1,
   },
 });

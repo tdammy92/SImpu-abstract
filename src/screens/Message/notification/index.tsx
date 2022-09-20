@@ -1,10 +1,16 @@
-import {StyleSheet, View, Dimensions, FlatList} from 'react-native';
-import React, {useState} from 'react';
+import {
+  StyleSheet,
+  View,
+  Dimensions,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
+import React, {useState, useCallback} from 'react';
 import {Button, Card, Modal, Divider, Text} from '@ui-kitten/components';
-import {useNavigation} from '@react-navigation/native';
+
 //@ts-ignore
 import UserAvatar from 'react-native-user-avatar';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {colors, FONTS} from 'src/constants';
@@ -14,12 +20,18 @@ import EmptyNotify from 'src/components/common/EmptyNotification';
 
 const {width, height} = Dimensions.get('screen');
 import {formatDate} from 'src/utils';
+
 const Notification = (props: any) => {
-  const navigation = useNavigation();
+  const {navigation} = props;
   const [Data, setData] = useState(() => dummyData);
+
+  const ClearNotification = useCallback(() => {
+    setData([]);
+  }, []);
 
   const List = ({item}: any) => {
     //     console.log(item);
+
     return (
       <>
         <View
@@ -68,18 +80,19 @@ const Notification = (props: any) => {
         </View>
         <TouchableOpacity
           style={styles.actionContainer}
-          onPress={() => setData([])}>
+          onPress={ClearNotification}>
           <Text style={styles.actionText}>Clear all</Text>
           <MaterialIcons name="clear-all" size={25} color={'#026AE8'} />
         </TouchableOpacity>
       </View>
-      <Divider style={{height: 2}} />
+      <Divider style={{height: 1}} />
       <View style={styles.ListContainer}>
         <FlatList
           data={Data}
           renderItem={List}
-          keyExtractor={(item, i) => i.toString()}
+          keyExtractor={(_, i) => i.toString()}
           ListEmptyComponent={EmptyNotify}
+          showsVerticalScrollIndicator={false}
           ItemSeparatorComponent={() => <Divider />}
         />
       </View>
@@ -131,6 +144,7 @@ const styles = StyleSheet.create({
 
   ListContainer: {
     flex: 1,
+    height: '100%',
     marginTop: hp(15),
     paddingHorizontal: wp(8),
     //     alignItems: 'center',

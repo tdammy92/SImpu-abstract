@@ -59,7 +59,7 @@ const ComposeMessageBtn = () => {
             },
           ]}>
           <Text></Text>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={[
               styles.msgBtn,
               {
@@ -73,7 +73,7 @@ const ComposeMessageBtn = () => {
             <Text style={[styles.btnText, {color: '#026AE8'}]}>
               Create inbox
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity
             style={[styles.msgBtn, {marginTop: 10}]}
             onPress={() => console.log('I was pressed 2')}>

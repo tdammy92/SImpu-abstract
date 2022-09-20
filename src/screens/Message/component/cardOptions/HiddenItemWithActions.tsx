@@ -23,6 +23,7 @@ const HiddenItemWithActions = (props: any) => {
     rowHeightAnimatedValue,
     onClose,
     onDelete,
+    onArchive,
   } = props;
 
   if (rightActionActivated) {
@@ -39,35 +40,37 @@ const HiddenItemWithActions = (props: any) => {
 
   return (
     <Animated.View style={[styles.rowBack, {height: rowHeightAnimatedValue}]}>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={onArchive}>
         <Animated.View
           style={[
             styles.sides,
-            {alignItems: 'center', justifyContent: 'center'},
+            {
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginLeft: 7,
+              transform: [
+                {
+                  scale: swipeAnimatedValue.interpolate({
+                    inputRange: [45, 90],
+                    outputRange: [0, 1],
+                    extrapolate: 'clamp',
+                  }),
+                },
+              ],
+            },
           ]}>
-          <MaterialCommunityIcons name="archive" size={28} color="#6BCB77" />
+          <MaterialCommunityIcons name="archive" size={30} color="#3CCF4E" />
           <Text
             style={{
               fontSize: 12,
               fontFamily: FONTS.AVERTA_REGULAR,
-              color: '#6BCB77',
+              color: '#3CCF4E',
             }}>
             Archive
           </Text>
         </Animated.View>
       </TouchableOpacity>
-      {/* {!leftActionActivated && (
-        <TouchableOpacity
-          style={[styles.backRightBtn, styles.backRightBtnLeft]}
-          onPress={onClose}>
-          <MaterialCommunityIcons
-            name="close-circle-outline"
-            size={28}
-            style={styles.trash}
-            color="#fff"
-          />
-        </TouchableOpacity>
-      )} */}
+
       {!leftActionActivated && (
         <Animated.View
           style={[
@@ -83,8 +86,9 @@ const HiddenItemWithActions = (props: any) => {
             onPress={onDelete}>
             <Animated.View
               style={[
-                styles.trash,
+                // styles.sides,
                 {
+                  marginRight: 7,
                   transform: [
                     {
                       scale: swipeAnimatedValue.interpolate({
@@ -98,7 +102,7 @@ const HiddenItemWithActions = (props: any) => {
               ]}>
               <MaterialCommunityIcons
                 name="trash-can-outline"
-                size={28}
+                size={30}
                 color="#FF4848"
               />
               <Text
@@ -122,7 +126,8 @@ export default HiddenItemWithActions;
 const styles = StyleSheet.create({
   rowBack: {
     alignItems: 'center',
-    backgroundColor: '#DDD',
+    // backgroundColor: '#DDD',
+    backgroundColor: '#fff',
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -145,7 +150,6 @@ const styles = StyleSheet.create({
     right: 75,
   },
   backRightBtnRight: {
-    // backgroundColor: '#FF4848',
     right: 0,
     borderTopRightRadius: 5,
     borderBottomRightRadius: 5,
@@ -157,7 +161,6 @@ const styles = StyleSheet.create({
   },
   sides: {
     height: 25,
-    width: 40,
-    // marginRight: 7,
+    width: 45,
   },
 });

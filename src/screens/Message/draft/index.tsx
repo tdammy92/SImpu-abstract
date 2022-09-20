@@ -24,6 +24,7 @@ import ComposeMessageBtn from '../component/ComposeMessageBtn';
 import {hp} from 'src/utils';
 import SortSheet from '../component/SortSheet';
 import dummyData from 'src/constants/dummyData';
+import HiddenItemWithActions from '../component/cardOptions/HiddenItemWithActions';
 
 const Draft = ({navigation}: any) => {
   const SortSheetRef = useRef<any>(null);
@@ -54,11 +55,15 @@ const Draft = ({navigation}: any) => {
   };
 
   const deleteRow = (rowMap: any, rowKey: any) => {
-    closeRow(rowMap, rowKey);
-    const newData = [...Message];
-    const prevIndex = Message.findIndex(item => item.id === rowKey);
-    newData.splice(prevIndex, 1);
-    setMessage(newData);
+    const newMsg = Message.filter((item: any) => item.id !== rowKey.item.id);
+    setMessage(newMsg);
+  };
+
+  const ArchiveRow = (rowMap: any, rowKey: any) => {
+    // const newMsg = Message.filter((item: any) => item.id !== rowKey.item.id);
+    // setMessage(newMsg);
+    // console.log(rowKey.item);
+    console.log('Archive row', rowKey.item.name);
   };
 
   const onRowDidOpen = (rowKey: any) => {
@@ -79,85 +84,6 @@ const Draft = ({navigation}: any) => {
 
   const onLeftAction = (rowKey: any) => {
     console.log('onLeftAction', rowKey);
-  };
-
-  const HiddenItemWithActions = (props: any) => {
-    const {
-      swipeAnimatedValue,
-      leftActionActivated,
-      rightActionActivated,
-      rowActionAnimatedValue,
-      rowHeightAnimatedValue,
-      onClose,
-      onDelete,
-    } = props;
-
-    if (rightActionActivated) {
-      Animated.spring(rowActionAnimatedValue, {
-        toValue: 500,
-        useNativeDriver: false,
-      }).start();
-    } else {
-      Animated.spring(rowActionAnimatedValue, {
-        toValue: 75,
-        useNativeDriver: false,
-      }).start();
-    }
-
-    return (
-      <Animated.View style={[styles.rowBack, {height: rowHeightAnimatedValue}]}>
-        <Text>Left</Text>
-        {!leftActionActivated && (
-          <TouchableOpacity
-            style={[styles.backRightBtn, styles.backRightBtnLeft]}
-            onPress={onClose}>
-            <MaterialCommunityIcons
-              name="close-circle-outline"
-              size={28}
-              style={styles.trash}
-              color="#fff"
-            />
-          </TouchableOpacity>
-        )}
-        {!leftActionActivated && (
-          <Animated.View
-            style={[
-              styles.backRightBtn,
-              styles.backRightBtnRight,
-              {
-                flex: 1,
-                width: rowActionAnimatedValue,
-              },
-            ]}>
-            <TouchableOpacity
-              style={[styles.backRightBtn, styles.backRightBtnRight]}
-              onPress={onDelete}>
-              <Animated.View
-                style={[
-                  styles.trash,
-                  {
-                    transform: [
-                      {
-                        scale: swipeAnimatedValue.interpolate({
-                          inputRange: [-90, -45],
-                          outputRange: [1, 0],
-                          extrapolate: 'clamp',
-                        }),
-                      },
-                    ],
-                  },
-                ]}>
-                <MaterialCommunityIcons
-                  name="trash-can-outline"
-                  size={28}
-                  color="#fff"
-                />
-              </Animated.View>
-            </TouchableOpacity>
-          </Animated.View>
-        )}
-      </Animated.View>
-    );
   };
 
   const renderItem = (data: any, rowMap: any) => {
@@ -183,15 +109,16 @@ const Draft = ({navigation}: any) => {
         rowMap={rowMap}
         rowActionAnimatedValue={rowActionAnimatedValue}
         rowHeightAnimatedValue={rowHeightAnimatedValue}
-        onClose={() => closeRow(rowMap, data.index)}
-        onDelete={() => deleteRow(rowMap, data.index)}
+        onClose={() => closeRow(rowMap, data)}
+        onDelete={() => deleteRow(rowMap, data)}
+        onArchive={() => ArchiveRow(rowMap, data)}
       />
     );
   };
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <View>
+      <View style={{height: '100%'}}>
         <MessageHeader
           name="Draft"
           openSortSheet={openSheet}
@@ -199,28 +126,38 @@ const Draft = ({navigation}: any) => {
           isSocial={false}
           isTeamInbox={false}
         />
-        <View style={styles.container}>
-          <SwipeListView
-            // useFlatList={true}
-            data={[]}
-            renderItem={renderItem}
-            renderHiddenItem={renderHiddenItem}
-            leftOpenValue={75}
-            rightOpenValue={-150}
-            disableRightSwipe
-            onRowDidOpen={onRowDidOpen}
-            leftActivationValue={100}
-            rightActivationValue={-210}
-            stopRightSwipe={-200}
-            leftActionValue={0}
-            rightActionValue={-500}
-            onLeftAction={onLeftAction}
-            onRightAction={onRightAction}
-            onLeftActionStatusChange={onLeftActionStatusChange}
-            onRightActionStatusChange={onRightActionStatusChange}
-            ListEmptyComponent={<EmptyInbox />}
-          />
-        </View>
+
+        <SwipeListView
+          // useFlatList={true}
+          data={[]}
+          useAnimatedList={true}
+          renderItem={renderItem}
+          style={{marginBottom: 20}}
+          contentContainerStyle={{paddingVertical: hp(20)}}
+          contentInset={{bottom: hp(50)}}
+          useNativeDriver={false}
+          showsVerticalScrollIndicator={false}
+          closeOnRowBeginSwipe
+          closeOnRowOpen
+          scrollEnabled
+          renderHiddenItem={renderHiddenItem}
+          //@ts-ignore
+          keyExtractor={item => item.id}
+          onRowDidOpen={onRowDidOpen}
+          leftOpenValue={90}
+          rightOpenValue={-90}
+          leftActivationValue={100}
+          rightActivationValue={-200}
+          leftActionValue={0}
+          rightActionValue={-100}
+          stopRightSwipe={-150}
+          stopLeftSwipe={150}
+          onLeftAction={onLeftAction}
+          onRightAction={onRightAction}
+          onLeftActionStatusChange={onLeftActionStatusChange}
+          onRightActionStatusChange={onRightActionStatusChange}
+          ListEmptyComponent={<EmptyInbox />}
+        />
       </View>
 
       <ComposeMessageBtn />

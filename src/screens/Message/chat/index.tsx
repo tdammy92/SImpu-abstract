@@ -111,7 +111,7 @@ const Chat = ({prop, route, navigation}: any) => {
             </TouchableOpacity>
           </View>
         </View>
-        <Divider style={{height: 2, elevation: 2, zIndex: 2}} />
+        <Divider style={{height: 1, elevation: 1, zIndex: 1}} />
 
         {/* chat component */}
         <View style={{flex: 1}}>

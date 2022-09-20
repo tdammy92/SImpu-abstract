@@ -25,9 +25,9 @@ interface Styles {
 const styles = StyleService.create<Styles>({
   container: {
     width: '100%',
-    // flex: 1,
-    // height: '100%',
-    // position: 'relative',
+
+    height: '100%',
+    position: 'relative',
   },
   ScrollViewContainer: {
     flexGrow: 1,

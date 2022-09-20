@@ -88,7 +88,7 @@ export default MessageCard;
 
 const styles = StyleSheet.create({
   cardContainer: {
-    // flex: 1,
+    flex: 1,
     flexDirection: 'row',
     height: '80%',
     width: '95%',
