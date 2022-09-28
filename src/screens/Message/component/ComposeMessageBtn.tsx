@@ -27,15 +27,11 @@ const ComposeMessageBtn = () => {
       easing: Easing.bounce,
       useNativeDriver: true,
     }).start();
-
-    // return () => {
-    //   Animated.timing(optionAnimation, {
-    //     toValue: 0,
-    //     duration: 3000,
-    //     useNativeDriver: true,
-    //   }).start();
-    // };
   }, [showOption]);
+
+  const ShowComponse = () => {
+    setshowOption(true);
+  };
 
   return (
     <View style={styles.composeContainer}>
@@ -50,15 +46,10 @@ const ComposeMessageBtn = () => {
               transform: [
                 {
                   translateX: optionAnimation,
-                  // translateX: optionAnimation.interpolate({
-                  //   inputRange: [-500, 0],
-                  //   outputRange: [0, 1],
-                  // }),
                 },
               ],
             },
           ]}>
-          <Text></Text>
           {/* <TouchableOpacity
             style={[
               styles.msgBtn,
@@ -86,10 +77,8 @@ const ComposeMessageBtn = () => {
       </Modal>
 
       {!showOption && (
-        <TouchableOpacity
-          style={styles.composeBtn}
-          onPress={() => setshowOption(true)}>
-          <Entypo name="new-message" size={hp(25)} color="white" />
+        <TouchableOpacity style={styles.composeBtn} onPress={ShowComponse}>
+          <Entypo name="new-message" size={hp(22)} color="white" />
         </TouchableOpacity>
       )}
     </View>
@@ -107,11 +96,11 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   composeBtn: {
-    width: wp(60),
-    height: hp(60),
+    width: wp(50),
+    height: hp(50),
     backgroundColor: '#276EF1',
     padding: hp(10),
-    borderRadius: hp(50),
+    borderRadius: 100,
     marginTop: hp(10),
     alignItems: 'center',
     justifyContent: 'center',

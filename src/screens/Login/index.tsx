@@ -1,18 +1,44 @@
-import {StyleSheet, View, Linking, TextInput} from 'react-native';
+import {View, Linking, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {Text} from '@ui-kitten/components';
+import {useDispatch} from 'react-redux';
+
 import {KeyboardAwareScrollView} from 'src/components/common/KeyBoardAvoidingView';
 import styles from './styles';
 import Simpu from 'src/assets/images/SimpuIcon.svg';
 import Google from 'src/assets/images/Google.svg';
-
 import {Button} from 'src/components/common/Button';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import {hp} from 'src/utils';
 import {SCREEN_NAME} from 'src/navigation/constants';
 import AuthInput from './component/AuthInput';
+import {addUser} from 'src/store/user/userReducer';
+
+const modelUser = {
+  id: '5ab8b23be39f11ea937086d35ec4f76b',
+  organisation_id: '5ab71f75e39f11ea937086d35ec4f76b',
+  user_id: '5ab599aee39f11ea937086d35ec4f76b',
+  first_name: 'Developer',
+  last_name: 'Simpu',
+  country_code: +234,
+  phone: 7057216653,
+  email: 'Dev@simpu.co',
+  created_datetime: '2020-08-21T11:13:34Z',
+  updated_datetime: '2021-10-07T13:56:45.601Z',
+  image:
+    'https://res.cloudinary.com/simpu-inc/image/upload/v1633364389/vifv2aqnhhzvd5nfxaaw.jpg',
+  permissions: ['*'],
+  page_access: ['*'],
+};
 
 const Login = ({navigation}: any) => {
+  const dispatch = useDispatch();
+
+  const handleLogin = () => {
+    dispatch(addUser(modelUser));
+
+    navigation.reset({index: 0, routes: [{name: SCREEN_NAME.main}]});
+  };
+
   return (
     <View style={styles.container}>
       <KeyboardAwareScrollView>
@@ -41,7 +67,7 @@ const Login = ({navigation}: any) => {
 
             <Button
               title="Continue with email"
-              onPress={() => navigation.navigate(SCREEN_NAME.main)}
+              onPress={handleLogin}
               style={{marginTop: hp(8)}}
             />
           </View>

@@ -20,18 +20,18 @@ import AboutIcon from '../../assets/images/Love_Circled.svg';
 import LogOut from '../../assets/images/Export.svg';
 import {MainStackParamList, SCREEN_NAME} from 'src/navigation/constants';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-// import {useSelector, useDispatch} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {Avatar as avatar} from '../../constants/general';
 import {StoreState} from 'src/@types/store';
-// import {logOutUser} from '../../store/user/userReducer';
+import {logOutUser} from '../../store/user/userReducer';
 import {hp, wp} from 'src/utils';
 interface Props
   extends NativeStackScreenProps<MainStackParamList, SCREEN_NAME.settings> {}
 
 const Setting = (props: Props): JSX.Element => {
   const {navigation} = props;
-  // const dispatch = useDispatch();
-  // const user = useSelector((state: StoreState) => state.user.profile);
+  const dispatch = useDispatch();
+  const {profile} = useSelector((state: StoreState) => state.user);
 
   const [checked, setChecked] = React.useState(false);
   const [notifyCheck, setNotifyCheck] = React.useState(false);
@@ -65,8 +65,8 @@ const Setting = (props: Props): JSX.Element => {
         {
           text: 'yes',
           onPress: () => {
-            // dispatch(logOutUser()),
-            navigation.reset({index: 0, routes: [{name: SCREEN_NAME.auth}]});
+            dispatch(logOutUser()),
+              navigation.reset({index: 0, routes: [{name: SCREEN_NAME.auth}]});
           },
         },
       ],
@@ -79,53 +79,28 @@ const Setting = (props: Props): JSX.Element => {
 
   return (
     <ScrollView style={styles.container}>
-      {/* oncomment this when ready to make api calls */}
-
-      {/* <Pressable
-        onPress={navigateProfile}
-        style={[styles.nameContainer, globalStyles.colBetween]}>
-        <Image
-          style={{height: 100, width: 100, borderRadius: 25}}
-          source={{uri: user?.image || Avatar}}
-        />
-        {(user?.first_name || user?.last_name) && (
-          <Text style={styles.headerText}>{`${
-            user?.first_name || 'firstname'
-          } ${user?.last_name || 'lastname'}`}</Text>
-        )}
-
-        {user?.country_code ? (
-          <Text style={styles.lowerText}>{`${user?.country_code || ''} ${
-            user?.phone || ''
-          }`}</Text>
-        ) : null}
-        <Text style={styles.lowerText}>{`${user?.email || ''}`}</Text>
-        {(!user?.first_name || !user?.last_name) && (
-          <Text style={styles.editText}>Update Profile</Text>
-        )}
-      </Pressable> */}
       <Pressable
         onPress={navigateProfile}
         style={[styles.nameContainer, globalStyles.colBetween]}>
-        {/* <Image
-          style={{height: 100, width: 100, borderRadius: 25}}
-          source={{uri: user?.image || Avatar}}
-        /> */}
-
         <UserAvatar
-          name="Collins Tompson"
+          name={`${profile?.first_name} ${profile?.last_name}`}
           size={60}
-          // style={{width: wp(70), height: hp(70)}}
-          source={{uri: avatar}}
+          src={profile?.image}
         />
 
-        <Text style={styles.headerText}>Collins Tompson</Text>
+        <Text
+          style={
+            styles.headerText
+          }>{`${profile?.first_name} ${profile?.last_name}`}</Text>
 
-        <Text style={styles.lowerText}>+2348121716398</Text>
+        <Text
+          style={
+            styles.lowerText
+          }>{`+${profile?.country_code}${profile?.phone}`}</Text>
 
-        <Text style={styles.lowerText}>dev@Simpu.co</Text>
+        <Text style={styles.lowerText}>{`${profile?.email}`}</Text>
 
-        {/* <Text style={styles.editText}>Update Profile</Text> */}
+        <Text style={styles.editText}>Update Profile</Text>
       </Pressable>
 
       <View style={styles.cardList}>

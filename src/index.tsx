@@ -8,7 +8,7 @@ import {
 } from '@react-navigation/native';
 import {IconRegistry} from '@ui-kitten/components';
 import {EvaIconsPack} from '@ui-kitten/eva-icons';
-import {default as theme} from './theme.json';
+import {default as theme} from './themes/theme.json';
 
 import RNBootSplash from 'react-native-bootsplash';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
@@ -16,12 +16,11 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {ApplicationProvider as UIKittenProvider} from '@ui-kitten/components';
 import {Provider} from 'react-redux';
 // import {QueryClientProvider, QueryClient} from 'react-query';
-// import {persistor, store} from 'src/store';
-// import {PersistGate} from 'redux-persist/integration/react';
+import {persistor, store} from 'src/store';
+import {PersistGate} from 'redux-persist/integration/react';
 import {MainStackParamList} from './navigation/constants';
 import {RootStack} from './navigation';
 // import Loader from './components/common/Loader';
-// import {LoadingService} from '@nghinv/react-native-loading';
 
 export default (): JSX.Element => {
   const navigationRef =
@@ -36,10 +35,6 @@ export default (): JSX.Element => {
 
   // const queryClient = new QueryClient();
 
-  // const linking = {
-  //   prefixes: ['simpu-auth-redirect://'],
-  // };
-
   useEffect(() => {
     const init = async () => {
       return true;
@@ -50,31 +45,26 @@ export default (): JSX.Element => {
   }, []);
   return (
     <>
-      {/* <Provider store={store}> */}
-      {/* <LoadingService> */}
-      {/* <QueryClientProvider client={queryClient}> */}
-      <IconRegistry icons={[EvaIconsPack]} />
-      {/* <PersistGate persistor={persistor}> */}
-      <UIKittenProvider {...eva} theme={{...eva.light, ...theme}}>
-        <>
-          <StatusBar
-            barStyle="dark-content"
-            translucent={true}
-            backgroundColor={'transparent'}
-          />
+      <Provider store={store}>
+        {/* <QueryClientProvider client={queryClient}> */}
+        <IconRegistry icons={[EvaIconsPack]} />
+        <PersistGate persistor={persistor}>
+          <UIKittenProvider {...eva} theme={{...eva.light, ...theme}}>
+            <>
+              <StatusBar
+                barStyle="dark-content"
+                translucent={true}
+                backgroundColor={'transparent'}
+              />
 
-          <NavigationContainer
-            // linking={linking}
-            ref={navigationRef}
-            onReady={onReady}>
-            <RootStack />
-          </NavigationContainer>
-        </>
-      </UIKittenProvider>
-      {/* </PersistGate> */}
-      {/* </QueryClientProvider> */}
-      {/* </LoadingService> */}
-      {/* </Provider> */}
+              <NavigationContainer ref={navigationRef} onReady={onReady}>
+                <RootStack />
+              </NavigationContainer>
+            </>
+          </UIKittenProvider>
+        </PersistGate>
+        {/* </QueryClientProvider> */}
+      </Provider>
     </>
   );
 };

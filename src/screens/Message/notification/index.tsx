@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingBottom: hp(14),
+    paddingBottom: hp(25),
     paddingHorizontal: wp(15),
 
     shadowOpacity: 0.08,
