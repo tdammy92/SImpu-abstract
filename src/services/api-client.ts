@@ -34,7 +34,7 @@ export async function client(
     headers,
     method,
     data,
-    url: `${DEMO_API}/${url}`,
+    url: url,
   } as AxiosRequestConfig;
 
   // console.log('api-config', config);

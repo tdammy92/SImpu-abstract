@@ -21,11 +21,8 @@ export const getProfile = async (params: {
   q?: string;
   organisationId: string;
 }) => {
-  // const {organisationId, ...rest} = params;
-
-  // console.log('resst', params.organisationId);
-
-  return await client(`auth/view/${params?.organisationId}`, {
+  const url = `${DEMO_API}/auth/view/${params?.organisationId}`;
+  return await client(url, {
     params: params,
   });
 };

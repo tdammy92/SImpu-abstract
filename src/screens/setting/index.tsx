@@ -106,17 +106,23 @@ const Setting = (props: Props): JSX.Element => {
             src={profile?.image}
           />
 
-          <Text
-            style={
-              styles.headerText
-            }>{`${profile?.first_name} ${profile?.last_name}`}</Text>
+          {(profile?.first_name || profile?.last_name) && (
+            <Text
+              style={
+                styles.headerText
+              }>{`${profile?.first_name} ${profile?.last_name}`}</Text>
+          )}
 
-          <Text
-            style={
-              styles.lowerText
-            }>{`+${profile?.country_code}${profile?.phone}`}</Text>
+          {(profile?.country_code || profile?.phone) && (
+            <Text
+              style={
+                styles.lowerText
+              }>{`+${profile?.country_code}${profile?.phone}`}</Text>
+          )}
 
-          <Text style={styles.lowerText}>{`${profile?.email}`}</Text>
+          {profile?.email && (
+            <Text style={styles.lowerText}>{`${profile?.email}`}</Text>
+          )}
         </Pressable>
 
         <View style={styles.cardList}>

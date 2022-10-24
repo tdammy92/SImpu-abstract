@@ -15,29 +15,13 @@ import {Button} from 'src/components/common/Button';
 import {hp, wp} from 'src/utils';
 import {SCREEN_NAME} from 'src/navigation/constants';
 import AuthInput from './component/AuthInput';
-import {addUser} from 'src/store/user/userReducer';
+import {addToken, addUser} from 'src/store/user/userReducer';
 import {FONTS} from 'src/constants';
 import {loginUser} from 'src/services/auth';
 import AppModal from 'src/components/common/Modal';
 import {useProfile} from 'src/services/queries';
 
-const modelUser = {
-  id: '5ab8b23be39f11ea937086d35ec4f76b',
-  organisation_id: '5ab71f75e39f11ea937086d35ec4f76b',
-  user_id: '5ab599aee39f11ea937086d35ec4f76b',
-  first_name: 'Tioluwani',
-  last_name: 'Kolawole',
-  country_code: +234,
-  phone: 7057216653,
-  email: 'Dev@simpu.co',
-  created_datetime: '2020-08-21T11:13:34Z',
-  updated_datetime: '2021-10-07T13:56:45.601Z',
-  image:
-    'https://res.cloudinary.com/simpu-inc/image/upload/v1633364389/vifv2aqnhhzvd5nfxaaw.jpg',
-  permissions: ['*'],
-  page_access: ['*'],
-};
-
+//form schema validation
 const ValidationShema = yup.object({
   email: yup.string().email('Invalid Email').required('Email is required'),
   password: yup.string().required('Password is required'),
@@ -46,9 +30,11 @@ const ValidationShema = yup.object({
 const Login = ({navigation}: any) => {
   const dispatch = useDispatch();
 
+  //login user mutation
   const {isError, data, error, isLoading, isSuccess, mutateAsync} =
     useMutation(loginUser);
 
+  //fetch user profile query
   const profile = useProfile(
     'profile',
     {
@@ -74,9 +60,9 @@ const Login = ({navigation}: any) => {
     };
     const response = await mutateAsync(JSON.stringify(payload));
 
-    // console.log('resss', response.data.token);
+    console.log('resss', response.data.token);
 
-    // dispatch(addUser(modelUser));
+    dispatch(addToken(response.data.token));
 
     // navigation.reset({index: 0, routes: [{name: SCREEN_NAME.main}]});
   };
@@ -90,6 +76,12 @@ const Login = ({navigation}: any) => {
   // if (isError) {
   //   return <AppModal showModal={isLoading} message={error} isALoader={false} />;
   // }
+
+  if (profile.isSuccess) {
+    // console.log(profile?.data?.data?.profile);
+    dispatch(addUser(profile?.data?.data?.profile));
+    navigation.reset({index: 0, routes: [{name: SCREEN_NAME.main}]});
+  }
 
   return (
     <View style={styles.container}>

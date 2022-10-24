@@ -283,7 +283,11 @@ const EditProfile = (props: Props): JSX.Element => {
         <View style={styles.card}>
           <FloatLabel
             onPress={() => navigation.navigate(SCREEN_NAME.changePhoneNumber)}
-            text2={`+${user?.country_code || ''}${user?.phone || ''}`}
+            text2={
+              user?.country_code || user?.phone
+                ? `+${user?.country_code || ''}${user?.phone || ''}`
+                : 'Nil'
+            }
             icon2={<ArrowRight />}
             text="Change Number"
           />

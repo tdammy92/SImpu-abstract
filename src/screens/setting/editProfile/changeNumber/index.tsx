@@ -13,8 +13,10 @@ const ChangeNumber = () => {
   const {setOptions} = useNavigation();
   const dispatch = useDispatch();
   const user = useSelector((state: StoreState) => state.user.profile);
-  const [oldPhone, setOldPhone] = useState(
-    `+${user.country_code} ${user.phone}`,
+  const [oldPhone, setOldPhone] = useState(() =>
+    user?.country_code || user?.phone
+      ? `+${user.country_code} ${user.phone}`
+      : 'Nil',
   );
   const [newPhone, setNewPhone] = useState('');
 

@@ -61,6 +61,7 @@ import {hp, wp} from 'src/utils';
 import {Avatar as avatar} from 'src/constants/general';
 import {StoreState} from 'src/@types/store';
 import {colors} from 'src/constants';
+import {useSidebarUnreadCount} from 'src/services/queries';
 
 import HeaderBack from './HeaderBack';
 
@@ -73,11 +74,18 @@ const SettingsStack = createStackNavigator<MainStackParamList>();
 //drawer navigator
 function DrawerMenu() {
   const styles = useStyleSheet(themedStyles);
-  const {profile} = useSelector((state: StoreState) => state.user);
+  const {profile, token} = useSelector((state: StoreState) => state.user);
+
+  const {data, isError, isLoading, error, status} = useSidebarUnreadCount({
+    Auth: token,
+    organisationId: profile?.organisation_id,
+  });
+
+  const count = data?.data?.count;
 
   return (
     <Drawer.Navigator
-      drawerContent={props => <CustomDrawer {...props} />}
+      drawerContent={props => <CustomDrawer {...props} count={count} />}
       screenOptions={{
         headerShown: false,
         drawerLabelStyle: {marginLeft: hp(-22)},
@@ -113,13 +121,15 @@ function DrawerMenu() {
                 </View>
 
                 <View style={styles.menuRight}>
-                  <Text
-                    style={[
-                      styles.badgeText,
-                      {color: focused ? colors.primaryText : ''},
-                    ]}>
-                    550
-                  </Text>
+                  {count && (
+                    <Text
+                      style={[
+                        styles.badgeText,
+                        {color: focused ? colors.primaryText : ''},
+                      ]}>
+                      550
+                    </Text>
+                  )}
                 </View>
               </View>
             );
@@ -143,7 +153,11 @@ function DrawerMenu() {
                 </View>
 
                 <View style={styles.menuRight}>
-                  <Text style={styles.badgeText}>250</Text>
+                  {count && (
+                    <Text style={styles.badgeText}>
+                      {count['queued'] > 0 && count['queued']}
+                    </Text>
+                  )}
                 </View>
               </View>
             );
@@ -165,7 +179,11 @@ function DrawerMenu() {
                 </View>
 
                 <View style={styles.menuRight}>
-                  <Text style={styles.badgeText}></Text>
+                  {count && (
+                    <Text style={styles.badgeText}>
+                      {count['assigned'] > 0 && count['assigned']}
+                    </Text>
+                  )}
                 </View>
               </View>
             );
@@ -188,7 +206,11 @@ function DrawerMenu() {
                 </View>
 
                 <View style={styles.menuRight}>
-                  <Text style={styles.badgeText}>1</Text>
+                  {count && (
+                    <Text style={styles.badgeText}>
+                      {count['mentioned'] > 0 && count['mentioned']}
+                    </Text>
+                  )}
                 </View>
               </View>
             );
@@ -210,7 +232,11 @@ function DrawerMenu() {
                 </View>
 
                 <View style={styles.menuRight}>
-                  <Text style={styles.badgeText}>3</Text>
+                  {count && (
+                    <Text style={styles.badgeText}>
+                      {count['closed'] > 0 && count['closed']}
+                    </Text>
+                  )}
                 </View>
               </View>
             );
@@ -233,7 +259,11 @@ function DrawerMenu() {
                 </View>
 
                 <View style={styles.menuRight}>
-                  <Text style={styles.badgeText}>7</Text>
+                  {count && (
+                    <Text style={styles.badgeText}>
+                      {count['drafts'] > 0 && count['drafts']}
+                    </Text>
+                  )}
                 </View>
               </View>
             );
@@ -371,8 +401,11 @@ const SettingsStackNavigator = (): JSX.Element => {
 
 //Root navihgators
 export const RootStack = (): JSX.Element => {
+  const {profile, isloggedIn} = useSelector((state: StoreState) => state.user);
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
+    <Stack.Navigator
+      screenOptions={{headerShown: false}}
+      initialRouteName={isloggedIn ? SCREEN_NAME.main : SCREEN_NAME.auth}>
       <Stack.Screen
         name={SCREEN_NAME.onboarding}
         component={Onboarding}

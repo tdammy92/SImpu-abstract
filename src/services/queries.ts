@@ -3,9 +3,8 @@ import {InboxType} from 'src/@types/inbox';
 import {getInboxes, getTags, getThreadFiltersUnreadCount} from './inbox';
 import {getProfile} from './auth';
 
-const fetchTags = ({pageParam = 1, queryKey}: any) => {
-  const routeType = queryKey[1];
-  return getTags({page: pageParam, type: routeType ?? '', is_pinned: true});
+const fetchTags = (queryParams: any) => {
+  return getTags(queryParams);
 };
 
 // const {isLoading: isFetchingPersonalTags, data: allPersonalTags} =
@@ -16,8 +15,14 @@ export const useProfile = (queryKey: any, queryParams: any, options: any) => {
   return useQuery<any>(queryKey, () => getProfile(queryParams), options);
 };
 
-export const useSidebarTags = (options?: any) => {
-  return useInfiniteQuery(['pinned-shared-tags', 'shared'], fetchTags, options);
+//fetch side bar tags
+export const useSidebarTags = (queryParams: any, options?: any) => {
+  // console.log('queryParams', queryParams);
+  return useInfiniteQuery(
+    ['pinned-shared-tags', 'shared'],
+    () => fetchTags(queryParams),
+    options,
+  );
 };
 
 export const useSidebarInboxes = (
@@ -25,15 +30,15 @@ export const useSidebarInboxes = (
   queryParams: any,
   options?: any,
 ) => {
-  return useQuery<InboxType[]>(
-    queryKey,
-    () => getInboxes(queryParams),
-    options,
-  );
+  return useQuery<any>(queryKey, () => getInboxes(queryParams), options);
 };
 
-export const useSidebarUnreadCount = (options?: any) => {
-  return useQuery('filters-unread-count', getThreadFiltersUnreadCount, options);
+export const useSidebarUnreadCount = (queryParams: any, options?: any) => {
+  return useQuery(
+    'filters-unread-count',
+    () => getThreadFiltersUnreadCount(queryParams),
+    options,
+  );
 };
 
 // const {isLoading: isFetchingPersonalnboxes, data: personalInboxes} = useQuery<

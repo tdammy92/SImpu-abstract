@@ -4,22 +4,23 @@ import {buildConversationUrl, client} from './api-client';
 
 // for sidebar to get tags
 const getTags = async (payload: any) => {
-  const {type, ...rest} = payload;
-
-  const {data} = await client('', {
-    params: rest,
-    url: buildConversationUrl(`tags/list/${type}`),
+  console.log(payload?.page);
+  const url = buildConversationUrl(
+    `tags/list/${payload?.type}?/page=${payload?.page}`,
+  );
+  return await client(url, {
+    params: payload,
+    url: url,
   });
-
-  return data.tags;
 };
 
 // for sidebar unread count
-const getThreadFiltersUnreadCount = async () => {
-  const response = await client('', {
-    url: buildConversationUrl(`threads/filter/count`),
+const getThreadFiltersUnreadCount = async (queryParams: any) => {
+  // console.log('count', queryParams);
+  const url = buildConversationUrl(`threads/filter/count`);
+  return await client(url, {
+    params: queryParams,
   });
-  return response.data.count;
 };
 
 // for sidebar to get pinned team inboxes
@@ -31,11 +32,13 @@ const getInboxes = async (params: {
   show_report?: boolean;
   type: InboxType['type'];
 }) => {
-  const {type, ...rest} = params;
+  const url = buildConversationUrl(
+    `inbox/list/${params?.type}?is_pinned=${params?.is_pinned}`,
+  );
 
-  const {data} = await client('', {
-    params: rest,
-    url: buildConversationUrl(`inbox/list/${type}`),
+  const {data} = await client(url, {
+    params: params,
+    url: url,
   });
 
   return data.inboxes;

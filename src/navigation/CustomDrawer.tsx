@@ -36,19 +36,57 @@ import {colors, FONTS} from 'src/constants';
 import {SCREEN_NAME} from './constants';
 import {StoreState} from 'src/@types/store';
 import Availble from 'src/assets/images/Available.svg';
-// import NotAvailble from 'src/assets/images/NotAvailable.svg';
 import NotAvailble from 'src/assets/images/notificationLabel.svg';
 import PendingAvailble from 'src/assets/images/GrayNotification.svg';
 import BlueTagIcon from 'src/assets/images/BlueTagIcon.svg';
 import RedTagIcon from 'src/assets/images/RedTagIcon.svg';
 
+import {useSidebarTags, useSidebarInboxes} from 'src/services/queries';
+
 const {height, width} = Dimensions.get('screen');
 
 const CustomDrawer = (props: any): JSX.Element => {
-  const {profile} = useSelector((state: StoreState) => state.user);
+  const {count, ...rest} = props;
+  const {profile, token} = useSelector((state: StoreState) => state.user);
   const navigation = useNavigation();
   const netInfo = useNetInfo();
   const [isAvailable, setisAvailable] = useState<boolean | null>(true);
+
+  const {
+    data: sideTags,
+    isLoading: tagIsloading,
+    error: tagError,
+  } = useSidebarTags(
+    {
+      page: 1,
+      is_pinned: true,
+      type: 'shared',
+      Auth: token,
+      organisationId: profile?.organisation_id,
+    },
+    {},
+  );
+
+  //get side inboxes
+  const {
+    data: sideInbox,
+    isFetching,
+    isLoading,
+    error,
+    isError,
+  } = useSidebarInboxes(
+    'sideInbox',
+    {
+      is_pinned: true,
+      type: 'shared',
+      Auth: token,
+      organisationId: profile?.organisation_id,
+    },
+    {},
+  );
+
+  console.log('drawer menu  side tags', sideTags);
+  // console.log('drawer menu  side inboxes', sideInbox);
 
   // const filteredProps = {
   //   ...props,
@@ -64,6 +102,8 @@ const CustomDrawer = (props: any): JSX.Element => {
   // };
 
   // console.log(JSON.stringify(filteredProps));
+
+  // console.log('count from custom drawer', count);
 
   useEffect(() => {
     // Subscribe
@@ -126,7 +166,7 @@ const CustomDrawer = (props: any): JSX.Element => {
           {...props}
           style={{marginTop: 0, paddingTop: 0}}>
           {/* menu list item*/}
-          <DrawerItemList {...props} />
+          <DrawerItemList {...rest} />
 
           {/* tag and team inbox list */}
           <View style={styles.customInboxContainer}>
@@ -142,43 +182,37 @@ const CustomDrawer = (props: any): JSX.Element => {
               </CollapseHeader>
               <CollapseBody>
                 <View style={styles.customInboxItems}>
-                  <DrawerItem
-                    label={({color, focused}) => {
-                      return (
-                        <View style={styles.customInboxItemList}>
-                          <NotAvailble />
-                          <Text style={styles.customInboxtext}>
-                            Sales Inbox
-                          </Text>
-                        </View>
-                      );
-                    }}
-                    onPress={() =>
-                      //@ts-ignore
-                      navigation.navigate(SCREEN_NAME.teaminbox, {
-                        menuName: ' Sales Inbox',
-                      })
-                    }
-                  />
-
-                  <DrawerItem
-                    label={({color, focused}) => {
-                      return (
-                        <View style={styles.customInboxItemList}>
-                          <PendingAvailble />
-                          <Text style={styles.customInboxtext}>
-                            Engineering Inbox
-                          </Text>
-                        </View>
-                      );
-                    }}
-                    onPress={() =>
-                      //@ts-ignore
-                      navigation.navigate(SCREEN_NAME.teaminbox, {
-                        menuName: ' Engineering Inbox',
-                      })
-                    }
-                  />
+                  {sideInbox?.map((inbox: any) => {
+                    return (
+                      <DrawerItem
+                        key={inbox?.uuid}
+                        label={({color, focused}) => {
+                          return (
+                            <View style={styles.customInboxItemList}>
+                              <PendingAvailble
+                                width={10}
+                                height={10}
+                                color={inbox?.color}
+                              />
+                              <Text style={styles.customInboxtext}>
+                                {inbox.name}
+                              </Text>
+                              <Text style={styles.badgeText}>
+                                {count?.inboxes[inbox?.uuid] > 0 &&
+                                  count?.inboxes[inbox?.uuid]}
+                              </Text>
+                            </View>
+                          );
+                        }}
+                        onPress={() =>
+                          //@ts-ignore
+                          navigation.navigate(SCREEN_NAME.teaminbox, {
+                            menuName: inbox.name,
+                          })
+                        }
+                      />
+                    );
+                  })}
                 </View>
               </CollapseBody>
             </Collapse>
@@ -217,6 +251,7 @@ const CustomDrawer = (props: any): JSX.Element => {
                         <View style={styles.customInboxItemList}>
                           <RedTagIcon width={20} height={20} color={color} />
                           <Text style={styles.customInboxtext}>Sla breach</Text>
+                          <Text style={styles.badgeText}>5</Text>
                         </View>
                       );
                     }}
@@ -297,6 +332,8 @@ const styles = StyleSheet.create({
   customInboxItems: {
     // marginLeft: wp(5),
     width: '100%',
+    paddingVertical: 0,
+    marginVertical: 0,
   },
   customInboxItemList: {
     flexDirection: 'row',
@@ -304,6 +341,8 @@ const styles = StyleSheet.create({
     position: 'relative',
     // backgroundColor: 'red',
     width: '100%',
+    paddingVertical: 0,
+    marginVertical: 0,
   },
   customInboxtext: {
     marginLeft: 5,
