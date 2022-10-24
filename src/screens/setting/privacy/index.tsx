@@ -1,8 +1,8 @@
 import React from 'react';
-import { Text } from '@ui-kitten/components';
-import { View } from 'react-native';
+import {Text} from '@ui-kitten/components';
+import {View} from 'react-native';
 import ArrowRight from '../../../assets/images/Arrow_Right.svg';
-import { globalStyles } from 'src/styles';
+import {globalStyles} from 'src/styles';
 import FloatLabel from 'src/components/common/FloatLabel';
 import styles from './styles';
 

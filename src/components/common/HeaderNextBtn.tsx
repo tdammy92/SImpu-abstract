@@ -1,7 +1,7 @@
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {hp} from 'src/utils';
-import {FONTS} from 'src/constants';
+import {colors, FONTS} from 'src/constants';
 
 type Props = {
   btnText: string;
@@ -24,9 +24,9 @@ export default HeaderNextBtn;
 
 const styles = StyleSheet.create({
   btnText: {
-    color: '#276EF1',
-    fontSize: hp(18),
-    marginRight: hp(8),
+    color: colors.primaryText,
+    fontSize: hp(16),
+    marginRight: hp(15),
     fontFamily: FONTS.AVERTA_SEMI_BOLD,
   },
 });

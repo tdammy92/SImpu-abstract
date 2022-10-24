@@ -22,7 +22,7 @@ import HeaderOption from './component/chatHeaderOption';
 import {SCREEN_NAME} from 'src/navigation/constants';
 
 const Chat = ({prop, route, navigation}: any) => {
-  const [User, setUser] = useState(null);
+  const [User, setUser] = useState<any>({});
   const [messages, setMessages] = useState<any>();
 
   const chatOptionRef = useRef<any>(null);
@@ -80,38 +80,44 @@ const Chat = ({prop, route, navigation}: any) => {
         {/* chat header */}
         <View style={styles.header}>
           <View style={styles.headerLeft}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate(SCREEN_NAME.main)}>
-              <Ionicons
-                name="arrow-back-sharp"
-                size={22}
-                color={colors.primaryText}
-              />
-            </TouchableOpacity>
-
             <View style={styles.userDetails}>
-              <View>
-                {/* @ts-ignore */}
-                {User?.name && (
-                  //@ts-ignore
-                  <UserAvatar size={45} name={User?.name} src={User?.avatar} />
-                )}
-              </View>
+              <TouchableOpacity
+                onPress={() => navigation.goBack()}
+                // onPress={() => navigation.navigate(SCREEN_NAME.main)}
+                style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Ionicons
+                  name="arrow-back-sharp"
+                  size={22}
+                  color={colors.secondaryBg}
+                />
+                <View style={{marginLeft: 5}}>
+                  {/* @ts-ignore */}
+                  {User?.name && (
+                    //@ts-ignore
+                    <UserAvatar
+                      size={40}
+                      name={User?.name}
+                      src={User?.avatar}
+                    />
+                  )}
+                </View>
+              </TouchableOpacity>
+
               {/* @ts-ignore */}
               <Text style={styles.usernameText}>{User?.name}</Text>
             </View>
           </View>
-          <View style={styles.headerRight}>
-            <TouchableOpacity onPress={openSheet}>
+          <TouchableOpacity style={{padding: 10}} onPress={openSheet}>
+            <View style={styles.headerRight}>
               <SimpleLineIcons
                 name="options-vertical"
                 size={22}
-                color={colors.primaryText}
+                color={'#A5ACB8'}
               />
-            </TouchableOpacity>
-          </View>
+            </View>
+          </TouchableOpacity>
         </View>
-        <Divider style={{height: 1, elevation: 1, zIndex: 1}} />
+        <Divider />
 
         {/* chat component */}
         <View style={{flex: 1}}>

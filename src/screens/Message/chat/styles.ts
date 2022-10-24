@@ -1,5 +1,11 @@
 import {StyleService} from '@ui-kitten/components';
-import {ImageStyle, TextStyle, ViewStyle, Dimensions} from 'react-native';
+import {
+  ImageStyle,
+  TextStyle,
+  ViewStyle,
+  Dimensions,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import {colors} from 'src/constants';
 import FONTS from 'src/constants/fonts';
 import {hp, wp} from 'src/utils';
@@ -20,6 +26,7 @@ const styles = StyleService.create<Styles>({
     width: '100%',
     height: '100%',
     position: 'relative',
+    backgroundColor: '#fff',
   },
 
   header: {
@@ -29,19 +36,14 @@ const styles = StyleService.create<Styles>({
     paddingHorizontal: wp(10),
     paddingTop: hp(height * 0.06),
     paddingBottom: hp(height * 0.015),
-    elevation: 2,
-    zIndex: 2,
-    // height: height * 0.14,
-    backgroundColor: '#EEEEEE',
-    shadowColor: '#000',
-    shadowOffset: {width: 1, height: 3},
-    shadowOpacity: 0.2,
   },
   headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  headerRight: {},
+  headerRight: {
+    // backgroundColor: 'red',
+  },
   userDetails: {
     marginLeft: hp(10),
     flexDirection: 'row',

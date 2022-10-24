@@ -6,7 +6,7 @@ import {
   TouchableWithoutFeedback,
   Animated,
 } from 'react-native';
-import {Avatar, Text} from '@ui-kitten/components';
+import {Divider, Text} from '@ui-kitten/components';
 //@ts-ignore
 import UserAvatar from 'react-native-user-avatar';
 import {useNavigation} from '@react-navigation/native';
@@ -49,18 +49,17 @@ const MessageCard = (props: any) => {
   };
 
   return (
-    <Animated.View
-      style={[
-        styles.rowFront,
-        {
-          // height: rowHeightAnimatedValue
-        },
-      ]}>
+    <Animated.View style={[styles.rowFront, {}]}>
       <TouchableOpacity style={[styles.cardContainer]} onPress={handleNavigate}>
         {/* left side of the card */}
         <View style={styles.leftSide}>
           <View style={{position: 'relative'}}>
-            <UserAvatar name={item?.name} src={item?.avatar} size={40} />
+            <UserAvatar
+              name={item?.name}
+              src={item?.avatar}
+              size={45}
+              // borderRadius={hp(40) / 2}
+            />
             <View style={{position: 'absolute', bottom: -4, right: -4}}>
               <ChannelIcon name={item.channelType} />
             </View>
@@ -69,10 +68,19 @@ const MessageCard = (props: any) => {
 
         {/* right side of the card */}
         <View style={styles.rightSide}>
-          <Text style={styles.timeText}>{messgeTimeFormater(item?.time)}</Text>
-
-          <View style={{marginLeft: hp(5)}}>
-            <Text style={styles.nameText}>{item?.name}</Text>
+          <View style={{marginLeft: hp(5), width: '100%'}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                width: '100%',
+              }}>
+              <Text style={styles.nameText}>{item?.name}</Text>
+              <Text style={styles.timeText}>
+                {messgeTimeFormater(item?.time)}
+              </Text>
+            </View>
             {item.title && (
               <Text style={styles.messageTitleText}>{item?.title}</Text>
             )}
@@ -80,6 +88,7 @@ const MessageCard = (props: any) => {
           </View>
         </View>
       </TouchableOpacity>
+      <Divider />
     </Animated.View>
   );
 };
@@ -89,34 +98,38 @@ export default MessageCard;
 const styles = StyleSheet.create({
   cardContainer: {
     flex: 1,
+    backgroundColor: '#fff',
     flexDirection: 'row',
     height: '80%',
     width: '95%',
-    backgroundColor: '#fff',
     alignItems: 'center',
     paddingHorizontal: wp(10),
+    paddingVertical: hp(10),
     marginVertical: hp(8),
     borderRadius: hp(10),
   },
 
   rowFront: {
-    backgroundColor: '#FFF',
-    borderRadius: 5,
+    backgroundColor: '#fff',
+    // backgroundColor: 'yellow',
+    // borderRadius: 5,
     height: 90,
-    margin: 5,
-    marginBottom: 15,
-    shadowColor: '#999',
-    shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 5,
+    paddingVertical: hp(5),
+    // margin: 5,
+    // marginBottom: 15,
+    // shadowColor: '#999',
+    // shadowOffset: {width: 0, height: 1},
+    // shadowOpacity: 0.8,
+    // shadowRadius: 2,
+    // elevation: 5,
   },
 
   leftSide: {},
   rightSide: {
     marginLeft: 10,
     position: 'relative',
-    width: '100%',
+    width: '90%',
+
     // borderColor: 'red',
     // borderWidth: 1,
   },
@@ -128,7 +141,7 @@ const styles = StyleSheet.create({
   },
 
   nameText: {
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.AVERTA_SEMI_BOLD,
     fontSize: hp(16),
     color: colors.primaryText,
   },
@@ -142,10 +155,10 @@ const styles = StyleSheet.create({
     fontSize: hp(12),
     fontFamily: FONTS.AVERTA_REGULAR,
     color: colors.primaryText,
-    position: 'absolute',
-    top: hp(-20),
-    right: wp(25),
-    textAlign: 'center',
+    // position: 'absolute',
+    // top: hp(-10),
+    // right: wp(30),
+    // textAlign: 'center',
   },
 
   messageTitleText: {

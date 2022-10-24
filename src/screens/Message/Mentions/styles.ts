@@ -24,10 +24,11 @@ interface Styles {
 }
 const styles = StyleService.create<Styles>({
   container: {
-    //     flex: 1,
-    width: '100%',
-    height: '100%',
-    position: 'relative',
+    flex: 1,
+    // width: '100%',
+    // height: '100%',
+    // position: 'relative',
+    backgroundColor: '#fff',
   },
   ScrollViewContainer: {
     flexGrow: 1,

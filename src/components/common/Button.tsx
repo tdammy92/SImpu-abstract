@@ -32,16 +32,17 @@ export const Button = memo(
 const styles = StyleSheet.create({
   btn: {
     borderRadius: hp(10),
-    height: hp(50),
-
+    height: hp(45),
+    backgroundColor: '#276EF1',
     borderColor: 'transparent',
     fontSize: 20,
+    paddingVertical: 5,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
     fontFamily: FONTS.AVERTA_REGULAR,
   },
   containerStyle: {
-    width: '90%',
+    width: '95%',
   },
 });

@@ -4,6 +4,7 @@ import {
   GestureResponderEvent,
   Dimensions,
   TouchableOpacity,
+  KeyboardAvoidingView,
 } from 'react-native';
 import {Divider, Text} from '@ui-kitten/components';
 
@@ -14,6 +15,7 @@ import Octicons from 'react-native-vector-icons/Octicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {FONTS} from 'src/constants';
+// import {KeyboardAwareScrollView} from 'src/components/common/KeyBoardAvoidingView';
 
 type Props = {
   ref: RBSheetProps;
@@ -21,18 +23,19 @@ type Props = {
 
 const {height} = Dimensions.get('screen');
 
+const SheetHeight = Math.floor(height / 2);
+// console.log(height, '------', SheetHeight);
 const SortSheet = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
   return (
     //@ts-ignore
     <RBSheet
       ref={ref}
-      height={height / 3}
+      // height={SheetHeight}
       openDuration={250}
       closeOnDragDown
       customStyles={{
         wrapper: {
-          backgroundColor: 'transparent',
-          // backgroundColor: '#fefefe',
+          backgroundColor: 'rgba(105,105,105,0.7)',
         },
         draggableIcon: {
           backgroundColor: '#000',
@@ -43,62 +46,65 @@ const SortSheet = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
           borderTopRightRadius: hp(30),
           backgroundColor: '#E5E4E2',
           padding: 0,
+          // height: SheetHeight,
         },
       }}>
-      <View style={styles.sortContainer}>
-        <Text style={styles.sortTitle}>Sort by</Text>
-        <View style={styles.sortCard}>
-          <TouchableOpacity style={styles.listItem}>
-            <View style={styles.leftSide}>
-              {/* <Octicons name="sort-asc" size={23} color="#000" /> */}
-              <MaterialCommunityIcons
-                name="sort-bool-descending-variant"
-                size={23}
-                color="#000"
-              />
-              <Text style={styles.sortText}>Newest</Text>
-            </View>
-            <AntDesign name="check" size={23} color="#000" />
-          </TouchableOpacity>
-          <Divider />
-          <TouchableOpacity style={styles.listItem}>
-            <View style={styles.leftSide}>
-              <MaterialCommunityIcons
-                name="sort-bool-ascending-variant"
-                size={23}
-                color="#000"
-              />
-              {/* <Octicons name="sort-desc" size={23} color="#000" /> */}
-              <Text style={styles.sortText}>Oldest</Text>
-            </View>
-            <AntDesign name="check" size={23} color="#FFF" />
-          </TouchableOpacity>
-          <Divider />
-          <TouchableOpacity style={styles.listItem}>
-            <View style={styles.leftSide}>
-              <MaterialCommunityIcons
-                name="sort-bool-descending"
-                size={23}
-                color="#000"
-              />
-              <Text style={styles.sortText}>Newest Unreplied</Text>
-            </View>
-            <AntDesign name="check" size={23} color="#FFF" />
-          </TouchableOpacity>
-          <Divider />
-          <TouchableOpacity style={styles.listItem}>
-            <View style={styles.leftSide}>
-              <MaterialCommunityIcons
-                name="sort-bool-ascending"
-                size={23}
-                color="#000"
-              />
-              <Text style={styles.sortText}>Oldest Unreplied</Text>
-            </View>
-            <AntDesign name="check" size={23} color="#FFF" />
-          </TouchableOpacity>
+      <KeyboardAvoidingView>
+        <View style={styles.sortContainer}>
+          <Text style={styles.sortTitle}>Sort by</Text>
+          <View style={styles.sortCard}>
+            <TouchableOpacity style={styles.listItem}>
+              <View style={styles.leftSide}>
+                {/* <Octicons name="sort-asc" size={23} color="#000" /> */}
+                <MaterialCommunityIcons
+                  name="sort-bool-descending-variant"
+                  size={23}
+                  color="#000"
+                />
+                <Text style={styles.sortText}>Newest</Text>
+              </View>
+              <AntDesign name="check" size={23} color="#000" />
+            </TouchableOpacity>
+            <Divider />
+            <TouchableOpacity style={styles.listItem}>
+              <View style={styles.leftSide}>
+                <MaterialCommunityIcons
+                  name="sort-bool-ascending-variant"
+                  size={23}
+                  color="#000"
+                />
+                {/* <Octicons name="sort-desc" size={23} color="#000" /> */}
+                <Text style={styles.sortText}>Oldest</Text>
+              </View>
+              <AntDesign name="check" size={23} color="#FFF" />
+            </TouchableOpacity>
+            <Divider />
+            <TouchableOpacity style={styles.listItem}>
+              <View style={styles.leftSide}>
+                <MaterialCommunityIcons
+                  name="sort-bool-descending"
+                  size={23}
+                  color="#000"
+                />
+                <Text style={styles.sortText}>Newest Unreplied</Text>
+              </View>
+              <AntDesign name="check" size={23} color="#FFF" />
+            </TouchableOpacity>
+            <Divider />
+            <TouchableOpacity style={styles.listItem}>
+              <View style={styles.leftSide}>
+                <MaterialCommunityIcons
+                  name="sort-bool-ascending"
+                  size={23}
+                  color="#000"
+                />
+                <Text style={styles.sortText}>Oldest Unreplied</Text>
+              </View>
+              <AntDesign name="check" size={23} color="#FFF" />
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </RBSheet>
   );
 });

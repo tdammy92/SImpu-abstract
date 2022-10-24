@@ -1,8 +1,9 @@
-import { Text } from '@ui-kitten/components';
-import React, { ComponentProps } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
-import { globalStyles } from 'src/styles';
-import { hp } from 'src/utils';
+import {Text} from '@ui-kitten/components';
+import React, {ComponentProps} from 'react';
+import {Pressable, StyleSheet, View} from 'react-native';
+import {FONTS} from 'src/constants';
+import {globalStyles} from 'src/styles';
+import {hp} from 'src/utils';
 
 type LabelListProps = ComponentProps<typeof Pressable> & {
   text: string;
@@ -38,6 +39,7 @@ const FloatLabel = ({
       color: simpuBlue ? '#3525E6' : '#0A0748',
       fontWeight: '400',
       fontSize: hp(17),
+      fontFamily: FONTS.AVERTA_REGULAR,
     },
     textStyle2: {
       width: '65%',
@@ -45,6 +47,7 @@ const FloatLabel = ({
       fontSize: hp(16),
       textAlign: 'right',
       marginRight: 10,
+      fontFamily: FONTS.AVERTA_REGULAR,
     },
     float: {
       width: '65%',

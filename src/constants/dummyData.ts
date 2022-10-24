@@ -23,11 +23,11 @@ export default [
     lastMesssage: `Hey There!`,
     avatar: userOne,
     channelType: 'whatsapp',
-    time: '2022-09-05T16:28:16.960Z',
+    time: '2022-10-12T16:28:16.960Z',
     chats: [
       {
         author: {id: '1'},
-        createdAt: '2019-06-14T07:20:16Z',
+        createdAt: '2022-09-14T07:20:16Z',
         id: '11',
         text: 'am at you location',
         type: 'text',
@@ -35,7 +35,7 @@ export default [
       },
       {
         author: {id: '1234'},
-        createdAt: '2020-04-14T07:20:16Z',
+        createdAt: '2022-08-14T07:20:16Z',
         id: '12',
         text: 'Completed your task',
         type: 'text',
@@ -43,7 +43,7 @@ export default [
       },
       {
         author: {id: '1'},
-        createdAt: '2021-09-14T07:20:16Z',
+        createdAt: '2022-04-14T07:20:16Z',
         id: '13',
         text: 'lets have a meeting by 12pm',
         type: 'text',
@@ -57,7 +57,7 @@ export default [
     lastMesssage: `When are you paying my money ???`,
     avatar: userTwo,
     channelType: 'instagram',
-    time: '2021-12-14T07:20:16Z',
+    time: '2022-10-10T07:20:16Z',
     chats: [
       {
         author: {id: '1234'},
@@ -91,7 +91,7 @@ export default [
     lastMesssage: `Send me the organisationId.`,
     avatar: userEight,
     channelType: 'whatsapp',
-    time: '2021-11-14T07:20:16Z',
+    time: '2022-10-05T07:20:16Z',
     chats: [
       {
         author: {id: '1234'},
@@ -126,7 +126,7 @@ export default [
     lastMesssage: `Have tested its okay!`,
     avatar: userThree,
     channelType: 'twitter',
-    time: '2021-11-14T07:20:16Z',
+    time: '2022-10-04T07:20:16Z',
     chats: [
       {
         author: {id: '3'},
@@ -160,7 +160,7 @@ export default [
     lastMesssage: `Merged your PR!`,
     avatar: userFour,
     channelType: 'messenger',
-    time: '2021-09-14T07:20:16Z',
+    time: '2022-09-14T07:20:16Z',
     chats: [
       {
         author: {id: '4'},

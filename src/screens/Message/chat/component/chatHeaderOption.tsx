@@ -25,8 +25,7 @@ const HeaderOption = forwardRef(
         closeOnDragDown
         customStyles={{
           wrapper: {
-            backgroundColor: 'transparent',
-            // backgroundColor: '#fefefe',
+            backgroundColor: 'rgba(105,105,105,0.7)',
           },
           draggableIcon: {
             backgroundColor: '#E5E4E2',

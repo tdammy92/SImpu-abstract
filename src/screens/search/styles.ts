@@ -31,7 +31,7 @@ const styles = StyleService.create<Styles>({
     height: '100%',
     paddingTop: height * 0.03,
     // position: 'relative',
-    // backgroundColor: '#fff',
+    backgroundColor: '#fff',
   },
 
   searchTop: {},

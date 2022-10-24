@@ -11,15 +11,22 @@ import {Button, Card, Modal, Divider, Text} from '@ui-kitten/components';
 //@ts-ignore
 import UserAvatar from 'react-native-user-avatar';
 
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {colors, FONTS} from 'src/constants';
 import {hp, wp} from 'src/utils';
+import {SCREEN_NAME} from 'src/navigation/constants';
 import dummyData from 'src/constants/dummyData';
 import EmptyNotify from 'src/components/common/EmptyNotification';
+import NotificationListIcon from 'src/assets/images/NotificationListIcon.svg';
 
 const {width, height} = Dimensions.get('screen');
-import {formatDate} from 'src/utils';
+import {
+  FormatText,
+  formatDate,
+  messgeTimeFormater,
+  notificationDateFormat,
+} from 'src/utils';
 
 const Notification = (props: any) => {
   const {navigation} = props;
@@ -29,36 +36,56 @@ const Notification = (props: any) => {
     setData([]);
   }, []);
 
+  const handleNavigate = (user: any) => {
+    // console.log('cliked');
+
+    //@ts-ignore
+    navigation.navigate(SCREEN_NAME.chat as never, {user: user});
+  };
+
   const List = ({item}: any) => {
     //     console.log(item);
 
     return (
       <>
-        <View
-          style={{
-            flexDirection: 'row',
-            paddingHorizontal: wp(10),
-            paddingVertical: hp(10),
-            alignItems: 'center',
-            backgroundColor: '#fff',
-            width: '95%',
-            marginVertical: hp(5),
-            borderRadius: hp(5),
-            //   justifyContent: 'center',
-          }}>
-          <View>
-            <UserAvatar size={35} name={item.name} src={item.avatar} />
+        <TouchableOpacity
+          style={[styles.listItemContainer]}
+          onPress={() => handleNavigate(item)}>
+          {/* <View
+            style={{
+              position: 'absolute',
+              top: hp(10),
+              left: hp(5),
+            }}>
+            <NotificationListIcon />
+          </View> */}
+          <View style={[styles.listItemContent, {}]}>
+            <View style={{flexDirection: 'row', paddingBottom: 10}}>
+              <View style={{marginRight: 10}}>
+                <UserAvatar size={35} name={item.name} src={item.avatar} />
+              </View>
+              <Text style={{width: '90%', lineHeight: hp(19)}}>
+                <Text style={{fontFamily: FONTS.AVERTA_BOLD}}>{item.name}</Text>{' '}
+                sent you a message on{' '}
+                <Text style={{fontFamily: FONTS.AVERTA_BOLD}}>
+                  {FormatText(item.channelType)}
+                </Text>
+              </Text>
+            </View>
+
+            <View style={{flexDirection: 'row', paddingTop: 5}}>
+              <View style={{width: 35, marginRight: 10}} />
+              <Text
+                style={{
+                  color: '#A5ACB8',
+                  fontFamily: FONTS.AVERTA_SEMI_BOLD,
+                  fontSize: hp(12),
+                }}>
+                {notificationDateFormat(item.time)}
+              </Text>
+            </View>
           </View>
-          <View style={{marginLeft: wp(10)}}>
-            <Text style={{width: '90%'}}>
-              {item.name} sent you a message on {item.channelType}
-            </Text>
-            <Divider />
-            <Text style={{paddingVertical: hp(1), fontSize: hp(12)}}>
-              {formatDate(item.time)}
-            </Text>
-          </View>
-        </View>
+        </TouchableOpacity>
         <Divider />
       </>
     );
@@ -67,35 +94,37 @@ const Notification = (props: any) => {
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
-        <View style={styles.topRight}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Ionicons
-              name="arrow-back-sharp"
-              size={25}
-              color={'#026AE8'}
-              // style={{transform: [{rotate: '35deg'}]}}
-            />
+        <View style={styles.topLeft}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={{flexDirection: 'row'}}>
+            <Ionicons name="arrow-back-sharp" size={25} color={'#026AE8'} />
+            <Text style={styles.notificationText}>Notifications</Text>
           </TouchableOpacity>
-          <Text style={styles.notificationText}>Notifications</Text>
         </View>
-        <TouchableOpacity
-          style={styles.actionContainer}
-          onPress={ClearNotification}>
-          <Text style={styles.actionText}>Clear all</Text>
-          <MaterialIcons name="clear-all" size={25} color={'#026AE8'} />
-        </TouchableOpacity>
+        <View style={styles.topRight}>
+          <TouchableOpacity
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}
+            onPress={ClearNotification}>
+            <Text style={styles.clearText}>Clear All</Text>
+            <Feather name="check-circle" size={18} color={'#000'} />
+          </TouchableOpacity>
+        </View>
       </View>
       <Divider style={{height: 1}} />
-      <View style={styles.ListContainer}>
-        <FlatList
-          data={Data}
-          renderItem={List}
-          keyExtractor={(_, i) => i.toString()}
-          ListEmptyComponent={EmptyNotify}
-          showsVerticalScrollIndicator={false}
-          ItemSeparatorComponent={() => <Divider />}
-        />
-      </View>
+
+      <FlatList
+        data={Data}
+        renderItem={List}
+        keyExtractor={(_, i) => i.toString()}
+        ListEmptyComponent={EmptyNotify}
+        showsVerticalScrollIndicator={false}
+        ItemSeparatorComponent={() => <Divider />}
+        contentContainerStyle={{paddingHorizontal: hp(10)}}
+      />
     </View>
   );
 };
@@ -105,6 +134,7 @@ export default Notification;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
   },
   titleContainer: {
     paddingTop: height * 0.05,
@@ -124,6 +154,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  topLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   actionContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -133,7 +167,14 @@ const styles = StyleSheet.create({
     fontSize: hp(20),
     fontFamily: FONTS.AVERTA_SEMI_BOLD,
     color: colors.primaryText,
-    marginLeft: hp(10),
+    marginLeft: hp(5),
+  },
+
+  clearText: {
+    fontSize: hp(14),
+    fontFamily: FONTS.AVERTA_REGULAR,
+    marginRight: hp(5),
+    color: colors.primaryText,
   },
 
   actionText: {
@@ -147,6 +188,24 @@ const styles = StyleSheet.create({
     height: '100%',
     marginTop: hp(15),
     paddingHorizontal: wp(8),
-    //     alignItems: 'center',
+    alignItems: 'center',
+  },
+
+  listItemContainer: {
+    backgroundColor: '#fff',
+    width: '100%',
+
+    marginVertical: hp(2),
+    paddingVertical: hp(10),
+
+    borderRadius: hp(5),
+    position: 'relative',
+  },
+
+  listItemContent: {
+    // alignItems: 'center',
+    // flexDirection: 'row',
+    paddingHorizontal: wp(10),
+    paddingVertical: hp(10),
   },
 });

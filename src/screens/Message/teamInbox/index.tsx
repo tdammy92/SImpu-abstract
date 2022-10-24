@@ -16,7 +16,10 @@ import {hp} from 'src/utils';
 import SortSheet from '../component/SortSheet';
 import dummyData from 'src/constants/dummyData';
 
-const TeamInbox = ({navigation}: any) => {
+const TeamInbox = ({navigation, route}: any) => {
+  const {
+    params: {menuName},
+  } = route;
   const SortSheetRef = useRef<any>(null);
   const styles = useStyleSheet(themedStyles);
   const [Message, setMessage] = useState(() => dummyData);
@@ -117,9 +120,10 @@ const TeamInbox = ({navigation}: any) => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={styles.container}>
       <View style={{height: '100%'}}>
         <MessageHeader
+          name={menuName}
           messageOption={messageOption}
           handleSelectedIndex={handleSelectedIndex}
           selectedIndex={selectedIndex}
@@ -133,9 +137,9 @@ const TeamInbox = ({navigation}: any) => {
           data={Message.slice(0, 3).reverse()}
           useAnimatedList={true}
           renderItem={renderItem}
-          style={{marginBottom: 20}}
-          contentContainerStyle={{paddingVertical: hp(20)}}
-          contentInset={{bottom: hp(50)}}
+          style={{marginBottom: 0}}
+          contentContainerStyle={{paddingVertical: hp(5)}}
+          contentInset={{bottom: hp(0)}}
           useNativeDriver={false}
           showsVerticalScrollIndicator={false}
           closeOnRowBeginSwipe

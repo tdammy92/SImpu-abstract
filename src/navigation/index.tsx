@@ -7,7 +7,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 
 import {MainStackParamList, SCREEN_NAME} from './constants';
 import Payment from 'src/screens/payment';
-import Auth from 'src/screens/Login';
+
 import Setting from 'src/screens/setting';
 import CustomDrawer from './CustomDrawer';
 
@@ -17,8 +17,9 @@ import {Avatar} from '@ui-kitten/components';
 //@ts-ignore
 import UserAvatar from 'react-native-user-avatar';
 
-import Login from 'src/screens/Login';
-import Social from 'src/screens/Message/social';
+import Login from 'src/screens/Auth';
+import ForgotPassword from 'src/screens/Auth/forgotPassword';
+import Social from 'src/screens/Message/PersonalInbox';
 import Assigned from 'src/screens/Message/Assigned';
 import Unassigned from 'src/screens/Message/Unassigned';
 import Mentions from 'src/screens/Message/Mentions';
@@ -29,7 +30,14 @@ import EditProfile from 'src/screens/setting/editProfile';
 import Chat from 'src/screens/Message/chat';
 import Search from 'src/screens/search';
 import Notification from 'src/screens/Message/notification';
+import Compose from 'src/screens/Message/compose';
 import TeamInbox from 'src/screens/Message/teamInbox';
+import Onboarding from 'src/screens/onbording';
+import QuickReplies from 'src/screens/setting/quickReplies';
+import Privacy from 'src/screens/setting/privacy';
+import ChangeNumber from 'src/screens/setting/editProfile/changeNumber';
+import ChangeEmail from 'src/screens/setting/editProfile/changeEmail';
+import ResetPassword from 'src/screens/setting/editProfile/resetPassword';
 
 //icons
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -54,6 +62,8 @@ import {Avatar as avatar} from 'src/constants/general';
 import {StoreState} from 'src/@types/store';
 import {colors} from 'src/constants';
 
+import HeaderBack from './HeaderBack';
+
 const Stack = createNativeStackNavigator<MainStackParamList>();
 
 const Drawer = createDrawerNavigator();
@@ -75,15 +85,18 @@ function DrawerMenu() {
         drawerActiveTintColor: '#000',
         drawerInactiveTintColor: 'gray',
         drawerType: 'front',
-        swipeEnabled: false,
       }}>
       <Drawer.Screen
         options={{
           title: 'Personal Inbox',
-          drawerItemStyle: styles.drawItemStyle,
+          drawerItemStyle: [
+            styles.drawItemStyle,
+            {marginTop: 0, paddingTop: 0},
+          ],
           drawerLabel: ({color, focused}) => {
             return (
-              <View style={styles.selectedMenu}>
+              <View
+                style={[styles.selectedMenu, {marginTop: 0, paddingTop: 0}]}>
                 <View style={styles.menuLeft}>
                   <UserAvatar
                     size={22}
@@ -125,7 +138,7 @@ function DrawerMenu() {
             return (
               <View style={styles.selectedMenu}>
                 <View style={styles.menuLeft}>
-                  <Unassign width={25} height={25} color={color} />
+                  <Unassign width={20} height={20} color={color} />
                   <Text style={styles.titleText}>Unassigned</Text>
                 </View>
 
@@ -147,7 +160,7 @@ function DrawerMenu() {
             return (
               <View style={styles.selectedMenu}>
                 <View style={styles.menuLeft}>
-                  <Assign width={25} height={25} color={color} />
+                  <Assign width={20} height={20} color={color} />
                   <Text style={styles.titleText}>Assigned</Text>
                 </View>
 
@@ -170,7 +183,7 @@ function DrawerMenu() {
             return (
               <View style={styles.selectedMenu}>
                 <View style={styles.menuLeft}>
-                  <Mention width={25} height={25} color={color} />
+                  <Mention width={20} height={20} color={color} />
                   <Text style={styles.titleText}>Mentions</Text>
                 </View>
 
@@ -192,7 +205,7 @@ function DrawerMenu() {
             return (
               <View style={styles.selectedMenu}>
                 <View style={styles.menuLeft}>
-                  <Close width={25} height={25} color={color} />
+                  <Close width={20} height={20} color={color} />
                   <Text style={styles.titleText}>Closed</Text>
                 </View>
 
@@ -215,7 +228,7 @@ function DrawerMenu() {
             return (
               <View style={styles.selectedMenu}>
                 <View style={styles.menuLeft}>
-                  <Draf width={22} height={22} color={color} />
+                  <Draf width={20} height={20} color={color} />
                   <Text style={styles.titleText}>Draft</Text>
                 </View>
 
@@ -243,22 +256,115 @@ const SettingsStackNavigator = (): JSX.Element => {
       <SettingsStack.Screen
         name={SCREEN_NAME.settings}
         options={{
-          title: '',
+          title: 'Settings',
+          headerTitleAlign: 'center',
+          headerTitleStyle: {
+            textAlign: 'center',
+            color: colors.primaryText,
+            fontFamily: FONTS.AVERTA_SEMI_BOLD,
+            fontSize: hp(18),
+          },
+
+          headerLeft: HeaderBack,
           headerBackTitle: '',
           headerBackTitleVisible: false,
         }}
         component={Settings}
       />
-      {/* <SettingsStack.Screen
+      <SettingsStack.Screen
         //@ts-ignore
         name={SCREEN_NAME.editprofile}
         options={{
-          title: '',
+          title: 'Edit Profile',
+          headerTitleAlign: 'center',
+          headerTitleStyle: {
+            textAlign: 'center',
+            color: colors.primaryText,
+            fontFamily: FONTS.AVERTA_SEMI_BOLD,
+            fontSize: hp(18),
+          },
+          headerLeft: HeaderBack,
           headerBackTitle: '',
           headerBackTitleVisible: false,
         }}
         component={EditProfile}
-      /> */}
+      />
+      <SettingsStack.Screen
+        //@ts-ignore
+        name={SCREEN_NAME.changePhoneNumber}
+        options={{
+          title: 'Change Number',
+          headerTitleAlign: 'center',
+          headerTitleStyle: {
+            textAlign: 'center',
+            color: colors.primaryText,
+            fontFamily: FONTS.AVERTA_SEMI_BOLD,
+            fontSize: hp(18),
+          },
+          headerLeft: HeaderBack,
+          headerBackTitle: '',
+          headerBackTitleVisible: false,
+        }}
+        component={ChangeNumber}
+      />
+      <SettingsStack.Screen
+        //@ts-ignore
+        name={SCREEN_NAME.changeEmail}
+        options={{
+          title: 'Change Email',
+          headerTitleAlign: 'center',
+          headerTitleStyle: {
+            textAlign: 'center',
+            color: colors.primaryText,
+            fontFamily: FONTS.AVERTA_SEMI_BOLD,
+            fontSize: hp(18),
+          },
+          headerLeft: HeaderBack,
+          headerBackTitle: '',
+          headerBackTitleVisible: false,
+        }}
+        component={ChangeEmail}
+      />
+      <SettingsStack.Screen
+        //@ts-ignore
+        name={SCREEN_NAME.resetPassword}
+        options={{
+          title: 'Reset Password',
+          headerTitleAlign: 'center',
+          headerTitleStyle: {
+            textAlign: 'center',
+            color: colors.primaryText,
+            fontFamily: FONTS.AVERTA_SEMI_BOLD,
+            fontSize: hp(18),
+          },
+          headerLeft: HeaderBack,
+          headerBackTitle: '',
+          headerBackTitleVisible: false,
+        }}
+        component={ResetPassword}
+      />
+      <SettingsStack.Screen
+        //@ts-ignore
+        name={SCREEN_NAME.quickreplies}
+        options={{
+          title: '',
+          headerLeft: HeaderBack,
+          headerBackTitle: '',
+          headerBackTitleVisible: false,
+        }}
+        component={QuickReplies}
+      />
+      <SettingsStack.Screen
+        //@ts-ignore
+        name={SCREEN_NAME.privacy}
+        options={{
+          title: '',
+          headerLeft: HeaderBack,
+          headerBackTitle: '',
+          headerBackTitleVisible: false,
+        }}
+        component={Privacy}
+      />
     </SettingsStack.Navigator>
   );
 };
@@ -267,10 +373,24 @@ const SettingsStackNavigator = (): JSX.Element => {
 export const RootStack = (): JSX.Element => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
-      {/* <Stack.Group> */}
+      <Stack.Screen
+        name={SCREEN_NAME.onboarding}
+        component={Onboarding}
+        options={{
+          headerShown: false,
+        }}
+      />
       <Stack.Screen
         name={SCREEN_NAME.auth}
         component={Login}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
+        name={SCREEN_NAME.forgotPassword}
+        component={ForgotPassword}
         options={{
           headerShown: false,
         }}
@@ -282,14 +402,6 @@ export const RootStack = (): JSX.Element => {
           headerShown: false,
         }}
       />
-
-      {/* <Stack.Screen
-        name={SCREEN_NAME.teaminbox}
-        component={TeamInbox}
-        options={{
-          headerShown: false,
-        }}
-      /> */}
 
       <Stack.Screen
         name={SCREEN_NAME.chat}
@@ -305,9 +417,7 @@ export const RootStack = (): JSX.Element => {
           headerShown: false,
         }}
       />
-      {/* </Stack.Group> */}
 
-      {/* <Stack.Group screenOptions={{presentation: 'modal'}}> */}
       <Stack.Screen
         name={SCREEN_NAME.search}
         component={Search}
@@ -324,17 +434,24 @@ export const RootStack = (): JSX.Element => {
         }}
       />
       <Stack.Screen
+        name={SCREEN_NAME.compose}
+        component={Compose}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
         name={SCREEN_NAME.teaminbox}
         component={TeamInbox}
         options={{
           headerShown: false,
         }}
       />
-      {/* </Stack.Group> */}
     </Stack.Navigator>
   );
 };
 
+//naviagtiion styling
 const themedStyles = StyleService.create({
   drawItemStyle: {
     borderRadius: 18,
@@ -352,11 +469,21 @@ const themedStyles = StyleService.create({
     justifyContent: 'center',
     position: 'absolute',
     right: wp(-18),
+    top: 5,
   },
   menuLeft: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  titleText: {paddingLeft: 10, fontFamily: FONTS.AVERTA_REGULAR},
-  badgeText: {fontFamily: FONTS.AVERTA_REGULAR},
+  titleText: {
+    paddingLeft: 5,
+    fontFamily: FONTS.AVERTA_REGULAR,
+    fontSize: 14,
+    color: colors.primaryText,
+  },
+  badgeText: {
+    fontFamily: FONTS.AVERTA_REGULAR,
+    fontSize: 12,
+    color: colors.primaryText,
+  },
 });

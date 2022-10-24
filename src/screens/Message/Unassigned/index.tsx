@@ -117,7 +117,7 @@ const Unassigned = ({navigation}: any) => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={styles.container}>
       <View style={{height: '100%'}}>
         <MessageHeader
           name="Unassigned"
@@ -131,9 +131,8 @@ const Unassigned = ({navigation}: any) => {
           data={Message.slice(0, 4).reverse()}
           useAnimatedList={true}
           renderItem={renderItem}
-          style={{marginBottom: 20}}
-          contentContainerStyle={{paddingVertical: hp(20)}}
-          contentInset={{bottom: hp(50)}}
+          contentContainerStyle={{paddingVertical: hp(5)}}
+          contentInset={{bottom: hp(0)}}
           useNativeDriver={false}
           showsVerticalScrollIndicator={false}
           closeOnRowBeginSwipe

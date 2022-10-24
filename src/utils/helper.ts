@@ -1,4 +1,10 @@
-import {formatDistance, format, formatDistanceToNow, subDays} from 'date-fns';
+import {
+  formatDistance,
+  formatRelative,
+  format,
+  formatDistanceToNow,
+  subDays,
+} from 'date-fns';
 
 export const FormatText = (text: string) => {
   return text.replace(/(^|\s)\S/g, (letter: string) => letter.toUpperCase());
@@ -11,16 +17,34 @@ export const GenerateColor = () => {
 };
 
 export const messgeTimeFormater = (time: string) => {
-  const TimePased = formatDistanceToNow(new Date(time), {
-    addSuffix: true,
-    includeSeconds: true,
-  });
+  let TimePased;
+  const currrentDate = new Date();
+  const olDDate = new Date(time);
+
+  let DateDiff = currrentDate.getTime() - olDDate.getTime();
+  let msDays = 1000 * 3600 * 24;
+  let DaysPassed = DateDiff / msDays;
+
+  TimePased =
+    DaysPassed > 4
+      ? format(new Date(time), 'd/M/yyyy')
+      : formatDistanceToNow(new Date(time), {
+          addSuffix: true,
+          includeSeconds: true,
+        });
 
   return TimePased;
 };
 
 export const formatDate = (time: string) => {
   const formatedDate = format(new Date(time), 'dd-MMM-yyyy h:m aaaa');
+  return formatedDate;
+};
+
+export const notificationDateFormat = (time: string) => {
+  let formated;
+
+  const formatedDate = formatRelative(new Date(time), new Date());
 
   return formatedDate;
 };

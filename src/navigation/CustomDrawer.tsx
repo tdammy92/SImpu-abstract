@@ -6,10 +6,10 @@ import {
   Alert,
   Linking,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {useNetInfo} from '@react-native-community/netinfo';
+import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import {useNavigation} from '@react-navigation/native';
 //@ts-ignore
 import UserAvatar from 'react-native-user-avatar';
@@ -36,7 +36,8 @@ import {colors, FONTS} from 'src/constants';
 import {SCREEN_NAME} from './constants';
 import {StoreState} from 'src/@types/store';
 import Availble from 'src/assets/images/Available.svg';
-import NotAvailble from 'src/assets/images/NotAvailable.svg';
+// import NotAvailble from 'src/assets/images/NotAvailable.svg';
+import NotAvailble from 'src/assets/images/notificationLabel.svg';
 import PendingAvailble from 'src/assets/images/GrayNotification.svg';
 import BlueTagIcon from 'src/assets/images/BlueTagIcon.svg';
 import RedTagIcon from 'src/assets/images/RedTagIcon.svg';
@@ -47,33 +48,7 @@ const CustomDrawer = (props: any): JSX.Element => {
   const {profile} = useSelector((state: StoreState) => state.user);
   const navigation = useNavigation();
   const netInfo = useNetInfo();
-
-  const handleLogout = () => {
-    Alert.alert(
-      'Confirm Logout?',
-      'Are you sure you want to logout ?',
-      [
-        {
-          text: 'cancle',
-          onPress: () => console.log('cancled logot '),
-        },
-        {
-          text: 'yes',
-          onPress: () => {
-            // dispatch(logOutUser()),
-            props.navigation.reset({
-              index: 0,
-              routes: [{name: SCREEN_NAME.auth}],
-            });
-          },
-        },
-      ],
-      {
-        cancelable: true,
-        onDismiss: () => console.log('cancled'),
-      },
-    );
-  };
+  const [isAvailable, setisAvailable] = useState<boolean | null>(true);
 
   // const filteredProps = {
   //   ...props,
@@ -90,6 +65,21 @@ const CustomDrawer = (props: any): JSX.Element => {
 
   // console.log(JSON.stringify(filteredProps));
 
+  useEffect(() => {
+    // Subscribe
+    const unsubscribe = NetInfo.addEventListener(state => {
+      // console.log('Connection type', state.type);
+      // console.log('Is connected?', state.isConnected);
+      setisAvailable(state.isConnected);
+    });
+
+    return () => {
+      // Unsubscribe
+      unsubscribe();
+    };
+  }, []);
+
+  // console.log('Network', isAvailable);
   return (
     <View style={styles.container}>
       {/* user profile  */}
@@ -102,7 +92,7 @@ const CustomDrawer = (props: any): JSX.Element => {
               src={profile.image}
             />
             <View style={{position: 'absolute', bottom: 2, right: 1}}>
-              {netInfo.isConnected ? <Availble /> : <NotAvailble />}
+              {isAvailable ? <Availble /> : <NotAvailble />}
             </View>
           </View>
           <View style={{paddingLeft: 5}}>
@@ -112,158 +102,129 @@ const CustomDrawer = (props: any): JSX.Element => {
             <Text
               style={[
                 styles.statusText,
-                {color: netInfo.isConnected ? '#287D3C' : colors.primaryText},
+                {color: isAvailable ? '#287D3C' : '#EB5757'},
               ]}>
-              {netInfo.isConnected ? 'Available' : 'offline'}
+              {isAvailable ? 'Available' : 'offline'}
             </Text>
           </View>
         </View>
         <TouchableOpacity
           onPress={() => props.navigation.navigate(SCREEN_NAME.settings)}>
-          <AntDesign name="setting" size={20} color="#000" />
+          <AntDesign name="setting" size={20} color="#7D8282" />
         </TouchableOpacity>
       </View>
 
       <Divider />
 
       {/* drawe menu content */}
-      <View style={{flex: 0.85}}>
-        <DrawerContentScrollView {...props}>
+      <View
+        style={{
+          // flex: 1
+          height: '100%',
+        }}>
+        <DrawerContentScrollView
+          {...props}
+          style={{marginTop: 0, paddingTop: 0}}>
           {/* menu list item*/}
           <DrawerItemList {...props} />
-          <Divider />
 
           {/* tag and team inbox list */}
-          <View style={{paddingHorizontal: 15, marginTop: 50}}>
+          <View style={styles.customInboxContainer}>
             {/* Team inboxes */}
-            <Collapse>
+            <Collapse isExpanded={true}>
               <CollapseHeader>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <View style={styles.customInboxTitle}>
                   <EvilIcons name="chevron-down" size={25} color="#000" />
-                  <Text style={{marginLeft: 10}}>TEAM INBOXES</Text>
+                  <Text style={[styles.customInboxTitleText]}>
+                    TEAM INBOXES
+                  </Text>
                 </View>
               </CollapseHeader>
               <CollapseBody>
-                <View style={{marginLeft: wp(15)}}>
+                <View style={styles.customInboxItems}>
                   <DrawerItem
-                    style={{
-                      padding: 0,
-                      // backgroundColor: 'green',
-                    }}
                     label={({color, focused}) => {
                       return (
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                          }}>
+                        <View style={styles.customInboxItemList}>
                           <NotAvailble />
-                          <Text style={{marginLeft: 10, fontSize: 14}}>
+                          <Text style={styles.customInboxtext}>
                             Sales Inbox
                           </Text>
                         </View>
                       );
                     }}
                     onPress={() =>
-                      // Linking.openURL('https://mywebsite.com/help')
                       //@ts-ignore
-                      navigation.navigate(SCREEN_NAME.teaminbox)
+                      navigation.navigate(SCREEN_NAME.teaminbox, {
+                        menuName: ' Sales Inbox',
+                      })
                     }
                   />
 
                   <DrawerItem
-                    style={{
-                      // backgroundColor: 'green',
-                      marginTop: 0,
-                      paddingTop: 0,
-                    }}
                     label={({color, focused}) => {
                       return (
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            // backgroundColor: focused ? '#F2F2F2' : '',
-                          }}>
+                        <View style={styles.customInboxItemList}>
                           <PendingAvailble />
-                          <Text style={{marginLeft: 10}}>
+                          <Text style={styles.customInboxtext}>
                             Engineering Inbox
                           </Text>
                         </View>
                       );
                     }}
                     onPress={() =>
-                      // Linking.openURL('https://mywebsite.com/help')
                       //@ts-ignore
-                      navigation.navigate(SCREEN_NAME.teaminbox)
+                      navigation.navigate(SCREEN_NAME.teaminbox, {
+                        menuName: ' Engineering Inbox',
+                      })
                     }
                   />
                 </View>
               </CollapseBody>
             </Collapse>
             {/* Tags */}
-            <View style={{height: hp(15)}} />
+            <View style={{height: hp(10)}} />
             <Collapse>
               <CollapseHeader>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <View style={styles.customInboxTitle}>
                   <EvilIcons name="chevron-down" size={25} color="#000" />
-                  <Text style={{marginLeft: 10}}>TAGS</Text>
+                  <Text style={styles.customInboxTitleText}>TAGS</Text>
                 </View>
               </CollapseHeader>
               <CollapseBody>
-                <View style={{marginLeft: wp(15)}}>
+                <View style={styles.customInboxItems}>
                   <DrawerItem
-                    style={{
-                      padding: 0,
-                      // backgroundColor: 'green',
-                    }}
                     label={({color, focused}) => {
                       return (
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            position: 'relative',
-                          }}>
-                          <BlueTagIcon />
-                          <Text style={{marginLeft: 10, fontSize: 14}}>
-                            Urgent
-                          </Text>
-                          <Text style={{position: 'absolute', right: -20}}>
-                            5
-                          </Text>
+                        <View style={styles.customInboxItemList}>
+                          <BlueTagIcon width={20} height={20} color={color} />
+                          <Text style={styles.customInboxtext}>Urgent</Text>
+                          <Text style={styles.badgeText}>5</Text>
                         </View>
                       );
                     }}
                     onPress={() =>
-                      // Linking.openURL('https://mywebsite.com/help')
                       //@ts-ignore
-                      navigation.navigate(SCREEN_NAME.teaminbox)
+                      navigation.navigate(SCREEN_NAME.teaminbox, {
+                        menuName: 'Urgent',
+                      })
                     }
                   />
 
                   <DrawerItem
-                    style={{
-                      // backgroundColor: 'green',
-                      marginTop: 0,
-                      paddingTop: 0,
-                    }}
                     label={({color, focused}) => {
                       return (
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                          }}>
-                          <RedTagIcon />
-                          <Text style={{marginLeft: 10}}>Sla breach</Text>
+                        <View style={styles.customInboxItemList}>
+                          <RedTagIcon width={20} height={20} color={color} />
+                          <Text style={styles.customInboxtext}>Sla breach</Text>
                         </View>
                       );
                     }}
                     onPress={() =>
-                      // Linking.openURL('https://mywebsite.com/help')
                       //@ts-ignore
-                      navigation.navigate(SCREEN_NAME.teaminbox)
+                      navigation.navigate(SCREEN_NAME.teaminbox, {
+                        menuName: 'Sla breach',
+                      })
                     }
                   />
                 </View>
@@ -274,15 +235,14 @@ const CustomDrawer = (props: any): JSX.Element => {
       </View>
 
       {/* logout button styling */}
-
-      <View style={{paddingTop: 20, position: 'absolute', bottom: hp(40)}}>
+      {/* <View style={{paddingTop: 20, position: 'absolute', bottom: hp(40)}}>
         <TouchableOpacity
           style={{flexDirection: 'row', paddingHorizontal: 20}}
           onPress={handleLogout}>
           <Ionicons name="exit-outline" size={20} />
-          <Text style={{marginLeft: 10}}>Sign Out</Text>
+          <Text style={styles.customInboxtext}>Sign Out</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   );
 };
@@ -316,5 +276,47 @@ const styles = StyleSheet.create({
   statusText: {
     fontSize: 12,
     fontFamily: FONTS.AVERTA_REGULAR,
+  },
+
+  customInboxContainer: {
+    paddingLeft: 15,
+    marginTop: 20,
+    width: '100%',
+    // backgroundColor: 'red',
+  },
+  customInboxTitle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  customInboxTitleText: {
+    fontSize: hp(13),
+    color: '#7D8282',
+    fontFamily: FONTS.AVERTA_BOLD,
+  },
+  customInboxItems: {
+    // marginLeft: wp(5),
+    width: '100%',
+  },
+  customInboxItemList: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    position: 'relative',
+    // backgroundColor: 'red',
+    width: '100%',
+  },
+  customInboxtext: {
+    marginLeft: 5,
+    fontSize: 14,
+    fontFamily: FONTS.AVERTA_REGULAR,
+    color: colors.primaryText,
+  },
+
+  badgeText: {
+    fontFamily: FONTS.AVERTA_REGULAR,
+    fontSize: 12,
+    color: colors.primaryText,
+    position: 'absolute',
+    right: -20,
   },
 });

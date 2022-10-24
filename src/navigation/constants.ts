@@ -2,9 +2,10 @@ import {Dimensions} from 'react-native';
 import {RouteProp} from '@react-navigation/native';
 
 export enum SCREEN_NAME {
-  onboard = 'app.screen.onboard',
+  onboarding = 'app.screen.onboard',
   auth = 'app.screen.auth',
   welcome = 'app.screen.auth.welcome',
+  forgotPassword = 'app.screen.auth.forgotpassword',
   profile = 'app.screen.auth.profile',
   social = 'app.screen.social',
   assigned = 'app.screen.assigned',
@@ -15,11 +16,13 @@ export enum SCREEN_NAME {
   teaminbox = 'app.screen.teaminbox',
   search = 'app.screen.search',
   notification = 'app.screen.notification',
+  compose = 'app.screen.compose',
   main = 'app.screen.main',
   settings = 'app.screen.settings',
   editprofile = 'app.screen.editprofile',
   changePhoneNumber = 'app.screen.changephonenumber',
   changeEmail = 'app.screen.changeemail',
+  resetPassword = 'app.screen.resetpassword',
   privacy = 'app.screen.privacy',
   datastorage = 'app.screen.datastorage',
   quickreplies = 'app.screen.quickreplies',
@@ -27,8 +30,9 @@ export enum SCREEN_NAME {
 }
 
 export type MainStackParamList = {
-  [SCREEN_NAME.onboard]: undefined;
+  [SCREEN_NAME.onboarding]: undefined;
   [SCREEN_NAME.auth]: undefined;
+  [SCREEN_NAME.forgotPassword]: undefined;
   [SCREEN_NAME.search]: undefined;
   [SCREEN_NAME.notification]: undefined;
   [SCREEN_NAME.welcome]: undefined;
@@ -39,6 +43,7 @@ export type MainStackParamList = {
   [SCREEN_NAME.mentions]: undefined;
   [SCREEN_NAME.unassigned]: undefined;
   [SCREEN_NAME.teaminbox]: undefined;
+  [SCREEN_NAME.compose]: undefined;
   [SCREEN_NAME.profile]: undefined;
   [SCREEN_NAME.main]: undefined;
   [SCREEN_NAME.settings]: undefined;
@@ -54,6 +59,7 @@ export type MainStackParamList = {
   [SCREEN_NAME.editprofile]: undefined;
   [SCREEN_NAME.changePhoneNumber]: undefined;
   [SCREEN_NAME.changeEmail]: undefined;
+  [SCREEN_NAME.resetPassword]: undefined;
   [SCREEN_NAME.privacy]: undefined;
   [SCREEN_NAME.datastorage]: undefined;
   [SCREEN_NAME.quickreplies]: undefined;

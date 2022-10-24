@@ -1,6 +1,6 @@
 import {StyleService} from '@ui-kitten/components';
 import {ImageStyle, TextStyle, ViewStyle} from 'react-native';
-import {FONTS} from 'src/constants';
+import {FONTS, colors} from 'src/constants';
 import {hp, wp} from 'src/utils';
 
 interface Styles {
@@ -14,6 +14,9 @@ interface Styles {
   editText: TextStyle;
   nameContainer: ViewStyle;
   cardList: ViewStyle;
+  infotextWrapper: ViewStyle;
+  infoText1: TextStyle;
+  infoText2: TextStyle;
 }
 const styles = StyleService.create<Styles>({
   container: {
@@ -46,6 +49,7 @@ const styles = StyleService.create<Styles>({
     marginBottom: hp(3),
     paddingTop: hp(10),
     color: '#0A0748',
+    // color: colors.secondaryBg,
     fontWeight: '600',
     lineHeight: 22,
   },
@@ -75,6 +79,27 @@ const styles = StyleService.create<Styles>({
     marginVertical: hp(10),
     marginHorizontal: hp(10),
     borderRadius: 10,
+  },
+
+  infotextWrapper: {
+    alignItems: 'center',
+    width: '100%',
+    position: 'absolute',
+    bottom: hp(20),
+    right: 0,
+    left: 0,
+  },
+  infoText1: {
+    textAlign: 'center',
+    fontFamily: FONTS.AVERTA_REGULAR,
+    color: '#A5ACB8',
+    fontSize: hp(13),
+  },
+  infoText2: {
+    textAlign: 'center',
+    fontSize: hp(12),
+    fontFamily: FONTS.AVERTA_REGULAR,
+    color: '#A5ACB8',
   },
 });
 export default styles;

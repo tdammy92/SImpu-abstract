@@ -7,15 +7,20 @@ import {
 } from 'react-native';
 import {Text, Modal} from '@ui-kitten/components';
 import React, {useState, useEffect, useRef} from 'react';
+
 import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import CreateIcon from 'src/assets/images/CreateIcon.svg';
 import {hp, wp} from 'src/utils';
 import {FONTS} from 'src/constants';
 import {Easing} from 'react-native-reanimated';
+import {useNavigation} from '@react-navigation/native';
+import {SCREEN_NAME} from 'src/navigation/constants';
 
 const {width, height} = Dimensions.get('screen');
 
 const ComposeMessageBtn = () => {
+  const navigation = useNavigation();
   const [showOption, setshowOption] = useState(false);
 
   const optionAnimation = useRef(new Animated.Value(0)).current;
@@ -33,11 +38,18 @@ const ComposeMessageBtn = () => {
     setshowOption(true);
   };
 
+  const handleCompose = () => {
+    setshowOption(false);
+
+    //@ts-ignore
+    navigation.navigate(SCREEN_NAME.compose);
+  };
+
   return (
     <View style={styles.composeContainer}>
       <Modal
         visible={showOption}
-        backdropStyle={{backgroundColor: 'rgba(0,0,0,0.12)'}}
+        backdropStyle={{backgroundColor: 'rgba(0,0,0,0.32)'}}
         onBackdropPress={() => setshowOption(false)}>
         <Animated.View
           style={[
@@ -50,25 +62,11 @@ const ComposeMessageBtn = () => {
               ],
             },
           ]}>
-          {/* <TouchableOpacity
-            style={[
-              styles.msgBtn,
-              {
-                backgroundColor: '#fff',
-                // borderColor: '#026AE8',
-                // borderWidth: 1,
-              },
-            ]}
-            onPress={() => console.log('I was pressed 1')}>
-            <AntDesign name="mail" size={hp(19)} color="#026AE8" />
-            <Text style={[styles.btnText, {color: '#026AE8'}]}>
-              Create inbox
-            </Text>
-          </TouchableOpacity> */}
           <TouchableOpacity
             style={[styles.msgBtn, {marginTop: 10}]}
-            onPress={() => console.log('I was pressed 2')}>
-            <Entypo name="new-message" size={hp(19)} color="white" />
+            onPress={handleCompose}>
+            {/* <Entypo name="new-message" size={hp(19)} color="white" /> */}
+            <CreateIcon />
             <Text style={[styles.btnText, {color: '#fff', marginLeft: 5}]}>
               New discussion
             </Text>
@@ -78,7 +76,7 @@ const ComposeMessageBtn = () => {
 
       {!showOption && (
         <TouchableOpacity style={styles.composeBtn} onPress={ShowComponse}>
-          <Entypo name="new-message" size={hp(22)} color="white" />
+          <CreateIcon />
         </TouchableOpacity>
       )}
     </View>
@@ -96,11 +94,11 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   composeBtn: {
-    width: wp(50),
-    height: hp(50),
+    width: hp(55),
+    height: hp(55),
     backgroundColor: '#276EF1',
     padding: hp(10),
-    borderRadius: 100,
+    borderRadius: hp(55) / 2,
     marginTop: hp(10),
     alignItems: 'center',
     justifyContent: 'center',

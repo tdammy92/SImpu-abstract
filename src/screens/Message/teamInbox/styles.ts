@@ -24,8 +24,9 @@ interface Styles {
 }
 const styles = StyleService.create<Styles>({
   container: {
-    width: '100%',
-    // flex: 1,
+    // width: '100%',
+    flex: 1,
+    backgroundColor: '#fff',
     // height: '100%',
     // position: 'relative',
   },

@@ -77,13 +77,13 @@ const Search = (props: any) => {
           style={[
             styles.inputWrapper,
             {
-              borderWidth: ShowSearchModal ? 2 : 1,
-              borderColor: ShowSearchModal ? '#026AE8' : '#000',
+              borderWidth: ShowSearchModal ? 1 : 0,
+              borderColor: ShowSearchModal ? '#000' : '#EBEEF2',
             },
           ]}>
           {ShowSearchModal && (
             <TouchableOpacity onPress={closeInpuPop}>
-              <AntDesign name="arrowleft" size={18} color="#026AE8" />
+              <AntDesign name="arrowleft" size={18} color="#000" />
             </TouchableOpacity>
           )}
 

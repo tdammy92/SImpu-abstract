@@ -9,7 +9,7 @@ import {
   Platform,
   StatusBar,
 } from 'react-native';
-import {useMutation, useQuery} from 'react-query';
+// import {useMutation, useQuery} from 'react-query';
 import {useNavigation} from '@react-navigation/native';
 // import mime from "mime";
 import styles from './styles';
@@ -20,8 +20,8 @@ import ArrowRight from '../../../assets/images/Arrow_Right.svg';
 import {MainStackParamList, SCREEN_NAME} from 'src/navigation/constants';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {addUser, updateUser, logOutUser} from 'src/store/user/userReducer';
-import {Spinner, LoadingView} from '@nghinv/react-native-loading';
-import {BaseUrl} from 'src/services/api/BaseApi';
+// import {Spinner, LoadingView} from '@nghinv/react-native-loading';
+// import {BaseUrl} from 'src/services/api/BaseApi';
 import axios from 'axios';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import {Avatar as avatar} from 'src/constants/general';
@@ -32,36 +32,15 @@ import ImagePicker from 'react-native-image-crop-picker';
 import {StoreState} from 'src/@types/store';
 import {DEMO_API, SECERET_KEY} from '@env';
 import HeaderNextBtn from 'src/components/common/HeaderNextBtn';
-const mime = require('mime');
+// const mime = require('mime');
 
 interface Props
   extends NativeStackScreenProps<MainStackParamList, SCREEN_NAME.settings> {}
 
-// const formatedImage=(photo:any,body={}  as any)=>{
-
-//   const data = new FormData();
-
-//   console.log(photo);
-
-//   data.append(
-//     'image',{
-//       name:photo.filename,
-//       type:photo.mime,
-//       uri:photo.path
-//     }
-//   );
-
-//   Object.keys(body).forEach((key)=>{
-//     data.append(key,body[key]);
-//   })
-
-//   return data
-// }
-
 const EditProfile = (props: Props): JSX.Element => {
   const dispatch = useDispatch();
   const user = useSelector((state: StoreState) => state.user.profile);
-  const token = useSelector((state: StoreState) => state.auth.token);
+  // const token = useSelector((state: StoreState) => state.auth.token);
 
   const {setOptions} = useNavigation();
   const {navigation} = props;
@@ -69,35 +48,6 @@ const EditProfile = (props: Props): JSX.Element => {
   const [lastName, setLastName] = useState<string>(user?.last_name);
 
   const bottomSheetRef = useRef<any>(null);
-
-  const axiosConfig: any = {
-    headers: {
-      'Content-type': 'application/json',
-      Authorization: `${token}`,
-      organisationID: `${user?.organisation_id}`,
-    },
-  };
-
-  const axiosImageConfig: any = {
-    headers: {
-      'Content-type': 'multipart/form-data',
-      Authorization: `${token}`,
-      organisationID: `${user?.organisation_id}`,
-    },
-  };
-
-  const savePhoto = async (payload: any) =>
-    axios
-      .post(`${DEMO_API}/profile/save_image`, payload, axiosImageConfig)
-      .then(res => res.data);
-
-  const saveProfile = async (payload: any) =>
-    axios
-      .patch(`${DEMO_API}/profile/save`, payload, axiosConfig)
-      .then(res => res.data);
-
-  const photoUpdate = useMutation(savePhoto);
-  const profileUpdate = useMutation(saveProfile);
 
   //open camera code
   const Snap = async () => {
@@ -146,8 +96,6 @@ const EditProfile = (props: Props): JSX.Element => {
 
   //function to handle update image
   const updateImage = async (image: any) => {
-    Spinner.show({indicatorColor: 'gray'});
-
     // const imagePath= Platform.OS==='android'? image.path : image.sourceURL;
     // const imageType = mime.getType(imagePath);
 
@@ -159,15 +107,7 @@ const EditProfile = (props: Props): JSX.Element => {
       name: image.filename,
     });
 
-    // console.log(JSON.stringify(imageupload));
-    // console.log(imageupload);
-
     try {
-      const photo = await photoUpdate.mutateAsync(imageupload);
-
-      dispatch(updateUser(photo?.data?.profile));
-      Spinner.hide();
-
       Alert.alert(
         'Update',
         `Profile picture updated successfuly`,
@@ -183,8 +123,6 @@ const EditProfile = (props: Props): JSX.Element => {
         },
       );
     } catch (error) {
-      Spinner.hide();
-
       Alert.alert(
         'An error occured',
         `${error}`,
@@ -263,29 +201,29 @@ const EditProfile = (props: Props): JSX.Element => {
   };
 
   //handle logout function
-  const handleLogout = () => {
-    Alert.alert(
-      'Confirm Logout?',
-      'Are you sure you want to logout ?',
-      [
-        {
-          text: 'cancle',
-          onPress: () => console.log('cancled logot '),
-        },
-        {
-          text: 'yes',
-          onPress: () => {
-            dispatch(logOutUser()),
-              navigation.reset({index: 0, routes: [{name: SCREEN_NAME.login}]});
-          },
-        },
-      ],
-      {
-        cancelable: true,
-        onDismiss: () => console.log('cancled'),
-      },
-    );
-  };
+  // const handleLogout = () => {
+  //   Alert.alert(
+  //     'Confirm Logout?',
+  //     'Are you sure you want to logout ?',
+  //     [
+  //       {
+  //         text: 'cancle',
+  //         onPress: () => console.log('cancled logot '),
+  //       },
+  //       {
+  //         text: 'yes',
+  //         onPress: () => {
+  //           dispatch(logOutUser()),
+  //             navigation.reset({index: 0, routes: [{name: SCREEN_NAME.login}]});
+  //         },
+  //       },
+  //     ],
+  //     {
+  //       cancelable: true,
+  //       onDismiss: () => console.log('cancled'),
+  //     },
+  //   );
+  // };
 
   useEffect(() => {
     setOptions({
@@ -344,20 +282,14 @@ const EditProfile = (props: Props): JSX.Element => {
         </Text>
         <View style={styles.card}>
           <FloatLabel
-            // onPress={() => navigation.navigate(SCREEN_NAME.changePhoneNumber)}
-            text2={`${user?.country_code || ''}${user?.phone || ''}`}
+            onPress={() => navigation.navigate(SCREEN_NAME.changePhoneNumber)}
+            text2={`+${user?.country_code || ''}${user?.phone || ''}`}
             icon2={<ArrowRight />}
             text="Change Number"
           />
-          {/* <FloatLabel
-          border
-          text2={`${user?.email || ''}`}
-          // icon2={<ArrowRight />}
-          text="Username"
-        /> */}
-        </View>
-        <View style={styles.card}>
+
           <FloatLabel
+            border
             onPress={() => navigation.navigate(SCREEN_NAME.changeEmail)}
             // text2=""
             text2={`${user?.email || ''}`}
@@ -366,17 +298,41 @@ const EditProfile = (props: Props): JSX.Element => {
           />
           {/* <FloatLabel
           border
+          text2={`${user?.email || ''}`}
+          // icon2={<ArrowRight />}
+          text="Username"
+        /> */}
+        </View>
+        {/* <View style={styles.card}>
+          <FloatLabel
+            onPress={() => navigation.navigate(SCREEN_NAME.changeEmail)}
+            // text2=""
+            text2={`${user?.email || ''}`}
+            icon2={<ArrowRight />}
+            text="Change Email"
+          />
+          <FloatLabel
+          border
           text2=""
           icon2={<ArrowRight />}
           text="Change Email Address"
-        /> */}
+        />
+        </View> */}
+        <View style={styles.card}>
+          <FloatLabel
+            onPress={() => navigation.navigate(SCREEN_NAME.resetPassword)}
+            // text2=""
+            // text2={`${user?.email || ''}`}
+            icon2={<ArrowRight />}
+            text="Reset Password"
+          />
         </View>
 
-        <Pressable onPress={handleLogout}>
+        {/* <Pressable onPress={handleLogout}>
           <View style={[styles.card, globalStyles.rowCenter]}>
             <Text style={styles.logOut}>Logout</Text>
           </View>
-        </Pressable>
+        </Pressable> */}
 
         <BottomSheet Gallery={Gallery} Snap={Snap} ref={bottomSheetRef} />
       </View>

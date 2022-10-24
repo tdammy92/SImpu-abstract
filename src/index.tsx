@@ -15,7 +15,7 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 import {ApplicationProvider as UIKittenProvider} from '@ui-kitten/components';
 import {Provider} from 'react-redux';
-// import {QueryClientProvider, QueryClient} from 'react-query';
+import {QueryClientProvider, QueryClient} from 'react-query';
 import {persistor, store} from 'src/store';
 import {PersistGate} from 'redux-persist/integration/react';
 import {MainStackParamList} from './navigation/constants';
@@ -33,7 +33,7 @@ export default (): JSX.Element => {
     routeNameRef.current = navigationRef.current?.getCurrentRoute()?.name;
   }, [routeNameRef, navigationRef]);
 
-  // const queryClient = new QueryClient();
+  const queryClient = new QueryClient();
 
   useEffect(() => {
     const init = async () => {
@@ -46,24 +46,24 @@ export default (): JSX.Element => {
   return (
     <>
       <Provider store={store}>
-        {/* <QueryClientProvider client={queryClient}> */}
-        <IconRegistry icons={[EvaIconsPack]} />
-        <PersistGate persistor={persistor}>
-          <UIKittenProvider {...eva} theme={{...eva.light, ...theme}}>
-            <>
-              <StatusBar
-                barStyle="dark-content"
-                translucent={true}
-                backgroundColor={'transparent'}
-              />
+        <QueryClientProvider client={queryClient}>
+          <IconRegistry icons={[EvaIconsPack]} />
+          <PersistGate persistor={persistor}>
+            <UIKittenProvider {...eva} theme={{...eva.light, ...theme}}>
+              <>
+                <StatusBar
+                  barStyle="dark-content"
+                  translucent={true}
+                  backgroundColor={'transparent'}
+                />
 
-              <NavigationContainer ref={navigationRef} onReady={onReady}>
-                <RootStack />
-              </NavigationContainer>
-            </>
-          </UIKittenProvider>
-        </PersistGate>
-        {/* </QueryClientProvider> */}
+                <NavigationContainer ref={navigationRef} onReady={onReady}>
+                  <RootStack />
+                </NavigationContainer>
+              </>
+            </UIKittenProvider>
+          </PersistGate>
+        </QueryClientProvider>
       </Provider>
     </>
   );

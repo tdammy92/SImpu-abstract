@@ -6,11 +6,12 @@ import {
   GestureResponderEvent,
 } from 'react-native';
 import React, {forwardRef} from 'react';
+
 import RBSheet, {RBSheetProps} from 'react-native-raw-bottom-sheet';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import theme from 'src/constants/theme';
-
+import {FONTS} from 'src/constants';
 
 type Props = {
   Snap: (event: GestureResponderEvent) => void;
@@ -20,6 +21,7 @@ type Props = {
 
 const ImagePicker = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
   return (
+    //@ts-ignore
     <RBSheet
       ref={ref}
       height={200}
@@ -35,9 +37,19 @@ const ImagePicker = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
         },
       }}>
       <View style={styles.contentContainer}>
-        <Text style={{color: 'white',textAlign:'center',fontSize:18,fontWeight:'400',paddingTop:10}}>Profile Photo</Text>
+        <Text
+          style={{
+            color: 'white',
+            textAlign: 'center',
+            fontSize: 18,
+            fontWeight: '400',
+            fontFamily: FONTS.AVERTA_REGULAR,
+            paddingTop: 10,
+          }}>
+          Profile Photo
+        </Text>
 
-        <View  style={styles.IconWrapper}>
+        <View style={styles.IconWrapper}>
           <TouchableOpacity onPress={props.Snap}>
             <View style={styles.itemWrapper}>
               <Entypo name="camera" size={40} color={'white'} />
@@ -63,10 +75,10 @@ const styles = StyleSheet.create({
   contentContainer: {
     width: '100%',
     height: '90%',
-    flexDirection:'column'
+    flexDirection: 'column',
   },
-  IconWrapper:{
-    flex:1,
+  IconWrapper: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-evenly',

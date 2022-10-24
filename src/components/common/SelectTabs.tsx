@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Text, Button } from '@ui-kitten/components';
-import { SelectTabProps } from './types';
+import {StyleSheet, View} from 'react-native';
+import {Text, Button} from '@ui-kitten/components';
+import {SelectTabProps} from './types';
+import {FONTS} from 'src/constants';
 
 const SelectTab = ({
   session1,
@@ -36,7 +37,8 @@ const SelectTab = ({
     },
     textStyle: {
       color: !eventActive ? '#1B1212' : '#425A70',
-      fontWeight: 'bold',
+      // fontWeight: 'bold',
+      fontFamily: FONTS.AVERTA_BOLD,
     },
   });
   const userNameChildren = () => {

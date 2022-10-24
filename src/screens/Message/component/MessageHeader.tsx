@@ -13,6 +13,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Octicons from 'react-native-vector-icons/Octicons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import SidepanelIcon from 'src/assets/images/SidepanelIcon.svg';
+import NotificationLabel from 'src/assets/images/notificationLabel.svg';
 import {colors, FONTS} from 'src/constants';
 import {hp, wp} from 'src/utils';
 import dummyData from 'src/constants/dummyData';
@@ -35,26 +37,28 @@ const MessageHeader = (props: any) => {
 
   return (
     <View style={styles.headerContainer}>
-      {/* top buttons */}
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}>
+      {/* first row buttons */}
+      <View style={styles.headerRowContainer}>
         <TouchableOpacity onPress={HandlePress ? HandlePress : openDraw}>
-          <AntDesign name="menu-fold" size={30} color={colors.primaryText} />
+          <SidepanelIcon />
         </TouchableOpacity>
         <TouchableOpacity onPress={openNotification}>
           <View style={styles.badgeContainer}>
-            <Text style={styles.badgeText}>{dummyData?.length}</Text>
+            {dummyData.length > 0 ? <NotificationLabel /> : null}
           </View>
-          <Ionicons
-            name="notifications-outline"
-            size={30}
-            color={colors.primaryText}
-            style={{transform: [{rotate: '35deg'}]}}
-          />
+          <Ionicons name="notifications-outline" size={30} color={'#7D8282'} />
+        </TouchableOpacity>
+      </View>
+
+      {/* second row buttons */}
+      <View style={[styles.headerRowContainer, {marginTop: hp(20)}]}>
+        <Text style={styles.headerTitleText}>{props?.name && props?.name}</Text>
+
+        {/* sort option slider view */}
+        <TouchableOpacity
+          style={{marginTop: 0, backgroundColor: ''}}
+          onPress={openSortSheet}>
+          <Octicons name="sort-asc" size={20} color="#000" />
         </TouchableOpacity>
       </View>
 
@@ -64,24 +68,22 @@ const MessageHeader = (props: any) => {
           style={styles.inputWrapper}
           //@ts-ignore
           onPress={() => navigation.navigate(SCREEN_NAME.search)}>
-          <EvilIcons name="search" size={25} color="black" />
+          <EvilIcons name="search" size={25} color="#828282" />
 
           <Text
             style={{
-              color: colors.primaryText,
+              color: '#828282',
               fontFamily: FONTS.AVERTA_SEMI_BOLD,
               fontSize: hp(16),
+              marginLeft: wp(5),
             }}>
-            Search
+            Search...
           </Text>
         </TouchableOpacity>
 
         {/* menu name view */}
         <View style={styles.sliderView}>
-          <Text style={styles.headerTitleText}>
-            {props?.name && props?.name}
-          </Text>
-
+          {!shoMessageOptions && <View />}
           {shoMessageOptions && (
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {messageOption.map((option: any, index: any) => {
@@ -96,8 +98,8 @@ const MessageHeader = (props: any) => {
                     <View
                       style={{
                         borderBottomColor:
-                          selectedIndex === index ? '#026AE8' : '',
-                        borderBottomWidth: selectedIndex === index ? 3 : 0,
+                          selectedIndex === index ? '#191A1A' : '',
+                        borderBottomWidth: selectedIndex === index ? 2 : 0,
                       }}>
                       <Text style={[styles.sliderText, {}]}>{option}</Text>
                     </View>
@@ -106,13 +108,6 @@ const MessageHeader = (props: any) => {
               })}
             </ScrollView>
           )}
-
-          {/* sort option slider view */}
-          <TouchableOpacity
-            style={{marginTop: 0, backgroundColor: ''}}
-            onPress={openSortSheet}>
-            <Octicons name="sort-asc" size={23} color="#000" />
-          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -131,19 +126,27 @@ const styles = StyleSheet.create({
   },
 
   headerDetails: {
-    marginVertical: hp(10),
+    marginVertical: hp(2),
+  },
+
+  headerRowContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+
+    paddingHorizontal: wp(5),
   },
 
   badgeContainer: {
     position: 'absolute',
-    backgroundColor: '#D22B2B',
-    right: wp(10),
-    top: hp(-8),
+    // backgroundColor: '#D22B2B',
+    right: wp(4),
+    top: hp(4),
     elevation: 3,
     zIndex: 3,
-    borderRadius: 50,
-    height: hp(20),
-    width: wp(20),
+    // borderRadius: 50,
+    // height: hp(20),
+    // width: wp(20),
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -157,6 +160,7 @@ const styles = StyleSheet.create({
 
   headerTitleText: {
     fontSize: hp(18),
+
     fontFamily: FONTS.AVERTA_SEMI_BOLD,
     color: colors.primaryText,
   },
@@ -165,13 +169,23 @@ const styles = StyleSheet.create({
     marginVertical: hp(10),
     height: 40,
     paddingHorizontal: wp(7),
+    backgroundColor: '#F8F8F8',
+
     borderWidth: 1,
     alignItems: 'center',
     borderRadius: 10,
+    borderColor: '#F8F8F8',
+
+    shadowColor: '#999',
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 1,
   },
 
   sliderView: {
     flexDirection: 'row',
+    paddingTop: hp(10),
     justifyContent: 'space-between',
   },
   sliderText: {

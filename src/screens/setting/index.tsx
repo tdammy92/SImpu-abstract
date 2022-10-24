@@ -1,7 +1,9 @@
-import React from 'react';
+import React, {useState, useCallback, useEffect, useRef} from 'react';
 import {Text, Toggle, Button, Avatar} from '@ui-kitten/components';
 import {View, Image, Pressable, Linking, Alert} from 'react-native';
-import {ScrollView} from 'react-native-gesture-handler';
+
+import {getApplicationName, getReadableVersion} from 'react-native-device-info';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 //@ts-ignore
 import UserAvatar from 'react-native-user-avatar';
@@ -25,6 +27,8 @@ import {Avatar as avatar} from '../../constants/general';
 import {StoreState} from 'src/@types/store';
 import {logOutUser} from '../../store/user/userReducer';
 import {hp, wp} from 'src/utils';
+import {colors} from 'src/constants';
+import LogoutSheet from './component/LogoutSheet';
 interface Props
   extends NativeStackScreenProps<MainStackParamList, SCREEN_NAME.settings> {}
 
@@ -33,104 +37,116 @@ const Setting = (props: Props): JSX.Element => {
   const dispatch = useDispatch();
   const {profile} = useSelector((state: StoreState) => state.user);
 
-  const [checked, setChecked] = React.useState(false);
-  const [notifyCheck, setNotifyCheck] = React.useState(false);
+  const [checked, setChecked] = useState(false);
+  const [notifyCheck, setNotifyCheck] = useState(false);
 
-  const navigateProfile = React.useCallback(() => {
+  const logoutSheet = useRef<any>(null);
+
+  const openSheet = () => {
+    if (logoutSheet.current) {
+      logoutSheet.current.open();
+    }
+  };
+
+  const closeSheet = () => {
+    //@ts-ignore
+
+    if (logoutSheet.current) {
+      logoutSheet.current.close();
+    }
+  };
+
+  const navigateProfile = useCallback(() => {
     navigation.navigate(SCREEN_NAME.editprofile);
   }, [navigation]);
-  const navigatePrivacy = React.useCallback(() => {
+
+  const navigatePrivacy = useCallback(() => {
     navigation.navigate(SCREEN_NAME.privacy);
   }, [navigation]);
-  const navigateDataStorage = React.useCallback(() => {
-    navigation.navigate(SCREEN_NAME.datastorage);
-  }, [navigation]);
-  const navigateManageChannels = React.useCallback(() => {
-    // navigation.navigate(SCREEN_NAME.managesocials);
-  }, [navigation]);
-  const navigateQuickReplies = React.useCallback(() => {
+  // const navigateDataStorage = React.useCallback(() => {
+  //   navigation.navigate(SCREEN_NAME.datastorage);
+  // }, [navigation]);
+  // const navigateManageChannels = React.useCallback(() => {
+  //   // navigation.navigate(SCREEN_NAME.managesocials);
+  // }, [navigation]);
+
+  const navigateQuickReplies = useCallback(() => {
     navigation.navigate(SCREEN_NAME.quickreplies);
   }, [navigation]);
 
   //handle logout function
   const handleLogout = () => {
-    Alert.alert(
-      'Confirm Logout?',
-      'Are you sure you want to logout ?',
-      [
-        {
-          text: 'cancle',
-          onPress: () => console.log('cancled logot '),
-        },
-        {
-          text: 'yes',
-          onPress: () => {
-            dispatch(logOutUser()),
-              navigation.reset({index: 0, routes: [{name: SCREEN_NAME.auth}]});
-          },
-        },
-      ],
-      {
-        cancelable: true,
-        onDismiss: () => console.log('cancled'),
-      },
+    closeSheet();
+    dispatch(logOutUser());
+
+    setTimeout(
+      () => navigation.reset({index: 0, routes: [{name: SCREEN_NAME.auth}]}),
+
+      200,
     );
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Pressable
-        onPress={navigateProfile}
-        style={[styles.nameContainer, globalStyles.colBetween]}>
-        <UserAvatar
-          name={`${profile?.first_name} ${profile?.last_name}`}
-          size={60}
-          src={profile?.image}
-        />
-
-        <Text
-          style={
-            styles.headerText
-          }>{`${profile?.first_name} ${profile?.last_name}`}</Text>
-
-        <Text
-          style={
-            styles.lowerText
-          }>{`+${profile?.country_code}${profile?.phone}`}</Text>
-
-        <Text style={styles.lowerText}>{`${profile?.email}`}</Text>
-
-        <Text style={styles.editText}>Update Profile</Text>
-      </Pressable>
-
-      <View style={styles.cardList}>
-        <Labellist
-          icon2={
-            <Toggle checked={checked} onChange={() => setChecked(!checked)} />
-          }
-          icon1={<NightIcon />}
-          text="Dark mode"
-        />
-        <Labellist
-          border
-          icon2={
-            <Toggle
-              checked={notifyCheck}
-              onChange={() => setNotifyCheck(!notifyCheck)}
+    <>
+      <View style={styles.container}>
+        <Pressable
+          onPress={navigateProfile}
+          style={[styles.nameContainer, globalStyles.colBetween]}>
+          <View style={{position: 'absolute', right: 10, top: 10}}>
+            <MaterialCommunityIcons
+              name="circle-edit-outline"
+              color="#0A0748"
+              size={25}
             />
-          }
-          icon1={<NotifyIcon />}
-          text="Notifications"
-        />
-      </View>
-      <View style={styles.cardList}>
-        <Labellist
+          </View>
+
+          <UserAvatar
+            name={`${profile?.first_name} ${profile?.last_name}`}
+            size={60}
+            src={profile?.image}
+          />
+
+          <Text
+            style={
+              styles.headerText
+            }>{`${profile?.first_name} ${profile?.last_name}`}</Text>
+
+          <Text
+            style={
+              styles.lowerText
+            }>{`+${profile?.country_code}${profile?.phone}`}</Text>
+
+          <Text style={styles.lowerText}>{`${profile?.email}`}</Text>
+        </Pressable>
+
+        <View style={styles.cardList}>
+          <Labellist
+            icon2={
+              <Toggle checked={checked} onChange={() => setChecked(!checked)} />
+            }
+            icon1={<NightIcon />}
+            text="Dark mode"
+          />
+          <Labellist
+            border
+            icon2={
+              <Toggle
+                checked={notifyCheck}
+                onChange={() => setNotifyCheck(!notifyCheck)}
+              />
+            }
+            icon1={<NotifyIcon />}
+            text="Notifications"
+          />
+        </View>
+        <View style={styles.cardList}>
+          {/* <Labellist
           onPress={navigateQuickReplies}
           icon2={<ArrowRight />}
           icon1={<QuoteLeft />}
           text="Quick Replies"
-        />
-        {/* <Labellist
+        /> */}
+          {/* <Labellist
           onPress={navigateManageChannels}
           border
           icon2={<ArrowRight />}
@@ -143,36 +159,59 @@ const Setting = (props: Props): JSX.Element => {
           icon1={<AccountIcon />}
           text="Manage Bank Account"
         /> */}
-      </View>
-      <View style={styles.cardList}>
-        {/* <Labellist
+        </View>
+        <View style={styles.cardList}>
+          {/* <Labellist
           onPress={navigatePrivacy}
           icon2={<ArrowRight />}
           icon1={<PrivacyIcon />}
           text="Privacy and Security"
         /> */}
-        {/* <Labellist
+          {/* <Labellist
           onPress={navigateDataStorage}
           border
           icon2={<ArrowRight />}
           icon1={<DataStorage />}
           text="Data and Storage"
         /> */}
-        <Labellist
-          border
-          icon2={<ArrowRight />}
-          icon1={<AboutIcon />}
-          text="About Simpu"
-          onPress={() => Linking.openURL('https://simpu.co')}
-        />
+
+          <Labellist
+            onPress={navigateQuickReplies}
+            icon2={<ArrowRight />}
+            icon1={<QuoteLeft />}
+            text="Quick Replies"
+          />
+          <Labellist
+            border
+            icon2={<ArrowRight />}
+            icon1={<AboutIcon />}
+            text="About Simpu"
+            onPress={() => Linking.openURL('https://simpu.co')}
+          />
+        </View>
+        <View style={styles.cardList}>
+          <Labellist
+            icon2={<ArrowRight />}
+            icon1={<LogOut />}
+            text="Logout"
+            onPress={openSheet}
+          />
+        </View>
+
+        <View style={styles.infotextWrapper}>
+          <Text style={styles.infoText1}>
+            <Text style={styles.infoText1}>{getApplicationName()} </Text>
+            <Text style={styles.infoText1}>version {getReadableVersion()}</Text>
+          </Text>
+          <Text style={styles.infoText2}>Built to empower teams</Text>
+        </View>
       </View>
-      <Labellist
-        icon2={<ArrowRight />}
-        icon1={<LogOut />}
-        text="Logout"
-        onPress={handleLogout}
+      <LogoutSheet
+        ref={logoutSheet}
+        // closeSheet={closeSheet}
+        handlePress={handleLogout}
       />
-    </ScrollView>
+    </>
   );
 };
 export default Setting;
