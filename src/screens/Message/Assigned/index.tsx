@@ -7,7 +7,7 @@ import {
   Animated,
   TouchableOpacity,
   TouchableHighlight,
-  Image,
+  RefreshControl,
 } from 'react-native';
 import {StyledComponentProps, Text, useStyleSheet} from '@ui-kitten/components';
 import React, {useState, useRef, useEffect, useCallback} from 'react';
@@ -24,12 +24,40 @@ import ComposeMessageBtn from '../component/ComposeMessageBtn';
 import HiddenItemWithActions from '../component/cardOptions/HiddenItemWithActions';
 import {hp} from 'src/utils';
 import SortSheet from '../component/SortSheet';
+import ListLoader from 'src/components/common/ListLoader';
 import dummyData from 'src/constants/dummyData';
+import {useSelector} from 'react-redux';
+import {StoreState} from 'src/@types/store';
+import {useMessageThreads} from 'src/services/queries';
 
 const Assigned = ({navigation}: any) => {
   const SortSheetRef = useRef<any>(null);
   const styles = useStyleSheet(themedStyles);
   const [Message, setMessage] = useState(() => dummyData);
+
+  const {profile, token} = useSelector((state: StoreState) => state.user);
+
+  const {
+    data: AssignedData,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isLoading,
+  } = useMessageThreads(
+    {
+      filter: 'assigned',
+      sort: 'newest',
+      page: 1,
+      Auth: token,
+      organisationId: profile?.organisations?.id,
+    },
+    {},
+  );
+
+  //This snippet flattens the array
+  const assignedData = AssignedData?.pages
+    ?.map((res: any) => res?.data?.threads?.map((r: any) => r))
+    .flat(2);
 
   //open sheet code
   const openSheet = (channel: string) => {
@@ -126,35 +154,42 @@ const Assigned = ({navigation}: any) => {
           isSocial={false}
           isTeamInbox={false}
         />
-        <SwipeListView
-          data={[]}
-          useAnimatedList={true}
-          renderItem={renderItem}
-          contentContainerStyle={{paddingVertical: hp(5)}}
-          contentInset={{bottom: hp(0)}}
-          useNativeDriver={false}
-          showsVerticalScrollIndicator={false}
-          closeOnRowBeginSwipe
-          closeOnRowOpen
-          scrollEnabled
-          renderHiddenItem={renderHiddenItem}
-          //@ts-ignore
-          keyExtractor={item => item.id}
-          onRowDidOpen={onRowDidOpen}
-          leftOpenValue={90}
-          rightOpenValue={-90}
-          leftActivationValue={100}
-          rightActivationValue={-200}
-          leftActionValue={0}
-          rightActionValue={-100}
-          stopRightSwipe={-150}
-          stopLeftSwipe={150}
-          onLeftAction={onLeftAction}
-          onRightAction={onRightAction}
-          onLeftActionStatusChange={onLeftActionStatusChange}
-          onRightActionStatusChange={onRightActionStatusChange}
-          ListEmptyComponent={<EmptyInbox />}
-        />
+        {!isLoading ? (
+          <SwipeListView
+            data={assignedData}
+            useFlatList={true}
+            useAnimatedList={true}
+            //@ts-ignore
+            onEndReached={fetchNextPage}
+            onEndReachedThreshold={3}
+            renderItem={renderItem}
+            contentContainerStyle={{paddingVertical: hp(5)}}
+            contentInset={{bottom: hp(0)}}
+            useNativeDriver={false}
+            showsVerticalScrollIndicator={false}
+            closeOnRowBeginSwipe
+            closeOnRowOpen
+            scrollEnabled
+            renderHiddenItem={renderHiddenItem}
+            keyExtractor={(item, i) => `${i}`}
+            onRowDidOpen={onRowDidOpen}
+            leftOpenValue={90}
+            rightOpenValue={-90}
+            leftActivationValue={100}
+            rightActivationValue={-200}
+            leftActionValue={0}
+            rightActionValue={-100}
+            stopRightSwipe={-150}
+            stopLeftSwipe={150}
+            onLeftAction={onLeftAction}
+            onRightAction={onRightAction}
+            onLeftActionStatusChange={onLeftActionStatusChange}
+            onRightActionStatusChange={onRightActionStatusChange}
+            ListEmptyComponent={<EmptyInbox />}
+          />
+        ) : (
+          <ListLoader />
+        )}
       </View>
 
       <ComposeMessageBtn />

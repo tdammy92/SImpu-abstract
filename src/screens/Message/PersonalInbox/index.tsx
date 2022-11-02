@@ -20,21 +20,49 @@ import ComposeMessageBtn from '../component/ComposeMessageBtn';
 import {hp} from 'src/utils';
 import SortSheet from '../component/SortSheet';
 import dummyData from 'src/constants/dummyData';
+import {usePersonalThreads} from 'src/services/queries';
+import {useSelector} from 'react-redux';
+import {StoreState} from 'src/@types/store';
+import ListLoader from 'src/components/common/ListLoader';
 
 const Social = ({navigation}: any) => {
   const SortSheetRef = useRef<any>(null);
   const styles = useStyleSheet(themedStyles);
+  // open, favorited, snoozed
+  const {token, profile} = useSelector((state: StoreState) => state.user);
   const [Message, setMessage] = useState(() => dummyData);
   const [messageOption, setMessageOption] = useState([
-    'All',
-    'Favorite',
-    'Snoozed',
+    'all',
+    'favorited',
+    'snoozed',
   ]);
   const [selectedIndex, setselectedIndex] = useState(0);
 
   const handleSelectedIndex = (index: number) => {
     setselectedIndex(index);
   };
+
+  const {
+    data: personalThreadData,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isLoading,
+  } = usePersonalThreads(
+    {
+      filter: messageOption[selectedIndex],
+      sort: 'newest',
+      page: 1,
+      Auth: token,
+      organisationId: profile?.organisations?.id,
+    },
+    {},
+  );
+
+  //This snippet flattens the array
+  const personalThread = personalThreadData?.pages
+    ?.map((res: any) => res?.data?.threads?.map((r: any) => r))
+    .flat(2);
 
   //open sheet code
   const openSheet = (channel: string) => {
@@ -121,6 +149,8 @@ const Social = ({navigation}: any) => {
     );
   };
 
+  // console.log('threads Personal inbox', personalThread);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={{height: '100%', flex: 1}}>
@@ -134,36 +164,44 @@ const Social = ({navigation}: any) => {
           shoMessageOptions={true}
         />
 
-        <SwipeListView
-          data={Message}
-          useAnimatedList={true}
-          renderItem={renderItem}
-          contentContainerStyle={{
-            paddingVertical: hp(5),
-          }}
-          contentInset={{bottom: hp(0)}}
-          useNativeDriver={false}
-          showsVerticalScrollIndicator={false}
-          closeOnRowBeginSwipe
-          closeOnRowOpen
-          scrollEnabled
-          renderHiddenItem={renderHiddenItem}
-          keyExtractor={item => item.id}
-          onRowDidOpen={onRowDidOpen}
-          leftOpenValue={90}
-          rightOpenValue={-90}
-          leftActivationValue={100}
-          rightActivationValue={-200}
-          leftActionValue={0}
-          rightActionValue={-100}
-          stopRightSwipe={-150}
-          stopLeftSwipe={150}
-          onLeftAction={onLeftAction}
-          onRightAction={onRightAction}
-          onLeftActionStatusChange={onLeftActionStatusChange}
-          onRightActionStatusChange={onRightActionStatusChange}
-          ListEmptyComponent={<EmptyInbox />}
-        />
+        {!isLoading ? (
+          <SwipeListView
+            data={personalThread ?? []}
+            useAnimatedList={true}
+            renderItem={renderItem}
+            useFlatList={true}
+            contentContainerStyle={{
+              paddingVertical: hp(5),
+            }}
+            //@ts-ignore
+            onEndReached={fetchNextPage}
+            onEndReachedThreshold={3}
+            contentInset={{bottom: hp(0)}}
+            useNativeDriver={false}
+            showsVerticalScrollIndicator={false}
+            closeOnRowBeginSwipe
+            closeOnRowOpen
+            scrollEnabled
+            renderHiddenItem={renderHiddenItem}
+            keyExtractor={(item, i) => `${i}`}
+            onRowDidOpen={onRowDidOpen}
+            leftOpenValue={90}
+            rightOpenValue={-90}
+            leftActivationValue={100}
+            rightActivationValue={-200}
+            leftActionValue={0}
+            rightActionValue={-100}
+            stopRightSwipe={-150}
+            stopLeftSwipe={150}
+            onLeftAction={onLeftAction}
+            onRightAction={onRightAction}
+            onLeftActionStatusChange={onLeftActionStatusChange}
+            onRightActionStatusChange={onRightActionStatusChange}
+            ListEmptyComponent={<EmptyInbox />}
+          />
+        ) : (
+          <ListLoader />
+        )}
       </View>
 
       <ComposeMessageBtn />

@@ -8,9 +8,11 @@ import {
   TouchableOpacity,
   TouchableHighlight,
   Image,
+  RefreshControl,
 } from 'react-native';
 import {StyledComponentProps, Text, useStyleSheet} from '@ui-kitten/components';
-import React, {useState, useRef, useEffect, useCallback} from 'react';
+import React, {useState, useRef, useEffect, useCallback, useMemo} from 'react';
+import {useSelector, useDispatch} from 'react-redux';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 //@ts-ignore
 // import SwipeActionList from 'react-native-swipe-action-list';
@@ -23,28 +25,41 @@ import MessageCard from '../component/message/MessageCard';
 import ComposeMessageBtn from '../component/ComposeMessageBtn';
 import HiddenItemWithActions from '../component/cardOptions/HiddenItemWithActions';
 import {hp} from 'src/utils';
-import SortSheet from '../component/SortSheet';
 import dummyData from 'src/constants/dummyData';
+import {useMessageThreads} from 'src/services/queries';
+import {StoreState} from 'src/@types/store';
+import ListLoader from 'src/components/common/ListLoader';
 
 const Unassigned = ({navigation}: any) => {
-  const SortSheetRef = useRef<any>(null);
   const styles = useStyleSheet(themedStyles);
   const [Message, setMessage] = useState(() => dummyData);
 
-  //open sheet code
-  const openSheet = (channel: string) => {
-    // setchannelName(channel);
-    if (SortSheetRef.current) {
-      SortSheetRef.current.open();
-    }
-  };
+  // const [sort, setsort] = useState('newest');
 
-  //close sheet
-  const closeSheet = () => {
-    if (SortSheetRef.current) {
-      SortSheetRef.current.close();
-    }
-  };
+  const {profile, token} = useSelector((state: StoreState) => state.user);
+
+  const {
+    data: Unassigned,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isLoading,
+  } = useMessageThreads(
+    {
+      filter: 'open',
+      sort: 'newest',
+      // sort: sort,
+      page: 1,
+      Auth: token,
+      organisationId: profile?.organisations?.id,
+    },
+    {},
+  );
+
+  //This snippet flattens the array
+  const unassignedData = Unassigned?.pages
+    ?.map((res: any) => res?.data?.threads?.map((r: any) => r))
+    .flat(2);
 
   //actions
   const closeRow = (rowMap: any, rowKey: any) => {
@@ -86,17 +101,20 @@ const Unassigned = ({navigation}: any) => {
     console.log('onLeftAction', rowKey);
   };
 
-  const renderItem = (data: any, rowMap: any) => {
-    const rowHeightAnimatedValue = new Animated.Value(60);
+  const renderItem = useCallback(
+    (data: any, rowMap: any) => {
+      const rowHeightAnimatedValue = new Animated.Value(60);
 
-    return (
-      <MessageCard
-        data={data}
-        rowHeightAnimatedValue={rowHeightAnimatedValue}
-        removeRow={() => deleteRow(rowMap, data.index)}
-      />
-    );
-  };
+      return (
+        <MessageCard
+          data={data}
+          rowHeightAnimatedValue={rowHeightAnimatedValue}
+          removeRow={() => deleteRow(rowMap, data.index)}
+        />
+      );
+    },
+    [unassignedData],
+  );
 
   const renderHiddenItem = (data: any, rowMap: any) => {
     const rowActionAnimatedValue = new Animated.Value(75);
@@ -121,44 +139,51 @@ const Unassigned = ({navigation}: any) => {
       <View style={{height: '100%'}}>
         <MessageHeader
           name="Unassigned"
-          openSortSheet={openSheet}
-          closeSortSheet={openSheet}
           isSocial={false}
           isTeamInbox={false}
+          xr
         />
 
-        <SwipeListView
-          data={Message.slice(0, 4).reverse()}
-          useAnimatedList={true}
-          renderItem={renderItem}
-          contentContainerStyle={{paddingVertical: hp(5)}}
-          contentInset={{bottom: hp(0)}}
-          useNativeDriver={false}
-          showsVerticalScrollIndicator={false}
-          closeOnRowBeginSwipe
-          closeOnRowOpen
-          scrollEnabled
-          renderHiddenItem={renderHiddenItem}
-          keyExtractor={item => item.id}
-          onRowDidOpen={onRowDidOpen}
-          leftOpenValue={90}
-          rightOpenValue={-90}
-          leftActivationValue={100}
-          rightActivationValue={-200}
-          leftActionValue={0}
-          rightActionValue={-100}
-          stopRightSwipe={-150}
-          stopLeftSwipe={150}
-          onLeftAction={onLeftAction}
-          onRightAction={onRightAction}
-          onLeftActionStatusChange={onLeftActionStatusChange}
-          onRightActionStatusChange={onRightActionStatusChange}
-          ListEmptyComponent={<EmptyInbox />}
-        />
+        {!isLoading ? (
+          <SwipeListView
+            data={unassignedData ?? []}
+            useAnimatedList={true}
+            useFlatList={true}
+            renderItem={renderItem}
+            contentContainerStyle={{paddingVertical: hp(5)}}
+            //@ts-ignore
+            onEndReached={fetchNextPage}
+            onEndReachedThreshold={3}
+            contentInset={{bottom: hp(0)}}
+            useNativeDriver={false}
+            // refreshControl={<RefreshControl refreshing={}/>}
+            showsVerticalScrollIndicator={false}
+            closeOnRowBeginSwipe
+            closeOnRowOpen
+            scrollEnabled
+            renderHiddenItem={renderHiddenItem}
+            keyExtractor={(item, i) => `${i}`}
+            onRowDidOpen={onRowDidOpen}
+            leftOpenValue={90}
+            rightOpenValue={-90}
+            leftActivationValue={100}
+            rightActivationValue={-200}
+            leftActionValue={0}
+            rightActionValue={-100}
+            stopRightSwipe={-150}
+            stopLeftSwipe={150}
+            onLeftAction={onLeftAction}
+            onRightAction={onRightAction}
+            onLeftActionStatusChange={onLeftActionStatusChange}
+            onRightActionStatusChange={onRightActionStatusChange}
+            ListEmptyComponent={<EmptyInbox />}
+          />
+        ) : (
+          <ListLoader />
+        )}
       </View>
 
       <ComposeMessageBtn />
-      <SortSheet ref={SortSheetRef} />
     </SafeAreaView>
   );
 };

@@ -1,3 +1,4 @@
+import {organisationType} from './profile';
 export interface User {
   id: string;
   first_name: string;
@@ -18,6 +19,7 @@ export interface User {
   page_access?: string[];
   onboard_role_value?: string | null;
   onboard_role?: string | null;
+  organisations?: organisationType;
 }
 
 export interface LoadingState {
@@ -28,6 +30,7 @@ export interface UserStore {
   profile: User;
   isloggedIn: boolean;
   token: string | null;
+  onFirstLaunch: boolean;
 }
 
 export interface InboxId {

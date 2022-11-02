@@ -15,12 +15,15 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 import {ApplicationProvider as UIKittenProvider} from '@ui-kitten/components';
 import {Provider} from 'react-redux';
-import {QueryClientProvider, QueryClient} from 'react-query';
+import {QueryClientProvider, QueryClient, focusManager} from 'react-query';
 import {persistor, store} from 'src/store';
 import {PersistGate} from 'redux-persist/integration/react';
 import {MainStackParamList} from './navigation/constants';
 import {RootStack} from './navigation';
-// import Loader from './components/common/Loader';
+import Loader from './components/common/Loader';
+export const queryClient = new QueryClient({
+  defaultOptions: {queries: {retry: 2}},
+});
 
 export default (): JSX.Element => {
   const navigationRef =
@@ -32,8 +35,6 @@ export default (): JSX.Element => {
   const onReady = useCallback(() => {
     routeNameRef.current = navigationRef.current?.getCurrentRoute()?.name;
   }, [routeNameRef, navigationRef]);
-
-  const queryClient = new QueryClient();
 
   useEffect(() => {
     const init = async () => {
@@ -58,6 +59,7 @@ export default (): JSX.Element => {
                 />
 
                 <NavigationContainer ref={navigationRef} onReady={onReady}>
+                  {/* <Loader /> */}
                   <RootStack />
                 </NavigationContainer>
               </>

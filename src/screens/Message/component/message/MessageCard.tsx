@@ -6,6 +6,7 @@ import {
   TouchableWithoutFeedback,
   Animated,
 } from 'react-native';
+import {memo, useState} from 'react';
 import {Divider, Text} from '@ui-kitten/components';
 //@ts-ignore
 import UserAvatar from 'react-native-user-avatar';
@@ -14,9 +15,14 @@ import React from 'react';
 import {hp, wp} from 'src/utils';
 import {FONTS} from 'src/constants';
 import {colors} from 'src/constants';
-import {messgeTimeFormater} from 'src/utils';
 import {SCREEN_NAME} from 'src/navigation/constants';
 import ChannelIcon from 'src/components/common/ChannelIcon';
+import {
+  removeEmoji,
+  removeHtmlTags,
+  trimText,
+} from 'src/utils/string-utils/string';
+import {messgeTimeFormater} from 'src/utils/date-utils/date';
 
 const MessageCard = (props: any) => {
   const navigation = useNavigation();
@@ -29,8 +35,6 @@ const MessageCard = (props: any) => {
     rightActionState,
   } = props;
 
-  // console.log(item);
-
   if (rightActionState) {
     Animated.timing(rowHeightAnimatedValue, {
       toValue: 0,
@@ -41,11 +45,20 @@ const MessageCard = (props: any) => {
     });
   }
 
-  const handleNavigate = (user: any) => {
-    // console.log('cliked');
+  const threadDetails = {
+    name1: trimText(item?.sender?.name, 20),
+    name2: removeEmoji(item?.sender?.name),
+    date: messgeTimeFormater(item?.updated_datetime),
+    image: item?.sender?.image_url,
+    message: !!item?.subject
+      ? trimText(removeHtmlTags(item?.subject), 35)
+      : trimText(removeHtmlTags(item?.last_message?.entity?.content?.body), 35),
+    channelType: item?.channel_name,
+  };
 
+  const handleNavigate = (user: any) => {
     //@ts-ignore
-    navigation.navigate(SCREEN_NAME.chat as never, {user: item});
+    navigation.navigate(SCREEN_NAME.chat as never, {user: threadDetails});
   };
 
   return (
@@ -55,13 +68,15 @@ const MessageCard = (props: any) => {
         <View style={styles.leftSide}>
           <View style={{position: 'relative'}}>
             <UserAvatar
-              name={item?.name}
-              src={item?.avatar}
-              size={45}
-              // borderRadius={hp(40) / 2}
+              name={threadDetails?.name2}
+              src={threadDetails?.image}
+              size={hp(45)}
+              style={{height: hp(45), width: hp(45)}}
+              borderRadius={hp(45 * 0.5)}
             />
+
             <View style={{position: 'absolute', bottom: -4, right: -4}}>
-              <ChannelIcon name={item.channelType} />
+              <ChannelIcon name={threadDetails?.channelType} />
             </View>
           </View>
         </View>
@@ -69,22 +84,12 @@ const MessageCard = (props: any) => {
         {/* right side of the card */}
         <View style={styles.rightSide}>
           <View style={{marginLeft: hp(5), width: '100%'}}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                width: '100%',
-              }}>
-              <Text style={styles.nameText}>{item?.name}</Text>
-              <Text style={styles.timeText}>
-                {messgeTimeFormater(item?.time)}
-              </Text>
+            <View style={styles.nameTimeWrapper}>
+              <Text style={styles.nameText}>{threadDetails?.name1}</Text>
+              <Text style={styles.timeText}>{threadDetails?.date}</Text>
             </View>
-            {item.title && (
-              <Text style={styles.messageTitleText}>{item?.title}</Text>
-            )}
-            <Text style={styles.lastmessageText}>{item?.lastMesssage}</Text>
+
+            <Text style={styles.lastmessageText}>{threadDetails?.message}</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -93,7 +98,7 @@ const MessageCard = (props: any) => {
   );
 };
 
-export default MessageCard;
+export default memo(MessageCard);
 
 const styles = StyleSheet.create({
   cardContainer: {
@@ -111,17 +116,8 @@ const styles = StyleSheet.create({
 
   rowFront: {
     backgroundColor: '#fff',
-    // backgroundColor: 'yellow',
-    // borderRadius: 5,
     height: 90,
     paddingVertical: hp(5),
-    // margin: 5,
-    // marginBottom: 15,
-    // shadowColor: '#999',
-    // shadowOffset: {width: 0, height: 1},
-    // shadowOpacity: 0.8,
-    // shadowRadius: 2,
-    // elevation: 5,
   },
 
   leftSide: {},
@@ -129,9 +125,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     position: 'relative',
     width: '90%',
-
-    // borderColor: 'red',
-    // borderWidth: 1,
   },
 
   cardBottom: {
@@ -155,12 +148,15 @@ const styles = StyleSheet.create({
     fontSize: hp(12),
     fontFamily: FONTS.AVERTA_REGULAR,
     color: colors.primaryText,
-    // position: 'absolute',
-    // top: hp(-10),
-    // right: wp(30),
-    // textAlign: 'center',
+    marginRight: wp(10),
   },
 
+  nameTimeWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
   messageTitleText: {
     color: colors.primaryText,
     fontSize: hp(16),
@@ -169,7 +165,10 @@ const styles = StyleSheet.create({
   lastmessageText: {
     color: colors.primaryText,
     fontSize: hp(14),
-    paddingTop: hp(5),
+    paddingTop: hp(1),
+    paddingBottom: hp(5),
+    width: '85%',
+    textAlign: 'left',
     fontFamily: FONTS.AVERTA_REGULAR,
   },
 });

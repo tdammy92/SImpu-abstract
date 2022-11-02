@@ -6,10 +6,8 @@ import {
   View,
 } from 'react-native';
 import {Text} from '@ui-kitten/components';
-import React, {useState} from 'react';
+import React, {useState, memo, useRef, useCallback} from 'react';
 import {useNavigation, DrawerActions} from '@react-navigation/native';
-
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import Octicons from 'react-native-vector-icons/Octicons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
@@ -20,20 +18,65 @@ import {hp, wp} from 'src/utils';
 import dummyData from 'src/constants/dummyData';
 
 import {SCREEN_NAME} from 'src/navigation/constants';
+import {FormatText} from 'src/utils/string-utils/string';
+import SortSheet from './SortSheet';
+import SortByDate from './SortByDate';
 
 const MessageHeader = (props: any) => {
   const navigation = useNavigation();
+  const SortSheetRef = useRef<any>(null);
+  const SortDateRef = useRef<any>(null);
   const {
-    openSortSheet,
     messageOption,
     shoMessageOptions,
     handleSelectedIndex,
     selectedIndex,
     HandlePress,
   } = props;
+
+  const [sort, setsort] = useState('newest');
   const openDraw = () => navigation.dispatch(DrawerActions.openDrawer());
   //@ts-ignore
   const openNotification = () => navigation.navigate(SCREEN_NAME.notification);
+
+  //open Sort by filter sheet code
+  const openSortSheet = () => {
+    if (SortSheetRef.current) {
+      SortSheetRef.current.open();
+    }
+  };
+
+  //close Sort by filter sheet
+  const closeSortSheet = () => {
+    if (SortSheetRef.current) {
+      SortSheetRef.current.close();
+    }
+  };
+
+  //open Sort by filter sheet code
+  const openSortDateSheet = () => {
+    closeSortSheet();
+
+    console.log('we got heree');
+    // closeSortSheet();
+    setTimeout(() => {
+      if (SortDateRef.current) {
+        SortDateRef.current.open();
+      }
+    }, 300);
+  };
+
+  // //close Sort by filter sheet
+  const closeSortDateSheet = () => {
+    if (SortDateRef.current) {
+      SortDateRef.current.close();
+    }
+  };
+
+  const changeSort = useCallback((sorted: any) => {
+    setsort(sorted);
+    SortSheetRef.current.close();
+  }, []);
 
   return (
     <View style={styles.headerContainer}>
@@ -101,7 +144,9 @@ const MessageHeader = (props: any) => {
                           selectedIndex === index ? '#191A1A' : '',
                         borderBottomWidth: selectedIndex === index ? 2 : 0,
                       }}>
-                      <Text style={[styles.sliderText, {}]}>{option}</Text>
+                      <Text style={[styles.sliderText, {}]}>
+                        {FormatText(option)}
+                      </Text>
                     </View>
                   </TouchableOpacity>
                 );
@@ -110,11 +155,25 @@ const MessageHeader = (props: any) => {
           )}
         </View>
       </View>
+      <SortSheet
+        ref={SortSheetRef}
+        //@ts-ignore */}
+        sort={sort}
+        openDateFilter={openSortDateSheet}
+        changeSort={changeSort}
+      />
+
+      <SortByDate
+        ref={SortDateRef}
+        // @ts-ignore
+        sort={sort}
+        changeSort={changeSort}
+      />
     </View>
   );
 };
 
-export default MessageHeader;
+export default memo(MessageHeader);
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -139,14 +198,12 @@ const styles = StyleSheet.create({
 
   badgeContainer: {
     position: 'absolute',
-    // backgroundColor: '#D22B2B',
+
     right: wp(4),
     top: hp(4),
     elevation: 3,
     zIndex: 3,
-    // borderRadius: 50,
-    // height: hp(20),
-    // width: wp(20),
+
     alignItems: 'center',
     justifyContent: 'center',
   },

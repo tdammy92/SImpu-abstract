@@ -15,14 +15,3 @@ export const loginUser = async (userDetails: any) => {
     .post(`${DEMO_API}/auth/login`, userDetails, config)
     .then(res => res.data);
 };
-
-// get user profile
-export const getProfile = async (params: {
-  q?: string;
-  organisationId: string;
-}) => {
-  const url = `${DEMO_API}/auth/view/${params?.organisationId}`;
-  return await client(url, {
-    params: params,
-  });
-};

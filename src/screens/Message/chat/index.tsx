@@ -11,19 +11,27 @@ import {useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import {GiftedChat, Bubble, IMessage} from 'react-native-gifted-chat';
+
+import {Chat, MessageType, defaultTheme} from '@flyerhq/react-native-chat-ui';
 //@ts-ignore
 import UserAvatar from 'react-native-user-avatar';
+import {useSelector, useDispatch} from 'react-redux';
 import {KeyboardAwareScrollView} from 'src/components/common/KeyBoardAvoidingView';
 import {SafeAreaView} from 'src/components/common/SafeAreaView';
 import styles from './styles';
 import {colors, FONTS} from 'src/constants';
-import {messgeTimeFormater} from 'src/utils';
 import HeaderOption from './component/chatHeaderOption';
 import {SCREEN_NAME} from 'src/navigation/constants';
+import {StoreState} from 'src/@types/store';
 
-const Chat = ({prop, route, navigation}: any) => {
+const ChatBox = ({prop, route, navigation}: any) => {
+  const {profile} = useSelector((state: StoreState) => state.user);
   const [User, setUser] = useState<any>({});
   const [messages, setMessages] = useState<any>();
+
+  const user = {id: profile?.id};
+
+  // console.log({}, profile, 2);
 
   const chatOptionRef = useRef<any>(null);
 
@@ -66,15 +74,41 @@ const Chat = ({prop, route, navigation}: any) => {
     setMessages(msg);
   }, [navigation]);
 
-  const onSend = useCallback((messages: any) => {
-    setMessages((previousMessages: any) =>
-      GiftedChat.append(previousMessages, messages),
-    );
-  }, []);
+  const handleSendPress = (message: MessageType.PartialText) => {
+    const textMessage: MessageType.Text = {
+      author: user,
+      createdAt: Date.now(),
+      id: '' + Date.now(),
+      text: message.text,
+      type: 'text',
+    };
+    addMessage(textMessage);
+  };
+
+  const handleAttachmentPress = () => {
+    // showActionSheetWithOptions(
+    //   {
+    //     options: ['Photo', 'File', 'Cancel'],
+    //     cancelButtonIndex: 2,
+    //   },
+    //   (buttonIndex) => {
+    //     switch (buttonIndex) {
+    //       case 0:
+    //         handleImageSelection()
+    //         break
+    //       case 1:
+    //         handleFileSelection()
+    //         break
+    //     }
+    //   }
+    // )
+  };
+
+  const addMessage = (message: MessageType.Any) => {
+    setMessages([message, ...messages]);
+  };
 
   return (
-    //     <SafeAreaView>
-
     <>
       <View style={styles.container}>
         {/* chat header */}
@@ -92,19 +126,19 @@ const Chat = ({prop, route, navigation}: any) => {
                 />
                 <View style={{marginLeft: 5}}>
                   {/* @ts-ignore */}
-                  {User?.name && (
+                  {User?.name2 && (
                     //@ts-ignore
                     <UserAvatar
                       size={40}
-                      name={User?.name}
-                      src={User?.avatar}
+                      name={User?.name2}
+                      src={User?.image}
                     />
                   )}
                 </View>
               </TouchableOpacity>
 
               {/* @ts-ignore */}
-              <Text style={styles.usernameText}>{User?.name}</Text>
+              <Text style={styles.usernameText}>{User?.name1}</Text>
             </View>
           </View>
           <TouchableOpacity style={{padding: 10}} onPress={openSheet}>
@@ -121,31 +155,34 @@ const Chat = ({prop, route, navigation}: any) => {
 
         {/* chat component */}
         <View style={{flex: 1}}>
-          <GiftedChat
-            messages={messages}
-            onSend={messages => onSend(messages)}
-            user={{
-              _id: '1234',
-              name: 'Collins Tompson',
+          <Chat
+            messages={messages ?? []}
+            sendButtonVisibilityMode="always"
+            onAttachmentPress={handleAttachmentPress}
+            // onMessagePress={handleMessagePress}
+            // onPreviewDataFetched={handlePreviewDataFetched}
+            onSendPress={handleSendPress}
+            user={user}
+            showUserAvatars={true}
+            showUserNames={true}
+            enableAnimation={true}
+            theme={{
+              ...defaultTheme,
+              colors: {
+                ...defaultTheme.colors,
+                inputBackground: '#026AE8',
+              },
+              borders: {
+                inputBorderRadius: 10,
+                messageBorderRadius: 10,
+              },
             }}
-            renderChatEmpty={() => {
-              return (
-                <Text style={{fontFamily: FONTS.AVERTA_REGULAR}}>
-                  No message
-                </Text>
-              );
-            }}
-            //   showUserAvatar={false}
-            isTyping={true}
-            // inverted={false}
-            // renderBubble={() => <Bubble {...prop} />}
           />
         </View>
       </View>
       <HeaderOption ref={chatOptionRef} />
     </>
-    //     </SafeAreaView>
   );
 };
 
-export default Chat;
+export default ChatBox;

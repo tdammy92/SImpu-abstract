@@ -1,13 +1,11 @@
-import {
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  Dimensions,
-  Alert,
-  Linking,
-} from 'react-native';
-import React, {useState, useEffect} from 'react';
+import {StyleSheet, View, TouchableOpacity, Dimensions} from 'react-native';
+import React, {useState, useRef, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
+
+import {Layout, MenuItem, OverflowMenu} from '@ui-kitten/components';
+
+//@ts-ignore
+import {Bullets} from 'react-native-easy-content-loader';
 
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import {useNavigation} from '@react-navigation/native';
@@ -19,97 +17,93 @@ import {
   DrawerItemList,
   DrawerItem,
 } from '@react-navigation/drawer';
-import {Text, Divider, Icon} from '@ui-kitten/components';
-
-import {
-  Collapse,
-  CollapseHeader,
-  CollapseBody,
-  //@ts-ignore
-} from 'accordion-collapse-react-native';
+import {Text, Divider} from '@ui-kitten/components';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import Octicons from 'react-native-vector-icons/Octicons';
 
-import {Avatar as avatar} from 'src/constants/general';
 import {colors, FONTS} from 'src/constants';
 import {SCREEN_NAME} from './constants';
 import {StoreState} from 'src/@types/store';
 import Availble from 'src/assets/images/Available.svg';
 import NotAvailble from 'src/assets/images/notificationLabel.svg';
-import PendingAvailble from 'src/assets/images/GrayNotification.svg';
-import BlueTagIcon from 'src/assets/images/BlueTagIcon.svg';
-import RedTagIcon from 'src/assets/images/RedTagIcon.svg';
 
-import {useSidebarTags, useSidebarInboxes} from 'src/services/queries';
-
-const {height, width} = Dimensions.get('screen');
+import {
+  useSidebarTags,
+  useSidebarInboxes,
+  useGetOrganisations,
+} from 'src/services/queries';
+import {updateOrganisation} from 'src/store/user/userReducer';
+import Accordion from './component/Accordion';
+import OrganisationSheet from './component/OrganisationSheet';
 
 const CustomDrawer = (props: any): JSX.Element => {
+  const OrganisationSheetRef = useRef<any>(null);
+
   const {count, ...rest} = props;
   const {profile, token} = useSelector((state: StoreState) => state.user);
-  const navigation = useNavigation();
   const netInfo = useNetInfo();
   const [isAvailable, setisAvailable] = useState<boolean | null>(true);
 
+  //open sheet code
+  const openSheet = () => {
+    if (OrganisationSheetRef.current) {
+      OrganisationSheetRef.current.open();
+    }
+  };
+
+  //close sheet
+  const closeSheet = () => {
+    if (OrganisationSheetRef.current) {
+      OrganisationSheetRef.current.close();
+    }
+  };
+
+  // console.log(navigation.getState());
+  //get side tags
   const {
-    data: sideTags,
-    isLoading: tagIsloading,
-    error: tagError,
+    data: sideTagsData,
+    isLoading: sideTagsLoading,
+    error: sideTagsError,
   } = useSidebarTags(
     {
-      page: 1,
       is_pinned: true,
       type: 'shared',
       Auth: token,
-      organisationId: profile?.organisation_id,
+      organisationId: profile?.organisations?.id,
     },
     {},
   );
+
+  //This snippet flattens the array
+  const tagsData = sideTagsData?.pages
+    ?.map((res: any) => res?.data?.tags?.tags)
+    .flat(2);
 
   //get side inboxes
   const {
-    data: sideInbox,
+    data: sharedInboxData,
     isFetching,
-    isLoading,
+    isLoading: sharedInboxLoading,
     error,
     isError,
   } = useSidebarInboxes(
-    'sideInbox',
     {
       is_pinned: true,
       type: 'shared',
       Auth: token,
-      organisationId: profile?.organisation_id,
+      organisationId: profile?.organisations?.id,
     },
     {},
   );
 
-  console.log('drawer menu  side tags', sideTags);
-  // console.log('drawer menu  side inboxes', sideInbox);
-
-  // const filteredProps = {
-  //   ...props,
-  //   state: {
-  //     ...props.state,
-  //     routeNames: props.state.routeNames.filter((routeName: any) => {
-  //       return routeName !== SCREEN_NAME.teaminbox;
-  //     }),
-  //     routes: props.state.routes.filter((route: any) => {
-  //       return route.name !== SCREEN_NAME.teaminbox;
-  //     }),
-  //   },
-  // };
-
-  // console.log(JSON.stringify(filteredProps));
-
-  // console.log('count from custom drawer', count);
+  //load organisations
+  const {data: organisationData, isLoading: loadingOrganisations} =
+    useGetOrganisations({Auth: token}, {});
 
   useEffect(() => {
     // Subscribe
     const unsubscribe = NetInfo.addEventListener(state => {
       // console.log('Connection type', state.type);
-      // console.log('Is connected?', state.isConnected);
       setisAvailable(state.isConnected);
     });
 
@@ -119,7 +113,6 @@ const CustomDrawer = (props: any): JSX.Element => {
     };
   }, []);
 
-  // console.log('Network', isAvailable);
   return (
     <View style={styles.container}>
       {/* user profile  */}
@@ -127,7 +120,9 @@ const CustomDrawer = (props: any): JSX.Element => {
         <View style={styles.userDetails}>
           <View>
             <UserAvatar
-              size={40}
+              size={hp(40)}
+              style={{height: hp(40), width: hp(40)}}
+              borderRadius={hp(40 * 0.5)}
               name={`${profile?.first_name} ${profile?.last_name}`}
               src={profile.image}
             />
@@ -157,127 +152,78 @@ const CustomDrawer = (props: any): JSX.Element => {
       <Divider />
 
       {/* drawe menu content */}
-      <View
+      <DrawerContentScrollView
+        {...props}
         style={{
-          // flex: 1
-          height: '100%',
-        }}>
-        <DrawerContentScrollView
-          {...props}
-          style={{marginTop: 0, paddingTop: 0}}>
-          {/* menu list item*/}
-          <DrawerItemList {...rest} />
+          marginTop: 0,
+          paddingTop: 10,
+          paddingBottom: 10,
+        }}
+        contentContainerStyle={{
+          marginTop: 0,
+          paddingTop: 0,
+          paddingBottom: 15,
+        }}
+        contentInset={{bottom: hp(30)}}>
+        {/* menu list item*/}
+        <DrawerItemList {...rest} />
 
-          {/* tag and team inbox list */}
-          <View style={styles.customInboxContainer}>
-            {/* Team inboxes */}
-            <Collapse isExpanded={true}>
-              <CollapseHeader>
-                <View style={styles.customInboxTitle}>
-                  <EvilIcons name="chevron-down" size={25} color="#000" />
-                  <Text style={[styles.customInboxTitleText]}>
-                    TEAM INBOXES
-                  </Text>
-                </View>
-              </CollapseHeader>
-              <CollapseBody>
-                <View style={styles.customInboxItems}>
-                  {sideInbox?.map((inbox: any) => {
-                    return (
-                      <DrawerItem
-                        key={inbox?.uuid}
-                        label={({color, focused}) => {
-                          return (
-                            <View style={styles.customInboxItemList}>
-                              <PendingAvailble
-                                width={10}
-                                height={10}
-                                color={inbox?.color}
-                              />
-                              <Text style={styles.customInboxtext}>
-                                {inbox.name}
-                              </Text>
-                              <Text style={styles.badgeText}>
-                                {count?.inboxes[inbox?.uuid] > 0 &&
-                                  count?.inboxes[inbox?.uuid]}
-                              </Text>
-                            </View>
-                          );
-                        }}
-                        onPress={() =>
-                          //@ts-ignore
-                          navigation.navigate(SCREEN_NAME.teaminbox, {
-                            menuName: inbox.name,
-                          })
-                        }
-                      />
-                    );
-                  })}
-                </View>
-              </CollapseBody>
-            </Collapse>
-            {/* Tags */}
-            <View style={{height: hp(10)}} />
-            <Collapse>
-              <CollapseHeader>
-                <View style={styles.customInboxTitle}>
-                  <EvilIcons name="chevron-down" size={25} color="#000" />
-                  <Text style={styles.customInboxTitleText}>TAGS</Text>
-                </View>
-              </CollapseHeader>
-              <CollapseBody>
-                <View style={styles.customInboxItems}>
-                  <DrawerItem
-                    label={({color, focused}) => {
-                      return (
-                        <View style={styles.customInboxItemList}>
-                          <BlueTagIcon width={20} height={20} color={color} />
-                          <Text style={styles.customInboxtext}>Urgent</Text>
-                          <Text style={styles.badgeText}>5</Text>
-                        </View>
-                      );
-                    }}
-                    onPress={() =>
-                      //@ts-ignore
-                      navigation.navigate(SCREEN_NAME.teaminbox, {
-                        menuName: 'Urgent',
-                      })
-                    }
-                  />
+        {/* tag and team inbox list */}
+        <View style={styles.customInboxContainer}>
+          {/* Team inboxes list accordion*/}
+          <Accordion
+            title="Team inboxes"
+            data={sharedInboxData?.inboxes}
+            count={count}
+            open={true}
+            threadType="inbox"
+            showLoader={sharedInboxLoading}
+          />
+          <View style={{height: hp(10)}} />
+          {/* Tags list accordion*/}
+          <Accordion
+            title="Tags"
+            threadType="tag"
+            data={tagsData}
+            count={count}
+            open={false}
+            showLoader={sideTagsLoading}
+          />
+        </View>
+      </DrawerContentScrollView>
 
-                  <DrawerItem
-                    label={({color, focused}) => {
-                      return (
-                        <View style={styles.customInboxItemList}>
-                          <RedTagIcon width={20} height={20} color={color} />
-                          <Text style={styles.customInboxtext}>Sla breach</Text>
-                          <Text style={styles.badgeText}>5</Text>
-                        </View>
-                      );
-                    }}
-                    onPress={() =>
-                      //@ts-ignore
-                      navigation.navigate(SCREEN_NAME.teaminbox, {
-                        menuName: 'Sla breach',
-                      })
-                    }
-                  />
-                </View>
-              </CollapseBody>
-            </Collapse>
-          </View>
-        </DrawerContentScrollView>
+      {/* organisation select list button*/}
+      <View style={styles.organisationContainer}>
+        {!loadingOrganisations ? (
+          <TouchableOpacity
+            style={styles.selectOrgBtnContainer}
+            onPress={openSheet}>
+            <Octicons name="organization" size={14} color="#000" />
+            <Text style={styles.selectOrgBtnText}>Organisation :</Text>
+
+            <View style={styles.orgPill}>
+              <Text style={styles.orgPillText}>
+                {profile?.organisations?.name}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        ) : (
+          <Text
+            style={{
+              fontFamily: FONTS.AVERTA_SEMI_BOLD,
+              fontSize: hp(12),
+              textAlign: 'center',
+            }}>
+            Fetching organisations...
+          </Text>
+        )}
       </View>
-
-      {/* logout button styling */}
-      {/* <View style={{paddingTop: 20, position: 'absolute', bottom: hp(40)}}>
-        <TouchableOpacity
-          style={{flexDirection: 'row', paddingHorizontal: 20}}
-          onPress={handleLogout}>
-          <Ionicons name="exit-outline" size={20} />
-          <Text style={styles.customInboxtext}>Sign Out</Text>
-        </TouchableOpacity>
-      </View> */}
+      {/* sheet to switch organisations */}
+      <OrganisationSheet
+        close={closeSheet}
+        data={organisationData}
+        ref={OrganisationSheetRef}
+      />
     </View>
   );
 };
@@ -339,7 +285,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     position: 'relative',
-    // backgroundColor: 'red',
+
     width: '100%',
     paddingVertical: 0,
     marginVertical: 0,
@@ -358,4 +304,62 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: -20,
   },
+
+  organisationContainer: {
+    paddingHorizontal: 10,
+    width: '100%',
+    height: hp(65),
+    position: 'absolute',
+    bottom: 0,
+    alignItems: 'center',
+    // backgroundColor: 'red',
+    backgroundColor: '#fff',
+    borderTopColor: '#e4e4e4',
+    borderTopWidth: 1,
+  },
+
+  selectOrgBtnContainer: {
+    height: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  selectOrgBtnText: {
+    marginLeft: 5,
+    fontSize: hp(14),
+    fontFamily: FONTS.AVERTA_REGULAR,
+    color: colors.primaryText,
+  },
+
+  orgPill: {
+    backgroundColor: '#ececec',
+    paddingVertical: hp(2),
+    paddingHorizontal: wp(5),
+    borderRadius: 8,
+    elevation: 2,
+    zIndex: 2,
+    marginLeft: wp(5),
+  },
+  orgPillText: {
+    fontFamily: FONTS.AVERTA_REGULAR,
+    color: colors.primaryText,
+    fontSize: hp(12),
+  },
 });
+
+// console.log('drawer menu  side inboxes', sideInbox);
+
+// const filteredProps = {
+//   ...props,
+//   state: {
+//     ...props.state,
+//     routeNames: props.state.routeNames.filter((routeName: any) => {
+//       return routeName !== SCREEN_NAME.teaminbox;
+//     }),
+//     routes: props.state.routes.filter((route: any) => {
+//       return route.name !== SCREEN_NAME.teaminbox;
+//     }),
+//   },
+// };
+
+// console.log(JSON.stringify(filteredProps));

@@ -1,11 +1,12 @@
 import {View, Linking, TouchableOpacity} from 'react-native';
 import React from 'react';
-import {Text, Divider} from '@ui-kitten/components';
+import {Text} from '@ui-kitten/components';
 import {useDispatch} from 'react-redux';
 import {Formik} from 'formik';
 import * as yup from 'yup';
 import {useMutation} from 'react-query';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import {KeyboardAwareScrollView} from 'src/components/common/KeyBoardAvoidingView';
 import styles from './styles';
@@ -15,11 +16,16 @@ import {Button} from 'src/components/common/Button';
 import {hp, wp} from 'src/utils';
 import {SCREEN_NAME} from 'src/navigation/constants';
 import AuthInput from './component/AuthInput';
-import {addToken, addUser} from 'src/store/user/userReducer';
+import {
+  addToken,
+  addUser,
+  updateOrganisation,
+} from 'src/store/user/userReducer';
 import {FONTS} from 'src/constants';
 import {loginUser} from 'src/services/auth';
 import AppModal from 'src/components/common/Modal';
 import {useProfile} from 'src/services/queries';
+import Loader from 'src/components/common/Loader';
 
 //form schema validation
 const ValidationShema = yup.object({
@@ -43,6 +49,9 @@ const Login = ({navigation}: any) => {
     },
     {
       enabled: !!data?.data?.token,
+      retryOnMount: false,
+      refetchOnMount: false,
+      keepPreviousData: false,
     },
   );
 
@@ -59,27 +68,28 @@ const Login = ({navigation}: any) => {
       password: values.password,
     };
     const response = await mutateAsync(JSON.stringify(payload));
-
-    console.log('resss', response.data.token);
-
     dispatch(addToken(response.data.token));
-
-    // navigation.reset({index: 0, routes: [{name: SCREEN_NAME.main}]});
   };
 
-  // if (isLoading) {
-  //   return (
-  //     <AppModal showModal={isError} message={'loading'} isALoader={true} />
-  //   );
-  // }
+  if (isLoading) {
+    return <Loader />;
+  }
 
-  // if (isError) {
-  //   return <AppModal showModal={isLoading} message={error} isALoader={false} />;
-  // }
+  if (isError) {
+    // console.log({error});
+  }
 
+  if (profile.isLoading) {
+    return <Loader />;
+  }
   if (profile.isSuccess) {
-    // console.log(profile?.data?.data?.profile);
     dispatch(addUser(profile?.data?.data?.profile));
+    dispatch(
+      updateOrganisation({
+        id: profile?.data?.data?.profile?.organisation_id,
+        name: 'default',
+      }),
+    );
     navigation.reset({index: 0, routes: [{name: SCREEN_NAME.main}]});
   }
 
@@ -133,8 +143,10 @@ const Login = ({navigation}: any) => {
                           width: '100%',
                           paddingBottom: hp(20),
                           paddingHorizontal: wp(10),
+                          alignItems: 'flex-end',
                         }}>
                         <TouchableOpacity
+                          style={{width: '40%'}}
                           onPress={() =>
                             navigation.navigate(SCREEN_NAME.forgotPassword)
                           }>
@@ -163,39 +175,20 @@ const Login = ({navigation}: any) => {
           <View style={{position: 'relative', flex: 0.5, width: '100%'}}>
             {/* bottoms link */}
           </View>
-          {/* <View style={styles.footerLinkContainer}>
-            <TouchableOpacity
-              onPress={() => Linking.openURL('https://simpu.co/')}>
-              <Text style={styles.linkText}>© Simpu</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() =>
-                Linking.openURL('https://app.simpu.co/terms-conditions')
-              }>
-              <Text style={styles.linkText}>Privacy & Terms</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => Linking.openURL('https://simpu.co/sales')}>
-              <Text style={styles.linkText}>Contact Us</Text>
-            </TouchableOpacity>
-          </View> */}
         </View>
       </KeyboardAwareScrollView>
-      <AppModal
-        showModal={isLoading}
-        //  setShoModal
 
-        isALoader={true}
-      />
-      <AppModal
-        showModal={isError}
-        //@ts-ignore
-        message={error?.message}
-        Icon={() => (
-          <AntDesign name="checkcircleo" size={hp(60)} color="#276EF1" />
-        )}
-        isALoader={false}
-      />
+      {isError && (
+        <AppModal
+          btnTitle="Close"
+          //@ts-ignore
+          message={error?.message}
+          showModal={isError}
+          Icon={() => (
+            <MaterialIcons name="error-outline" size={50} color="#276EF1" />
+          )}
+        />
+      )}
     </View>
   );
 };

@@ -1,3 +1,4 @@
+import {organisationType} from './../../@types/profile';
 import {User, UserStore} from 'src/@types/store';
 
 const initialState: UserStore = {
@@ -21,8 +22,11 @@ const initialState: UserStore = {
     page_access: [],
     onboard_role_value: '',
     onboard_role: '',
+    organisations: undefined,
   } as User,
+
   isloggedIn: false,
+  onFirstLaunch: false,
   token: '',
 };
 

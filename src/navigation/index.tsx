@@ -27,7 +27,7 @@ import Closed from 'src/screens/Message/Closed';
 import Draft from 'src/screens/Message/draft';
 import Settings from 'src/screens/setting/index';
 import EditProfile from 'src/screens/setting/editProfile';
-import Chat from 'src/screens/Message/chat';
+import ChatBox from 'src/screens/Message/chat';
 import Search from 'src/screens/search';
 import Notification from 'src/screens/Message/notification';
 import Compose from 'src/screens/Message/compose';
@@ -61,7 +61,7 @@ import {hp, wp} from 'src/utils';
 import {Avatar as avatar} from 'src/constants/general';
 import {StoreState} from 'src/@types/store';
 import {colors} from 'src/constants';
-import {useSidebarUnreadCount} from 'src/services/queries';
+import {useSidebarInboxes, useSidebarUnreadCount} from 'src/services/queries';
 
 import HeaderBack from './HeaderBack';
 
@@ -76,12 +76,39 @@ function DrawerMenu() {
   const styles = useStyleSheet(themedStyles);
   const {profile, token} = useSelector((state: StoreState) => state.user);
 
-  const {data, isError, isLoading, error, status} = useSidebarUnreadCount({
+  const {
+    data: count,
+    isError,
+    isLoading,
+    error,
+    status,
+  } = useSidebarUnreadCount({
     Auth: token,
-    organisationId: profile?.organisation_id,
+    organisationId: profile?.organisations?.id,
   });
 
-  const count = data?.data?.count;
+  // <Bullets active listSize={4} />
+
+  //get personal inbox
+  const {
+    data: PersonalInbox,
+    isFetching: isFecthingPersonal,
+    isLoading: isLoadingPersonal,
+    error: errorPersonal,
+    isError: isErrorPersonal,
+  } = useSidebarInboxes(
+    {
+      is_pinned: false,
+      type: 'personal',
+      Auth: token,
+      organisationId: profile?.organisations?.id,
+    },
+    {},
+  );
+
+  const personal = PersonalInbox?.inboxes[0];
+
+  // console.log('Personaall', personal);
 
   return (
     <Drawer.Navigator
@@ -94,50 +121,52 @@ function DrawerMenu() {
         drawerInactiveTintColor: 'gray',
         drawerType: 'front',
       }}>
-      <Drawer.Screen
-        options={{
-          title: 'Personal Inbox',
-          drawerItemStyle: [
-            styles.drawItemStyle,
-            {marginTop: 0, paddingTop: 0},
-          ],
-          drawerLabel: ({color, focused}) => {
-            return (
-              <View
-                style={[styles.selectedMenu, {marginTop: 0, paddingTop: 0}]}>
-                <View style={styles.menuLeft}>
-                  <UserAvatar
-                    size={22}
-                    name={`${profile?.first_name} ${profile?.last_name}`}
-                    src={profile.image}
-                  />
-                  <Text
-                    style={[
-                      styles.titleText,
-                      {color: focused ? colors.primaryText : ''},
-                    ]}>
-                    Personal Inbox
-                  </Text>
-                </View>
-
-                <View style={styles.menuRight}>
-                  {count && (
+      {!isLoadingPersonal && personal && (
+        <Drawer.Screen
+          options={{
+            title: 'Personal Inbox',
+            drawerItemStyle: [
+              styles.drawItemStyle,
+              {marginTop: 0, paddingTop: 0},
+            ],
+            drawerLabel: ({color, focused}) => {
+              return (
+                <View
+                  style={[styles.selectedMenu, {marginTop: 0, paddingTop: 0}]}>
+                  <View style={styles.menuLeft}>
+                    <UserAvatar
+                      size={22}
+                      name={`${profile?.first_name} ${profile?.last_name}`}
+                      src={profile.image}
+                    />
                     <Text
                       style={[
-                        styles.badgeText,
+                        styles.titleText,
                         {color: focused ? colors.primaryText : ''},
                       ]}>
-                      550
+                      {personal?.name}
                     </Text>
-                  )}
+                  </View>
+
+                  <View style={styles.menuRight}>
+                    {count && (
+                      <Text
+                        style={[
+                          styles.badgeText,
+                          {color: focused ? colors.primaryText : ''},
+                        ]}>
+                        {count[personal?.uuid] > 0 && count[personal?.uuid]}
+                      </Text>
+                    )}
+                  </View>
                 </View>
-              </View>
-            );
-          },
-        }}
-        name={SCREEN_NAME.social}
-        component={Social}
-      />
+              );
+            },
+          }}
+          name={SCREEN_NAME.social}
+          component={Social}
+        />
+      )}
 
       <Drawer.Screen
         options={{
@@ -401,11 +430,20 @@ const SettingsStackNavigator = (): JSX.Element => {
 
 //Root navihgators
 export const RootStack = (): JSX.Element => {
-  const {profile, isloggedIn} = useSelector((state: StoreState) => state.user);
+  const {profile, isloggedIn, onFirstLaunch} = useSelector(
+    (state: StoreState) => state.user,
+  );
+
   return (
     <Stack.Navigator
       screenOptions={{headerShown: false}}
-      initialRouteName={isloggedIn ? SCREEN_NAME.main : SCREEN_NAME.auth}>
+      initialRouteName={
+        !onFirstLaunch
+          ? SCREEN_NAME.onboarding
+          : isloggedIn
+          ? SCREEN_NAME.main
+          : SCREEN_NAME.auth
+      }>
       <Stack.Screen
         name={SCREEN_NAME.onboarding}
         component={Onboarding}
@@ -438,7 +476,7 @@ export const RootStack = (): JSX.Element => {
 
       <Stack.Screen
         name={SCREEN_NAME.chat}
-        component={Chat}
+        component={ChatBox}
         options={{
           headerShown: false,
         }}

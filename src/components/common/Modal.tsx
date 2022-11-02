@@ -13,11 +13,19 @@ import {Button} from 'src/components/common/Button';
 import {hp, wp} from 'src/utils';
 import {colors, FONTS} from 'src/constants';
 
-const AppModal = ({showModal, setShoModal, message, Icon, isALoader}: any) => {
+const AppModal = ({
+  showModal,
+
+  message,
+  Icon,
+  isALoader,
+  btnTitle,
+}: any) => {
+  const [ShowModal, setShowModal] = useState(showModal);
   return (
-    <Modal isVisible={showModal} animationIn="zoomIn" style={styles.modalStyle}>
+    <Modal isVisible={ShowModal} animationIn="zoomIn" style={styles.modalStyle}>
       <View style={styles.modalContainer}>
-        {isALoader && (
+        {/* {isALoader && (
           <View style={styles.loaderConatiner}>
             <ActivityIndicator
               size={'large'}
@@ -26,27 +34,19 @@ const AppModal = ({showModal, setShoModal, message, Icon, isALoader}: any) => {
             />
             <Text style={styles.loadingText}>Please Wait</Text>
           </View>
-        )}
-        {!isALoader && (
-          <>
-            <View style={styles.messageContainer}>
-              {/* <Ionicons
-                name="mail-unread-outline"
-                size={hp(60)}
-                color="#276EF1"
-              /> */}
-              {/* <AntDesign name="checkcircleo" size={hp(60)} color="#276EF1" /> */}
-              {/* <AntDesign name="closecircleo" size={hp(60)} color="#276EF1" /> */}
+        )} */}
+        {/* {!isALoader && ( */}
+        <>
+          <View style={styles.messageContainer}>
+            {Icon && <Icon />}
+            <Text style={styles.messageText}>{message}</Text>
+          </View>
 
-              {Icon && <Icon />}
-              <Text style={styles.messageText}>{message}</Text>
-            </View>
-
-            {/* <View style={styles.btnContainer}>
-              <Button title="Close" onPress={() => setShoModal(false)} />
-            </View> */}
-          </>
-        )}
+          <View style={styles.btnContainer}>
+            <Button title={btnTitle} onPress={() => setShowModal(false)} />
+          </View>
+        </>
+        {/* )} */}
       </View>
     </Modal>
   );
