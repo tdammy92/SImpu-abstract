@@ -46,11 +46,9 @@ export const notificationDateFormat = (time: string) => {
   return formatedDate;
 };
 
-//
+//get the date of a specific day ago
 export const getDateXDaysAgo = (numOfDays: any, date = new Date()) => {
   const daysAgo = new Date(date.getTime());
-
   daysAgo.setDate(date.getDate() - numOfDays);
-
   return daysAgo;
 };

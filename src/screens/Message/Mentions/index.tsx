@@ -32,6 +32,9 @@ import ListLoader from 'src/components/common/ListLoader';
 
 const Mentions = ({navigation}: any) => {
   const {profile, token} = useSelector((state: StoreState) => state.user);
+  const organisation = useSelector(
+    (state: StoreState) => state.organisation.details,
+  );
   const SortSheetRef = useRef<any>(null);
   const styles = useStyleSheet(themedStyles);
   const [Message, setMessage] = useState(() => dummyData);
@@ -48,7 +51,7 @@ const Mentions = ({navigation}: any) => {
       sort: 'newest',
       page: 1,
       Auth: token,
-      organisationId: profile?.organisations?.id,
+      organisationId: organisation?.id,
     },
     {},
   );

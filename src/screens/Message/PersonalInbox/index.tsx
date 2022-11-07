@@ -30,6 +30,9 @@ const Social = ({navigation}: any) => {
   const styles = useStyleSheet(themedStyles);
   // open, favorited, snoozed
   const {token, profile} = useSelector((state: StoreState) => state.user);
+  const organisation = useSelector(
+    (state: StoreState) => state.organisation.details,
+  );
   const [Message, setMessage] = useState(() => dummyData);
   const [messageOption, setMessageOption] = useState([
     'all',
@@ -54,7 +57,7 @@ const Social = ({navigation}: any) => {
       sort: 'newest',
       page: 1,
       Auth: token,
-      organisationId: profile?.organisations?.id,
+      organisationId: organisation?.id,
     },
     {},
   );

@@ -7,8 +7,8 @@ import {
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import Modal from 'react-native-modal';
-// import AntDesign from 'react-native-vector-icons/AntDesign';
-// import Ionicons from 'react-native-vector-icons/Ionicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+// import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import {Button} from 'src/components/common/Button';
 import {hp, wp} from 'src/utils';
 import {colors, FONTS} from 'src/constants';
@@ -25,6 +25,11 @@ const AppModal = ({
   return (
     <Modal isVisible={ShowModal} animationIn="zoomIn" style={styles.modalStyle}>
       <View style={styles.modalContainer}>
+        <TouchableOpacity
+          onPress={() => setShowModal(false)}
+          style={{position: 'absolute', top: 15, right: 12}}>
+          <AntDesign name="closecircleo" size={20} color={'gray'} />
+        </TouchableOpacity>
         {/* {isALoader && (
           <View style={styles.loaderConatiner}>
             <ActivityIndicator
@@ -42,9 +47,9 @@ const AppModal = ({
             <Text style={styles.messageText}>{message}</Text>
           </View>
 
-          <View style={styles.btnContainer}>
+          {/* <View style={styles.btnContainer}>
             <Button title={btnTitle} onPress={() => setShowModal(false)} />
-          </View>
+          </View> */}
         </>
         {/* )} */}
       </View>

@@ -21,10 +21,11 @@ import {useSelector, useDispatch} from 'react-redux';
 //@ts-ignore
 import UserAvatar from 'react-native-user-avatar';
 import {hp, wp} from 'src/utils';
-import {updateOrganisation} from 'src/store/user/userReducer';
+import {updateOrganisation} from 'src/store/organisation/organisationReducer';
 import {colors, FONTS} from 'src/constants';
 import {StoreState} from 'src/@types/store';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import {organisation} from 'src/@types/profile';
 
 const {height} = Dimensions.get('screen');
 const SheetHeight = Math.floor(height * 0.3);
@@ -33,7 +34,12 @@ const OrganisationSheet = forwardRef(
   (props: any, ref: React.ForwardedRef<any>) => {
     const dispatch = useDispatch();
     const organisations = props?.data?.data?.organisations;
+
+    //redux store imports
     const {profile} = useSelector((state: StoreState) => state.user);
+    const organisation = useSelector(
+      (state: StoreState) => state.organisation.details,
+    );
 
     //change organisaion
     const changePrganisations = (index: any) => {
@@ -91,7 +97,7 @@ const OrganisationSheet = forwardRef(
                     </View>
 
                     <View>
-                      {profile.organisations?.id === org?.id && (
+                      {organisation?.id === org?.id && (
                         <AntDesign name="checkcircleo" size={20} color="#000" />
                       )}
                     </View>

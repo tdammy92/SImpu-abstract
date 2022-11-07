@@ -1,4 +1,4 @@
-import {organisationType} from './profile';
+import {organisationStore} from './profile';
 export interface User {
   id: string;
   first_name: string;
@@ -19,7 +19,6 @@ export interface User {
   page_access?: string[];
   onboard_role_value?: string | null;
   onboard_role?: string | null;
-  organisations?: organisationType;
 }
 
 export interface LoadingState {
@@ -69,10 +68,10 @@ export interface InboxStoreState {
   inbox: InboxId;
   channels?: Channel[];
 }
-export interface PaymentStoreState {}
 
 export interface StoreState {
   loader?: LoadingState;
   user: UserStore;
   inbox: InboxStoreState;
+  organisation: organisationStore;
 }

@@ -21,11 +21,14 @@ import {SCREEN_NAME} from 'src/navigation/constants';
 import {FormatText} from 'src/utils/string-utils/string';
 import SortSheet from './SortSheet';
 import SortByDate from './SortByDate';
+import DateInput from './DateInput';
 
 const MessageHeader = (props: any) => {
   const navigation = useNavigation();
   const SortSheetRef = useRef<any>(null);
   const SortDateRef = useRef<any>(null);
+  const DateRef = useRef<any>(null);
+
   const {
     messageOption,
     shoMessageOptions,
@@ -35,6 +38,7 @@ const MessageHeader = (props: any) => {
   } = props;
 
   const [sort, setsort] = useState('newest');
+  const [DateIndex, setDateIndex] = useState();
   const openDraw = () => navigation.dispatch(DrawerActions.openDrawer());
   //@ts-ignore
   const openNotification = () => navigation.navigate(SCREEN_NAME.notification);
@@ -57,7 +61,7 @@ const MessageHeader = (props: any) => {
   const openSortDateSheet = () => {
     closeSortSheet();
 
-    console.log('we got heree');
+    // console.log('we got heree');
     // closeSortSheet();
     setTimeout(() => {
       if (SortDateRef.current) {
@@ -66,10 +70,30 @@ const MessageHeader = (props: any) => {
     }, 300);
   };
 
-  // //close Sort by filter sheet
+  // //close DateSort by filter sheet
   const closeSortDateSheet = () => {
     if (SortDateRef.current) {
       SortDateRef.current.close();
+    }
+    setTimeout(() => {
+      if (DateRef.current) {
+        // openDateSheet();
+        if (DateIndex === 2 || DateIndex === 3) DateRef.current.open();
+      }
+    }, 300);
+  };
+
+  //open Date Sort by filter sheet code
+  const openDateSheet = () => {
+    if (DateRef.current) {
+      DateRef.current.open();
+    }
+  };
+
+  //close Sort by filter sheet
+  const closeDateSheet = () => {
+    if (DateRef.current) {
+      DateRef.current.close();
     }
   };
 
@@ -77,6 +101,8 @@ const MessageHeader = (props: any) => {
     setsort(sorted);
     SortSheetRef.current.close();
   }, []);
+
+  console.log('date Index', DateIndex);
 
   return (
     <View style={styles.headerContainer}>
@@ -167,8 +193,11 @@ const MessageHeader = (props: any) => {
         ref={SortDateRef}
         // @ts-ignore
         sort={sort}
-        changeSort={changeSort}
+        setDateIndex={setDateIndex}
+        closeSortDateSheet={closeSortDateSheet}
       />
+
+      <DateInput ref={DateRef} DateIndex={DateIndex} />
     </View>
   );
 };

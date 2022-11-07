@@ -39,26 +39,14 @@ const SortSheet = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
   const {changeSort, openDateFilter, sort}: any = props;
   const [DateFilter, setDateFilter] = useState(0);
   const [date, setDate] = useState(new Date());
-  const [mode, setMode] = useState('date');
+
   const [show, setShow] = useState(false);
-  const [selectedDate, setSelectedDate] = useState('');
 
-  // const SortDateRef = useRef<any>(null);
-
-  const DateBy = ['Today', 'Yesterday', 'Specific date', 'Date range'];
   const sortBy = [
     {name: 'newest', icon: 'sort-bool-descending-variant'},
     {name: 'oldest', icon: 'sort-bool-ascending-variant'},
     {name: 'unread', icon: 'sort-bool-descending'},
   ];
-
-  const onChange = (event: any, selectedDate: any) => {
-    const currentDate = selectedDate;
-    setShow(false);
-    setDate(currentDate);
-
-    console.log(date);
-  };
 
   const handleSort = (index: any) => {
     changeSort(sortBy[index]?.name);
@@ -135,8 +123,6 @@ const SortSheet = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
           </View>
         </View>
       </KeyboardAvoidingView>
-      {/* @ts-ignore */}
-      {/* <SortByDate ref={SortDateRef} /> */}
     </RBSheet>
   );
 });

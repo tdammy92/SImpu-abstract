@@ -83,8 +83,7 @@ const Setting = (props: Props): JSX.Element => {
 
     setTimeout(
       () => navigation.reset({index: 0, routes: [{name: SCREEN_NAME.auth}]}),
-
-      200,
+      300,
     );
   };
 

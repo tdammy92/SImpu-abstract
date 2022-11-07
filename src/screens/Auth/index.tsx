@@ -16,11 +16,11 @@ import {Button} from 'src/components/common/Button';
 import {hp, wp} from 'src/utils';
 import {SCREEN_NAME} from 'src/navigation/constants';
 import AuthInput from './component/AuthInput';
+import {addToken, addUser} from 'src/store/user/userReducer';
 import {
-  addToken,
-  addUser,
+  addOrganisation,
   updateOrganisation,
-} from 'src/store/user/userReducer';
+} from 'src/store/organisation/organisationReducer';
 import {FONTS} from 'src/constants';
 import {loginUser} from 'src/services/auth';
 import AppModal from 'src/components/common/Modal';
@@ -84,8 +84,9 @@ const Login = ({navigation}: any) => {
   }
   if (profile.isSuccess) {
     dispatch(addUser(profile?.data?.data?.profile));
+
     dispatch(
-      updateOrganisation({
+      addOrganisation({
         id: profile?.data?.data?.profile?.organisation_id,
         name: 'default',
       }),

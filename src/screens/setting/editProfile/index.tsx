@@ -9,7 +9,7 @@ import {
   Platform,
   StatusBar,
 } from 'react-native';
-// import {useMutation, useQuery} from 'react-query';
+import {useMutation, useQuery} from 'react-query';
 import {useNavigation} from '@react-navigation/native';
 // import mime from "mime";
 import styles from './styles';
@@ -20,8 +20,6 @@ import ArrowRight from '../../../assets/images/Arrow_Right.svg';
 import {MainStackParamList, SCREEN_NAME} from 'src/navigation/constants';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {addUser, updateUser, logOutUser} from 'src/store/user/userReducer';
-// import {Spinner, LoadingView} from '@nghinv/react-native-loading';
-// import {BaseUrl} from 'src/services/api/BaseApi';
 import axios from 'axios';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import {Avatar as avatar} from 'src/constants/general';
@@ -31,6 +29,7 @@ import BottomSheet from 'src/components/common/ImagePicker';
 import ImagePicker from 'react-native-image-crop-picker';
 import {StoreState} from 'src/@types/store';
 import {DEMO_API, SECERET_KEY} from '@env';
+import {updateProfile} from 'src/services/profile';
 import HeaderNextBtn from 'src/components/common/HeaderNextBtn';
 // const mime = require('mime');
 
@@ -39,13 +38,22 @@ interface Props
 
 const EditProfile = (props: Props): JSX.Element => {
   const dispatch = useDispatch();
-  const user = useSelector((state: StoreState) => state.user.profile);
-  // const token = useSelector((state: StoreState) => state.auth.token);
+  const {profile: user, token} = useSelector((state: StoreState) => state.user);
+  const organisation = useSelector(
+    (state: StoreState) => state.organisation.details,
+  );
 
   const {setOptions} = useNavigation();
   const {navigation} = props;
   const [firstName, setFirstName] = useState<string>(user?.first_name);
   const [lastName, setLastName] = useState<string>(user?.last_name);
+
+  //update user profile
+  const profileUpdate = useMutation(
+    value =>
+      updateProfile(value, {Auth: token, organisationId: organisation.id}),
+    {},
+  );
 
   const bottomSheetRef = useRef<any>(null);
 
@@ -154,76 +162,19 @@ const EditProfile = (props: Props): JSX.Element => {
 
   //handle update profile name
   const HandleSaveProfile = async () => {
-    //uncomment when making api calls
-    // Spinner.show({indicatorColor: 'gray'});
-    // const payload = JSON.stringify({
-    //   first_name: firstName.trim(),
-    //   last_name: lastName.trim(),
-    //   country_code: `${user.country_code}`,
-    //   phone: `${user.phone}`,
-    // });
-    // try {
-    //   const profileupdate = await profileUpdate.mutateAsync(payload);
-    //   dispatch(updateUser(profileupdate?.data?.profile));
-    //   Spinner.hide();
-    //   Alert.alert(
-    //     'Update',
-    //     `Name updated`,
-    //     [
-    //       {
-    //         text: 'Close',
-    //         onPress: () => console.log('cancled'),
-    //       },
-    //     ],
-    //     {
-    //       cancelable: true,
-    //       onDismiss: () => console.log('cancled'),
-    //     },
-    //   );
-    // } catch (error) {
-    //   Spinner.hide();
-    //   Alert.alert(
-    //     'An error occured',
-    //     `${error}`,
-    //     [
-    //       {
-    //         text: 'cancle',
-    //         onPress: () => console.log('cancled'),
-    //       },
-    //     ],
-    //     {
-    //       cancelable: true,
-    //       onDismiss: () => console.log('cancled'),
-    //     },
-    //   );
-    //   console.log(error);
-    // }
-  };
+    const payload = JSON.stringify({
+      first_name: firstName.trim(),
+      last_name: lastName.trim(),
+      purpose: '',
+      onboard_role: '',
+      onboard_stage: '',
+    });
 
-  //handle logout function
-  // const handleLogout = () => {
-  //   Alert.alert(
-  //     'Confirm Logout?',
-  //     'Are you sure you want to logout ?',
-  //     [
-  //       {
-  //         text: 'cancle',
-  //         onPress: () => console.log('cancled logot '),
-  //       },
-  //       {
-  //         text: 'yes',
-  //         onPress: () => {
-  //           dispatch(logOutUser()),
-  //             navigation.reset({index: 0, routes: [{name: SCREEN_NAME.login}]});
-  //         },
-  //       },
-  //     ],
-  //     {
-  //       cancelable: true,
-  //       onDismiss: () => console.log('cancled'),
-  //     },
-  //   );
-  // };
+    //@ts-ignore
+    const profileupdate = await profileUpdate.mutateAsync(payload);
+
+    console.log(profileupdate);
+  };
 
   useEffect(() => {
     setOptions({
@@ -281,7 +232,7 @@ const EditProfile = (props: Props): JSX.Element => {
           Enter your name and add an optional profile photo.
         </Text>
         <View style={styles.card}>
-          <FloatLabel
+          {/* <FloatLabel
             onPress={() => navigation.navigate(SCREEN_NAME.changePhoneNumber)}
             text2={
               user?.country_code || user?.phone
@@ -290,15 +241,15 @@ const EditProfile = (props: Props): JSX.Element => {
             }
             icon2={<ArrowRight />}
             text="Change Number"
-          />
+          /> */}
 
           <FloatLabel
             border
-            onPress={() => navigation.navigate(SCREEN_NAME.changeEmail)}
+            // onPress={() => navigation.navigate(SCREEN_NAME.changeEmail)}
             // text2=""
             text2={`${user?.email || ''}`}
-            icon2={<ArrowRight />}
-            text="Change Email"
+            // icon2={<ArrowRight />}
+            text="Email"
           />
           {/* <FloatLabel
           border
@@ -328,7 +279,7 @@ const EditProfile = (props: Props): JSX.Element => {
             // text2=""
             // text2={`${user?.email || ''}`}
             icon2={<ArrowRight />}
-            text="Reset Password"
+            text="Change Password"
           />
         </View>
 

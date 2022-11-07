@@ -19,11 +19,13 @@ import {StoreState} from 'src/@types/store';
 import userSlice from './user/userReducer';
 import inboxSlice from './inbox/reducer';
 import loadingSlice from './Loader';
+import organisationSlice from './organisation/organisationReducer';
 
 export const reducers = combineReducers<StoreState>({
   //   loader: loadingSlice,
   user: userSlice,
   inbox: inboxSlice,
+  organisation: organisationSlice,
 });
 
 const persistConfig = {

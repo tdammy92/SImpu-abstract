@@ -75,6 +75,9 @@ const SettingsStack = createStackNavigator<MainStackParamList>();
 function DrawerMenu() {
   const styles = useStyleSheet(themedStyles);
   const {profile, token} = useSelector((state: StoreState) => state.user);
+  const organisation = useSelector(
+    (state: StoreState) => state.organisation.details,
+  );
 
   const {
     data: count,
@@ -84,10 +87,8 @@ function DrawerMenu() {
     status,
   } = useSidebarUnreadCount({
     Auth: token,
-    organisationId: profile?.organisations?.id,
+    organisationId: organisation?.id,
   });
-
-  // <Bullets active listSize={4} />
 
   //get personal inbox
   const {
@@ -101,7 +102,7 @@ function DrawerMenu() {
       is_pinned: false,
       type: 'personal',
       Auth: token,
-      organisationId: profile?.organisations?.id,
+      organisationId: organisation?.id,
     },
     {},
   );
@@ -482,7 +483,7 @@ export const RootStack = (): JSX.Element => {
         }}
       />
       <Stack.Screen
-        name={SCREEN_NAME.settings}
+        name={SCREEN_NAME.config}
         component={SettingsStackNavigator}
         options={{
           headerShown: false,

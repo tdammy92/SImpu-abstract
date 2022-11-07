@@ -32,15 +32,19 @@ import {
   useSidebarInboxes,
   useGetOrganisations,
 } from 'src/services/queries';
-import {updateOrganisation} from 'src/store/user/userReducer';
+
 import Accordion from './component/Accordion';
 import OrganisationSheet from './component/OrganisationSheet';
+import {organisation} from 'src/@types/profile';
 
 const CustomDrawer = (props: any): JSX.Element => {
   const OrganisationSheetRef = useRef<any>(null);
 
   const {count, ...rest} = props;
   const {profile, token} = useSelector((state: StoreState) => state.user);
+  const organisation = useSelector(
+    (state: StoreState) => state.organisation.details,
+  );
   const netInfo = useNetInfo();
   const [isAvailable, setisAvailable] = useState<boolean | null>(true);
 
@@ -69,7 +73,7 @@ const CustomDrawer = (props: any): JSX.Element => {
       is_pinned: true,
       type: 'shared',
       Auth: token,
-      organisationId: profile?.organisations?.id,
+      organisationId: organisation?.id,
     },
     {},
   );
@@ -91,7 +95,7 @@ const CustomDrawer = (props: any): JSX.Element => {
       is_pinned: true,
       type: 'shared',
       Auth: token,
-      organisationId: profile?.organisations?.id,
+      organisationId: organisation?.id,
     },
     {},
   );
@@ -144,7 +148,7 @@ const CustomDrawer = (props: any): JSX.Element => {
           </View>
         </View>
         <TouchableOpacity
-          onPress={() => props.navigation.navigate(SCREEN_NAME.settings)}>
+          onPress={() => props.navigation.navigate(SCREEN_NAME.config)}>
           <AntDesign name="setting" size={20} color="#7D8282" />
         </TouchableOpacity>
       </View>
@@ -202,9 +206,7 @@ const CustomDrawer = (props: any): JSX.Element => {
             <Text style={styles.selectOrgBtnText}>Organisation :</Text>
 
             <View style={styles.orgPill}>
-              <Text style={styles.orgPillText}>
-                {profile?.organisations?.name}
-              </Text>
+              <Text style={styles.orgPillText}>{organisation?.name}</Text>
             </View>
           </TouchableOpacity>
         ) : (

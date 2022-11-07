@@ -25,6 +25,9 @@ const TeamInbox = ({navigation, route}: any) => {
     params: {menuName, threadType, threadId},
   } = route;
   const {profile, token} = useSelector((state: StoreState) => state.user);
+  const organisation = useSelector(
+    (state: StoreState) => state.organisation.details,
+  );
   const SortSheetRef = useRef<any>(null);
   const styles = useStyleSheet(themedStyles);
   const [Message, setMessage] = useState(() => dummyData);
@@ -57,7 +60,7 @@ const TeamInbox = ({navigation, route}: any) => {
       threadType,
       page: 1,
       Auth: token,
-      organisationId: profile?.organisations?.id,
+      organisationId: organisation?.id,
     },
     {},
   );

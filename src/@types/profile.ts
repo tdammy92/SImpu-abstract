@@ -5,9 +5,13 @@ export type senderIdsType = {
   name: string;
 };
 
-export type organisationType = {
-  id: string;
+export type organisation = {
+  id: string | null;
   name?: string;
   image?: string;
   sender_ids?: senderIdsType[];
+};
+
+export type organisationStore = {
+  details: organisation;
 };

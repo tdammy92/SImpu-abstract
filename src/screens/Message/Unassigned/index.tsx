@@ -37,6 +37,9 @@ const Unassigned = ({navigation}: any) => {
   // const [sort, setsort] = useState('newest');
 
   const {profile, token} = useSelector((state: StoreState) => state.user);
+  const organisation = useSelector(
+    (state: StoreState) => state.organisation.details,
+  );
 
   const {
     data: Unassigned,
@@ -51,7 +54,7 @@ const Unassigned = ({navigation}: any) => {
       // sort: sort,
       page: 1,
       Auth: token,
-      organisationId: profile?.organisations?.id,
+      organisationId: organisation?.id,
     },
     {},
   );

@@ -11,11 +11,11 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import RBSheet, {RBSheetProps} from 'react-native-raw-bottom-sheet';
 import {Divider, Text} from '@ui-kitten/components';
-import {format} from 'date-fns';
 import {hp, wp} from 'src/utils';
 import {FONTS} from 'src/constants';
 import {FormatText} from 'src/utils/string-utils/string';
-import {getDateXDaysAgo} from 'src/utils/date-utils/date';
+import {DateBy} from 'src/utils/helper';
+import {current} from '@reduxjs/toolkit';
 
 const {height} = Dimensions.get('screen');
 
@@ -26,43 +26,11 @@ type Props = {
 const SheetHeight = Math.floor(height * 0.34);
 
 const SortByDate = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
-  //date samples
-  const Dates = {
-    today: format(new Date(), 'PP'),
-    yesterday: format(getDateXDaysAgo(1, new Date()), 'PP'),
-    specificDay: format(getDateXDaysAgo(5, new Date()), 'PP'),
-    DayRange: `${format(getDateXDaysAgo(10, new Date()), 'MMM d')} - ${format(
-      new Date(),
-      'PP',
-    )}`,
-  };
-
-  const DateBy = [
-    {
-      name: 'Today',
-      Icon: 'calendar-outline',
-      sample: Dates.today,
-    },
-    {
-      name: 'yesterday',
-      Icon: 'calendar-today',
-      sample: Dates.yesterday,
-    },
-    {
-      name: 'Specific Date',
-      Icon: 'calendar-week-begin',
-
-      sample: Dates.specificDay,
-    },
-    {
-      name: 'Date range',
-      Icon: 'calendar-weekend-outline',
-      sample: Dates.DayRange,
-    },
-  ];
-
+  const {setDateIndex, closeSortDateSheet}: any = props;
   const handleSort = (index: any) => {
-    // changeSort(sortBy[index]?.name);
+    setDateIndex(index);
+
+    closeSortDateSheet();
   };
 
   return (
@@ -101,7 +69,7 @@ const SortByDate = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
                       <MaterialCommunityIcons
                         name={Icon}
                         size={20}
-                        color="#000"
+                        color="#555"
                       />
                       <View>
                         <Text style={styles.sortText}>{FormatText(name)}</Text>
@@ -119,21 +87,6 @@ const SortByDate = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
                 </Fragment>
               );
             })}
-
-            {/* <DatePicker
-                    mode="calendar"
-                    onSelectedChange={date => setSelectedDate(date)}
-                    options={{
-                      backgroundColor: '#fff',
-                      textHeaderColor: '#026AE8',
-                      textDefaultColor: '#026AE8',
-                      selectedTextColor: '#fff',
-                      mainColor: '#026AE8',
-                      textSecondaryColor: '#026AE8',
-                      borderColor: '#026AE8',
-                    }}
-                    style={{borderRadius: 10, borderColor: '#026AE8', borderWidth: 1}}
-                  /> */}
           </View>
         </View>
       </KeyboardAvoidingView>

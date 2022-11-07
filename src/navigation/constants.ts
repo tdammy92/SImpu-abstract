@@ -18,6 +18,7 @@ export enum SCREEN_NAME {
   notification = 'app.screen.notification',
   compose = 'app.screen.compose',
   main = 'app.screen.main',
+  config = 'app.screen.config',
   settings = 'app.screen.settings',
   editprofile = 'app.screen.editprofile',
   changePhoneNumber = 'app.screen.changephonenumber',
@@ -46,6 +47,7 @@ export type MainStackParamList = {
   [SCREEN_NAME.compose]: undefined;
   [SCREEN_NAME.profile]: undefined;
   [SCREEN_NAME.main]: undefined;
+  [SCREEN_NAME.config]: undefined;
   [SCREEN_NAME.settings]: undefined;
   [SCREEN_NAME.chat]: {user: any};
   // [SCREEN_NAME.chat]: {

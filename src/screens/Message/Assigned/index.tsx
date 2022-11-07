@@ -36,6 +36,9 @@ const Assigned = ({navigation}: any) => {
   const [Message, setMessage] = useState(() => dummyData);
 
   const {profile, token} = useSelector((state: StoreState) => state.user);
+  const organisation = useSelector(
+    (state: StoreState) => state.organisation.details,
+  );
 
   const {
     data: AssignedData,
@@ -49,7 +52,7 @@ const Assigned = ({navigation}: any) => {
       sort: 'newest',
       page: 1,
       Auth: token,
-      organisationId: profile?.organisations?.id,
+      organisationId: organisation?.id,
     },
     {},
   );
