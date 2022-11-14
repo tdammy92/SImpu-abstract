@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import React, {useState, useCallback} from 'react';
 import {Button, Card, Modal, Divider, Text} from '@ui-kitten/components';
+import {useDispatch, useSelector} from 'react-redux';
 
 //@ts-ignore
 import UserAvatar from 'react-native-user-avatar';
@@ -21,27 +22,54 @@ import EmptyNotify from 'src/components/common/EmptyNotification';
 import NotificationListIcon from 'src/assets/images/NotificationListIcon.svg';
 import {FormatText} from 'src/utils/string-utils/string';
 import {notificationDateFormat} from 'src/utils/date-utils/date';
+import {StoreState} from 'src/@types/store';
+import {useNotificationTrayQuery} from 'src/services/queries';
+import {Avatar} from 'src/constants/general';
 
 const {width, height} = Dimensions.get('screen');
 
 const Notification = (props: any) => {
   const {navigation} = props;
+
+  const {token} = useSelector((state: StoreState) => state.user);
+  const organisaion = useSelector(
+    (state: StoreState) => state.organisation.details,
+  );
   const [Data, setData] = useState(() => dummyData);
 
+  const {
+    data: notification,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isLoading,
+  } = useNotificationTrayQuery(
+    {
+      status: 'unread',
+      page: 1,
+      Auth: token,
+      organisationId: organisaion.id,
+    },
+    {},
+  );
+
+  //formate the notification return
+  //This snippet flattens the array
+  const notifications = notification?.pages
+    ?.map((res: any) => res.data?.map((r: any) => r))
+    .flat(2);
+
+  //clear all notification
   const ClearNotification = useCallback(() => {
     setData([]);
   }, []);
 
   const handleNavigate = (user: any) => {
-    // console.log('cliked');
-
     //@ts-ignore
-    navigation.navigate(SCREEN_NAME.chat as never, {user: user});
+    // navigation.navigate(SCREEN_NAME.chat as never, {user: user});
   };
 
   const List = ({item}: any) => {
-    //     console.log(item);
-
     return (
       <>
         <TouchableOpacity
@@ -58,14 +86,15 @@ const Notification = (props: any) => {
           <View style={[styles.listItemContent, {}]}>
             <View style={{flexDirection: 'row', paddingBottom: 10}}>
               <View style={{marginRight: 10}}>
-                <UserAvatar size={35} name={item.name} src={item.avatar} />
+                <UserAvatar size={40} src={Avatar} />
               </View>
-              <Text style={{width: '90%', lineHeight: hp(19)}}>
-                <Text style={{fontFamily: FONTS.AVERTA_BOLD}}>{item.name}</Text>{' '}
-                sent you a message on{' '}
-                <Text style={{fontFamily: FONTS.AVERTA_BOLD}}>
-                  {FormatText(item.channelType)}
-                </Text>
+              <Text
+                style={{
+                  width: '90%',
+                  lineHeight: hp(19),
+                  fontFamily: FONTS.TEXT_SEMI_BOLD,
+                }}>
+                {item?.message}
               </Text>
             </View>
 
@@ -74,10 +103,10 @@ const Notification = (props: any) => {
               <Text
                 style={{
                   color: '#A5ACB8',
-                  fontFamily: FONTS.AVERTA_SEMI_BOLD,
+                  fontFamily: FONTS.TEXT_SEMI_BOLD,
                   fontSize: hp(12),
                 }}>
-                {notificationDateFormat(item.time)}
+                {notificationDateFormat(item?.created_datetime)}
               </Text>
             </View>
           </View>
@@ -86,6 +115,8 @@ const Notification = (props: any) => {
       </>
     );
   };
+
+  // console.log('from notification api', notifications);
 
   return (
     <View style={styles.container}>
@@ -113,7 +144,7 @@ const Notification = (props: any) => {
       <Divider style={{height: 1}} />
 
       <FlatList
-        data={Data}
+        data={notifications}
         renderItem={List}
         keyExtractor={(_, i) => i.toString()}
         ListEmptyComponent={EmptyNotify}
@@ -161,20 +192,20 @@ const styles = StyleSheet.create({
 
   notificationText: {
     fontSize: hp(20),
-    fontFamily: FONTS.AVERTA_SEMI_BOLD,
-    color: colors.primaryText,
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
+    color: colors.dark,
     marginLeft: hp(5),
   },
 
   clearText: {
     fontSize: hp(14),
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
     marginRight: hp(5),
-    color: colors.primaryText,
+    color: colors.dark,
   },
 
   actionText: {
-    fontFamily: FONTS.AVERTA_SEMI_BOLD,
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
     fontSize: hp(16),
     color: '#026AE8',
   },

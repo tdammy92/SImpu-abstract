@@ -87,11 +87,17 @@ export const getPersonalThreads = async (
 ): Promise<AxiosResponse<any>> => {
   const {filter = 'open', page, sort, ...rest} = params;
 
+  const queryS = {
+    sort: params?.sort,
+    start_date: params?.start_date,
+    end_date: params?.end_date,
+  };
+
   const url = buildConversationUrl(
-    `threads/personal/${filter}?per_page=${perPageFetch}&page=${pageParam}&sort=${sort}`,
+    `threads/personal/${filter}?per_page=${perPageFetch}&page=${pageParam}`,
   );
   return client(url, {
-    params: rest,
+    params: {...params, queryS},
     url: url,
   });
 };
@@ -103,13 +109,17 @@ export const getSharedThreads = async (
 ): Promise<AxiosResponse<any>> => {
   const {filter = 'open', threadType, threadId, page, sort, ...rest} = params;
 
-  // console.log('params from shared inbox tags and inbox', params);
-  // }/threads/inbox/:filter/:inbox_id?per_page=15&page=1&sort=oldest
+  const queryS = {
+    sort: params?.sort,
+    start_date: params?.start_date,
+    end_date: params?.end_date,
+  };
+
   const url = buildConversationUrl(
-    `threads/${threadType}/${filter}/${threadId}?per_page=${perPageFetch}&page=${pageParam}&sort=${sort}`,
+    `threads/${threadType}/${filter}/${threadId}?per_page=${perPageFetch}&page=${pageParam}`,
   );
   return client(url, {
-    params: rest,
+    params: {...params, queryS},
     url: url,
   });
 };
@@ -119,13 +129,18 @@ export const getMeThreads = async (
   params: AxiosRequestConfig['params'],
   pageParams: any,
 ): Promise<AxiosResponse<any>> => {
-  const {filter = 'open', page, sort, ...rest} = params;
+  const {filter = 'open', page} = params;
+
+  const queryS = {
+    sort: params?.sort,
+    start_date: params?.start_date,
+    end_date: params?.end_date,
+  };
 
   const url = buildConversationUrl(
-    `threads/me/${filter}?per_page=${perPageFetch}&page=${pageParams}&sort=${sort}`,
+    `threads/me/${filter}?per_page=${perPageFetch}&page=${pageParams}`,
   );
   return client(url, {
-    params: rest,
-    url: url,
+    params: {...params, queryS},
   });
 };

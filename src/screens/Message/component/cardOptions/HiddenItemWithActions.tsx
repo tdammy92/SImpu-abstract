@@ -63,7 +63,7 @@ const HiddenItemWithActions = (props: any) => {
           <Text
             style={{
               fontSize: 12,
-              fontFamily: FONTS.AVERTA_REGULAR,
+              fontFamily: FONTS.TEXT_REGULAR,
               color: '#3CCF4E',
             }}>
             Archive
@@ -108,7 +108,7 @@ const HiddenItemWithActions = (props: any) => {
               <Text
                 style={{
                   fontSize: 12,
-                  fontFamily: FONTS.AVERTA_REGULAR,
+                  fontFamily: FONTS.TEXT_REGULAR,
                   color: '#FF4848',
                 }}>
                 Delete

@@ -35,7 +35,7 @@ const Compose = () => {
       <View style={[styles.headerContainer, {}]}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <AntDesign name="close" size={28} color={colors.primaryText} />
+            <AntDesign name="close" size={28} color={colors.dark} />
           </TouchableOpacity>
           <Text style={styles.messageText}>New Message</Text>
         </View>
@@ -102,7 +102,7 @@ const Compose = () => {
                 }>{`${user.first_name} ${user.last_name}`}</Text>
               <Text style={{color: 'gray'}}>
                 Sent from{' '}
-                <Text style={{fontFamily: FONTS.AVERTA_SEMI_BOLD}}>Simpu</Text>
+                <Text style={{fontFamily: FONTS.TEXT_SEMI_BOLD}}>Simpu</Text>
               </Text>
             </View>
           </View>
@@ -150,13 +150,13 @@ const styles = StyleSheet.create({
 
   messageText: {
     marginLeft: hp(20),
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
     fontSize: hp(18),
-    color: colors.primaryText,
+    color: colors.dark,
   },
 
   sendText: {
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
     fontSize: hp(18),
   },
 
@@ -171,8 +171,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: wp(10),
   },
   inputLabelText: {
-    color: colors.primaryText,
-    fontFamily: FONTS.AVERTA_REGULAR,
+    color: colors.dark,
+    fontFamily: FONTS.TEXT_REGULAR,
     fontSize: hp(18),
     marginRight: wp(5),
   },
@@ -196,8 +196,8 @@ const styles = StyleSheet.create({
     marginVertical: hp(10),
   },
   signatureText: {
-    color: colors.primaryText,
-    fontFamily: FONTS.AVERTA_REGULAR,
+    color: colors.dark,
+    fontFamily: FONTS.TEXT_REGULAR,
     fontSize: hp(16),
   },
 });

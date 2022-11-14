@@ -45,14 +45,14 @@ const Labellist = ({
     },
     textStyle: {
       color: '#0A0748',
-      fontFamily: FONTS.AVERTA_REGULAR,
+      fontFamily: FONTS.TEXT_REGULAR,
       fontWeight: '400',
       fontSize: hp(17),
       lineHeight: hp(24),
     },
     textStyle2: {
       color: '#0A0748',
-      fontFamily: FONTS.AVERTA_SEMI_BOLD,
+      fontFamily: FONTS.TEXT_SEMI_BOLD,
       fontWeight: '400',
       fontSize: hp(13),
       opacity: 0.5,

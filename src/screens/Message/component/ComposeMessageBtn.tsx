@@ -12,7 +12,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import CreateIcon from 'src/assets/images/CreateIcon.svg';
 import {hp, wp} from 'src/utils';
-import {FONTS} from 'src/constants';
+import {colors, FONTS} from 'src/constants';
 import {Easing} from 'react-native-reanimated';
 import {useNavigation} from '@react-navigation/native';
 import {SCREEN_NAME} from 'src/navigation/constants';
@@ -67,7 +67,8 @@ const ComposeMessageBtn = () => {
             onPress={handleCompose}>
             {/* <Entypo name="new-message" size={hp(19)} color="white" /> */}
             <CreateIcon />
-            <Text style={[styles.btnText, {color: '#fff', marginLeft: 5}]}>
+            <Text
+              style={[styles.btnText, {color: colors.light, marginLeft: 5}]}>
               New discussion
             </Text>
           </TouchableOpacity>
@@ -96,7 +97,7 @@ const styles = StyleSheet.create({
   composeBtn: {
     width: hp(55),
     height: hp(55),
-    backgroundColor: '#276EF1',
+    backgroundColor: colors.secondaryBg,
     padding: hp(10),
     borderRadius: hp(55) / 2,
     marginTop: hp(10),
@@ -114,7 +115,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-evenly',
-    backgroundColor: '#026AE8',
+    backgroundColor: colors.secondaryBg,
     padding: 5,
     borderRadius: 8,
     elevation: 2,
@@ -125,6 +126,6 @@ const styles = StyleSheet.create({
 
     fontSize: hp(16),
     paddingVertical: hp(5),
-    fontFamily: FONTS.AVERTA_SEMI_BOLD,
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
   },
 });

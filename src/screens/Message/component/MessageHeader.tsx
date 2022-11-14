@@ -21,7 +21,7 @@ import {SCREEN_NAME} from 'src/navigation/constants';
 import {FormatText} from 'src/utils/string-utils/string';
 import SortSheet from './SortSheet';
 import SortByDate from './SortByDate';
-import DateInput from './DateInput';
+// import DateInput from './DateInput';
 
 const MessageHeader = (props: any) => {
   const navigation = useNavigation();
@@ -35,9 +35,10 @@ const MessageHeader = (props: any) => {
     handleSelectedIndex,
     selectedIndex,
     HandlePress,
+    filter,
+    setFilter,
   } = props;
 
-  const [sort, setsort] = useState('newest');
   const [DateIndex, setDateIndex] = useState();
   const openDraw = () => navigation.dispatch(DrawerActions.openDrawer());
   //@ts-ignore
@@ -57,7 +58,7 @@ const MessageHeader = (props: any) => {
     }
   };
 
-  //open Sort by filter sheet code
+  //open Sort by Date sheet code
   const openSortDateSheet = () => {
     closeSortSheet();
 
@@ -75,34 +76,36 @@ const MessageHeader = (props: any) => {
     if (SortDateRef.current) {
       SortDateRef.current.close();
     }
-    setTimeout(() => {
-      if (DateRef.current) {
-        // openDateSheet();
-        if (DateIndex === 2 || DateIndex === 3) DateRef.current.open();
-      }
-    }, 300);
+    // setTimeout(() => {
+    // if (DateRef.current) {
+    // openDateSheet();
+    // console.log('it got to the conditionals');
+    // if (DateIndex === 2 || DateIndex === 3) {
+    //   openDateSheet();
+    // }
   };
 
-  //open Date Sort by filter sheet code
-  const openDateSheet = () => {
-    if (DateRef.current) {
-      DateRef.current.open();
-    }
-  };
+  // open Date Sort by filter sheet code
+  // const openDateSheet = () => {
+  //   if (DateRef.current) {
+  //     DateRef.current.open();
+  //   }
+  // };
 
-  //close Sort by filter sheet
-  const closeDateSheet = () => {
-    if (DateRef.current) {
-      DateRef.current.close();
-    }
-  };
+  // close Sort by filter sheet
+  // const closeDateSheet = () => {
+  //   if (DateRef.current) {
+  //     DateRef.current.close();
+  //   }
+  // };
 
   const changeSort = useCallback((sorted: any) => {
-    setsort(sorted);
+    // console.log('This is sorted', sorted);
+    setFilter((Prev: any) => ({...Prev, sortbyFilter: sorted}));
     SortSheetRef.current.close();
   }, []);
 
-  console.log('date Index', DateIndex);
+  // console.log('date Index', DateIndex);
 
   return (
     <View style={styles.headerContainer}>
@@ -142,7 +145,7 @@ const MessageHeader = (props: any) => {
           <Text
             style={{
               color: '#828282',
-              fontFamily: FONTS.AVERTA_SEMI_BOLD,
+              fontFamily: FONTS.TEXT_SEMI_BOLD,
               fontSize: hp(16),
               marginLeft: wp(5),
             }}>
@@ -181,23 +184,29 @@ const MessageHeader = (props: any) => {
           )}
         </View>
       </View>
+
+      {/* sort bottom sheet */}
       <SortSheet
         ref={SortSheetRef}
         //@ts-ignore */}
-        sort={sort}
+        filter={filter}
         openDateFilter={openSortDateSheet}
         changeSort={changeSort}
       />
 
+      {/* Date sort sheet */}
       <SortByDate
         ref={SortDateRef}
         // @ts-ignore
-        sort={sort}
+        filter={filter}
+        setFilter={setFilter}
         setDateIndex={setDateIndex}
+        DateIndex={DateIndex}
         closeSortDateSheet={closeSortDateSheet}
       />
 
-      <DateInput ref={DateRef} DateIndex={DateIndex} />
+      {/* select date sheet */}
+      {/* <DateInput ref={DateRef} DateIndex={DateIndex} /> */}
     </View>
   );
 };
@@ -239,7 +248,7 @@ const styles = StyleSheet.create({
 
   badgeText: {
     color: '#fff',
-    fontFamily: FONTS.AVERTA_SEMI_BOLD,
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
     fontSize: hp(12),
     textAlign: 'center',
   },
@@ -247,8 +256,8 @@ const styles = StyleSheet.create({
   headerTitleText: {
     fontSize: hp(18),
 
-    fontFamily: FONTS.AVERTA_SEMI_BOLD,
-    color: colors.primaryText,
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
+    color: colors.dark,
   },
   inputWrapper: {
     flexDirection: 'row',
@@ -275,9 +284,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   sliderText: {
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
     fontSize: hp(16),
     paddingBottom: 5,
-    color: colors.primaryText,
+    color: colors.dark,
   },
 });

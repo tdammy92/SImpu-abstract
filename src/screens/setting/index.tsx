@@ -103,7 +103,9 @@ const Setting = (props: Props): JSX.Element => {
 
           <UserAvatar
             name={`${profile?.first_name} ${profile?.last_name}`}
-            size={60}
+            size={hp(100)}
+            style={{height: hp(100), width: hp(100)}}
+            borderRadius={hp(100 * 0.5)}
             src={profile?.image}
           />
 

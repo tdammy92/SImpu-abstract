@@ -6,7 +6,7 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import {Divider, Text} from '@ui-kitten/components';
-import DatePicker from 'react-native-modern-datepicker';
+
 import React, {
   useState,
   useRef,
@@ -22,7 +22,7 @@ import {hp, wp} from 'src/utils';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {FONTS} from 'src/constants';
+import {colors, FONTS} from 'src/constants';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {FormatText} from 'src/utils/string-utils/string';
 import SortByDate from './SortByDate';
@@ -36,7 +36,7 @@ const {height} = Dimensions.get('screen');
 const SheetHeight = Math.floor(height * 0.3);
 
 const SortSheet = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
-  const {changeSort, openDateFilter, sort}: any = props;
+  const {changeSort, openDateFilter, filter}: any = props;
   const [DateFilter, setDateFilter] = useState(0);
   const [date, setDate] = useState(new Date());
 
@@ -96,14 +96,18 @@ const SortSheet = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
                       <MaterialCommunityIcons
                         name={sortItem.icon}
                         size={23}
-                        color="#000"
+                        color={colors.dark}
                       />
                       <Text style={styles.sortText}>
                         {FormatText(sortItem.name)}
                       </Text>
                     </View>
-                    {sort === sortItem.name && (
-                      <AntDesign name="checkcircleo" size={20} color="#000" />
+                    {filter?.sortbyFilter === sortItem?.name && (
+                      <AntDesign
+                        name="checkcircleo"
+                        size={20}
+                        color={colors.dark}
+                      />
                     )}
                   </TouchableOpacity>
                   <Divider />
@@ -113,7 +117,7 @@ const SortSheet = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
 
             <TouchableOpacity style={styles.listItem} onPress={openDateFilter}>
               <View style={styles.leftSide}>
-                <AntDesign name="calendar" size={20} color="#000" />
+                <AntDesign name="calendar" size={20} color={colors.dark} />
                 <Text style={styles.sortText}>Date Filter</Text>
               </View>
               {/* {sort === sortItem.name && (
@@ -138,11 +142,11 @@ const styles = StyleSheet.create({
   sortTitle: {
     textAlign: 'center',
     fontSize: hp(18),
-    fontFamily: FONTS.AVERTA_SEMI_BOLD,
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
     marginVertical: hp(5),
   },
   sortCard: {
-    backgroundColor: '#FFF',
+    backgroundColor: colors.light,
     height: '90%',
     width: '97%',
     borderRadius: hp(10),
@@ -163,9 +167,9 @@ const styles = StyleSheet.create({
   },
 
   sortText: {
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
     fontSize: hp(16),
-    color: '#000',
+    color: colors.dark,
     marginLeft: wp(10),
   },
 });

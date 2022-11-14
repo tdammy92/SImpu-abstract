@@ -1,10 +1,10 @@
 import {Platform} from 'react-native';
 
 const FONTS = {
-  AVERTA_REGULAR:
+  TEXT_REGULAR:
     Platform.OS === 'ios' ? 'Averta Demo PE Cutted Demo' : 'Averta-Regular',
-  AVERTA_BOLD: 'Averta-Bold',
-  AVERTA_SEMI_BOLD:
+  TEXT_BOLD: 'Averta-Bold',
+  TEXT_SEMI_BOLD:
     Platform.OS === 'ios' ? 'AvertaW01-Semibold' : 'Averta-Semibold',
 };
 

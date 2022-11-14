@@ -172,9 +172,12 @@ const ChatBox = ({prop, route, navigation}: any) => {
                 ...defaultTheme.colors,
                 inputBackground: '#026AE8',
               },
+
               borders: {
                 inputBorderRadius: 10,
                 messageBorderRadius: 10,
+                // messageBorderColor: 10,
+                // borderColor:'#026AE8'
               },
             }}
           />

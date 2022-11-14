@@ -51,7 +51,7 @@ const ForgotPassword = () => {
                   style={{
                     textAlign: 'right',
                     color: '#276EF1',
-                    fontFamily: FONTS.AVERTA_REGULAR,
+                    fontFamily: FONTS.TEXT_REGULAR,
                   }}>
                   Forgot Password?
                 </Text>
@@ -98,14 +98,14 @@ const styles = StyleSheet.create({
   },
   headerText: {
     textAlign: 'left',
-    fontFamily: FONTS.AVERTA_SEMI_BOLD,
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
     fontSize: hp(24),
     color: '#000',
     paddingVertical: hp(15),
   },
   InfoText: {
     color: '#959898',
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
     fontSize: hp(17),
     textAlign: 'left',
     width: '80%',

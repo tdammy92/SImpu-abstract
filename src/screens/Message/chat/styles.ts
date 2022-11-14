@@ -50,9 +50,9 @@ const styles = StyleService.create<Styles>({
     alignItems: 'center',
   },
   usernameText: {
-    fontFamily: FONTS.AVERTA_SEMI_BOLD,
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
     fontSize: hp(16),
-    color: colors.primaryText,
+    color: colors.dark,
     marginLeft: wp(7),
   },
 });

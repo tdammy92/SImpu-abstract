@@ -39,6 +39,13 @@ const Draft = ({navigation}: any) => {
   const styles = useStyleSheet(themedStyles);
   const [Message, setMessage] = useState(() => dummyData);
 
+  //filter state
+  const [filter, setFilter] = useState({
+    sortbyFilter: 'newest',
+    startDate: undefined,
+    endDate: undefined,
+  });
+
   const {
     data: draftThreadData,
     fetchNextPage,
@@ -48,7 +55,9 @@ const Draft = ({navigation}: any) => {
   } = useMessageThreads(
     {
       filter: 'draft',
-      sort: 'newest',
+      sort: filter?.sortbyFilter,
+      start_date: filter?.startDate,
+      end_date: filter?.endDate,
       page: 1,
       Auth: token,
       organisationId: organisation?.id,
@@ -155,6 +164,8 @@ const Draft = ({navigation}: any) => {
           closeSortSheet={openSheet}
           isSocial={false}
           isTeamInbox={false}
+          filter={filter}
+          setFilter={setFilter}
         />
 
         {!isLoading ? (

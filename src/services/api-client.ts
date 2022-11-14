@@ -3,6 +3,8 @@ import {
   DEMO_API,
   PRODUCTION_API,
   CONVERSATION_API_DEMO,
+  INTEGRATIONS_API_DEMO,
+  INTEGRATIONS_API_PRODUCTION,
   SECERET_KEY,
 } from '@env';
 
@@ -10,6 +12,9 @@ export const buildConversationUrl = (url: string) =>
   `${CONVERSATION_API_DEMO}/api/v1/${url}`;
 
 export const buildAppsURL = (url: string) => `${DEMO_API}${url}`;
+
+export const buildNotificationURL = (url: string) =>
+  `${INTEGRATIONS_API_DEMO}${url}`;
 
 export async function client(
   url: string,
@@ -23,6 +28,10 @@ export async function client(
     Simpu_Socket_ID: string;
   };
 
+  // console.log('API Client data', data);
+  // console.log('API Client method', method);
+  // console.log('API Customs', customConfig.params.queryS);
+
   headers.Authorization = customConfig?.params?.Auth ?? '';
   headers.organisationID = customConfig?.params?.organisationId ?? '';
 
@@ -35,6 +44,9 @@ export async function client(
     method,
     data,
     url: url,
+    params: {
+      ...customConfig?.params?.queryS,
+    },
   } as AxiosRequestConfig;
 
   // console.log('api-config', config);
@@ -43,6 +55,7 @@ export async function client(
     const {data} = result;
     return data;
   } catch (error) {
+    // console.log('from axios client', error);
     throw error;
   }
 }

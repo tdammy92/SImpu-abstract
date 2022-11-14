@@ -35,7 +35,6 @@ import {
 
 import Accordion from './component/Accordion';
 import OrganisationSheet from './component/OrganisationSheet';
-import {organisation} from 'src/@types/profile';
 
 const CustomDrawer = (props: any): JSX.Element => {
   const OrganisationSheetRef = useRef<any>(null);
@@ -161,14 +160,14 @@ const CustomDrawer = (props: any): JSX.Element => {
         style={{
           marginTop: 0,
           paddingTop: 10,
-          paddingBottom: 10,
+          paddingBottom: hp(15),
         }}
         contentContainerStyle={{
           marginTop: 0,
           paddingTop: 0,
-          paddingBottom: 15,
+          paddingBottom: hp(60),
         }}
-        contentInset={{bottom: hp(30)}}>
+        contentInset={{bottom: hp(15)}}>
         {/* menu list item*/}
         <DrawerItemList {...rest} />
 
@@ -202,22 +201,24 @@ const CustomDrawer = (props: any): JSX.Element => {
           <TouchableOpacity
             style={styles.selectOrgBtnContainer}
             onPress={openSheet}>
-            <Octicons name="organization" size={14} color="#000" />
-            <Text style={styles.selectOrgBtnText}>Organisation :</Text>
+            <Octicons name="organization" size={14} color={colors.dark} />
+            <Text style={styles.selectOrgBtnText}>Organisation:</Text>
 
             <View style={styles.orgPill}>
               <Text style={styles.orgPillText}>{organisation?.name}</Text>
             </View>
           </TouchableOpacity>
         ) : (
-          <Text
-            style={{
-              fontFamily: FONTS.AVERTA_SEMI_BOLD,
-              fontSize: hp(12),
-              textAlign: 'center',
-            }}>
-            Fetching organisations...
-          </Text>
+          <View style={styles.orgPill}>
+            <Text
+              style={{
+                fontFamily: FONTS.TEXT_SEMI_BOLD,
+                fontSize: hp(12),
+                textAlign: 'center',
+              }}>
+              Fetching organisations...
+            </Text>
+          </View>
         )}
       </View>
       {/* sheet to switch organisations */}
@@ -251,14 +252,14 @@ const styles = StyleSheet.create({
   },
 
   userName: {
-    fontFamily: FONTS.AVERTA_SEMI_BOLD,
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
   },
   bottomView: {
     paddingVertical: hp(15),
   },
   statusText: {
     fontSize: 12,
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
   },
 
   customInboxContainer: {
@@ -275,7 +276,7 @@ const styles = StyleSheet.create({
   customInboxTitleText: {
     fontSize: hp(13),
     color: '#7D8282',
-    fontFamily: FONTS.AVERTA_BOLD,
+    fontFamily: FONTS.TEXT_BOLD,
   },
   customInboxItems: {
     // marginLeft: wp(5),
@@ -295,14 +296,14 @@ const styles = StyleSheet.create({
   customInboxtext: {
     marginLeft: 5,
     fontSize: 14,
-    fontFamily: FONTS.AVERTA_REGULAR,
-    color: colors.primaryText,
+    fontFamily: FONTS.TEXT_REGULAR,
+    color: colors.dark,
   },
 
   badgeText: {
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
     fontSize: 12,
-    color: colors.primaryText,
+    color: colors.dark,
     position: 'absolute',
     right: -20,
   },
@@ -310,12 +311,12 @@ const styles = StyleSheet.create({
   organisationContainer: {
     paddingHorizontal: 10,
     width: '100%',
-    height: hp(65),
+    height: hp(50),
     position: 'absolute',
     bottom: 0,
     alignItems: 'center',
-    // backgroundColor: 'red',
-    backgroundColor: '#fff',
+
+    backgroundColor: colors.light,
     borderTopColor: '#e4e4e4',
     borderTopWidth: 1,
   },
@@ -329,22 +330,17 @@ const styles = StyleSheet.create({
   selectOrgBtnText: {
     marginLeft: 5,
     fontSize: hp(14),
-    fontFamily: FONTS.AVERTA_REGULAR,
-    color: colors.primaryText,
+    fontFamily: FONTS.TEXT_REGULAR,
+    color: colors.dark,
   },
 
   orgPill: {
-    backgroundColor: '#ececec',
     paddingVertical: hp(2),
     paddingHorizontal: wp(5),
-    borderRadius: 8,
-    elevation: 2,
-    zIndex: 2,
-    marginLeft: wp(5),
   },
   orgPillText: {
-    fontFamily: FONTS.AVERTA_REGULAR,
-    color: colors.primaryText,
+    fontFamily: FONTS.TEXT_REGULAR,
+    color: colors.dark,
     fontSize: hp(12),
   },
 });

@@ -1,4 +1,3 @@
-import {DEMO_API} from '@env';
 import {client} from './api-client';
 import {buildAppsURL} from './api-client';
 
@@ -25,9 +24,6 @@ export const getOrganisations = async (payload: any) => {
 
 //update profile
 export const updateProfile = async (payload: any, params: any) => {
-  // const values = {};
-
-  console.log('from update profile', payload, params);
   const url = buildAppsURL(`/profile/save`);
 
   const response = await client(url, {
@@ -38,15 +34,8 @@ export const updateProfile = async (payload: any, params: any) => {
   return response.data;
 };
 
-// values: Partial<Pick<UserProfile, 'first_name' | 'last_name' | 'organisation_id'>> & {
-//   user_id: User['id'];
-//   onboard_role?: string;
-//   purpose?: 'personal' | 'business';
-
-//update profile
+//update profile image
 export const updateProfileImage = async (payload: any, params: any) => {
-  // const values = {};
-
   const url = buildAppsURL(`/profile/save_image`);
 
   const response = await client(url, {
@@ -54,5 +43,17 @@ export const updateProfileImage = async (payload: any, params: any) => {
     data: payload,
     params,
   });
+  return response.data;
+};
+
+export const changePassword = async (payload: any, params: any) => {
+  const url = buildAppsURL(`/auth/change-password`);
+  const response = await client(url, {
+    data: payload,
+    method: 'PATCH',
+    params,
+  });
+  // if (response.status === 401)
+  //   throw new Error('Your old password is incorrect');
   return response.data;
 };

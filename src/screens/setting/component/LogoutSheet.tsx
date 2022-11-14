@@ -47,11 +47,7 @@ const LogoutSheet = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
           </Text>
 
           <TouchableOpacity style={styles.confirmBtn} onPress={handlePress}>
-            <Ionicons
-              name="exit-outline"
-              color={colors.primaryText}
-              size={30}
-            />
+            <Ionicons name="exit-outline" color={colors.dark} size={30} />
             <Text style={styles.confirmText}>Confirm</Text>
           </TouchableOpacity>
         </View>
@@ -77,16 +73,16 @@ const styles = StyleSheet.create({
   signOutText: {
     textAlign: 'center',
     fontSize: hp(18),
-    fontFamily: FONTS.AVERTA_SEMI_BOLD,
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
 
-    color: colors.primaryText,
+    color: colors.dark,
   },
 
   messageText: {
     marginTop: 10,
     fontSize: hp(16),
-    fontFamily: FONTS.AVERTA_REGULAR,
-    color: colors.primaryText,
+    fontFamily: FONTS.TEXT_REGULAR,
+    color: colors.dark,
   },
 
   confirmBtn: {
@@ -101,8 +97,8 @@ const styles = StyleSheet.create({
   },
 
   confirmText: {
-    color: colors.primaryText,
-    fontFamily: FONTS.AVERTA_SEMI_BOLD,
+    color: colors.dark,
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
     fontSize: hp(18),
     marginLeft: wp(15),
   },

@@ -34,7 +34,12 @@ const Unassigned = ({navigation}: any) => {
   const styles = useStyleSheet(themedStyles);
   const [Message, setMessage] = useState(() => dummyData);
 
-  // const [sort, setsort] = useState('newest');
+  //filter state
+  const [filter, setFilter] = useState({
+    sortbyFilter: 'newest',
+    startDate: undefined,
+    endDate: undefined,
+  });
 
   const {profile, token} = useSelector((state: StoreState) => state.user);
   const organisation = useSelector(
@@ -50,8 +55,9 @@ const Unassigned = ({navigation}: any) => {
   } = useMessageThreads(
     {
       filter: 'open',
-      sort: 'newest',
-      // sort: sort,
+      sort: filter?.sortbyFilter,
+      start_date: filter?.startDate,
+      end_date: filter?.endDate,
       page: 1,
       Auth: token,
       organisationId: organisation?.id,
@@ -66,7 +72,6 @@ const Unassigned = ({navigation}: any) => {
 
   //actions
   const closeRow = (rowMap: any, rowKey: any) => {
-    // console.log('rowMap', rowMap, 'rowkey', rowKey);
     if (rowMap[rowKey]) {
       rowMap[rowKey].closeRow();
     }
@@ -137,6 +142,8 @@ const Unassigned = ({navigation}: any) => {
     );
   };
 
+  // console.log('filter Unassigned', filter);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={{height: '100%'}}>
@@ -144,7 +151,8 @@ const Unassigned = ({navigation}: any) => {
           name="Unassigned"
           isSocial={false}
           isTeamInbox={false}
-          xr
+          filter={filter}
+          setFilter={setFilter}
         />
 
         {!isLoading ? (

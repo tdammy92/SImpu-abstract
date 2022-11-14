@@ -78,7 +78,7 @@ export const globalStyles = StyleSheet.create({
     marginRight: 10,
     fontWeight: '400',
     fontSize: hp(16),
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
   },
   lowerText: {
     fontSize: 16,

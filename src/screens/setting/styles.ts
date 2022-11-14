@@ -44,7 +44,7 @@ const styles = StyleService.create<Styles>({
   },
   headerText: {
     fontSize: hp(20),
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
     textAlign: 'center',
     marginBottom: hp(3),
     paddingTop: hp(10),
@@ -55,7 +55,7 @@ const styles = StyleService.create<Styles>({
   },
   lowerText: {
     fontSize: hp(16),
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
     opacity: 0.5,
     textAlign: 'center',
     marginVertical: 1.5,
@@ -65,7 +65,7 @@ const styles = StyleService.create<Styles>({
     backgroundColor: '#f4f4f4',
     fontWeight: '300',
     fontSize: hp(14),
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
     padding: 4,
   },
   nameContainer: {
@@ -91,14 +91,14 @@ const styles = StyleService.create<Styles>({
   },
   infoText1: {
     textAlign: 'center',
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
     color: '#A5ACB8',
     fontSize: hp(13),
   },
   infoText2: {
     textAlign: 'center',
     fontSize: hp(12),
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
     color: '#A5ACB8',
   },
 });

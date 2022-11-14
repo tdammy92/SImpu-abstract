@@ -14,8 +14,7 @@ const HeaderBack = () => {
         paddingLeft: 10,
         height: hp(50),
         width: wp(60),
-        // backgroundColor: 'red',
-        // alignItems: 'center',
+
         justifyContent: 'center',
       }}
       onPress={() => navigation.goBack()}>

@@ -24,9 +24,9 @@ export default HeaderNextBtn;
 
 const styles = StyleSheet.create({
   btnText: {
-    color: colors.primaryText,
+    color: colors.dark,
     fontSize: hp(16),
     marginRight: hp(15),
-    fontFamily: FONTS.AVERTA_SEMI_BOLD,
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
   },
 });

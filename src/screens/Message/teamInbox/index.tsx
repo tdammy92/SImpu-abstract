@@ -38,13 +38,16 @@ const TeamInbox = ({navigation, route}: any) => {
   ]);
   const [selectedIndex, setselectedIndex] = useState(0);
 
+  //filter state
+  const [filter, setFilter] = useState({
+    sortbyFilter: 'newest',
+    startDate: undefined,
+    endDate: undefined,
+  });
+
   const handleSelectedIndex = (index: number) => {
     setselectedIndex(index);
   };
-
-  // console.log('threadType from shared inbox', threadType, threadId);
-
-  // console.log('current route', route);
 
   const {
     data: sharedThreadData,
@@ -55,7 +58,9 @@ const TeamInbox = ({navigation, route}: any) => {
   } = useSharedThreads(
     {
       filter: messageOption[selectedIndex],
-      sort: 'newest',
+      sort: filter?.sortbyFilter,
+      start_date: filter?.startDate,
+      end_date: filter?.endDate,
       threadId,
       threadType,
       page: 1,
@@ -69,21 +74,6 @@ const TeamInbox = ({navigation, route}: any) => {
   const sharedData = sharedThreadData?.pages
     ?.map((res: any) => res?.data?.threads?.map((r: any) => r))
     .flat(2);
-
-  //open sheet code
-  const openSheet = (channel: string) => {
-    // setchannelName(channel);
-    if (SortSheetRef.current) {
-      SortSheetRef.current.open();
-    }
-  };
-
-  //close sheet
-  const closeSheet = () => {
-    if (SortSheetRef.current) {
-      SortSheetRef.current.close();
-    }
-  };
 
   //actions
   const closeRow = (rowMap: any, rowKey: any) => {
@@ -163,10 +153,10 @@ const TeamInbox = ({navigation, route}: any) => {
           messageOption={messageOption}
           handleSelectedIndex={handleSelectedIndex}
           selectedIndex={selectedIndex}
-          openSortSheet={openSheet}
-          closeSortSheet={closeSheet}
           shoMessageOptions={true}
           HandlePress={() => navigation.goBack()}
+          filter={filter}
+          setFilter={setFilter}
         />
 
         {!isLoading ? (
@@ -209,7 +199,6 @@ const TeamInbox = ({navigation, route}: any) => {
       </View>
 
       <ComposeMessageBtn />
-      <SortSheet ref={SortSheetRef} />
     </SafeAreaView>
   );
 };

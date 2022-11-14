@@ -1,5 +1,6 @@
 import {StyleService} from '@ui-kitten/components';
 import {ImageStyle, TextStyle, ViewStyle} from 'react-native';
+import {color} from 'react-native-reanimated';
 import {colors} from 'src/constants';
 import FONTS from 'src/constants/fonts';
 import {hp, wp} from 'src/utils';
@@ -37,14 +38,14 @@ const styles = StyleService.create<Styles>({
 
   headerText: {
     textAlign: 'left',
-    fontFamily: FONTS.AVERTA_SEMI_BOLD,
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
     fontSize: hp(24),
-    color: '#000',
+    color: colors.dark,
     paddingVertical: hp(15),
   },
   InfoText: {
-    color: '#959898',
-    fontFamily: FONTS.AVERTA_REGULAR,
+    color: colors.darkGray,
+    fontFamily: FONTS.TEXT_REGULAR,
     fontSize: hp(17),
     textAlign: 'left',
     width: '80%',
@@ -70,7 +71,7 @@ const styles = StyleService.create<Styles>({
   googleButton: {
     alignItems: 'center',
     borderRadius: 10,
-    backgroundColor: '#000',
+    backgroundColor: colors.dark,
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     width: '90%',
@@ -80,7 +81,7 @@ const styles = StyleService.create<Styles>({
   },
 
   googleText: {
-    color: '#fff',
+    color: colors.light,
     fontSize: hp(20),
   },
 
@@ -93,8 +94,8 @@ const styles = StyleService.create<Styles>({
     width: '100%',
   },
   linkText: {
-    fontFamily: FONTS.AVERTA_REGULAR,
-    color: colors.primaryText,
+    fontFamily: FONTS.TEXT_REGULAR,
+    color: colors.dark,
     fontSize: hp(16),
   },
 

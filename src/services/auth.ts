@@ -1,17 +1,13 @@
-import axios from 'axios';
-import {DEMO_API, PRODUCTION_API, SECERET_KEY} from '@env';
-import {client} from './api-client';
-
-const config = {
-  headers: {
-    'Content-type': 'application/json',
-    // Authorization: SECERET_KEY,
-  },
-};
+import {buildAppsURL, client} from './api-client';
 
 // login user
 export const loginUser = async (userDetails: any) => {
-  return await axios
-    .post(`${DEMO_API}/auth/login`, userDetails, config)
-    .then(res => res.data);
+  const url = buildAppsURL(`/auth/login`);
+  const response = await client(url, {
+    method: 'POST',
+    data: userDetails,
+  });
+
+  console.log('response from auth service', response);
+  return response;
 };

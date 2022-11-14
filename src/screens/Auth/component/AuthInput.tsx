@@ -22,7 +22,7 @@ const AuthInput = (props: any) => {
       <View
         style={[
           styles.Input,
-          {borderColor: IsFocused ? '#026AE8' : '#6D7580'},
+          {borderColor: IsFocused ? colors.secondaryBg : '#6D7580'},
         ]}>
         {!isPassword && (
           <TextInput
@@ -52,7 +52,7 @@ const AuthInput = (props: any) => {
             <Feather
               name="mail"
               size={22}
-              color={IsFocused ? '#026AE8' : '#929292'}
+              color={IsFocused ? colors.secondaryBg : '#929292'}
               style={{marginRight: 12}}
             />
           )}
@@ -62,7 +62,7 @@ const AuthInput = (props: any) => {
               <Feather
                 name={showPassword ? 'eye' : 'eye-off'}
                 size={22}
-                color={IsFocused ? '#026AE8' : '#929292'}
+                color={IsFocused ? colors.secondaryBg : '#929292'}
                 style={{marginRight: 12}}
               />
             </TouchableOpacity>
@@ -84,8 +84,8 @@ const styles = StyleSheet.create({
   label: {
     paddingVertical: hp(5),
     fontSize: hp(16),
-    fontFamily: FONTS.AVERTA_REGULAR,
-    color: colors.primaryText,
+    fontFamily: FONTS.TEXT_REGULAR,
+    color: colors.dark,
   },
   Input: {
     backgroundColor: '#F2F2F7',
@@ -100,13 +100,13 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: wp(10),
     fontSize: hp(16),
-    fontFamily: FONTS.AVERTA_REGULAR,
-    color: colors.primaryText,
+    fontFamily: FONTS.TEXT_REGULAR,
+    color: colors.dark,
   },
 
   errorText: {
     color: 'red',
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
     fontSize: hp(12),
     paddingVertical: hp(5),
   },

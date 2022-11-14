@@ -42,3 +42,7 @@ export const DateBy = [
     sample: Dates.DayRange,
   },
 ];
+
+export const formatNumbers = (num: number | string) => {
+  return num?.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};

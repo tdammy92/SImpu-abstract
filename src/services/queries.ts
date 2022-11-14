@@ -10,6 +10,11 @@ import {
   getSharedThreads,
 } from './inbox';
 import {getProfile} from './profile';
+import {getNotificationTrayItems} from './notification';
+
+/*
+profile queries
+*/
 
 //fetch User profile
 export const useProfile = (queryKey: any, queryParams: any, options: any) => {
@@ -51,9 +56,9 @@ export const useSidebarUnreadCount = (queryParams: any, options?: any) => {
 
 //fetch personal threads
 export const usePersonalThreads = (queryParams: any, options: any) => {
-  const {filter, sort, page} = queryParams;
+  const {filter, sort, page, start_date, end_date} = queryParams;
   return useInfiniteQuery(
-    `threads ${filter} ${sort} ${page} ${queryParams?.organisationId}`,
+    `threads ${filter} ${sort} ${page} ${start_date} ${end_date} ${queryParams?.organisationId}`,
     ({pageParam = 1}) => getPersonalThreads(queryParams, pageParam),
     {
       getNextPageParam: (lastPage: any) => {
@@ -66,10 +71,10 @@ export const usePersonalThreads = (queryParams: any, options: any) => {
 };
 //fetch threads for open | assigned | mentions | closed | draft
 export const useMessageThreads = (queryParams: any, options: any) => {
-  const {filter, sort, page} = queryParams;
+  const {filter, sort, page, start_date, end_date} = queryParams;
 
   return useInfiniteQuery(
-    `threads ${filter} ${sort} ${page}  ${queryParams?.organisationId}`,
+    `threads ${filter} ${sort} ${page} ${start_date} ${end_date}   ${queryParams?.organisationId}`,
     ({pageParam = 1}) => getMeThreads(queryParams, pageParam),
     {
       getNextPageParam: (lastPage: any) => {
@@ -81,12 +86,12 @@ export const useMessageThreads = (queryParams: any, options: any) => {
   );
 };
 
-//fetch thread for shared inbox/tags  /threads/inbox/:filter/:inbox_id?per_page=15&page=1&sort=newest
 export const useSharedThreads = (queryParams: any, options: any) => {
-  const {threadType, filter, sort, organisationId} = queryParams;
+  const {threadType, filter, sort, start_date, end_date, organisationId} =
+    queryParams;
 
   return useInfiniteQuery(
-    `threads ${threadType} ${filter} ${sort}  ${organisationId}`,
+    `threads ${threadType} ${filter} ${sort} ${start_date} ${end_date}  ${organisationId}`,
     ({pageParam = 1}) => getSharedThreads(queryParams, pageParam),
     {
       getNextPageParam: (lastPage: any) => {
@@ -104,5 +109,26 @@ export const useGetOrganisations = (queryParams: any, options: any) => {
     `organisations`,
     () => getOrganisations(queryParams),
     options,
+  );
+};
+
+/*
+notification queries
+*/
+
+export const useNotificationTrayQuery = (queryParams: any, options: any) => {
+  const {status, page, organisationId} = queryParams;
+  return useInfiniteQuery(
+    ['notification-tray-items', status, organisationId, page],
+    ({pageParam = 1}) => getNotificationTrayItems(queryParams, pageParam),
+    {
+      getNextPageParam: lastPage => {
+        return lastPage.meta.page < lastPage.meta.page_total
+          ? lastPage.meta.page + 1
+          : undefined;
+      },
+      refetchOnWindowFocus: true,
+      ...options,
+    },
   );
 };

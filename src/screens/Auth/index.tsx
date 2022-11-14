@@ -17,11 +17,8 @@ import {hp, wp} from 'src/utils';
 import {SCREEN_NAME} from 'src/navigation/constants';
 import AuthInput from './component/AuthInput';
 import {addToken, addUser} from 'src/store/user/userReducer';
-import {
-  addOrganisation,
-  updateOrganisation,
-} from 'src/store/organisation/organisationReducer';
-import {FONTS} from 'src/constants';
+import {addOrganisation} from 'src/store/organisation/organisationReducer';
+import {colors, FONTS} from 'src/constants';
 import {loginUser} from 'src/services/auth';
 import AppModal from 'src/components/common/Modal';
 import {useProfile} from 'src/services/queries';
@@ -68,6 +65,8 @@ const Login = ({navigation}: any) => {
       password: values.password,
     };
     const response = await mutateAsync(JSON.stringify(payload));
+
+    // console.log('Auth response', response);
     dispatch(addToken(response.data.token));
   };
 
@@ -83,6 +82,11 @@ const Login = ({navigation}: any) => {
     return <Loader />;
   }
   if (profile.isSuccess) {
+    // console.log(
+    //   'what came back from fetch profile',
+    //   profile?.data?.data?.profile,
+    // );
+
     dispatch(addUser(profile?.data?.data?.profile));
 
     dispatch(
@@ -91,6 +95,7 @@ const Login = ({navigation}: any) => {
         name: 'default',
       }),
     );
+    // console.log('let see whats going on here');
     navigation.reset({index: 0, routes: [{name: SCREEN_NAME.main}]});
   }
 
@@ -154,8 +159,8 @@ const Login = ({navigation}: any) => {
                           <Text
                             style={{
                               textAlign: 'right',
-                              color: '#276EF1',
-                              fontFamily: FONTS.AVERTA_REGULAR,
+                              color: `${colors.secondaryBg}`,
+                              fontFamily: FONTS.TEXT_REGULAR,
                             }}>
                             Forgot Password?
                           </Text>
@@ -183,10 +188,14 @@ const Login = ({navigation}: any) => {
         <AppModal
           btnTitle="Close"
           //@ts-ignore
-          message={error?.message}
+          message={error?.message ?? 'Unable to login'}
           showModal={isError}
           Icon={() => (
-            <MaterialIcons name="error-outline" size={50} color="#276EF1" />
+            <MaterialIcons
+              name="error-outline"
+              size={60}
+              color={colors.secondaryBg}
+            />
           )}
         />
       )}

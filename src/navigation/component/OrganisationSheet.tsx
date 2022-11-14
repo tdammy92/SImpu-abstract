@@ -60,18 +60,25 @@ const OrganisationSheet = forwardRef(
           },
           draggableIcon: {
             backgroundColor: 'rgba(255,255,255,0)',
+            height: 0,
+            margin: 0,
           },
           container: {
             borderTopLeftRadius: hp(10),
             borderTopRightRadius: hp(10),
-            backgroundColor: '#fff',
           },
         }}>
+        <View
+          style={{
+            width: '100%',
+            alignItems: 'center',
+            paddingVertical: 15,
+            backgroundColor: colors.bootomHeaderBg,
+          }}>
+          <Text style={styles.sheetHeaderText}>Select Organisation</Text>
+        </View>
+        <Divider />
         <View style={{padding: 0, margin: 0, height: '100%'}}>
-          <View style={{width: '100%', alignItems: 'center'}}>
-            <Text style={styles.sheetHeaderText}>Select Organisation</Text>
-          </View>
-
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{
@@ -118,10 +125,10 @@ export default OrganisationSheet;
 const styles = StyleSheet.create({
   sheetHeader: {},
   sheetHeaderText: {
-    fontFamily: FONTS.AVERTA_SEMI_BOLD,
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
     fontSize: hp(14),
     textTransform: 'uppercase',
-    color: colors.primaryText,
+    color: colors.dark,
   },
   listContainer: {
     flexGrow: 1,
@@ -133,8 +140,8 @@ const styles = StyleSheet.create({
   },
   organisationText: {
     marginLeft: 5,
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
     fontSize: hp(15),
-    color: colors.primaryText,
+    color: colors.dark,
   },
 });

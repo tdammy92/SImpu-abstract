@@ -35,6 +35,13 @@ const Assigned = ({navigation}: any) => {
   const styles = useStyleSheet(themedStyles);
   const [Message, setMessage] = useState(() => dummyData);
 
+  //filter state
+  const [filter, setFilter] = useState({
+    sortbyFilter: 'newest',
+    startDate: undefined,
+    endDate: undefined,
+  });
+
   const {profile, token} = useSelector((state: StoreState) => state.user);
   const organisation = useSelector(
     (state: StoreState) => state.organisation.details,
@@ -49,7 +56,9 @@ const Assigned = ({navigation}: any) => {
   } = useMessageThreads(
     {
       filter: 'assigned',
-      sort: 'newest',
+      sort: filter?.sortbyFilter,
+      start_date: filter?.startDate,
+      end_date: filter?.endDate,
       page: 1,
       Auth: token,
       organisationId: organisation?.id,
@@ -147,6 +156,8 @@ const Assigned = ({navigation}: any) => {
     );
   };
 
+  // console.log('assingend', filter);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={{height: '100%'}}>
@@ -156,6 +167,8 @@ const Assigned = ({navigation}: any) => {
           closeSortSheet={openSheet}
           isSocial={false}
           isTeamInbox={false}
+          filter={filter}
+          setFilter={setFilter}
         />
         {!isLoading ? (
           <SwipeListView

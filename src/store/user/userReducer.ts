@@ -20,6 +20,10 @@ const userSlice = createSlice({
       state.profile = payload;
     },
 
+    updateImage: (state: UserStore, {payload}: PayloadAction<string>) => {
+      state.profile.image = payload;
+    },
+
     logOutUser: (state: UserStore) => {
       // state=initialState
       state.isloggedIn = false;
@@ -27,6 +31,7 @@ const userSlice = createSlice({
   },
 });
 
-export const {addToken, addUser, updateUser, logOutUser} = userSlice.actions;
+export const {addToken, addUser, updateImage, updateUser, logOutUser} =
+  userSlice.actions;
 
 export default userSlice.reducer;

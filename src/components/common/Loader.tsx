@@ -20,6 +20,7 @@ import Animated, {
   withSpring,
   withDelay,
 } from 'react-native-reanimated';
+import {colors} from 'src/constants';
 
 const Loader = () => {
   const opacity = useSharedValue(0.9);
@@ -49,14 +50,14 @@ const Loader = () => {
         <Feather
           name="message-square"
           size={50}
-          color="rgba(255,255,255,0.6)"
+          color="rgba(255,255,255,0.9)"
         />
       </View>
       <View style={{position: 'absolute', bottom: 63, left: 45}}>
         <Feather
           name="message-circle"
-          size={45}
-          color="rgba(255,255,255,0.6)"
+          size={40}
+          color="rgba(255,255,255,0.9)"
         />
       </View>
 
@@ -68,12 +69,12 @@ const Loader = () => {
       <View style={{position: 'absolute', top: 180, left: 45}}>
         <MaterialCommunityIcons
           name="android-messages"
-          size={80}
-          color="rgba(255,255,255,0.6)"
+          size={50}
+          color="rgba(255,255,255,0.9)"
         />
       </View>
       <View style={{position: 'absolute', bottom: 180, right: 45}}>
-        <AntDesign name="mail" size={40} color="rgba(255,255,255,0.6)" />
+        <AntDesign name="mail" size={40} color="rgba(255,255,255,0.9)" />
       </View>
     </Animated.View>
   );
@@ -86,15 +87,11 @@ const styles = StyleSheet.create({
     zIndex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    // backgroundColor: 'rgba(0,0,0,0.5)',
-    backgroundColor: '#026AE8',
+
+    backgroundColor: colors.secondaryBg,
   },
   simpuIcon: {
     height: hp(60),
     width: wp(100),
-
-    // shadowOffset: {width: 0, height: 20},
-    // shadowOpacity: 0.35,
-    // shadowRadius: 35,
   },
 });

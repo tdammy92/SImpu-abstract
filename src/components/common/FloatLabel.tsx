@@ -39,7 +39,7 @@ const FloatLabel = ({
       color: simpuBlue ? '#3525E6' : '#0A0748',
       fontWeight: '400',
       fontSize: hp(17),
-      fontFamily: FONTS.AVERTA_REGULAR,
+      fontFamily: FONTS.TEXT_REGULAR,
     },
     textStyle2: {
       width: '65%',
@@ -47,7 +47,7 @@ const FloatLabel = ({
       fontSize: hp(16),
       textAlign: 'right',
       marginRight: 10,
-      fontFamily: FONTS.AVERTA_REGULAR,
+      fontFamily: FONTS.TEXT_REGULAR,
     },
     float: {
       width: '65%',

@@ -22,7 +22,7 @@ import {colors, FONTS} from 'src/constants';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {SCREEN_NAME} from '../constants';
 import {toggleAnmiation} from './Animation';
-import {hp} from 'src/utils';
+import {formatNumbers, hp} from 'src/utils';
 
 const Accordion = ({
   data,
@@ -97,7 +97,7 @@ const Accordion = ({
                           </Text>
                           <Text style={styles.badgeText}>
                             {count?.inboxes[item?.uuid] > 0 &&
-                              count?.inboxes[item?.uuid]}
+                              formatNumbers(count?.inboxes[item?.uuid])}
                           </Text>
                         </View>
                       );
@@ -136,8 +136,8 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   accordionHeaderText: {
-    color: colors.primaryText,
-    fontFamily: FONTS.AVERTA_REGULAR,
+    color: colors.dark,
+    fontFamily: FONTS.TEXT_REGULAR,
     fontSize: hp(14),
     marginLeft: 5,
     textTransform: 'uppercase',
@@ -152,14 +152,14 @@ const styles = StyleSheet.create({
   customInboxtext: {
     marginLeft: 5,
     fontSize: 14,
-    fontFamily: FONTS.AVERTA_REGULAR,
-    color: colors.primaryText,
+    fontFamily: FONTS.TEXT_REGULAR,
+    color: colors.dark,
   },
 
   badgeText: {
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
     fontSize: 12,
-    color: colors.primaryText,
+    color: '#026AE8',
     position: 'absolute',
     right: -20,
   },

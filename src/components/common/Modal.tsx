@@ -28,7 +28,7 @@ const AppModal = ({
         <TouchableOpacity
           onPress={() => setShowModal(false)}
           style={{position: 'absolute', top: 15, right: 12}}>
-          <AntDesign name="closecircleo" size={20} color={'gray'} />
+          <AntDesign name="closecircleo" size={25} color={'gray'} />
         </TouchableOpacity>
         {/* {isALoader && (
           <View style={styles.loaderConatiner}>
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   modalContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.light,
     height: '30%',
     width: '90%',
     borderRadius: 10,
@@ -75,16 +75,16 @@ const styles = StyleSheet.create({
   loaderConatiner: {},
   loadingText: {
     fontSize: hp(16),
-    fontFamily: FONTS.AVERTA_REGULAR,
-    color: colors.primaryText,
+    fontFamily: FONTS.TEXT_REGULAR,
+    color: colors.dark,
     textAlign: 'center',
     paddingVertical: hp(10),
   },
   messageContainer: {paddingVertical: hp(15), alignItems: 'center'},
   messageText: {
     fontSize: hp(16),
-    fontFamily: FONTS.AVERTA_REGULAR,
-    color: colors.primaryText,
+    fontFamily: FONTS.TEXT_REGULAR,
+    color: colors.dark,
     paddingHorizontal: wp(15),
     paddingVertical: hp(10),
   },

@@ -37,6 +37,14 @@ const Mentions = ({navigation}: any) => {
   );
   const SortSheetRef = useRef<any>(null);
   const styles = useStyleSheet(themedStyles);
+
+  //filter state
+  const [filter, setFilter] = useState({
+    sortbyFilter: 'newest',
+    startDate: undefined,
+    endDate: undefined,
+  });
+
   const [Message, setMessage] = useState(() => dummyData);
 
   const {
@@ -48,7 +56,9 @@ const Mentions = ({navigation}: any) => {
   } = useMessageThreads(
     {
       filter: 'mention',
-      sort: 'newest',
+      sort: filter?.sortbyFilter,
+      start_date: filter?.startDate,
+      end_date: filter?.endDate,
       page: 1,
       Auth: token,
       organisationId: organisation?.id,
@@ -155,6 +165,8 @@ const Mentions = ({navigation}: any) => {
           closeSortSheet={openSheet}
           isSocial={false}
           isTeamInbox={false}
+          filter={filter}
+          setFilter={setFilter}
         />
 
         {!isLoading ? (

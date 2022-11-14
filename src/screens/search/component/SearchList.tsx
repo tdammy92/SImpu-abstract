@@ -56,10 +56,10 @@ const styles = StyleSheet.create({
   },
   nameText: {
     fontSize: hp(14),
-    color: colors.primaryText,
+    color: colors.dark,
   },
   messageText: {
     fontSize: hp(12),
-    color: colors.primaryText,
+    color: colors.dark,
   },
 });

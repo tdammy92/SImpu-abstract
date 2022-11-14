@@ -32,7 +32,7 @@ const styles = StyleService.create<Styles>({
     paddingBottom: 10,
     fontWeight: '400',
     fontSize: hp(18),
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
   },
 
   textConatiner: {
@@ -40,7 +40,7 @@ const styles = StyleService.create<Styles>({
   },
   nameText: {
     fontSize: hp(18),
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
     color: '#636366',
     margin: wp(15),
     lineHeight: 22,

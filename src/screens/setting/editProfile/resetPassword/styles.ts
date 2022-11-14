@@ -13,6 +13,7 @@ interface Styles {
   nameText: TextStyle;
   save: TextStyle;
   saveContainer: ViewStyle;
+  errorText: TextStyle;
 }
 
 const styles = StyleService.create<Styles>({
@@ -32,15 +33,19 @@ const styles = StyleService.create<Styles>({
     paddingBottom: 10,
     fontWeight: '400',
     fontSize: hp(18),
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
   },
 
   textConatiner: {
     paddingLeft: wp(15),
+    paddingRight: wp(5),
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   nameText: {
     fontSize: hp(18),
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
     color: '#636366',
     margin: wp(15),
     lineHeight: 22,
@@ -74,6 +79,12 @@ const styles = StyleService.create<Styles>({
     color: '#0A0748',
     fontSize: hp(17),
     paddingVertical: hp(10),
+  },
+  errorText: {
+    color: 'red',
+    fontSize: hp(12),
+    fontFamily: FONTS.TEXT_REGULAR,
+    paddingVertical: hp(5),
   },
 });
 

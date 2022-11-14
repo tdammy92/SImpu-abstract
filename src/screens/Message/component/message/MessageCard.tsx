@@ -51,8 +51,8 @@ const MessageCard = (props: any) => {
     date: messgeTimeFormater(item?.updated_datetime),
     image: item?.sender?.image_url,
     message: !!item?.subject
-      ? trimText(removeHtmlTags(item?.subject), 35)
-      : trimText(removeHtmlTags(item?.last_message?.entity?.content?.body), 35),
+      ? trimText(removeHtmlTags(item?.subject), 45)
+      : trimText(removeHtmlTags(item?.last_message?.entity?.content?.body), 45),
     channelType: item?.channel_name,
   };
 
@@ -103,7 +103,7 @@ export default memo(MessageCard);
 const styles = StyleSheet.create({
   cardContainer: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.light,
     flexDirection: 'row',
     height: '80%',
     width: '95%',
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   },
 
   rowFront: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.light,
     height: 90,
     paddingVertical: hp(5),
   },
@@ -125,6 +125,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     position: 'relative',
     width: '90%',
+    // overflow: 'hidden',
   },
 
   cardBottom: {
@@ -134,20 +135,20 @@ const styles = StyleSheet.create({
   },
 
   nameText: {
-    fontFamily: FONTS.AVERTA_SEMI_BOLD,
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
     fontSize: hp(16),
-    color: colors.primaryText,
+    color: colors.dark,
   },
   isRead: {
     height: hp(12),
     width: wp(12),
-    backgroundColor: '#276EF1',
+    backgroundColor: colors.secondaryBg,
     borderRadius: 30,
   },
   timeText: {
     fontSize: hp(12),
-    fontFamily: FONTS.AVERTA_REGULAR,
-    color: colors.primaryText,
+    fontFamily: FONTS.TEXT_REGULAR,
+    color: colors.dark,
     marginRight: wp(10),
   },
 
@@ -158,17 +159,18 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   messageTitleText: {
-    color: colors.primaryText,
+    color: colors.dark,
     fontSize: hp(16),
-    fontFamily: FONTS.AVERTA_SEMI_BOLD,
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
   },
   lastmessageText: {
-    color: colors.primaryText,
+    color: colors.dark,
     fontSize: hp(14),
     paddingTop: hp(1),
     paddingBottom: hp(5),
     width: '85%',
     textAlign: 'left',
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
+    // overflow: 'hidden',
   },
 });

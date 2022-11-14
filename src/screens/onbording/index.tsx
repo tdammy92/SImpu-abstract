@@ -213,6 +213,6 @@ const styles = StyleSheet.create({
   simpuText: {
     color: '#fff',
     fontSize: hp(20),
-    fontFamily: FONTS.AVERTA_SEMI_BOLD,
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
   },
 });

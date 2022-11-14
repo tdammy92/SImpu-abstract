@@ -5,17 +5,18 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
 } from 'react-native';
-import React, {forwardRef, Fragment, memo} from 'react';
+import React, {forwardRef, Fragment, useRef, memo} from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import RBSheet, {RBSheetProps} from 'react-native-raw-bottom-sheet';
 import {Divider, Text} from '@ui-kitten/components';
 import {hp, wp} from 'src/utils';
-import {FONTS} from 'src/constants';
+import {colors, FONTS} from 'src/constants';
 import {FormatText} from 'src/utils/string-utils/string';
 import {DateBy} from 'src/utils/helper';
-import {current} from '@reduxjs/toolkit';
+import DateInput from './DateInput';
+import {endOfDay, formatISO, startOfDay, subDays} from 'date-fns';
 
 const {height} = Dimensions.get('screen');
 
@@ -26,11 +27,59 @@ type Props = {
 const SheetHeight = Math.floor(height * 0.34);
 
 const SortByDate = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
-  const {setDateIndex, closeSortDateSheet}: any = props;
+  const {setDateIndex, DateIndex, setFilter, closeSortDateSheet}: any = props;
+
+  const DateRef = useRef<any>(null);
+
   const handleSort = (index: any) => {
     setDateIndex(index);
+    if (index === 0) {
+      //date formting
+      const todaysDate = {
+        start: formatISO(startOfDay(new Date())),
+        end: formatISO(endOfDay(new Date())),
+      };
 
-    closeSortDateSheet();
+      //updating the filter state with the new value
+      setFilter((Prev: any) => ({
+        ...Prev,
+        startDate: todaysDate.start,
+        endDate: todaysDate.end,
+      }));
+      closeSortDateSheet();
+    }
+
+    if (index === 1) {
+      // date formating
+      const yesterday = subDays(new Date(), 1);
+      const yesterdaysDate = {
+        start: formatISO(startOfDay(yesterday)),
+        end: formatISO(endOfDay(yesterday)),
+      };
+
+      //updating the filter state with the new value
+      setFilter((Prev: any) => ({
+        ...Prev,
+        startDate: yesterdaysDate.start,
+        endDate: yesterdaysDate.end,
+      }));
+      closeSortDateSheet();
+    }
+    if (index === 2 || index === 3) openDateSheet();
+  };
+
+  //open Date Sort by filter sheet code
+  const openDateSheet = () => {
+    if (DateRef.current) {
+      DateRef.current.open();
+    }
+  };
+
+  //close Sort by filter sheet
+  const closeDateSheet = () => {
+    if (DateRef.current) {
+      DateRef.current.close();
+    }
   };
 
   return (
@@ -79,8 +128,12 @@ const SortByDate = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
                         )}
                       </View>
                     </View>
-                    {i === 0 && (
-                      <AntDesign name="checkcircleo" size={20} color="#000" />
+                    {i === DateIndex && (
+                      <AntDesign
+                        name="checkcircleo"
+                        size={20}
+                        color={colors.dark}
+                      />
                     )}
                   </TouchableOpacity>
                   <Divider />
@@ -89,6 +142,13 @@ const SortByDate = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
             })}
           </View>
         </View>
+        {/* select date sheet */}
+        <DateInput
+          ref={DateRef}
+          closeSortDateSheet={closeSortDateSheet}
+          DateIndex={DateIndex}
+          setFilter={setFilter}
+        />
       </KeyboardAvoidingView>
     </RBSheet>
   );
@@ -105,11 +165,11 @@ const styles = StyleSheet.create({
   sortTitle: {
     textAlign: 'center',
     fontSize: hp(18),
-    fontFamily: FONTS.AVERTA_SEMI_BOLD,
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
     marginVertical: hp(5),
   },
   sortCard: {
-    backgroundColor: '#FFF',
+    backgroundColor: colors.light,
     height: '90%',
     width: '97%',
     borderRadius: hp(10),
@@ -130,13 +190,13 @@ const styles = StyleSheet.create({
   },
 
   sortText: {
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
     fontSize: hp(15),
     color: '#000',
     marginLeft: wp(10),
   },
   sortTextSample: {
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
     fontSize: hp(11),
     color: 'gray',
     marginLeft: wp(10),

@@ -44,33 +44,30 @@ const styles = StyleService.create<Styles>({
   },
   overLay: {
     opacity: 0.6,
-    // backgroundColor: '#000000',
     borderRadius: 33,
     height: hp(66),
   },
   imageStyle: {
     height: hp(76),
-    // resizeMode: 'contain',
+
     width: hp(76),
     backgroundColor: 'white',
-    // borderRadius: hp(100),
   },
   textStyle: {
     fontSize: hp(17),
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
   },
   nameText: {
     fontSize: hp(17),
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
     color: '#636366',
     margin: wp(15),
     lineHeight: 22,
   },
   cameraStyle: {
     position: 'relative',
-    top: wp(-35),
+    top: wp(-45),
     alignItems: 'center',
-    // backgroundColor: 'red',
   },
   card: {
     backgroundColor: 'white',

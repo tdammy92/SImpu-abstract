@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     width: '70%',
     marginTop: StatusBar.currentHeight,
-    fontFamily: FONTS.AVERTA_SEMI_BOLD,
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
     fontSize: hp(26),
     paddingVertical: hp(15),
     paddingHorizontal: hp(15),

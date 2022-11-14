@@ -41,6 +41,13 @@ const Social = ({navigation}: any) => {
   ]);
   const [selectedIndex, setselectedIndex] = useState(0);
 
+  //filter state
+  const [filter, setFilter] = useState({
+    sortbyFilter: 'newest',
+    startDate: undefined,
+    endDate: undefined,
+  });
+
   const handleSelectedIndex = (index: number) => {
     setselectedIndex(index);
   };
@@ -54,7 +61,9 @@ const Social = ({navigation}: any) => {
   } = usePersonalThreads(
     {
       filter: messageOption[selectedIndex],
-      sort: 'newest',
+      sort: filter?.sortbyFilter,
+      start_date: filter?.startDate,
+      end_date: filter?.endDate,
       page: 1,
       Auth: token,
       organisationId: organisation?.id,
@@ -165,6 +174,8 @@ const Social = ({navigation}: any) => {
           openSortSheet={openSheet}
           closeSortSheet={closeSheet}
           shoMessageOptions={true}
+          filter={filter}
+          setFilter={setFilter}
         />
 
         {!isLoading ? (
@@ -208,7 +219,6 @@ const Social = ({navigation}: any) => {
       </View>
 
       <ComposeMessageBtn />
-      <SortSheet ref={SortSheetRef} />
     </SafeAreaView>
   );
 };

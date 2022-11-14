@@ -38,7 +38,7 @@ const SelectTab = ({
     textStyle: {
       color: !eventActive ? '#1B1212' : '#425A70',
       // fontWeight: 'bold',
-      fontFamily: FONTS.AVERTA_BOLD,
+      fontFamily: FONTS.TEXT_BOLD,
     },
   });
   const userNameChildren = () => {

@@ -39,10 +39,10 @@ const styles = StyleService.create<Styles>({
     paddingHorizontal: 5,
   },
   pillHeaderText: {
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
     fontSize: hp(14),
     marginVertical: hp(5),
-    color: colors.primaryText,
+    color: colors.dark,
     marginLeft: 3,
   },
 
@@ -60,8 +60,8 @@ const styles = StyleService.create<Styles>({
   pillText: {
     fontSize: hp(12),
     padding: 5,
-    fontFamily: FONTS.AVERTA_REGULAR,
-    color: colors.primaryText,
+    fontFamily: FONTS.TEXT_REGULAR,
+    color: colors.dark,
   },
 
   searchModalContainer: {
@@ -104,16 +104,16 @@ const styles = StyleService.create<Styles>({
     width: '100%',
     height: '100%',
     fontSize: hp(16),
-    fontFamily: FONTS.AVERTA_REGULAR,
-    color: colors.primaryText,
+    fontFamily: FONTS.TEXT_REGULAR,
+    color: colors.dark,
   },
 
   peopleContainer: {marginTop: 5},
   Icontainer: {flexDirection: 'row', alignItems: 'center'},
   Itext: {
-    color: colors.primaryText,
+    color: colors.dark,
     fontSize: hp(16),
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
     marginLeft: 5,
   },
   topResultContainer: {marginTop: 5},

@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   btntxt: {
     textAlign: 'center',
     color: '#fff',
-    fontFamily: FONTS.AVERTA_SEMI_BOLD,
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
     fontSize: 18,
   },
 });

@@ -57,7 +57,7 @@ import {
   CardStyleInterpolators,
   createStackNavigator,
 } from '@react-navigation/stack';
-import {hp, wp} from 'src/utils';
+import {formatNumbers, hp, wp} from 'src/utils';
 import {Avatar as avatar} from 'src/constants/general';
 import {StoreState} from 'src/@types/store';
 import {colors} from 'src/constants';
@@ -110,6 +110,7 @@ function DrawerMenu() {
   const personal = PersonalInbox?.inboxes[0];
 
   // console.log('Personaall', personal);
+  // console.log('Count', typeof count.assigned);
 
   return (
     <Drawer.Navigator
@@ -136,14 +137,16 @@ function DrawerMenu() {
                   style={[styles.selectedMenu, {marginTop: 0, paddingTop: 0}]}>
                   <View style={styles.menuLeft}>
                     <UserAvatar
-                      size={22}
+                      size={hp(22)}
+                      style={{height: hp(22), width: hp(22)}}
+                      borderRadius={hp(22 * 0.5)}
                       name={`${profile?.first_name} ${profile?.last_name}`}
                       src={profile.image}
                     />
                     <Text
                       style={[
                         styles.titleText,
-                        {color: focused ? colors.primaryText : ''},
+                        // {color: focused ? colors.dark : ''},
                       ]}>
                       {personal?.name}
                     </Text>
@@ -154,9 +157,10 @@ function DrawerMenu() {
                       <Text
                         style={[
                           styles.badgeText,
-                          {color: focused ? colors.primaryText : ''},
+                          {color: focused ? colors.dark : ''},
                         ]}>
-                        {count[personal?.uuid] > 0 && count[personal?.uuid]}
+                        {count[personal?.uuid] > 0 &&
+                          formatNumbers(count[personal?.uuid])}
                       </Text>
                     )}
                   </View>
@@ -185,7 +189,7 @@ function DrawerMenu() {
                 <View style={styles.menuRight}>
                   {count && (
                     <Text style={styles.badgeText}>
-                      {count['queued'] > 0 && count['queued']}
+                      {count['queued'] > 0 && formatNumbers(count['queued'])}
                     </Text>
                   )}
                 </View>
@@ -211,7 +215,8 @@ function DrawerMenu() {
                 <View style={styles.menuRight}>
                   {count && (
                     <Text style={styles.badgeText}>
-                      {count['assigned'] > 0 && count['assigned']}
+                      {count['assigned'] > 0 &&
+                        formatNumbers(count['assigned'])}
                     </Text>
                   )}
                 </View>
@@ -238,7 +243,8 @@ function DrawerMenu() {
                 <View style={styles.menuRight}>
                   {count && (
                     <Text style={styles.badgeText}>
-                      {count['mentioned'] > 0 && count['mentioned']}
+                      {count['mentioned'] > 0 &&
+                        formatNumbers(count['mentioned'])}
                     </Text>
                   )}
                 </View>
@@ -264,7 +270,7 @@ function DrawerMenu() {
                 <View style={styles.menuRight}>
                   {count && (
                     <Text style={styles.badgeText}>
-                      {count['closed'] > 0 && count['closed']}
+                      {count['closed'] > 0 && formatNumbers(count['closed'])}
                     </Text>
                   )}
                 </View>
@@ -291,7 +297,7 @@ function DrawerMenu() {
                 <View style={styles.menuRight}>
                   {count && (
                     <Text style={styles.badgeText}>
-                      {count['drafts'] > 0 && count['drafts']}
+                      {count['drafts'] > 0 && formatNumbers(count['drafts'])}
                     </Text>
                   )}
                 </View>
@@ -320,8 +326,8 @@ const SettingsStackNavigator = (): JSX.Element => {
           headerTitleAlign: 'center',
           headerTitleStyle: {
             textAlign: 'center',
-            color: colors.primaryText,
-            fontFamily: FONTS.AVERTA_SEMI_BOLD,
+            color: colors.dark,
+            fontFamily: FONTS.TEXT_SEMI_BOLD,
             fontSize: hp(18),
           },
 
@@ -339,8 +345,8 @@ const SettingsStackNavigator = (): JSX.Element => {
           headerTitleAlign: 'center',
           headerTitleStyle: {
             textAlign: 'center',
-            color: colors.primaryText,
-            fontFamily: FONTS.AVERTA_SEMI_BOLD,
+            color: colors.dark,
+            fontFamily: FONTS.TEXT_SEMI_BOLD,
             fontSize: hp(18),
           },
           headerLeft: HeaderBack,
@@ -357,8 +363,8 @@ const SettingsStackNavigator = (): JSX.Element => {
           headerTitleAlign: 'center',
           headerTitleStyle: {
             textAlign: 'center',
-            color: colors.primaryText,
-            fontFamily: FONTS.AVERTA_SEMI_BOLD,
+            color: colors.dark,
+            fontFamily: FONTS.TEXT_SEMI_BOLD,
             fontSize: hp(18),
           },
           headerLeft: HeaderBack,
@@ -375,8 +381,8 @@ const SettingsStackNavigator = (): JSX.Element => {
           headerTitleAlign: 'center',
           headerTitleStyle: {
             textAlign: 'center',
-            color: colors.primaryText,
-            fontFamily: FONTS.AVERTA_SEMI_BOLD,
+            color: colors.dark,
+            fontFamily: FONTS.TEXT_SEMI_BOLD,
             fontSize: hp(18),
           },
           headerLeft: HeaderBack,
@@ -393,8 +399,8 @@ const SettingsStackNavigator = (): JSX.Element => {
           headerTitleAlign: 'center',
           headerTitleStyle: {
             textAlign: 'center',
-            color: colors.primaryText,
-            fontFamily: FONTS.AVERTA_SEMI_BOLD,
+            color: colors.dark,
+            fontFamily: FONTS.TEXT_SEMI_BOLD,
             fontSize: hp(18),
           },
           headerLeft: HeaderBack,
@@ -549,13 +555,13 @@ const themedStyles = StyleService.create({
   },
   titleText: {
     paddingLeft: 5,
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
     fontSize: 14,
-    color: colors.primaryText,
+    color: colors.dark,
   },
   badgeText: {
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
     fontSize: 12,
-    color: colors.primaryText,
+    color: colors.secondaryBg,
   },
 });

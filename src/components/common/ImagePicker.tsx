@@ -43,7 +43,7 @@ const ImagePicker = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
             textAlign: 'center',
             fontSize: 18,
             fontWeight: '400',
-            fontFamily: FONTS.AVERTA_REGULAR,
+            fontFamily: FONTS.TEXT_REGULAR,
             paddingTop: 10,
           }}>
           Profile Photo

@@ -136,14 +136,14 @@ const styles = StyleSheet.create({
   opionText: {
     textAlign: 'justify',
     paddingTop: hp(5),
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
     fontSize: hp(16),
-    color: colors.primaryText,
+    color: colors.dark,
   },
   optionListText: {
     marginLeft: hp(8),
-    fontFamily: FONTS.AVERTA_REGULAR,
+    fontFamily: FONTS.TEXT_REGULAR,
     fontSize: hp(16),
-    color: colors.primaryText,
+    color: colors.dark,
   },
 });
