@@ -125,6 +125,7 @@ const DateInput = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
                 style={[
                   styles.dateBox,
                   {
+                    width: '100%',
                     flexDirection: 'row',
                     justifyContent: 'space-evenly',
                   },
@@ -134,8 +135,7 @@ const DateInput = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
                   onPress={() => setShowStartDate(true)}
                   style={{
                     flexDirection: 'row',
-                    width: '45%',
-
+                    width: '43%',
                     justifyContent: 'space-between',
                   }}>
                   <Text style={styles.dateBoxText}>Start</Text>
@@ -146,7 +146,13 @@ const DateInput = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
                 </TouchableOpacity>
 
                 {/* line divider box */}
-                <View style={{width: 2, backgroundColor: 'gray'}} />
+                <View
+                  style={{
+                    width: 2,
+                    backgroundColor: 'gray',
+                    marginHorizontal: wp(5),
+                  }}
+                />
 
                 {/* end date box */}
                 <TouchableOpacity
@@ -268,20 +274,22 @@ const styles = StyleSheet.create({
   sortCard: {
     backgroundColor: colors.light,
 
+    // justifyContent: 'center',
+    alignItems: 'center',
     height: '90%',
     width: '97%',
     borderRadius: hp(10),
     elevation: 2,
-    paddingHorizontal: 15,
-    paddingVertical: 15,
+    paddingHorizontal: wp(15),
+    paddingVertical: hp(15),
   },
 
   dateBox: {
     borderRadius: 8,
     borderColor: 'gray',
     borderWidth: 1,
-    marginV: hp(15),
-    paddingVertical: 10,
+    marginVertical: hp(15),
+    paddingVertical: 15,
     paddingHorizontal: 10,
   },
   dateBoxText: {

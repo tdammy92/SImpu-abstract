@@ -26,6 +26,8 @@ import {colors, FONTS} from 'src/constants';
 import {StoreState} from 'src/@types/store';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {organisation} from 'src/@types/profile';
+import {addProfile, updateProfile} from 'src/store/user/userReducer';
+import {useProfile} from 'src/services/queries';
 
 const {height} = Dimensions.get('screen');
 const SheetHeight = Math.floor(height * 0.3);
@@ -36,14 +38,34 @@ const OrganisationSheet = forwardRef(
     const organisations = props?.data?.data?.organisations;
 
     //redux store imports
-    const {profile} = useSelector((state: StoreState) => state.user);
     const organisation = useSelector(
       (state: StoreState) => state.organisation.details,
+    );
+    const token = useSelector((state: StoreState) => state.user.token);
+    const [fetchProfile, setfetchProfile] = useState(false);
+
+    const profile = useProfile(
+      `profile   ${organisation?.id}`,
+      {
+        organisationId: organisation?.id,
+        Auth: token,
+      },
+      {
+        enabled: fetchProfile,
+        retryOnMount: false,
+        refetchOnMount: false,
+        keepPreviousData: false,
+        onSuccess: (data: any) => {
+          //update profile
+          dispatch(updateProfile(data?.data?.profile));
+        },
+      },
     );
 
     //change organisaion
     const changePrganisations = (index: any) => {
       dispatch(updateOrganisation(organisations[index]));
+      setfetchProfile(true);
       props.close();
     };
 

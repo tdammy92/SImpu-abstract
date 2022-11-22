@@ -1,4 +1,4 @@
-import {User, UserStore} from 'src/@types/store';
+import {Profile, user, UserStore} from 'src/@types/store';
 
 const initialState: UserStore = {
   profile: {
@@ -21,8 +21,17 @@ const initialState: UserStore = {
     page_access: [],
     onboard_role_value: '',
     onboard_role: '',
-  } as User,
+  } as Profile,
 
+  user: {
+    id: '',
+    email: '',
+    account_type: 0,
+    verified: false,
+    created_datetime: '',
+    last_login: '',
+    updated_datetime: '',
+  },
   isloggedIn: false,
   onFirstLaunch: false,
   token: '',

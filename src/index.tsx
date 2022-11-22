@@ -12,6 +12,12 @@ import {default as theme} from './themes/theme.json';
 
 import RNBootSplash from 'react-native-bootsplash';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {
+  Pusher,
+  PusherMember,
+  PusherChannel,
+  PusherEvent,
+} from '@pusher/pusher-websocket-react-native';
 
 import {ApplicationProvider as UIKittenProvider} from '@ui-kitten/components';
 import {Provider} from 'react-redux';
@@ -21,9 +27,12 @@ import {PersistGate} from 'redux-persist/integration/react';
 import {MainStackParamList} from './navigation/constants';
 import {RootStack} from './navigation';
 import Loader from './components/common/Loader';
+
 export const queryClient = new QueryClient({
   defaultOptions: {queries: {retry: 2}},
 });
+
+export const pusher = Pusher.getInstance();
 
 export default (): JSX.Element => {
   const navigationRef =

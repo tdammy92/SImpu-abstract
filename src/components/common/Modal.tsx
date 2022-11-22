@@ -9,7 +9,7 @@ import React, {useState, useEffect} from 'react';
 import Modal from 'react-native-modal';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 // import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import {Button} from 'src/components/common/Button';
+import CloseIcon from 'src/assets/images/Close_Icon.svg';
 import {hp, wp} from 'src/utils';
 import {colors, FONTS} from 'src/constants';
 
@@ -28,7 +28,8 @@ const AppModal = ({
         <TouchableOpacity
           onPress={() => setShowModal(false)}
           style={{position: 'absolute', top: 15, right: 12}}>
-          <AntDesign name="closecircleo" size={25} color={'gray'} />
+          {/* <AntDesign name="closecircleo" size={25} color={'gray'} /> */}
+          <CloseIcon style={{elevation: 2, zIndex: 2}} />
         </TouchableOpacity>
         {/* {isALoader && (
           <View style={styles.loaderConatiner}>

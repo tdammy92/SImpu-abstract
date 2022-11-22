@@ -23,7 +23,7 @@ export const getOrganisations = async (payload: any) => {
 };
 
 //update profile
-export const updateProfile = async (payload: any, params: any) => {
+export const updateProfiles = async (payload: any, params: any) => {
   const url = buildAppsURL(`/profile/save`);
 
   const response = await client(url, {

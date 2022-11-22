@@ -46,7 +46,10 @@ const MessageCard = (props: any) => {
   }
 
   const threadDetails = {
-    name1: trimText(item?.sender?.name, 20),
+    name1: trimText(
+      item?.sender?.platform_name ?? item?.sender?.platform_nick,
+      20,
+    ),
     name2: removeEmoji(item?.sender?.name),
     date: messgeTimeFormater(item?.updated_datetime),
     image: item?.sender?.image_url,
@@ -54,11 +57,18 @@ const MessageCard = (props: any) => {
       ? trimText(removeHtmlTags(item?.subject), 45)
       : trimText(removeHtmlTags(item?.last_message?.entity?.content?.body), 45),
     channelType: item?.channel_name,
+    ...item,
   };
 
-  const handleNavigate = (user: any) => {
-    //@ts-ignore
-    navigation.navigate(SCREEN_NAME.chat as never, {user: threadDetails});
+  const handleNavigate = () => {
+    if (threadDetails.channelType === 'email') {
+      //@ts-ignore
+      navigation.navigate(SCREEN_NAME.mail as never, {threadDetails});
+    } else {
+      //@ts-ignore
+
+      navigation.navigate(SCREEN_NAME.chat as never, {threadDetails});
+    }
   };
 
   return (

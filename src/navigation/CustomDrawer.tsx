@@ -35,6 +35,7 @@ import {
 
 import Accordion from './component/Accordion';
 import OrganisationSheet from './component/OrganisationSheet';
+import {addProfile} from 'src/store/user/userReducer';
 
 const CustomDrawer = (props: any): JSX.Element => {
   const OrganisationSheetRef = useRef<any>(null);
@@ -61,7 +62,6 @@ const CustomDrawer = (props: any): JSX.Element => {
     }
   };
 
-  // console.log(navigation.getState());
   //get side tags
   const {
     data: sideTagsData,
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
     height: hp(50),
     position: 'absolute',
     bottom: 0,
-    alignItems: 'center',
+    // alignItems: 'center',
 
     backgroundColor: colors.light,
     borderTopColor: '#e4e4e4',
@@ -325,7 +325,8 @@ const styles = StyleSheet.create({
     height: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    // backgroundColor: 'red',
+    marginLeft: hp(15),
   },
   selectOrgBtnText: {
     marginLeft: 5,

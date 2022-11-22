@@ -19,7 +19,7 @@ import React, {
 import RBSheet, {RBSheetProps} from 'react-native-raw-bottom-sheet';
 import SelectDropdown from 'react-native-select-dropdown';
 import {hp, wp} from 'src/utils';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {colors, FONTS} from 'src/constants';
@@ -36,11 +36,7 @@ const {height} = Dimensions.get('screen');
 const SheetHeight = Math.floor(height * 0.3);
 
 const SortSheet = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
-  const {changeSort, openDateFilter, filter}: any = props;
-  const [DateFilter, setDateFilter] = useState(0);
-  const [date, setDate] = useState(new Date());
-
-  const [show, setShow] = useState(false);
+  const {changeSort, openDateFilter, filter, setFilter}: any = props;
 
   const sortBy = [
     {name: 'newest', icon: 'sort-bool-descending-variant'},
@@ -52,14 +48,17 @@ const SortSheet = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
     changeSort(sortBy[index]?.name);
   };
 
-  //open Sort by filter sheet code
-  // const openSortDateSheet = () => {
-  //   // closeSortSheet();
-  //   // closeSortSheet();
-  //   if (SortDateRef.current) {
-  //     SortDateRef.current.open();
-  //   }
-  // };
+  //Reset button
+  const handleReset = () => {
+    setFilter(() => ({
+      sortbyFilter: 'newest',
+      startDate: undefined,
+      endDate: undefined,
+    }));
+
+    //@ts-ignore
+    ref.current.close();
+  };
 
   return (
     //@ts-ignore
@@ -85,6 +84,9 @@ const SortSheet = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
       <KeyboardAvoidingView>
         <View style={styles.sortContainer}>
           <Text style={styles.sortTitle}>Sort by</Text>
+          <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
+            <EvilIcons name="undo" size={28} color={colors.dark} />
+          </TouchableOpacity>
           <View style={styles.sortCard}>
             {sortBy.map((sortItem, i) => {
               return (
@@ -138,12 +140,35 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     alignItems: 'center',
+    position: 'relative',
   },
   sortTitle: {
     textAlign: 'center',
     fontSize: hp(18),
     fontFamily: FONTS.TEXT_SEMI_BOLD,
     marginVertical: hp(5),
+  },
+
+  resetButton: {
+    position: 'absolute',
+    height: hp(28),
+    width: hp(28),
+    right: hp(20),
+    top: hp(-5),
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.light,
+    borderRadius: hp(28 * 0.5),
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.27,
+    shadowRadius: 3.39,
+
+    elevation: 1,
+    zIndex: 1,
   },
   sortCard: {
     backgroundColor: colors.light,

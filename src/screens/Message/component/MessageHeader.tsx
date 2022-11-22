@@ -190,6 +190,7 @@ const MessageHeader = (props: any) => {
         ref={SortSheetRef}
         //@ts-ignore */}
         filter={filter}
+        setFilter={setFilter}
         openDateFilter={openSortDateSheet}
         changeSort={changeSort}
       />

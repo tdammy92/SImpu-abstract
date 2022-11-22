@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {User, UserStore} from 'src/@types/store';
+import {user, Profile, UserStore} from 'src/@types/store';
 import initialState from './initial-state';
 
 const userSlice = createSlice({
@@ -10,13 +10,17 @@ const userSlice = createSlice({
       state.token = payload;
     },
 
-    addUser: (state: UserStore, {payload}: PayloadAction<User>) => {
+    addProfile: (state: UserStore, {payload}: PayloadAction<Profile>) => {
       state.profile = payload;
       state.isloggedIn = true;
       state.onFirstLaunch = true;
     },
 
-    updateUser: (state: UserStore, {payload}: PayloadAction<User>) => {
+    addUser: (state: UserStore, {payload}: PayloadAction<user>) => {
+      state.user = payload;
+    },
+
+    updateProfile: (state: UserStore, {payload}: PayloadAction<Profile>) => {
       state.profile = payload;
     },
 
@@ -31,7 +35,13 @@ const userSlice = createSlice({
   },
 });
 
-export const {addToken, addUser, updateImage, updateUser, logOutUser} =
-  userSlice.actions;
+export const {
+  addToken,
+  addUser,
+  updateImage,
+  addProfile,
+  updateProfile,
+  logOutUser,
+} = userSlice.actions;
 
 export default userSlice.reducer;

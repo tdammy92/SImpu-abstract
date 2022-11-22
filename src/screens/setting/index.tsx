@@ -196,6 +196,7 @@ const Setting = (props: Props): JSX.Element => {
             icon1={<AboutIcon />}
             text="About Simpu"
             onPress={() => Linking.openURL('https://simpu.co')}
+            // onPress={() => navigation.navigate(SCREEN_NAME.about)}
           />
         </View>
         <View style={styles.cardList}>

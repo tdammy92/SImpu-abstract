@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import * as React from 'react';
+import React, {useEffect} from 'react';
 import {TouchableOpacity, Text, View} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
@@ -62,8 +62,27 @@ import {Avatar as avatar} from 'src/constants/general';
 import {StoreState} from 'src/@types/store';
 import {colors} from 'src/constants';
 import {useSidebarInboxes, useSidebarUnreadCount} from 'src/services/queries';
+import {
+  Pusher,
+  PusherMember,
+  PusherChannel,
+  PusherEvent,
+} from '@pusher/pusher-websocket-react-native';
+import {buildConversationUrl} from 'src/services/api-client';
 
 import HeaderBack from './HeaderBack';
+import About from 'src/screens/setting/about';
+import {pusher} from 'src/index';
+import {
+  DEMO_API,
+  PRODUCTION_API,
+  CONVERSATION_API_DEMO,
+  INTEGRATIONS_API_DEMO,
+  INTEGRATIONS_API_PRODUCTION,
+  PUSHER_APP_CLUSTER,
+  PUSHER_APP_KEY_DEMO,
+} from '@env';
+import Mail from 'src/screens/Message/Mail';
 
 const Stack = createNativeStackNavigator<MainStackParamList>();
 
@@ -119,7 +138,7 @@ function DrawerMenu() {
         headerShown: false,
         drawerLabelStyle: {marginLeft: hp(-22)},
         drawerActiveBackgroundColor: '#F2F2F2',
-        drawerActiveTintColor: '#000',
+        drawerActiveTintColor: colors.dark,
         drawerInactiveTintColor: 'gray',
         drawerType: 'front',
       }}>
@@ -357,6 +376,14 @@ const SettingsStackNavigator = (): JSX.Element => {
       />
       <SettingsStack.Screen
         //@ts-ignore
+        name={SCREEN_NAME.about}
+        options={{
+          headerShown: false,
+        }}
+        component={About}
+      />
+      <SettingsStack.Screen
+        //@ts-ignore
         name={SCREEN_NAME.changePhoneNumber}
         options={{
           title: 'Change Number',
@@ -413,10 +440,14 @@ const SettingsStackNavigator = (): JSX.Element => {
         //@ts-ignore
         name={SCREEN_NAME.quickreplies}
         options={{
-          title: '',
+          title: 'Quick Replies',
           headerLeft: HeaderBack,
           headerBackTitle: '',
           headerBackTitleVisible: false,
+          headerBackTitleStyle: {
+            color: colors.dark,
+            fontFamily: FONTS.TEXT_REGULAR,
+          },
         }}
         component={QuickReplies}
       />
@@ -440,6 +471,69 @@ export const RootStack = (): JSX.Element => {
   const {profile, isloggedIn, onFirstLaunch} = useSelector(
     (state: StoreState) => state.user,
   );
+
+  //pusher configurations
+  const connect = async () => {
+    try {
+      await pusher.init({
+        apiKey: PUSHER_APP_KEY_DEMO,
+        cluster: PUSHER_APP_CLUSTER,
+        authEndpoint: buildConversationUrl(`auth/websocket`),
+        // auth: {
+        //   headers: {
+        //     Authorization: 'token',
+        //     // Other headers
+        //   }
+        // },
+        // userAuthentication:{ headers: {
+        //   Auth: 'value1',
+
+        // }},
+        // auth: {
+        //   headers: { authorization: token },
+        // },
+        // onAuthorizer,
+        onConnectionStateChange,
+        onError,
+        onEvent,
+        onSubscriptionSucceeded,
+      });
+
+      await pusher.subscribe({channelName: ''});
+      await pusher.connect();
+    } catch (error) {
+      console.log('This is pusher error', error);
+    }
+  };
+
+  const onConnectionStateChange = (
+    currentState: string,
+    previousState: string,
+  ) => {
+    console.log(
+      `onConnectionStateChange. previousState=${previousState} newState=${currentState}`,
+    );
+  };
+
+  const onError = (message: string, code: Number, error: any) => {
+    console.log(`onError: ${message} code: ${code} exception: ${error}`);
+  };
+
+  const onEvent = (event: any) => {
+    console.log(`onEvent: ${event}`);
+  };
+
+  const onSubscriptionSucceeded = (channelName: string, data: any) => {
+    console.log(
+      `onSubscriptionSucceeded: ${channelName} data: ${JSON.stringify(data)}`,
+    );
+    const channel: PusherChannel = pusher.getChannel(channelName);
+    const me = channel.me;
+  };
+
+  useEffect(() => {
+    connect();
+  }, []);
 
   return (
     <Stack.Navigator
@@ -484,6 +578,13 @@ export const RootStack = (): JSX.Element => {
       <Stack.Screen
         name={SCREEN_NAME.chat}
         component={ChatBox}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name={SCREEN_NAME.mail}
+        component={Mail}
         options={{
           headerShown: false,
         }}

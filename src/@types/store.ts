@@ -1,5 +1,5 @@
 import {organisationStore} from './profile';
-export interface User {
+export interface Profile {
   id: string;
   first_name: string;
   last_name: string;
@@ -21,12 +21,23 @@ export interface User {
   onboard_role?: string | null;
 }
 
+export interface user {
+  id: string;
+  email: string;
+  account_type?: number;
+  verified?: boolean;
+  created_datetime?: string;
+  last_login?: string;
+  updated_datetime?: string;
+}
+
 export interface LoadingState {
   Isloading: boolean;
 }
 
 export interface UserStore {
-  profile: User;
+  profile: Profile;
+  user: user;
   isloggedIn: boolean;
   token: string | null;
   onFirstLaunch: boolean;

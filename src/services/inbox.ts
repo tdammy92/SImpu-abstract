@@ -144,3 +144,38 @@ export const getMeThreads = async (
     params: {...params, queryS},
   });
 };
+
+//get messageList
+// /conversations/:threadID?page=1&perPage=15
+export const getMessageList = async (
+  params: AxiosRequestConfig['params'],
+  pageParams: number,
+): Promise<any> => {
+  const {threadID, page} = params;
+
+  const queryS = {
+    type: params?.type,
+  };
+
+  const url = buildConversationUrl(
+    `conversations/${threadID}?page=${pageParams}&per_page=${perPageFetch}`,
+  );
+  return client(url, {
+    params: {...params, queryS},
+  });
+};
+
+//fetch quick reply
+export const getQuickReplies = async (
+  params: AxiosRequestConfig['params'],
+  pageParams: any,
+): Promise<AxiosResponse<any>> => {
+  const {type = 'me', page} = params;
+
+  const url = buildConversationUrl(
+    `quick_replies/list/:${type}?page=${pageParams}&per_page=${perPageFetch}`,
+  );
+  return client(url, {
+    params: params,
+  });
+};

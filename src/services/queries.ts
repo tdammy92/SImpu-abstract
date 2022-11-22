@@ -8,6 +8,8 @@ import {
   getPersonalThreads,
   getMeThreads,
   getSharedThreads,
+  getQuickReplies,
+  getMessageList,
 } from './inbox';
 import {getProfile} from './profile';
 import {getNotificationTrayItems} from './notification';
@@ -123,7 +125,7 @@ export const useNotificationTrayQuery = (queryParams: any, options: any) => {
     ({pageParam = 1}) => getNotificationTrayItems(queryParams, pageParam),
     {
       getNextPageParam: lastPage => {
-        return lastPage.meta.page < lastPage.meta.page_total
+        return lastPage?.meta?.page < lastPage?.meta?.page_total
           ? lastPage.meta.page + 1
           : undefined;
       },
@@ -132,3 +134,39 @@ export const useNotificationTrayQuery = (queryParams: any, options: any) => {
     },
   );
 };
+
+//Message list
+export const useMessageListQuery = (queryParams: any, options: any) => {
+  const {threadID, page, type, organisationId} = queryParams;
+  return useInfiniteQuery(
+    ['conversations', threadID, type, organisationId, page],
+    ({pageParam = 1}) => getMessageList(queryParams, pageParam),
+    {
+      getNextPageParam: lastPage => {
+        return lastPage?.meta?.page < lastPage?.meta?.page_total
+          ? lastPage?.meta?.page + 1
+          : undefined;
+      },
+      refetchOnWindowFocus: true,
+      ...options,
+    },
+  );
+};
+
+//quick reply query
+// export const useQuickReply = (queryParams: any, options: any) => {
+//   const {status, page, organisationId} = queryParams;
+//   return useInfiniteQuery(
+//     ['notification-tray-items', status, organisationId, page],
+//     ({pageParam = 1}) => getQuickReplies(queryParams, pageParam),
+//     {
+//       getNextPageParam: lastPage => {
+//         return lastPage.meta.page < lastPage.meta.page_total
+//           ? lastPage.meta.page + 1
+//           : undefined;
+//       },
+//       refetchOnWindowFocus: true,
+//       ...options,
+//     },
+//   );
+// };

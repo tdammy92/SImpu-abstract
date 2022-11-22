@@ -20,6 +20,7 @@ export enum SCREEN_NAME {
   main = 'app.screen.main',
   config = 'app.screen.config',
   settings = 'app.screen.settings',
+  about = 'app.screen.about',
   editprofile = 'app.screen.editprofile',
   changePhoneNumber = 'app.screen.changephonenumber',
   changeEmail = 'app.screen.changeemail',
@@ -28,6 +29,7 @@ export enum SCREEN_NAME {
   datastorage = 'app.screen.datastorage',
   quickreplies = 'app.screen.quickreplies',
   chat = 'app.screen.chat',
+  mail = 'app.screen.mail',
 }
 
 export type MainStackParamList = {
@@ -49,7 +51,9 @@ export type MainStackParamList = {
   [SCREEN_NAME.main]: undefined;
   [SCREEN_NAME.config]: undefined;
   [SCREEN_NAME.settings]: undefined;
+  [SCREEN_NAME.about]: undefined;
   [SCREEN_NAME.chat]: {user: any};
+  [SCREEN_NAME.mail]: {user: any};
   // [SCREEN_NAME.chat]: {
   //   name: string;
   //   channel: string;

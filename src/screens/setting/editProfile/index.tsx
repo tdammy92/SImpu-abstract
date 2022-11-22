@@ -20,7 +20,7 @@ import FloatLabel from 'src/components/common/FloatLabel';
 import ArrowRight from '../../../assets/images/Arrow_Right.svg';
 import {MainStackParamList, SCREEN_NAME} from 'src/navigation/constants';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {addUser, updateUser, logOutUser} from 'src/store/user/userReducer';
+import {addUser, updateProfile, logOutUser} from 'src/store/user/userReducer';
 import axios from 'axios';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import {useDispatch, useSelector} from 'react-redux';
@@ -30,7 +30,7 @@ import BottomSheet from 'src/components/common/ImagePicker';
 import ImagePicker from 'react-native-image-crop-picker';
 import {StoreState} from 'src/@types/store';
 import {DEMO_API, SECERET_KEY} from '@env';
-import {updateProfile, updateProfileImage} from 'src/services/profile';
+import {updateProfiles, updateProfileImage} from 'src/services/profile';
 import HeaderNextBtn from 'src/components/common/HeaderNextBtn';
 import {hp} from 'src/utils';
 import Loader from 'src/components/common/Loader';
@@ -53,7 +53,7 @@ const EditProfile = (props: Props): JSX.Element => {
   //update user profile
   const profileUpdate = useMutation(
     value =>
-      updateProfile(value, {
+      updateProfiles(value, {
         Auth: token,
         organisationId: profile.organisation_id,
       }),
@@ -141,7 +141,7 @@ const EditProfile = (props: Props): JSX.Element => {
       //@ts-ignore
       await profileImageUpdate.mutateAsync(imageupload, {
         onSuccess: (data, variables, context) => {
-          dispatch(updateUser(data?.profile));
+          dispatch(updateProfile(data?.profile));
         },
         onError: (error, variables, context) => {
           console.log('from onError', error);
@@ -172,7 +172,7 @@ const EditProfile = (props: Props): JSX.Element => {
       //@ts-ignore
       await profileUpdate.mutateAsync(payload, {
         onSuccess: (data, variables, context) => {
-          dispatch(updateUser(data?.profile));
+          dispatch(updateProfile(data?.profile));
         },
       });
     } catch (error) {}

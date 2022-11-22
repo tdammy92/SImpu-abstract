@@ -8,6 +8,6 @@ export const loginUser = async (userDetails: any) => {
     data: userDetails,
   });
 
-  console.log('response from auth service', response);
+  // console.log('response from auth service', response);
   return response;
 };

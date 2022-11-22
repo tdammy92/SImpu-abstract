@@ -16,7 +16,7 @@ import {Button} from 'src/components/common/Button';
 import {hp, wp} from 'src/utils';
 import {SCREEN_NAME} from 'src/navigation/constants';
 import AuthInput from './component/AuthInput';
-import {addToken, addUser} from 'src/store/user/userReducer';
+import {addProfile, addToken, addUser} from 'src/store/user/userReducer';
 import {addOrganisation} from 'src/store/organisation/organisationReducer';
 import {colors, FONTS} from 'src/constants';
 import {loginUser} from 'src/services/auth';
@@ -49,6 +49,23 @@ const Login = ({navigation}: any) => {
       retryOnMount: false,
       refetchOnMount: false,
       keepPreviousData: false,
+      onSuccess: (data: any) => {
+        //update profile
+        dispatch(addProfile(data?.data?.profile));
+
+        //update user
+        dispatch(addUser(data?.data?.user));
+
+        //update organisation
+        dispatch(
+          addOrganisation({
+            id: data?.data?.profile?.organisation_id,
+            name: 'default',
+          }),
+        );
+
+        navigation.reset({index: 0, routes: [{name: SCREEN_NAME.main}]});
+      },
     },
   );
 
@@ -75,28 +92,11 @@ const Login = ({navigation}: any) => {
   }
 
   if (isError) {
-    // console.log({error});
+    console.log(error);
   }
 
   if (profile.isLoading) {
     return <Loader />;
-  }
-  if (profile.isSuccess) {
-    // console.log(
-    //   'what came back from fetch profile',
-    //   profile?.data?.data?.profile,
-    // );
-
-    dispatch(addUser(profile?.data?.data?.profile));
-
-    dispatch(
-      addOrganisation({
-        id: profile?.data?.data?.profile?.organisation_id,
-        name: 'default',
-      }),
-    );
-    // console.log('let see whats going on here');
-    navigation.reset({index: 0, routes: [{name: SCREEN_NAME.main}]});
   }
 
   return (
@@ -168,6 +168,7 @@ const Login = ({navigation}: any) => {
                       </View>
                       <Button
                         title="Login"
+                        //@ts-ignore
                         onPress={handleSubmit}
                         style={{marginTop: hp(8)}}
                       />
@@ -188,7 +189,7 @@ const Login = ({navigation}: any) => {
         <AppModal
           btnTitle="Close"
           //@ts-ignore
-          message={error?.message ?? 'Unable to login'}
+          message={error ?? 'Unable to login'}
           showModal={isError}
           Icon={() => (
             <MaterialIcons
