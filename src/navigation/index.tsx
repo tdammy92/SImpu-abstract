@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect} from 'react';
-import {TouchableOpacity, Text, View} from 'react-native';
+import {TouchableOpacity, Text, View, Alert} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import {createDrawerNavigator} from '@react-navigation/drawer';
@@ -61,14 +61,17 @@ import {formatNumbers, hp, wp} from 'src/utils';
 import {Avatar as avatar} from 'src/constants/general';
 import {StoreState} from 'src/@types/store';
 import {colors} from 'src/constants';
-import {useSidebarInboxes, useSidebarUnreadCount} from 'src/services/queries';
+import {
+  useSidebarInboxes,
+  useSidebarUnreadCount,
+} from 'src/services/query/queries';
 import {
   Pusher,
   PusherMember,
   PusherChannel,
   PusherEvent,
 } from '@pusher/pusher-websocket-react-native';
-import {buildConversationUrl} from 'src/services/api-client';
+import {buildConversationUrl} from 'src/services/api/api-client';
 
 import HeaderBack from './HeaderBack';
 import About from 'src/screens/setting/about';
@@ -468,7 +471,10 @@ const SettingsStackNavigator = (): JSX.Element => {
 
 //Root navihgators
 export const RootStack = (): JSX.Element => {
-  const {profile, isloggedIn, onFirstLaunch} = useSelector(
+  const organisation = useSelector(
+    (state: StoreState) => state.organisation.details,
+  );
+  const {profile, token, isloggedIn, onFirstLaunch} = useSelector(
     (state: StoreState) => state.user,
   );
 
@@ -478,20 +484,11 @@ export const RootStack = (): JSX.Element => {
       await pusher.init({
         apiKey: PUSHER_APP_KEY_DEMO,
         cluster: PUSHER_APP_CLUSTER,
-        authEndpoint: buildConversationUrl(`auth/websocket`),
-        // auth: {
-        //   headers: {
-        //     Authorization: 'token',
-        //     // Other headers
-        //   }
-        // },
-        // userAuthentication:{ headers: {
-        //   Auth: 'value1',
+        authEndpoint: buildConversationUrl(
+          `auth/websocket2?token=${token}&organisationID${organisation.id}`,
+        ),
+        // useTLS: true,
 
-        // }},
-        // auth: {
-        //   headers: { authorization: token },
-        // },
         // onAuthorizer,
         onConnectionStateChange,
         onError,
@@ -499,7 +496,39 @@ export const RootStack = (): JSX.Element => {
         onSubscriptionSucceeded,
       });
 
-      await pusher.subscribe({channelName: ''});
+      //subscribe to organisation
+      const orgChannelName = `presence-organisation-${organisation?.id}`;
+      const organisationChannel = await pusher.subscribe({
+        channelName: orgChannelName,
+        onEvent: event => {
+          // console.log(`org channel event:`, JSON.stringify(event, null, 2));
+        },
+      });
+
+      //subscribe to live chat
+      const liveChatChannelName = `presence-livechat-${organisation?.id}`;
+      const LiveChatChannel = await pusher.subscribe({
+        channelName: liveChatChannelName,
+        onEvent: event => {
+          // console.log(
+          //   `liveChat channel event:`,
+          //   JSON.stringify(event, null, 2),
+          // );
+        },
+      });
+
+      //subscribe to profile
+      const userChannelName = `private-profile-${profile?.id}`;
+      const userChannel = await pusher.subscribe({
+        channelName: userChannelName,
+        onEvent: event => {
+          // console.log(
+          //   `userChanel channel event:`,
+          //   JSON.stringify(event, null, 2),
+          // );
+        },
+      });
+
       await pusher.connect();
     } catch (error) {
       console.log('This is pusher error', error);
@@ -520,20 +549,35 @@ export const RootStack = (): JSX.Element => {
   };
 
   const onEvent = (event: any) => {
-    console.log(`onEvent: ${event}`);
+    // console.log('from d event callback', JSON.stringify(event, null, 2));
+    // Alert.alert('event called', '', [
+    //   {
+    //     text: 'Cancel',
+    //     onPress: () => console.log('Cancel Pressed'),
+    //   },
+    // ]);
+
+    console.log('Event received');
   };
 
   const onSubscriptionSucceeded = (channelName: string, data: any) => {
     console.log(
-      `onSubscriptionSucceeded: ${channelName} data: ${JSON.stringify(data)}`,
+      `onSubscriptionSucceeded: ${channelName} data: ${JSON.stringify(
+        data,
+        null,
+        2,
+      )}`,
     );
+
     const channel: PusherChannel = pusher.getChannel(channelName);
     const me = channel.me;
+
+    console.log('Me from chaneel', JSON.stringify(me, null, 2));
   };
 
   useEffect(() => {
     connect();
-  }, []);
+  }, [token, organisation?.id, profile?.id]);
 
   return (
     <Stack.Navigator

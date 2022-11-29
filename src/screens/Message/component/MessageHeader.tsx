@@ -130,7 +130,7 @@ const MessageHeader = (props: any) => {
         <TouchableOpacity
           style={{marginTop: 0, backgroundColor: ''}}
           onPress={openSortSheet}>
-          <Octicons name="sort-asc" size={20} color="#000" />
+          <Octicons name="sort-asc" size={20} color={'#7D8282'} />
         </TouchableOpacity>
       </View>
 

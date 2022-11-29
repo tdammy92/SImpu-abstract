@@ -11,7 +11,6 @@ const Comments = ({data}: any) => {
         marginHorizontal: wp(15),
         alignItems: 'center',
         padding: hp(5),
-        //    backgroundColor: colors.bootomHeaderBg,
         borderRadius: 15,
       }}>
       <Text

@@ -11,7 +11,7 @@ import styles from './styles';
 import {useNavigation} from '@react-navigation/native';
 import {StoreState} from 'src/@types/store';
 import HeaderNextBtn from 'src/components/common/HeaderNextBtn';
-import {changePassword} from 'src/services/profile';
+import {changePassword} from 'src/services/query/profile';
 import {logOutUser} from 'src/store/user/userReducer';
 import {SCREEN_NAME} from 'src/navigation/constants';
 import {queryClient} from 'src/index';

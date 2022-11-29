@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "747079835412",
+    "project_id": "simpugo-demo",
+    "storage_bucket": "simpugo-demo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:747079835412:android:c5e21c57d6344f5b292c01",
+        "android_client_info": {
+          "package_name": "co.simpu.inbox"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "747079835412-vt992762oqi498rbpnjgejl83k0phlct.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "co.simpu.inbox",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "747079835412-g1tibll0l5fm3b912fmfebp8fee1ed4n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQyT6b1sWQpQgbq4ik3ke9t4wKHhnDAP0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "747079835412-g1tibll0l5fm3b912fmfebp8fee1ed4n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

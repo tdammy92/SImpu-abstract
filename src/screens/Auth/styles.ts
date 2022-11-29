@@ -34,14 +34,15 @@ const styles = StyleService.create<Styles>({
   topContainer: {
     width: '100%',
     paddingHorizontal: wp(10),
+    paddingVertical: hp(15),
   },
 
   headerText: {
     textAlign: 'left',
     fontFamily: FONTS.TEXT_SEMI_BOLD,
-    fontSize: hp(24),
+    fontSize: hp(26),
     color: colors.dark,
-    paddingVertical: hp(15),
+    paddingVertical: hp(20),
   },
   InfoText: {
     color: colors.darkGray,
@@ -101,6 +102,11 @@ const styles = StyleService.create<Styles>({
 
   inputConatiner: {
     width: '100%',
+    // justifyContent: 'center',
+    display: 'flex',
+    alignItems: 'center',
+    // borderWidth: 1,
+    // borderColor: 'red',
   },
 });
 export default styles;

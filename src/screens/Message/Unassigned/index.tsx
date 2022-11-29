@@ -26,7 +26,7 @@ import ComposeMessageBtn from '../component/ComposeMessageBtn';
 import HiddenItemWithActions from '../component/cardOptions/HiddenItemWithActions';
 import {hp} from 'src/utils';
 import dummyData from 'src/constants/dummyData';
-import {useMessageThreads} from 'src/services/queries';
+import {useMessageThreads} from 'src/services/query/queries';
 import {StoreState} from 'src/@types/store';
 import ListLoader from 'src/components/common/ListLoader';
 
@@ -161,11 +161,13 @@ const Unassigned = ({navigation}: any) => {
             useAnimatedList={true}
             useFlatList={true}
             renderItem={renderItem}
-            contentContainerStyle={{paddingVertical: hp(5)}}
+            contentContainerStyle={{
+              paddingBottom: hp(40),
+            }}
+            contentInset={{bottom: hp(15)}}
             //@ts-ignore
             onEndReached={fetchNextPage}
             onEndReachedThreshold={3}
-            contentInset={{bottom: hp(0)}}
             useNativeDriver={false}
             // refreshControl={<RefreshControl refreshing={}/>}
             showsVerticalScrollIndicator={false}

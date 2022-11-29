@@ -28,7 +28,7 @@ import ListLoader from 'src/components/common/ListLoader';
 import dummyData from 'src/constants/dummyData';
 import {useSelector} from 'react-redux';
 import {StoreState} from 'src/@types/store';
-import {useMessageThreads} from 'src/services/queries';
+import {useMessageThreads} from 'src/services/query/queries';
 
 const Assigned = ({navigation}: any) => {
   const SortSheetRef = useRef<any>(null);
@@ -179,8 +179,10 @@ const Assigned = ({navigation}: any) => {
             onEndReached={fetchNextPage}
             onEndReachedThreshold={3}
             renderItem={renderItem}
-            contentContainerStyle={{paddingVertical: hp(5)}}
-            contentInset={{bottom: hp(0)}}
+            contentContainerStyle={{
+              paddingBottom: hp(40),
+            }}
+            contentInset={{bottom: hp(15)}}
             useNativeDriver={false}
             showsVerticalScrollIndicator={false}
             closeOnRowBeginSwipe

@@ -50,7 +50,7 @@ const MessageCard = (props: any) => {
       item?.sender?.platform_name ?? item?.sender?.platform_nick,
       20,
     ),
-    name2: removeEmoji(item?.sender?.name),
+    name2: removeEmoji(item?.sender?.name ?? item?.sender?.platform_nick),
     date: messgeTimeFormater(item?.updated_datetime),
     image: item?.sender?.image_url,
     message: !!item?.subject

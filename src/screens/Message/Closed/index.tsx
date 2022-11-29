@@ -27,7 +27,7 @@ import HiddenItemWithActions from '../component/cardOptions/HiddenItemWithAction
 import dummyData from 'src/constants/dummyData';
 import {useSelector} from 'react-redux';
 import {StoreState} from 'src/@types/store';
-import {useMessageThreads} from 'src/services/queries';
+import {useMessageThreads} from 'src/services/query/queries';
 import ListLoader from 'src/components/common/ListLoader';
 
 const Closed = ({navigation}: any) => {
@@ -178,8 +178,10 @@ const Closed = ({navigation}: any) => {
             onEndReachedThreshold={3}
             renderItem={renderItem}
             style={{marginBottom: 0}}
-            contentContainerStyle={{paddingVertical: hp(5)}}
-            contentInset={{bottom: hp(0)}}
+            contentContainerStyle={{
+              paddingBottom: hp(40),
+            }}
+            contentInset={{bottom: hp(15)}}
             useNativeDriver={false}
             showsVerticalScrollIndicator={false}
             closeOnRowBeginSwipe

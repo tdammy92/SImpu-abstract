@@ -12,12 +12,7 @@ import {default as theme} from './themes/theme.json';
 
 import RNBootSplash from 'react-native-bootsplash';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {
-  Pusher,
-  PusherMember,
-  PusherChannel,
-  PusherEvent,
-} from '@pusher/pusher-websocket-react-native';
+import {Pusher} from '@pusher/pusher-websocket-react-native';
 
 import {ApplicationProvider as UIKittenProvider} from '@ui-kitten/components';
 import {Provider} from 'react-redux';

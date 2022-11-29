@@ -6,7 +6,7 @@ import {
   Animated,
   LayoutAnimation,
 } from 'react-native';
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {
   useNavigation,
   Route,
@@ -59,9 +59,9 @@ const Accordion = ({
       <TouchableOpacity
         style={styles.accordionHeaderContainer}
         onPress={toggleList}>
-        <Animated.View style={{transform: [{rotateZ: rotateArrow}]}}>
-          <AntDesign name="right" size={16} color={'gray'} />
-        </Animated.View>
+        {/* <Animated.View style={{transform: [{rotateZ: rotateArrow}]}}> */}
+        <AntDesign name={!show ? 'right' : 'down'} size={16} color={'gray'} />
+        {/* </Animated.View> */}
         <Text style={styles.accordionHeaderText}>{title}</Text>
       </TouchableOpacity>
       {/* accordion body */}
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   badgeText: {
     fontFamily: FONTS.TEXT_REGULAR,
     fontSize: 12,
-    color: '#026AE8',
+    color: colors.secondaryBg,
     position: 'absolute',
     right: -20,
   },

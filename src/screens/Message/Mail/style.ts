@@ -19,6 +19,7 @@ interface Styles {
   headerRight: ViewStyle;
   userDetails: ViewStyle;
   usernameText: TextStyle;
+  FooterContainer:ViewStyle
 }
 const styles = StyleService.create<Styles>({
   container: {
@@ -55,5 +56,19 @@ const styles = StyleService.create<Styles>({
     color: colors.dark,
     marginLeft: wp(7),
   },
+  FooterContainer:{
+    position: 'absolute',
+    zIndex: 3,
+    elevation: 3,
+    bottom: 1,
+    width: '100%',
+    height: hp(75),
+    backgroundColor: colors.bootomHeaderBg,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: wp(20),
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+  }
 });
 export default styles;

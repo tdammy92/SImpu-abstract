@@ -29,7 +29,7 @@ import {logOutUser} from '../../store/user/userReducer';
 import {hp, wp} from 'src/utils';
 import {colors} from 'src/constants';
 import LogoutSheet from './component/LogoutSheet';
-import {queryClient} from 'src/index';
+import {pusher, queryClient} from 'src/index';
 interface Props
   extends NativeStackScreenProps<MainStackParamList, SCREEN_NAME.settings> {}
 
@@ -76,11 +76,11 @@ const Setting = (props: Props): JSX.Element => {
   }, [navigation]);
 
   //handle logout function
-  const handleLogout = () => {
+  const handleLogout = async () => {
     closeSheet();
     dispatch(logOutUser());
     queryClient.clear();
-
+    await pusher.disconnect();
     setTimeout(
       () => navigation.reset({index: 0, routes: [{name: SCREEN_NAME.auth}]}),
       300,

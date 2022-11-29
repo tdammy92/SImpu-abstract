@@ -19,9 +19,9 @@ import AuthInput from './component/AuthInput';
 import {addProfile, addToken, addUser} from 'src/store/user/userReducer';
 import {addOrganisation} from 'src/store/organisation/organisationReducer';
 import {colors, FONTS} from 'src/constants';
-import {loginUser} from 'src/services/auth';
+import {loginUser} from 'src/services/query/auth';
 import AppModal from 'src/components/common/Modal';
-import {useProfile} from 'src/services/queries';
+import {useProfile} from 'src/services/query/queries';
 import Loader from 'src/components/common/Loader';
 
 //form schema validation
@@ -130,6 +130,7 @@ const Login = ({navigation}: any) => {
                         type="email"
                         value={email}
                         onChangeText={handleChange('email')}
+                        keyboardType="email-address"
                         error={errors.email && touched.email && errors.email}
                       />
 
@@ -166,11 +167,12 @@ const Login = ({navigation}: any) => {
                           </Text>
                         </TouchableOpacity>
                       </View>
+
                       <Button
                         title="Login"
                         //@ts-ignore
                         onPress={handleSubmit}
-                        style={{marginTop: hp(8)}}
+                        style={{marginTop: hp(8), width: '100%'}}
                       />
                     </>
                   );

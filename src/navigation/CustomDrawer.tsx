@@ -31,7 +31,7 @@ import {
   useSidebarTags,
   useSidebarInboxes,
   useGetOrganisations,
-} from 'src/services/queries';
+} from 'src/services/query/queries';
 
 import Accordion from './component/Accordion';
 import OrganisationSheet from './component/OrganisationSheet';
@@ -207,6 +207,10 @@ const CustomDrawer = (props: any): JSX.Element => {
             <View style={styles.orgPill}>
               <Text style={styles.orgPillText}>{organisation?.name}</Text>
             </View>
+
+            <View style={{position: 'absolute', right: 5}}>
+              <Octicons name="chevron-up" size={18} color={colors.dark} />
+            </View>
           </TouchableOpacity>
         ) : (
           <View style={styles.orgPill}>
@@ -322,6 +326,7 @@ const styles = StyleSheet.create({
   },
 
   selectOrgBtnContainer: {
+    position: 'relative',
     height: '100%',
     flexDirection: 'row',
     alignItems: 'center',

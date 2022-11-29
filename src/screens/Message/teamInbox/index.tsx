@@ -15,7 +15,7 @@ import ComposeMessageBtn from '../component/ComposeMessageBtn';
 import {hp} from 'src/utils';
 import SortSheet from '../component/SortSheet';
 import dummyData from 'src/constants/dummyData';
-import {useSharedThreads} from 'src/services/queries';
+import {useSharedThreads} from 'src/services/query/queries';
 import {useSelector} from 'react-redux';
 import {StoreState} from 'src/@types/store';
 import ListLoader from 'src/components/common/ListLoader';
@@ -169,8 +169,10 @@ const TeamInbox = ({navigation, route}: any) => {
             useAnimatedList={true}
             renderItem={renderItem}
             style={{marginBottom: 0}}
-            contentContainerStyle={{paddingVertical: hp(5)}}
-            contentInset={{bottom: hp(0)}}
+            contentContainerStyle={{
+              paddingBottom: hp(40),
+            }}
+            contentInset={{bottom: hp(15)}}
             useNativeDriver={false}
             showsVerticalScrollIndicator={false}
             closeOnRowBeginSwipe

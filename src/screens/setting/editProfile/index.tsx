@@ -30,7 +30,7 @@ import BottomSheet from 'src/components/common/ImagePicker';
 import ImagePicker from 'react-native-image-crop-picker';
 import {StoreState} from 'src/@types/store';
 import {DEMO_API, SECERET_KEY} from '@env';
-import {updateProfiles, updateProfileImage} from 'src/services/profile';
+import {updateProfiles, updateProfileImage} from 'src/services/query/profile';
 import HeaderNextBtn from 'src/components/common/HeaderNextBtn';
 import {hp} from 'src/utils';
 import Loader from 'src/components/common/Loader';

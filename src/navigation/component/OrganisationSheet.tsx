@@ -27,7 +27,7 @@ import {StoreState} from 'src/@types/store';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {organisation} from 'src/@types/profile';
 import {addProfile, updateProfile} from 'src/store/user/userReducer';
-import {useProfile} from 'src/services/queries';
+import {useProfile} from 'src/services/query/queries';
 
 const {height} = Dimensions.get('screen');
 const SheetHeight = Math.floor(height * 0.3);

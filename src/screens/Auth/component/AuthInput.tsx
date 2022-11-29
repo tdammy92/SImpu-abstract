@@ -11,6 +11,7 @@ import Feather from 'react-native-vector-icons/Feather';
 
 import {wp, hp} from 'src/utils';
 import {FONTS, colors} from 'src/constants';
+import {Icon} from '@ui-kitten/components';
 
 const AuthInput = (props: any) => {
   const {label, error, isPassword} = props;
@@ -22,12 +23,15 @@ const AuthInput = (props: any) => {
       <View
         style={[
           styles.Input,
-          {borderColor: IsFocused ? colors.secondaryBg : '#6D7580'},
+          {
+            borderColor: IsFocused ? colors.secondaryBg : colors.inputBg,
+            borderWidth: IsFocused ? 1 : 0,
+          },
         ]}>
         {!isPassword && (
           <TextInput
             placeholder={label}
-            placeholderTextColor="#929292"
+            placeholderTextColor={colors.darkGray}
             style={styles.textInput}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
@@ -38,7 +42,7 @@ const AuthInput = (props: any) => {
         {isPassword && (
           <TextInput
             placeholder={label}
-            placeholderTextColor="#929292"
+            placeholderTextColor={colors.darkGray}
             style={styles.textInput}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
@@ -51,8 +55,8 @@ const AuthInput = (props: any) => {
           {!isPassword && (
             <Feather
               name="mail"
-              size={22}
-              color={IsFocused ? colors.secondaryBg : '#929292'}
+              size={25}
+              color={IsFocused ? colors.secondaryBg : colors.darkGray}
               style={{marginRight: 12}}
             />
           )}
@@ -61,8 +65,8 @@ const AuthInput = (props: any) => {
             <TouchableOpacity onPress={() => setshowPassword(prev => !prev)}>
               <Feather
                 name={showPassword ? 'eye' : 'eye-off'}
-                size={22}
-                color={IsFocused ? colors.secondaryBg : '#929292'}
+                size={25}
+                color={IsFocused ? colors.secondaryBg : colors.darkGray}
                 style={{marginRight: 12}}
               />
             </TouchableOpacity>
@@ -79,18 +83,20 @@ export default AuthInput;
 const styles = StyleSheet.create({
   inputWrapper: {
     marginHorizontal: wp(10),
+    width: '95%',
     //     paddingVertical: hp(0),
   },
   label: {
     paddingVertical: hp(5),
-    fontSize: hp(16),
+    fontSize: hp(18),
     fontFamily: FONTS.TEXT_REGULAR,
     color: colors.dark,
   },
   Input: {
-    backgroundColor: '#F2F2F7',
+    backgroundColor: colors.bootomHeaderBg,
+
     flexDirection: 'row',
-    height: hp(45),
+    height: hp(55),
     alignItems: 'center',
     borderRadius: 4,
     // borderWidth: 1,
@@ -99,7 +105,7 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     paddingHorizontal: wp(10),
-    fontSize: hp(16),
+    fontSize: hp(18),
     fontFamily: FONTS.TEXT_REGULAR,
     color: colors.dark,
   },
@@ -107,7 +113,7 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: hp(12),
+    fontSize: hp(14),
     paddingVertical: hp(5),
   },
 });

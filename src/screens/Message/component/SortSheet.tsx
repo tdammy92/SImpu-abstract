@@ -19,7 +19,7 @@ import React, {
 import RBSheet, {RBSheetProps} from 'react-native-raw-bottom-sheet';
 import SelectDropdown from 'react-native-select-dropdown';
 import {hp, wp} from 'src/utils';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import Fontisto from 'react-native-vector-icons/Fontisto';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {colors, FONTS} from 'src/constants';
@@ -33,7 +33,7 @@ type Props = {
 
 const {height} = Dimensions.get('screen');
 
-const SheetHeight = Math.floor(height * 0.3);
+const SheetHeight = Math.floor(height * 0.34);
 
 const SortSheet = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
   const {changeSort, openDateFilter, filter, setFilter}: any = props;
@@ -42,9 +42,17 @@ const SortSheet = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
     {name: 'newest', icon: 'sort-bool-descending-variant'},
     {name: 'oldest', icon: 'sort-bool-ascending-variant'},
     {name: 'unread', icon: 'sort-bool-descending'},
+    {name: 'Date Filter', icon: 'calendar-month-outline'},
   ];
 
   const handleSort = (index: any) => {
+    if (index === 3) {
+      openDateFilter();
+      return;
+    }
+
+    console.log('it gote here');
+
     changeSort(sortBy[index]?.name);
   };
 
@@ -84,9 +92,6 @@ const SortSheet = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
       <KeyboardAvoidingView>
         <View style={styles.sortContainer}>
           <Text style={styles.sortTitle}>Sort by</Text>
-          <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
-            <EvilIcons name="undo" size={28} color={colors.dark} />
-          </TouchableOpacity>
           <View style={styles.sortCard}>
             {sortBy.map((sortItem, i) => {
               return (
@@ -116,15 +121,23 @@ const SortSheet = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
                 </Fragment>
               );
             })}
-
-            <TouchableOpacity style={styles.listItem} onPress={openDateFilter}>
+            {/* <TouchableOpacity style={styles.listItem} onPress={openDateFilter}>
               <View style={styles.leftSide}>
                 <AntDesign name="calendar" size={20} color={colors.dark} />
                 <Text style={styles.sortText}>Date Filter</Text>
               </View>
-              {/* {sort === sortItem.name && (
-                      <AntDesign name="checkcircleo" size={20} color="#000" />
-                    )} */}
+            </TouchableOpacity> */}
+
+            {/* reset */}
+            <TouchableOpacity style={styles.listItem} onPress={handleReset}>
+              <View style={styles.leftSide}>
+                <MaterialCommunityIcons
+                  name="backup-restore"
+                  size={20}
+                  color={colors.dark}
+                />
+                <Text style={styles.sortText}>Reset</Text>
+              </View>
             </TouchableOpacity>
           </View>
         </View>

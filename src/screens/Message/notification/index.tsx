@@ -23,7 +23,7 @@ import NotificationListIcon from 'src/assets/images/NotificationListIcon.svg';
 import {FormatText} from 'src/utils/string-utils/string';
 import {notificationDateFormat} from 'src/utils/date-utils/date';
 import {StoreState} from 'src/@types/store';
-import {useNotificationTrayQuery} from 'src/services/queries';
+import {useNotificationTrayQuery} from 'src/services/query/queries';
 import {Avatar} from 'src/constants/general';
 
 const {width, height} = Dimensions.get('screen');

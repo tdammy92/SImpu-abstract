@@ -24,7 +24,7 @@ import {colors, FONTS} from 'src/constants';
 import HeaderOption from './component/chatHeaderOption';
 import {SCREEN_NAME} from 'src/navigation/constants';
 import {StoreState} from 'src/@types/store';
-import {useMessageListQuery} from 'src/services/queries';
+import {useMessageListQuery} from 'src/services/query/queries';
 import {Avatar} from 'src/constants/general';
 import {hp} from 'src/utils';
 
@@ -112,7 +112,7 @@ const ChatBox = ({route, navigation}: any) => {
     return messageList?.map((msg: any) => {
       // const cheker = profile?.id === msg?.author_id ? true : false;
       // console.log('checker', cheker, [profile?.id, msg?.author_id]);
-      console.log('Msg Object', msg);
+      // console.log('Msg Object', msg);
 
       return {
         author: {

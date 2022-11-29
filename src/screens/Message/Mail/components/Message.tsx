@@ -1,12 +1,26 @@
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React from 'react';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  Dimensions,
+  useWindowDimensions,
+  View,
+} from 'react-native';
+import React, {useState} from 'react';
+import {Divider} from '@ui-kitten/components';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import {colors, FONTS} from 'src/constants';
 import {hp, wp} from 'src/utils';
 import {format} from 'date-fns';
 //@ts-ignore
+import HTMLView from 'react-native-htmlview';
+
+//@ts-ignore
 import UserAvatar from 'react-native-user-avatar';
+import {trimText} from 'src/utils/string-utils/string';
+import {WebView} from 'react-native-webview';
+import Htmlview from './HtmlView';
 
 const Message = ({data}: any) => {
   return (
@@ -19,19 +33,19 @@ const Message = ({data}: any) => {
               size={hp(30)}
               style={{height: hp(30), width: hp(30)}}
               borderRadius={hp(30 * 0.5)}
-              name={data?.author?.platform_name ?? null}
-              src={data?.author?.image_url ?? null}
+              name={data?.author?.platform_name ?? data?.author?.platform_nick}
+              src={data?.author?.image_url}
             />
             {/* author message header */}
 
             <View style={{marginLeft: wp(10)}}>
               <Text style={styles.messageHeaderTextBig}>
-                {data?.author?.platform_name}
+                {data?.author?.platform_name ?? data?.author?.platform_nick}
               </Text>
               <View style={{flexDirection: 'row'}}>
                 <Text style={styles.messageHeaderTextBig}>To:</Text>
                 <Text style={styles.messageHeaderTextSmall}>
-                  {data?.entity?.recipients?.to[0]?.platform_nick}
+                  {trimText(data?.entity?.recipients?.to[0]?.platform_nick, 35)}
                 </Text>
               </View>
               <Text style={styles.messageHeaderTextSmall}>
@@ -49,7 +63,12 @@ const Message = ({data}: any) => {
             />
           </TouchableOpacity>
         </View>
-        <View></View>
+        <Divider />
+        {/* <View style={styles.htmlContainer}> */}
+        <Htmlview htmldata={data?.entity?.content?.body} />
+        {/* </View> */}
+
+        <Divider />
         <View style={styles.messageFooter}>
           <TouchableOpacity style={styles.actionBtn}>
             <MaterialCommunityIcons
@@ -86,12 +105,12 @@ const styles = StyleSheet.create({
   },
   messageHeader: {
     flexDirection: 'row',
-    //     alignItems: 'center',
+
     justifyContent: 'space-between',
   },
   messageHeaderTextSmall: {
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: hp(13),
+    fontSize: hp(14),
     color: colors.dark,
     lineHeight: hp(18),
   },
@@ -100,6 +119,12 @@ const styles = StyleSheet.create({
     fontSize: hp(14),
     color: colors.dark,
     lineHeight: hp(18),
+  },
+
+  htmlContainer: {
+    // overflow: 'scroll',
+    width: 250,
+    flex: 1,
   },
   messageFooter: {
     marginHorizontal: wp(10),
