@@ -1,5 +1,4 @@
 apply plugin: "com.android.application"
-apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
 import com.android.build.OutputFile
@@ -266,10 +265,12 @@ dependencies {
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation project(':react-native-vector-icons')
 
+     implementation project(':react-native-notifications')
+
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     implementation "androidx.core:core-splashscreen:1.0.0" // Add this line
-implementation 'com.google.firebase:firebase-analytics:17.3.0'
-implementation project(':react-native-push-notification')
+    implementation 'com.google.firebase:firebase-analytics:17.3.0'
+implementation "androidx.appcompat:appcompat:1.0.0"
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.fbjni'

@@ -6,6 +6,7 @@ import {
   NavigationContainer,
   NavigationContainerRef,
 } from '@react-navigation/native';
+import messaging from '@react-native-firebase/messaging';
 import {IconRegistry} from '@ui-kitten/components';
 import {EvaIconsPack} from '@ui-kitten/eva-icons';
 import {default as theme} from './themes/theme.json';
@@ -13,6 +14,7 @@ import {default as theme} from './themes/theme.json';
 import RNBootSplash from 'react-native-bootsplash';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {Pusher} from '@pusher/pusher-websocket-react-native';
+import FlashMessage from 'react-native-flash-message';
 
 import {ApplicationProvider as UIKittenProvider} from '@ui-kitten/components';
 import {Provider} from 'react-redux';
@@ -22,6 +24,8 @@ import {PersistGate} from 'redux-persist/integration/react';
 import {MainStackParamList} from './navigation/constants';
 import {RootStack} from './navigation';
 import Loader from './components/common/Loader';
+import {requestPermissions} from './services/notification/permission';
+import {resquestFcmPermission} from './services/Firebase/firebase';
 
 export const queryClient = new QueryClient({
   defaultOptions: {queries: {retry: 2}},
@@ -46,6 +50,8 @@ export default (): JSX.Element => {
     };
     init().finally(async () => {
       await RNBootSplash.hide({fade: true});
+      requestPermissions();
+      resquestFcmPermission();
     });
   }, []);
   return (
@@ -71,6 +77,7 @@ export default (): JSX.Element => {
           </PersistGate>
         </QueryClientProvider>
       </Provider>
+      <FlashMessage floating={true} />
     </>
   );
 };

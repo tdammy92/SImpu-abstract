@@ -8,7 +8,9 @@ const width = Dimensions.get('screen').width * 0.9;
 const Htmlview = ({htmldata}: any) => {
   const systemFonts = [...defaultSystemFonts, FONTS.TEXT_REGULAR];
 
-  const source = {html: htmldata};
+  const source = {
+    html: htmldata,
+  };
 
   //   const renderersProps = {
   //     img: {
@@ -16,19 +18,21 @@ const Htmlview = ({htmldata}: any) => {
   //     },
   //   };
 
+  // console.log(source);
+
   return (
     <RenderHtml
       enableCSSInlineProcessing={true}
       contentWidth={width}
       source={source}
-      enableExperimentalMarginCollapsing={true}
+      // enableExperimentalMarginCollapsing={true}
       systemFonts={systemFonts}
       //  renderersProps={renderersProps}
       ignoredDomTags={['o:p']}
       // dangerouslyDisableHoisting={false}
       // dangerouslyDisableWhitespaceCollapsing={false}
       //@ts-ignore
-      tagsStyles={tagsStyles}
+      // tagsStyles={tagsStyles}
 
       //  baseStyle={{padding: 0, margin: 0, backgroundColor: 'red'}}
     />

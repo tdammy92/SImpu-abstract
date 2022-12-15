@@ -7,3 +7,16 @@ export const getNotificationTrayItems = async (param: any, page: any) => {
   });
   return response;
 };
+
+export const registerDeviceNotification = async (param: any) => {
+  // console.log('from auth', param);
+
+  const {DeviceDetails, Auth} = param;
+  const url = buildNotificationURL(`/device`);
+  const response = await client(url, {
+    method: 'POST',
+    data: JSON.stringify(DeviceDetails),
+    params: param,
+  });
+  return response;
+};

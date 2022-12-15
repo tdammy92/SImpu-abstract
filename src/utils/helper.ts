@@ -1,5 +1,16 @@
 import {format} from 'date-fns';
+import {
+  showMessage,
+  hideMessage,
+  MessageType,
+} from 'react-native-flash-message';
 import {getDateXDaysAgo} from './date-utils/date';
+
+type toastMessageType = {
+  message: string;
+  description?: string;
+  type: MessageType;
+};
 
 // snippet to generate random colors
 export const GenerateColor = () => {
@@ -45,4 +56,23 @@ export const DateBy = [
 
 export const formatNumbers = (num: number | string) => {
   return num?.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
+
+export const messsageToast = ({
+  message,
+  type,
+  description,
+}: toastMessageType) => {
+  showMessage({
+    message: message,
+    description: description,
+    type: type,
+    icon: type,
+  });
+};
+
+//get file type
+export const getFileType = (url: string) => {
+  //@ts-ignore
+  return url.split(/[#?]/)[0].split('.').pop().trim();
 };

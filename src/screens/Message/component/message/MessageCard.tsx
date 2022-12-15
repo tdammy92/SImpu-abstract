@@ -1,11 +1,4 @@
-import {
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  TouchableHighlight,
-  TouchableWithoutFeedback,
-  Animated,
-} from 'react-native';
+import {StyleSheet, View, TouchableOpacity, Animated} from 'react-native';
 import {memo, useState} from 'react';
 import {Divider, Text} from '@ui-kitten/components';
 //@ts-ignore
@@ -20,9 +13,13 @@ import ChannelIcon from 'src/components/common/ChannelIcon';
 import {
   removeEmoji,
   removeHtmlTags,
+  removeLineBreak,
   trimText,
 } from 'src/utils/string-utils/string';
 import {messgeTimeFormater} from 'src/utils/date-utils/date';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import AttachmentIcon from './AttachmentIcon';
+import FileType from './FileType';
 
 const MessageCard = (props: any) => {
   const navigation = useNavigation();
@@ -45,19 +42,34 @@ const MessageCard = (props: any) => {
     });
   }
 
+  //formated data
   const threadDetails = {
-    name1: trimText(
-      item?.sender?.platform_name ?? item?.sender?.platform_nick,
-      20,
-    ),
+    name1: trimText(item?.sender?.name ?? item?.sender?.platform_nick, 20),
     name2: removeEmoji(item?.sender?.name ?? item?.sender?.platform_nick),
     date: messgeTimeFormater(item?.updated_datetime),
     image: item?.sender?.image_url,
     message: !!item?.subject
       ? trimText(removeHtmlTags(item?.subject), 45)
-      : trimText(removeHtmlTags(item?.last_message?.entity?.content?.body), 45),
+      : removeLineBreak(
+          trimText(
+            removeHtmlTags(item?.last_message?.entity?.content?.body),
+            45,
+          ),
+        ),
     channelType: item?.channel_name,
     ...item,
+
+    has_attachments: item?.last_message?.entity?.attachments ? true : false,
+    attachmentType:
+      item?.last_message?.entity?.attachments &&
+      item?.last_message?.entity?.attachments[0]?.data?.format,
+
+    attachmentName:
+      item?.last_message?.entity?.attachments &&
+      item?.last_message?.entity?.attachments[0]?.data,
+    // attachmentTypes:
+    //   item?.last_message?.entity?.attachments &&
+    //   item?.last_message?.entity?.attachments[0]?.data?.resource_type,
   };
 
   const handleNavigate = () => {
@@ -99,7 +111,16 @@ const MessageCard = (props: any) => {
               <Text style={styles.timeText}>{threadDetails?.date}</Text>
             </View>
 
-            <Text style={styles.lastmessageText}>{threadDetails?.message}</Text>
+            <Text style={styles.lastmessageText}>
+              {threadDetails?.has_attachments && (
+                <AttachmentIcon type={threadDetails?.attachmentType} />
+              )}
+
+              {threadDetails?.has_attachments && !threadDetails?.message && (
+                <FileType type={threadDetails?.attachmentType} />
+              )}
+              <Text> {threadDetails?.message}</Text>
+            </Text>
           </View>
         </View>
       </TouchableOpacity>

@@ -34,3 +34,14 @@ export type InboxType = {
   time_to_inactive?: number | null;
   credentials?: InboxTypeCredentials[];
 };
+
+export type requestNotificationType = {
+  imei?: string;
+  fcm_token: string | null;
+  name: string | null;
+  brand: string | null;
+  model: string | null;
+  os: string | null;
+  os_version: string | null;
+  os_api_level: number | string | null;
+};

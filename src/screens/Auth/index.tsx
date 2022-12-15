@@ -1,7 +1,7 @@
 import {View, Linking, TouchableOpacity} from 'react-native';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {Text} from '@ui-kitten/components';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {Formik} from 'formik';
 import * as yup from 'yup';
 import {useMutation} from 'react-query';
@@ -23,6 +23,14 @@ import {loginUser} from 'src/services/query/auth';
 import AppModal from 'src/components/common/Modal';
 import {useProfile} from 'src/services/query/queries';
 import Loader from 'src/components/common/Loader';
+import {connect} from 'src/services/notification/pusher';
+import {StoreState} from 'src/@types/store';
+import {requestNotificationType} from 'src/@types/inbox';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {resquestFcmPermission} from 'src/services/Firebase/firebase';
+import {registerNotification} from 'src/services/notification/notification';
+import useDeviceDetails from 'src/Hooks/useDeviceDetails';
+import {registerDeviceNotification} from 'src/services/query/notification';
 
 //form schema validation
 const ValidationShema = yup.object({
@@ -32,6 +40,10 @@ const ValidationShema = yup.object({
 
 const Login = ({navigation}: any) => {
   const dispatch = useDispatch();
+
+  const DeviceDetails = useDeviceDetails();
+
+  const {token} = useSelector((state: StoreState) => state.user);
 
   //login user mutation
   const {isError, data, error, isLoading, isSuccess, mutateAsync} =
@@ -49,22 +61,34 @@ const Login = ({navigation}: any) => {
       retryOnMount: false,
       refetchOnMount: false,
       keepPreviousData: false,
-      onSuccess: (data: any) => {
+      onSuccess: async (data: any) => {
+        try {
+          const Auth = token;
+          const res = await registerDeviceNotification({DeviceDetails, Auth});
+          console.log("response from yomi's API", res);
+
+          dispatch(addProfile(data?.data?.profile));
+
+          //update user
+          dispatch(addUser(data?.data?.user));
+
+          //update organisation
+          dispatch(
+            addOrganisation({
+              id: data?.data?.profile?.organisation_id,
+              name: 'default',
+            }),
+          );
+
+          navigation.reset({index: 0, routes: [{name: SCREEN_NAME.main}]});
+        } catch (error) {
+          console.log("error from yomi's API", error);
+        }
+        // console.log('device detials', DeviceDetails);
+        // console.log('zzzzzzz', JSON.stringify(data?.data?.profile, null, 2));
+        //@ts-ignore
+        // await connect(token, data?.data?.profile, data?.data?.profile?.id);
         //update profile
-        dispatch(addProfile(data?.data?.profile));
-
-        //update user
-        dispatch(addUser(data?.data?.user));
-
-        //update organisation
-        dispatch(
-          addOrganisation({
-            id: data?.data?.profile?.organisation_id,
-            name: 'default',
-          }),
-        );
-
-        navigation.reset({index: 0, routes: [{name: SCREEN_NAME.main}]});
       },
     },
   );
@@ -98,6 +122,8 @@ const Login = ({navigation}: any) => {
   if (profile.isLoading) {
     return <Loader />;
   }
+
+  // console.log('device details', DeviceDetails);
 
   return (
     <View style={styles.container}>

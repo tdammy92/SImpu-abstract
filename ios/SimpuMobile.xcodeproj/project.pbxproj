@@ -86,6 +86,7 @@
 		89C6BE57DB24E9ADA2F236DE /* Pods-SimpuMobile-SimpuMobileTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimpuMobile-SimpuMobileTests.release.xcconfig"; path = "Target Support Files/Pods-SimpuMobile-SimpuMobileTests/Pods-SimpuMobile-SimpuMobileTests.release.xcconfig"; sourceTree = "<group>"; };
 		939BBF1FE4C54A92BF6A62B1 /* Averta-Semibold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Averta-Semibold.otf"; path = "../src/assets/fonts/Averta-Semibold.otf"; sourceTree = "<group>"; };
 		A62941E728BD2FCE00E0F26E /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = SimpuMobile/BootSplash.storyboard; sourceTree = "<group>"; };
+		A63A4A7A293742C500147A78 /* SimpuMobile.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = SimpuMobile.entitlements; path = SimpuMobile/SimpuMobile.entitlements; sourceTree = "<group>"; };
 		A6CDDCAF28BF62D600E8F77C /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
 		A6CDDCB028BF62D600E8F77C /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
 		A6CDDCB128BF62D600E8F77C /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Feather.ttf; sourceTree = "<group>"; };
@@ -166,6 +167,7 @@
 		13B07FAE1A68108700A75B9A /* SimpuMobile */ = {
 			isa = PBXGroup;
 			children = (
+				A63A4A7A293742C500147A78 /* SimpuMobile.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -649,6 +651,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = SimpuMobile/SimpuMobile.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 5;
@@ -681,6 +684,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = SimpuMobile/SimpuMobile.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 5;

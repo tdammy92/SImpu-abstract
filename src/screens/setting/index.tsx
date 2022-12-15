@@ -79,8 +79,14 @@ const Setting = (props: Props): JSX.Element => {
   const handleLogout = async () => {
     closeSheet();
     dispatch(logOutUser());
+
+    //clear all query keys
     queryClient.clear();
+
+    //disconnect pusher notifications
     await pusher.disconnect();
+
+    //timeout before routing back to the login screen
     setTimeout(
       () => navigation.reset({index: 0, routes: [{name: SCREEN_NAME.auth}]}),
       300,

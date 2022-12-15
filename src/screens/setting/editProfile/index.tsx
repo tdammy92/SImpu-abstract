@@ -24,6 +24,7 @@ import {addUser, updateProfile, logOutUser} from 'src/store/user/userReducer';
 import axios from 'axios';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import {useDispatch, useSelector} from 'react-redux';
+import {showMessage, hideMessage} from 'react-native-flash-message';
 //@ts-ignore
 import UserAvatar from 'react-native-user-avatar';
 import BottomSheet from 'src/components/common/ImagePicker';
@@ -32,8 +33,11 @@ import {StoreState} from 'src/@types/store';
 import {DEMO_API, SECERET_KEY} from '@env';
 import {updateProfiles, updateProfileImage} from 'src/services/query/profile';
 import HeaderNextBtn from 'src/components/common/HeaderNextBtn';
-import {hp} from 'src/utils';
+import {hp, messsageToast} from 'src/utils';
 import Loader from 'src/components/common/Loader';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {colors} from 'src/constants';
+
 const mime = require('mime');
 
 interface Props
@@ -141,13 +145,17 @@ const EditProfile = (props: Props): JSX.Element => {
       //@ts-ignore
       await profileImageUpdate.mutateAsync(imageupload, {
         onSuccess: (data, variables, context) => {
+          messsageToast({message: 'Profile Image updated', type: 'success'});
           dispatch(updateProfile(data?.profile));
         },
         onError: (error, variables, context) => {
+          messsageToast({message: 'Update failed', type: 'danger'});
           console.log('from onError', error);
         },
       });
-    } catch (error) {}
+    } catch (error) {
+      messsageToast({message: `${error}`, type: 'danger'});
+    }
   };
 
   const openSheet = () => {
@@ -172,10 +180,13 @@ const EditProfile = (props: Props): JSX.Element => {
       //@ts-ignore
       await profileUpdate.mutateAsync(payload, {
         onSuccess: (data, variables, context) => {
+          messsageToast({message: 'Profile updated', type: 'success'});
           dispatch(updateProfile(data?.profile));
         },
       });
-    } catch (error) {}
+    } catch (error) {
+      messsageToast({message: `${error}`, type: 'danger'});
+    }
   };
 
   useEffect(() => {
@@ -218,7 +229,7 @@ const EditProfile = (props: Props): JSX.Element => {
                 value={firstName}
                 placeholderTextColor="#C7C7CC"
                 placeholder="First Name"
-                selectionColor={'#3525E6'}
+                selectionColor={colors.secondaryBg}
                 keyboardType="default"
                 onChangeText={nextValue => setFirstName(nextValue)}
               />
@@ -230,7 +241,7 @@ const EditProfile = (props: Props): JSX.Element => {
                 value={lastName}
                 placeholder="Last Name"
                 placeholderTextColor="#C7C7CC"
-                selectionColor={'#3525E6'}
+                selectionColor={colors.secondaryBg}
                 keyboardType="default"
                 onChangeText={nextValue => setLastName(nextValue)}
               />

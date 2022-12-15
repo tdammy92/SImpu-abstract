@@ -22,11 +22,11 @@ export const useInboxWebsocket = () => {
   const organisation_id = organisation?.id ?? '';
   const profile_id = profile?.id;
 
-  // const myChannel = await pusher.subscribe({channelName: "my-channel"});
-
   useEffect(() => {
     if (!(organisation_id && profile_id && pusher)) {
       return;
     }
+
+    // subscribeToPusher();
   }, [organisation_id, profile_id, pusher]);
 };

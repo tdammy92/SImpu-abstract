@@ -5,9 +5,9 @@ import {
   CONVERSATION_API_DEMO,
   INTEGRATIONS_API_DEMO,
   INTEGRATIONS_API_PRODUCTION,
-  SECERET_KEY,
 } from '@env';
 
+// base url
 export const buildConversationUrl = (url: string) =>
   `${CONVERSATION_API_DEMO}/api/v1/${url}`;
 
@@ -30,7 +30,7 @@ export async function client(
 
   // console.log('API Client data', data);
   // console.log('API Client method', method);
-  // console.log('API Customs', customConfig.params.queryS);
+  // console.log('API Customs auth', customConfig?.params?.Auth);
 
   headers.Authorization = customConfig?.params?.Auth ?? '';
   headers.organisationID = customConfig?.params?.organisationId ?? '';

@@ -36,6 +36,7 @@ import {
 import Accordion from './component/Accordion';
 import OrganisationSheet from './component/OrganisationSheet';
 import {addProfile} from 'src/store/user/userReducer';
+import {useInboxWebsocket} from 'src/Hooks/usePushersocket';
 
 const CustomDrawer = (props: any): JSX.Element => {
   const OrganisationSheetRef = useRef<any>(null);
@@ -47,6 +48,7 @@ const CustomDrawer = (props: any): JSX.Element => {
   );
   const netInfo = useNetInfo();
   const [isAvailable, setisAvailable] = useState<boolean | null>(true);
+  // useInboxWebsocket();
 
   //open sheet code
   const openSheet = () => {

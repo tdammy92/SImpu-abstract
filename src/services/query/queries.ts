@@ -50,7 +50,7 @@ export const useSidebarInboxes = (queryParams: any, options?: any) => {
 //fectch sideBar unread count
 export const useSidebarUnreadCount = (queryParams: any, options?: any) => {
   return useQuery(
-    `filters-unread-count  ${queryParams?.organisationId}`,
+    [`filters-unread-count`, 'threads', `${queryParams?.organisationId}`],
     () => getThreadFiltersUnreadCount(queryParams),
     options,
   );
@@ -60,7 +60,15 @@ export const useSidebarUnreadCount = (queryParams: any, options?: any) => {
 export const usePersonalThreads = (queryParams: any, options: any) => {
   const {filter, sort, page, start_date, end_date} = queryParams;
   return useInfiniteQuery(
-    `threads ${filter} ${sort} ${page} ${start_date} ${end_date} ${queryParams?.organisationId}`,
+    [
+      `threads`,
+      filter,
+      sort,
+      page,
+      start_date,
+      end_date,
+      `${queryParams?.organisationId}`,
+    ],
     ({pageParam = 1}) => getPersonalThreads(queryParams, pageParam),
     {
       getNextPageParam: (lastPage: any) => {
@@ -76,7 +84,15 @@ export const useMessageThreads = (queryParams: any, options: any) => {
   const {filter, sort, page, start_date, end_date} = queryParams;
 
   return useInfiniteQuery(
-    `threads ${filter} ${sort} ${page} ${start_date} ${end_date}   ${queryParams?.organisationId}`,
+    [
+      'threads',
+      filter,
+      sort,
+      page,
+      start_date,
+      end_date,
+      queryParams?.organisationId,
+    ],
     ({pageParam = 1}) => getMeThreads(queryParams, pageParam),
     {
       getNextPageParam: (lastPage: any) => {
@@ -93,7 +109,7 @@ export const useSharedThreads = (queryParams: any, options: any) => {
     queryParams;
 
   return useInfiniteQuery(
-    `threads ${threadType} ${filter} ${sort} ${start_date} ${end_date}  ${organisationId}`,
+    ['threads', threadType, filter, sort, start_date, end_date, organisationId],
     ({pageParam = 1}) => getSharedThreads(queryParams, pageParam),
     {
       getNextPageParam: (lastPage: any) => {

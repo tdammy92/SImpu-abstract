@@ -2,10 +2,9 @@
 import React, {useEffect} from 'react';
 import {TouchableOpacity, Text, View, Alert} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-
 import {createDrawerNavigator} from '@react-navigation/drawer';
-
 import {MainStackParamList, SCREEN_NAME} from './constants';
+import {useQueryClient} from 'react-query';
 import Payment from 'src/screens/payment';
 
 import Setting from 'src/screens/setting';
@@ -86,7 +85,9 @@ import {
   PUSHER_APP_KEY_DEMO,
 } from '@env';
 import Mail from 'src/screens/Message/Mail';
-
+import {registerNotification} from 'src/services/notification/notification';
+import useNotification from 'src/Hooks/useNotification';
+import {Notifications} from 'react-native-notifications';
 const Stack = createNativeStackNavigator<MainStackParamList>();
 
 const Drawer = createDrawerNavigator();
@@ -477,6 +478,9 @@ export const RootStack = (): JSX.Element => {
   const {profile, token, isloggedIn, onFirstLaunch} = useSelector(
     (state: StoreState) => state.user,
   );
+  const queryClient = useQueryClient();
+
+  useNotification();
 
   //pusher configurations
   const connect = async () => {
@@ -487,16 +491,14 @@ export const RootStack = (): JSX.Element => {
         authEndpoint: buildConversationUrl(
           `auth/websocket2?token=${token}&organisationID${organisation.id}`,
         ),
-        // useTLS: true,
 
-        // onAuthorizer,
         onConnectionStateChange,
         onError,
         onEvent,
         onSubscriptionSucceeded,
       });
 
-      //subscribe to organisation
+      // //subscribe to organisation
       const orgChannelName = `presence-organisation-${organisation?.id}`;
       const organisationChannel = await pusher.subscribe({
         channelName: orgChannelName,
@@ -505,7 +507,7 @@ export const RootStack = (): JSX.Element => {
         },
       });
 
-      //subscribe to live chat
+      // subscribe to live chat
       const liveChatChannelName = `presence-livechat-${organisation?.id}`;
       const LiveChatChannel = await pusher.subscribe({
         channelName: liveChatChannelName,
@@ -549,15 +551,14 @@ export const RootStack = (): JSX.Element => {
   };
 
   const onEvent = (event: any) => {
-    // console.log('from d event callback', JSON.stringify(event, null, 2));
-    // Alert.alert('event called', '', [
-    //   {
-    //     text: 'Cancel',
-    //     onPress: () => console.log('Cancel Pressed'),
-    //   },
-    // ]);
+    // console.log('event fired', JSON.stringify(event, null, 2));
 
-    console.log('Event received');
+    const thread_id = JSON.parse(event?.data)?.thread_id;
+
+    queryClient.invalidateQueries('threads');
+    queryClient.invalidateQueries('conversations');
+
+    // showNotification(event);
   };
 
   const onSubscriptionSucceeded = (channelName: string, data: any) => {
@@ -576,7 +577,11 @@ export const RootStack = (): JSX.Element => {
   };
 
   useEffect(() => {
-    connect();
+    // registerNotification();
+
+    if (!!token && !!organisation?.id && !!isloggedIn) {
+      connect();
+    }
   }, [token, organisation?.id, profile?.id]);
 
   return (

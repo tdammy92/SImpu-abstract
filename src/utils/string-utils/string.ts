@@ -33,3 +33,9 @@ export const removeEmoji = (text: string) => {
     ?.replace(/\s+/g, ' ')
     ?.trim();
 };
+
+export const removeLineBreak = (text: string) => {
+  if (typeof text !== 'string') return text;
+
+  return text?.replace(/(\r\n|\n|\r)/gm, '');
+};
