@@ -66,15 +66,15 @@ const styles = StyleSheet.create({
     maxWidth: '65%',
     minWidth: '25%',
     borderRadius: hp(10),
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.15,
-    shadowRadius: 1.15,
+    // shadowColor: '#000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 1,
+    // },
+    // shadowOpacity: 0.15,
+    // shadowRadius: 1.15,
 
-    elevation: 1.5,
+    // elevation: 1.5,
   },
   messageHeader: {
     flexDirection: 'row',

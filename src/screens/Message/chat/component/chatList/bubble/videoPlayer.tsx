@@ -4,11 +4,11 @@ import Video from 'react-native-video';
 import {wp} from 'src/utils';
 
 const VideoPlayer = ({videoData}: any) => {
-  console.log('video', JSON.stringify(videoData, null, 2));
+  // console.log('video', JSON.stringify(videoData, null, 2));
   const {data} = videoData;
   const musicRef = useRef<any>();
 
-  console.log('this is file', data);
+  // console.log('this is file', data);
 
   //   useEffect(() => {
   //     musicRef.current.presentFullscreenPlayer();
@@ -22,9 +22,9 @@ const VideoPlayer = ({videoData}: any) => {
 
   return (
     <View>
-      <TouchableOpacity onPress={handlePlay}>
+      {/* <TouchableOpacity onPress={handlePlay}>
         <Text style={{backgroundColor: 'green'}}>Play/pause</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <Video
         paused={true}
         source={{uri: data?.url}} // Can be a URL or a local file.

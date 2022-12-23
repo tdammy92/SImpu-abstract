@@ -76,3 +76,12 @@ export const getFileType = (url: string) => {
   //@ts-ignore
   return url.split(/[#?]/)[0].split('.').pop().trim();
 };
+
+//seconds to minute
+export const formatSecToMin = (seconds: number) => {
+  return (
+    (seconds - (seconds %= 60)) / 60 +
+    (9 < seconds ? ':' : ':0') +
+    seconds
+  ).substring(0, 4);
+};

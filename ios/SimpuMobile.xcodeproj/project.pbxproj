@@ -19,6 +19,7 @@
 		A0FD5BFE51684398BADE3225 /* Averta-Bold-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 6A40FFDD7ED34CB5846CA16F /* Averta-Bold-Italic.otf */; };
 		A4D20479970116C36494A64F /* Pods_SimpuMobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE6452C49D6795B0096131A7 /* Pods_SimpuMobile.framework */; };
 		A62941E828BD2FCE00E0F26E /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A62941E728BD2FCE00E0F26E /* BootSplash.storyboard */; };
+		A68EF7B2294C537000D7B335 /* dummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68EF7B1294C537000D7B335 /* dummy.swift */; };
 		A6CDDCBF28BF62D600E8F77C /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCAF28BF62D600E8F77C /* Fontisto.ttf */; };
 		A6CDDCC028BF62D600E8F77C /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCB028BF62D600E8F77C /* Octicons.ttf */; };
 		A6CDDCC128BF62D600E8F77C /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6CDDCB128BF62D600E8F77C /* Feather.ttf */; };
@@ -87,6 +88,8 @@
 		939BBF1FE4C54A92BF6A62B1 /* Averta-Semibold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Averta-Semibold.otf"; path = "../src/assets/fonts/Averta-Semibold.otf"; sourceTree = "<group>"; };
 		A62941E728BD2FCE00E0F26E /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = SimpuMobile/BootSplash.storyboard; sourceTree = "<group>"; };
 		A63A4A7A293742C500147A78 /* SimpuMobile.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = SimpuMobile.entitlements; path = SimpuMobile/SimpuMobile.entitlements; sourceTree = "<group>"; };
+		A68EF7B0294C536F00D7B335 /* SimpuMobile-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SimpuMobile-Bridging-Header.h"; sourceTree = "<group>"; };
+		A68EF7B1294C537000D7B335 /* dummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = dummy.swift; sourceTree = "<group>"; };
 		A6CDDCAF28BF62D600E8F77C /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
 		A6CDDCB028BF62D600E8F77C /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
 		A6CDDCB128BF62D600E8F77C /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Feather.ttf; sourceTree = "<group>"; };
@@ -199,6 +202,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				A68EF7B1294C537000D7B335 /* dummy.swift */,
 				A6D3F4762934942D00D959AE /* GoogleService-Info.plist */,
 				A6CDDCAE28BF62D600E8F77C /* Fonts */,
 				13B07FAE1A68108700A75B9A /* SimpuMobile */,
@@ -208,6 +212,7 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
 				D9AE344140C24571B6E554A7 /* Resources */,
+				A68EF7B0294C536F00D7B335 /* SimpuMobile-Bridging-Header.h */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -352,7 +357,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1420;
 					};
 				};
 			};
@@ -577,6 +582,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
+				A68EF7B2294C537000D7B335 /* dummy.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -596,6 +602,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5B7EB9410499542E8C5724F5 /* Pods-SimpuMobile-SimpuMobileTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = G2CLGM2D32;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -624,6 +631,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 89C6BE57DB24E9ADA2F236DE /* Pods-SimpuMobile-SimpuMobileTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = G2CLGM2D32;
@@ -671,6 +679,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = co.simpu.inbox;
 				PRODUCT_NAME = SimpuMobile;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "SimpuMobile-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -703,6 +712,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = co.simpu.inbox;
 				PRODUCT_NAME = SimpuMobile;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "SimpuMobile-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";

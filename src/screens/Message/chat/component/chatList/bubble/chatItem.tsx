@@ -4,6 +4,7 @@ import {colors, FONTS} from 'src/constants';
 import {getFileType, hp} from 'src/utils';
 import VideoPlayer from './videoPlayer';
 import Hyperlink from 'react-native-hyperlink';
+import AudioPlayer from './audioPlayer';
 
 const ChatItem = ({message, isUser}: any) => {
   const {entity} = message;
@@ -39,14 +40,20 @@ const ChatItem = ({message, isUser}: any) => {
                 />
               );
             } else if (['mp3'].includes(type)) {
-              //render video
-              return <Text>Audio</Text>;
+              //render audio
+              return (
+                <AudioPlayer
+                  audioData={file}
+                  key={`${index}`}
+                  isUser={isUser}
+                />
+              );
             } else if (['mp4'].includes(type)) {
               //render video
-              return <VideoPlayer videoData={file} />;
+              return <VideoPlayer videoData={file} key={`${index}`} />;
             } else if (['pdf', 'doc', 'csv', 'docx'].includes(type)) {
               //render file
-              return <Text>File</Text>;
+              return <Text key={`${index}`}>File {type}</Text>;
             }
           })}
           {/* message file */}

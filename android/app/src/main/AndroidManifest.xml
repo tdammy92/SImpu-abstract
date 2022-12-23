@@ -45,13 +45,26 @@
         <meta-data
         android:name="com.google.firebase.messaging.default_notification_icon"
         android:resource="@mipmap/ic_launcher" 
-      
+    
         />
+
+        <!-- <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id"/>   -->
+
         <!-- <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent"
-             tools:replace="android:resource" 
+         
         /> -->
     </application>
+
+     <queries>
+     <intent>
+   <action android:name="android.intent.action.VIEW" />
+   <!-- If you don't know the MIME type in advance, set "mimeType" to "*/*". -->
+   <data android:mimeType="application/pdf" />
+ </intent>
+</queries>
 
 </manifest>
