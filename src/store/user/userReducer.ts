@@ -12,8 +12,13 @@ const userSlice = createSlice({
 
     addProfile: (state: UserStore, {payload}: PayloadAction<Profile>) => {
       state.profile = payload;
-      state.isloggedIn = true;
+      // state.isloggedIn = true;
+    },
+
+    logInUser: (state: UserStore) => {
+      // state=initialState
       state.onFirstLaunch = true;
+      state.isloggedIn = true;
     },
 
     addUser: (state: UserStore, {payload}: PayloadAction<user>) => {
@@ -38,6 +43,7 @@ const userSlice = createSlice({
 export const {
   addToken,
   addUser,
+  logInUser,
   updateImage,
   addProfile,
   updateProfile,

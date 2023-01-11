@@ -29,6 +29,7 @@ export enum SCREEN_NAME {
   datastorage = 'app.screen.datastorage',
   quickreplies = 'app.screen.quickreplies',
   chat = 'app.screen.chat',
+  imageView = 'app.screen.imageview',
   mail = 'app.screen.mail',
 }
 
@@ -53,6 +54,7 @@ export type MainStackParamList = {
   [SCREEN_NAME.settings]: undefined;
   [SCREEN_NAME.about]: undefined;
   [SCREEN_NAME.chat]: {user: any};
+  [SCREEN_NAME.imageView]: {image: any};
   [SCREEN_NAME.mail]: {user: any};
   // [SCREEN_NAME.chat]: {
   //   name: string;

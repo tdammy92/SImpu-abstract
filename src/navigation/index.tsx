@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, {useEffect} from 'react';
 import {TouchableOpacity, Text, View, Alert} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -85,9 +84,10 @@ import {
   PUSHER_APP_KEY_DEMO,
 } from '@env';
 import Mail from 'src/screens/Message/Mail';
-import {registerNotification} from 'src/services/notification/notification';
 import useNotification from 'src/Hooks/useNotification';
 import {Notifications} from 'react-native-notifications';
+import ImageScreen from 'src/screens/Message/chat/component/chatList/bubble/imageViewer';
+import Loader from 'src/components/common/Loader';
 const Stack = createNativeStackNavigator<MainStackParamList>();
 
 const Drawer = createDrawerNavigator();
@@ -585,97 +585,111 @@ export const RootStack = (): JSX.Element => {
   }, [token, organisation?.id, profile?.id]);
 
   return (
-    <Stack.Navigator
-      screenOptions={{headerShown: false}}
-      initialRouteName={
-        !onFirstLaunch
-          ? SCREEN_NAME.onboarding
-          : isloggedIn
-          ? SCREEN_NAME.main
-          : SCREEN_NAME.auth
-      }>
-      <Stack.Screen
-        name={SCREEN_NAME.onboarding}
-        component={Onboarding}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name={SCREEN_NAME.auth}
-        component={Login}
-        options={{
-          headerShown: false,
-        }}
-      />
+    <>
+      <Loader />
+      <Stack.Navigator
+        screenOptions={{headerShown: false}}
+        initialRouteName={
+          !onFirstLaunch
+            ? SCREEN_NAME.onboarding
+            : isloggedIn
+            ? SCREEN_NAME.main
+            : SCREEN_NAME.auth
+        }>
+        <Stack.Screen
+          name={SCREEN_NAME.onboarding}
+          component={Onboarding}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name={SCREEN_NAME.auth}
+          component={Login}
+          options={{
+            headerShown: false,
+          }}
+        />
 
-      <Stack.Screen
-        name={SCREEN_NAME.forgotPassword}
-        component={ForgotPassword}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name={SCREEN_NAME.main}
-        component={DrawerMenu}
-        options={{
-          headerShown: false,
-        }}
-      />
+        <Stack.Screen
+          name={SCREEN_NAME.forgotPassword}
+          component={ForgotPassword}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name={SCREEN_NAME.main}
+          component={DrawerMenu}
+          options={{
+            headerShown: false,
+          }}
+        />
 
-      <Stack.Screen
-        name={SCREEN_NAME.chat}
-        component={ChatBox}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name={SCREEN_NAME.mail}
-        component={Mail}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name={SCREEN_NAME.config}
-        component={SettingsStackNavigator}
-        options={{
-          headerShown: false,
-        }}
-      />
+        <Stack.Screen
+          name={SCREEN_NAME.chat}
+          component={ChatBox}
+          options={{
+            headerShown: false,
+          }}
+        />
 
-      <Stack.Screen
-        name={SCREEN_NAME.search}
-        component={Search}
-        options={{
-          headerShown: false,
-        }}
-      />
+        <Stack.Group screenOptions={{presentation: 'containedModal'}}>
+          <Stack.Screen
+            name={SCREEN_NAME.imageView}
+            component={ImageScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+        </Stack.Group>
 
-      <Stack.Screen
-        name={SCREEN_NAME.notification}
-        component={Notification}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name={SCREEN_NAME.compose}
-        component={Compose}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name={SCREEN_NAME.teaminbox}
-        component={TeamInbox}
-        options={{
-          headerShown: false,
-        }}
-      />
-    </Stack.Navigator>
+        <Stack.Screen
+          name={SCREEN_NAME.mail}
+          component={Mail}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name={SCREEN_NAME.config}
+          component={SettingsStackNavigator}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name={SCREEN_NAME.search}
+          component={Search}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name={SCREEN_NAME.notification}
+          component={Notification}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name={SCREEN_NAME.compose}
+          component={Compose}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name={SCREEN_NAME.teaminbox}
+          component={TeamInbox}
+          options={{
+            headerShown: false,
+          }}
+        />
+      </Stack.Navigator>
+    </>
   );
 };
 

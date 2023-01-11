@@ -36,8 +36,10 @@ const ChatBox = ({route, navigation}: any) => {
   const organisation = useSelector(
     (state: StoreState) => state?.organisation?.details,
   );
-  const [User, setUser] = useState<any>(threadDetails);
-  const [messageTrail, setMessageTrail] = useState<any>();
+  const [threadDetail, setUser] = useState<any>(threadDetails);
+  const [messageTrail, setMessageTrail] = useState<any>([]);
+  const [members, setMembers] = useState<any>([]);
+
   const chatOptionRef = useRef<any>(null);
 
   const myUser = {id: profile?.id};
@@ -50,19 +52,51 @@ const ChatBox = ({route, navigation}: any) => {
     isLoading,
   } = useMessageListQuery(
     {
-      threadID: User?.uuid,
+      threadID: threadDetail?.uuid,
       type: 'message',
       page: 1,
       Auth: token,
       organisationId: organisation?.id,
     },
-    {},
-  );
 
-  //This snippet flattens the array
-  const messageList = messageData?.pages
-    ?.map((res: any) => res?.data?.messages?.map((r: any) => r))
-    .flat(2);
+    {
+      onSuccess(data: any, variables: any, context: any) {
+        //This snippet flattens the array
+        const messageList = data?.pages
+          ?.map((res: any) => res?.data?.messages?.map((r: any) => r))
+          .flat(2);
+
+        setMessageTrail(messageList);
+
+        //extract members from message thread excluding the sender
+        const member = messageList
+          .map((item: any) => {
+            return {
+              authorId: item?.author_id,
+              name:
+                item?.author?.name ||
+                item?.author?.platform_name ||
+                item?.author?.platform_nick,
+              imageUrl: item?.author?.image_url,
+            };
+          })
+          .filter((item: any) => profile?.id !== item?.authorId);
+
+        //filtering mutiple entries of the member
+        const members = [
+          ...new Set(member.map((item: any) => JSON.stringify(item))),
+        ].map((item2: any) => JSON.parse(item2));
+
+        setMembers(members.length > 2 ? members : []);
+      },
+      onError(error: any, variables: any, context: any) {
+        console.log('post message error', error);
+        // messsageToast({message: 'Profile updated', type: 'success'});
+        //@ts-ignore
+        // messsageToast({message: `${error?.message}`, type: 'danger'});
+      },
+    },
+  );
 
   // console.log('List', messageList);
 
@@ -86,39 +120,30 @@ const ChatBox = ({route, navigation}: any) => {
 
   //   setMessageTrail(msg);
   // }, [navigation, messageData]);
-
-  // const handleSendPress = (message: MessageType.PartialText) => {
-  //   const textMessage: MessageType.Text = {
-  //     author: user,
-  //     createdAt: Date.now(),
-  //     id: '' + Date.now(),
-  //     text: message.text,
-  //     type: 'text',
-  //   };
-  //   addMessage(textMessage);
-  // };
-
-  // const addMessage = (message: MessageType.Any) => {
-  //   setMessageTrail([message, ...messageTrail]);
-  // };
-
+  // console.log(JSON.stringify(threadDetail, null, 2));
   return (
     <>
       <View style={styles.container}>
         {/* chat header */}
         <ChatHeader
-          imageUrl={User?.name2}
-          name={User?.name1}
+          imageUrl={threadDetail?.name2}
+          name={threadDetail?.name1}
           openSheet={openSheet}
         />
 
         {/* chat component */}
-        <View style={{flex: 1}}>
+        <View style={{flex: 1, backgroundColor: 'transparent'}}>
           {/* chat messages */}
 
-          <ChatMessage data={messageList} />
+          <ChatMessage data={messageTrail} />
           {/* chat input */}
-          <ChatInput />
+          <ChatInput
+            credentitalId={threadDetail?.receiver_id}
+            threadId={threadDetail?.uuid}
+            name={threadDetail?.name1 ?? threadDetail?.name2}
+            setMessageTrail={setMessageTrail}
+            members={members}
+          />
         </View>
       </View>
       <HeaderOption ref={chatOptionRef} />

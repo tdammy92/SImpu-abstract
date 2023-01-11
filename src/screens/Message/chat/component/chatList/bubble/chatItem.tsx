@@ -5,12 +5,22 @@ import {getFileType, hp} from 'src/utils';
 import VideoPlayer from './videoPlayer';
 import Hyperlink from 'react-native-hyperlink';
 import AudioPlayer from './audioPlayer';
+import ImageViewer from './image';
+import {imageType, audioType, videoType, docType} from 'src/constants';
+//@ts-ignore
+import * as mime from 'react-native-mime-types';
+import DocView from './docView';
 
 const ChatItem = ({message, isUser}: any) => {
   const {entity} = message;
   //   console.log('message', JSON.stringify(message, null, 2));
   return (
-    <View>
+    <View
+      style={
+        {
+          // width: '100%'
+        }
+      }>
       {/* message text */}
       {entity?.content?.body && (
         <Hyperlink linkDefault={true} linkStyle={{color: colors.secondaryBg}}>
@@ -26,20 +36,33 @@ const ChatItem = ({message, isUser}: any) => {
 
       {/* message media */}
       {entity?.attachments && (
-        <View style={[, {marginTop: entity?.content?.body ? hp(8) : 0}]}>
+        <View
+          style={[
+            ,
+            {
+              marginTop: entity?.content?.body ? hp(8) : 0,
+              // width: '100%'
+            },
+          ]}>
           {entity?.attachments?.map((file: any, index: number) => {
-            const type = getFileType(file?.data?.url);
+            // const type = getFileType(file?.data?.url);
+            const type = mime.extension(file?.mimetype);
 
-            if (['jpg', 'png', 'jpeg', 'webp'].includes(type)) {
+            console.log('filetype', type);
+
+            console.log('typeee23', JSON.stringify(file, null, 2));
+
+            if (imageType.includes(type)) {
               //render image
               return (
-                <Image
+                <ImageViewer
                   key={`${index}`}
-                  style={styles.imageStyle}
-                  source={{uri: file?.data?.url}}
+                  imageData={file}
+                  message={message}
+                  isUser={isUser}
                 />
               );
-            } else if (['mp3'].includes(type)) {
+            } else if (audioType.includes(type)) {
               //render audio
               return (
                 <AudioPlayer
@@ -48,12 +71,19 @@ const ChatItem = ({message, isUser}: any) => {
                   isUser={isUser}
                 />
               );
-            } else if (['mp4'].includes(type)) {
+            } else if (videoType.includes(type)) {
               //render video
               return <VideoPlayer videoData={file} key={`${index}`} />;
-            } else if (['pdf', 'doc', 'csv', 'docx'].includes(type)) {
+            } else if (docType.includes(type)) {
               //render file
-              return <Text key={`${index}`}>File {type}</Text>;
+              return (
+                <DocView
+                  key={`${index}`}
+                  type={type}
+                  isUser={isUser}
+                  docData={file}
+                />
+              );
             }
           })}
           {/* message file */}
@@ -69,11 +99,5 @@ const styles = StyleSheet.create({
   messageText: {
     fontFamily: FONTS.TEXT_REGULAR,
     fontSize: hp(14),
-  },
-
-  imageStyle: {
-    width: hp(180),
-    height: hp(250),
-    borderRadius: hp(5),
   },
 });

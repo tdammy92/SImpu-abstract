@@ -287,7 +287,7 @@ PODS:
   - React-jsinspector (0.69.7)
   - React-logger (0.69.7):
     - glog
-  - react-native-document-picker (8.1.2):
+  - react-native-document-picker (8.1.3):
     - React-Core
   - react-native-netinfo (9.3.6):
     - React-Core
@@ -301,9 +301,6 @@ PODS:
     - RCTTypeSafety
     - React-Core
     - ReactCommon/turbomodule/core
-  - react-native-track-player (3.2.0):
-    - React-Core
-    - SwiftAudioEx (= 0.15.3)
   - react-native-video (5.2.1):
     - React-Core
     - react-native-video/Video (= 5.2.1)
@@ -377,6 +374,8 @@ PODS:
     - React-jsi (= 0.69.7)
     - React-logger (= 0.69.7)
     - React-perflogger (= 0.69.7)
+  - rn-fetch-blob (0.12.0):
+    - React-Core
   - RNBootSplash (4.3.3):
     - React-Core
   - RNCAsyncStorage (1.17.11):
@@ -396,6 +395,8 @@ PODS:
     - React-Core
     - RNFBApp
   - RNFileViewer (2.1.5):
+    - React-Core
+  - RNFS (2.20.0):
     - React-Core
   - RNGestureHandler (2.8.0):
     - React-Core
@@ -440,9 +441,13 @@ PODS:
   - RNScreens (3.18.2):
     - React-Core
     - React-RCTImage
+  - RNSound (0.11.2):
+    - React-Core
+    - RNSound/Core (= 0.11.2)
+  - RNSound/Core (0.11.2):
+    - React-Core
   - RNSVG (13.6.0):
     - React-Core
-  - SwiftAudioEx (0.15.3)
   - TOCropViewController (2.6.1)
   - TweetNacl (1.0.2)
   - Yoga (1.14.0)
@@ -477,7 +482,6 @@ DEPENDENCIES:
   - react-native-notifications (from `../node_modules/react-native-notifications`)
   - react-native-render-html (from `../node_modules/react-native-render-html`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
-  - react-native-track-player (from `../node_modules/react-native-track-player`)
   - react-native-video (from `../node_modules/react-native-video`)
   - react-native-webview (from `../node_modules/react-native-webview`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -492,6 +496,7 @@ DEPENDENCIES:
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - rn-fetch-blob (from `../node_modules/rn-fetch-blob`)
   - RNBootSplash (from `../node_modules/react-native-bootsplash`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCMaskedView (from `../node_modules/@react-native-masked-view/masked-view`)"
@@ -500,11 +505,13 @@ DEPENDENCIES:
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
   - RNFileViewer (from `../node_modules/react-native-file-viewer`)
+  - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNSound (from `../node_modules/react-native-sound`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -523,7 +530,6 @@ SPEC REPOS:
     - NWWebSocket
     - PromisesObjC
     - PusherSwift
-    - SwiftAudioEx
     - TOCropViewController
     - TweetNacl
 
@@ -584,8 +590,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-render-html"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
-  react-native-track-player:
-    :path: "../node_modules/react-native-track-player"
   react-native-video:
     :path: "../node_modules/react-native-video"
   react-native-webview:
@@ -614,6 +618,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/runtimeexecutor"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  rn-fetch-blob:
+    :path: "../node_modules/rn-fetch-blob"
   RNBootSplash:
     :path: "../node_modules/react-native-bootsplash"
   RNCAsyncStorage:
@@ -630,6 +636,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-firebase/messaging"
   RNFileViewer:
     :path: "../node_modules/react-native-file-viewer"
+  RNFS:
+    :path: "../node_modules/react-native-fs"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNImageCropPicker:
@@ -640,6 +648,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNSound:
+    :path: "../node_modules/react-native-sound"
   RNSVG:
     :path: "../node_modules/react-native-svg"
   Yoga:
@@ -682,12 +692,11 @@ SPEC CHECKSUMS:
   React-jsiexecutor: a73bec0218ba959fc92f811b581ad6c2270c6b6f
   React-jsinspector: 8134ee22182b8dd98dc0973db6266c398103ce6c
   React-logger: 1e7ac909607ee65fd5c4d8bea8c6e644f66b8843
-  react-native-document-picker: f5ec1a712ca2a975c233117f044817bb8393cad4
+  react-native-document-picker: 958e2bc82e128be69055be261aeac8d872c8d34c
   react-native-netinfo: f80db8cac2151405633324cb645c60af098ee461
   react-native-notifications: 83b4fd4a127a6c918fc846cae90da60f84819e44
   react-native-render-html: 984dfe2294163d04bf5fe25d7c9f122e60e05ebe
   react-native-safe-area-context: 99b24a0c5acd0d5dcac2b1a7f18c49ea317be99a
-  react-native-track-player: 0c26d981b5097910486cbbeb6d8f5352d41be069
   react-native-video: c26780b224543c62d5e1b2a7244a5cd1b50e8253
   react-native-webview: d33e2db8925d090871ffeb232dfa50cb3a727581
   React-perflogger: 8e832d4e21fdfa613033c76d58d7e617341e804b
@@ -702,6 +711,7 @@ SPEC CHECKSUMS:
   React-RCTVibration: 600a9f8b3537db360563d50fab3d040c262567d4
   React-runtimeexecutor: 65cd2782a57e1d59a68aa5d504edf94278578e41
   ReactCommon: 1e783348b9aa73ae68236271df972ba898560a95
+  rn-fetch-blob: f065bb7ab7fb48dd002629f8bdcb0336602d3cba
   RNBootSplash: 7e91ea56c7010aae487489789dbe212e8c905a0c
   RNCAsyncStorage: 8616bd5a58af409453ea4e1b246521bb76578d60
   RNCMaskedView: bc0170f389056201c82a55e242e5d90070e18e5a
@@ -710,17 +720,18 @@ SPEC CHECKSUMS:
   RNFBApp: a61f530d08a0f5996b1fbdcbd1b8bb077d5d61a1
   RNFBMessaging: f7a90ac199e1bc771e9e09058ed0354efd047182
   RNFileViewer: ce7ca3ac370e18554d35d6355cffd7c30437c592
+  RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: 62232ba8f562f7dea5ba1b3383494eb5bf97a4d3
   RNImageCropPicker: 648356d68fbf9911a1016b3e3723885d28373eda
   RNPermissions: dcdb7b99796bbeda6975a6e79ad519c41b251b1c
   RNReanimated: f0d66bda3d074c43c72a18f4fd4f4c26687bc1fd
   RNScreens: 34cc502acf1b916c582c60003dc3089fa01dc66d
+  RNSound: 6c156f925295bdc83e8e422e7d8b38d33bc71852
   RNSVG: 3a79c0c4992213e4f06c08e62730c5e7b9e4dc17
-  SwiftAudioEx: 83eabba2940924fc1c0d5cb0896049921365229c
   TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
   TweetNacl: 3abf4d1d2082b0114e7a67410e300892448951e6
   Yoga: 0b84a956f7393ef1f37f3bb213c516184e4a689d
 
-PODFILE CHECKSUM: d3111605c1ab69f51d7162c90e2f7260d6feb825
+PODFILE CHECKSUM: d729e98ed43f26ce7cc38425333070a36ba6aa6f
 
 COCOAPODS: 1.11.3

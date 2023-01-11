@@ -10,6 +10,7 @@ import {
   getSharedThreads,
   getQuickReplies,
   getMessageList,
+  getMemberList,
 } from './inbox';
 import {getProfile} from './profile';
 import {getNotificationTrayItems} from './notification';
@@ -166,6 +167,16 @@ export const useMessageListQuery = (queryParams: any, options: any) => {
       refetchOnWindowFocus: true,
       ...options,
     },
+  );
+};
+
+//get members in a conversation query
+//fectch sideBar unread count
+export const useMenberList = (queryParams: any, options?: any) => {
+  return useQuery(
+    ['Members', queryParams?.threadId, queryParams?.organisationId],
+    () => getMemberList(queryParams),
+    options,
   );
 };
 

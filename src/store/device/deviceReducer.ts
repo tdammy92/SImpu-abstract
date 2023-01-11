@@ -1,31 +1,25 @@
-import {organisationStore} from './../../@types/profile';
-import {organisation} from '../../@types/profile';
+import {deviceStore, deviceType} from './../../@types/profile';
+
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import initialState from './initial-state';
 
-const organisationSlice = createSlice({
-  name: 'organisation',
+const deviceSlice = createSlice({
+  name: 'Device',
   initialState,
   reducers: {
-    addOrganisation: (
-      state: organisationStore,
-      {payload}: PayloadAction<organisation>,
-    ) => {
+    addDevice: (state: deviceStore, {payload}: PayloadAction<deviceType>) => {
       state.details = payload;
     },
 
-    updateOrganisation: (
-      state: organisationStore,
-      {payload}: PayloadAction<organisation>,
+    removeDevice: (
+      state: deviceStore,
+      {payload}: PayloadAction<deviceType>,
     ) => {
       state.details = payload;
     },
-
-    clearOrganisation: () => {},
   },
 });
 
-export const {addOrganisation, updateOrganisation, clearOrganisation} =
-  organisationSlice.actions;
+export const {addDevice, removeDevice} = deviceSlice.actions;
 
-export default organisationSlice.reducer;
+export default deviceSlice.reducer;

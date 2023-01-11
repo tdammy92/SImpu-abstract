@@ -1,4 +1,4 @@
-import {organisationStore} from './profile';
+import {organisationStore, deviceStore} from './profile';
 export interface Profile {
   id: string;
   first_name: string;
@@ -81,7 +81,8 @@ export interface InboxStoreState {
 }
 
 export interface StoreState {
-  loader?: LoadingState;
+  device: deviceStore;
+  loader: LoadingState;
   user: UserStore;
   inbox: InboxStoreState;
   organisation: organisationStore;

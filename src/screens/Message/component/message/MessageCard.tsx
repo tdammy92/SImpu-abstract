@@ -111,7 +111,7 @@ const MessageCard = (props: any) => {
               <Text style={styles.timeText}>{threadDetails?.date}</Text>
             </View>
 
-            <Text style={styles.lastmessageText}>
+            <View style={styles.lastmessageTextWrapper}>
               {threadDetails?.has_attachments && (
                 <AttachmentIcon type={threadDetails?.attachmentType} />
               )}
@@ -119,8 +119,14 @@ const MessageCard = (props: any) => {
               {threadDetails?.has_attachments && !threadDetails?.message && (
                 <FileType type={threadDetails?.attachmentType} />
               )}
-              <Text> {threadDetails?.message}</Text>
-            </Text>
+              <Text
+                style={[
+                  styles.lastmessageText,
+                  {paddingLeft: threadDetails?.has_attachments ? wp(5) : 0},
+                ]}>
+                {threadDetails?.message}
+              </Text>
+            </View>
           </View>
         </View>
       </TouchableOpacity>
@@ -194,14 +200,29 @@ const styles = StyleSheet.create({
     fontSize: hp(16),
     fontFamily: FONTS.TEXT_SEMI_BOLD,
   },
-  lastmessageText: {
+  lastmessageTextWrapper: {
+    flexDirection: 'row',
     color: colors.dark,
     fontSize: hp(14),
     paddingTop: hp(1),
     paddingBottom: hp(5),
     width: '85%',
-    textAlign: 'left',
-    fontFamily: FONTS.TEXT_REGULAR,
+
+    alignItems: 'center',
     // overflow: 'hidden',
+
+    // borderWidth: 2,
+    // borderColor: 'red',
+  },
+  lastmessageText: {
+    color: colors.dark,
+    fontSize: hp(14),
+    paddingTop: hp(1),
+    paddingBottom: hp(5),
+    // textAlign: 'left',
+    fontFamily: FONTS.TEXT_REGULAR,
+    // alignItems: 'flex-start',
+
+    // width: '80%',
   },
 });

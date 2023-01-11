@@ -7,7 +7,7 @@ import App from 'src';
 import {name as appName} from './app.json';
 import messaging from '@react-native-firebase/messaging';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
-import TrackPlayer from 'react-native-track-player';
+// import TrackPlayer from 'react-native-track-player';
 // import PushNotification from 'react-native-push-notification';
 
 // Must be outside of any component LifeCycle (such as `componentDidMount`).
@@ -68,6 +68,6 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log('Message handled in the background!', remoteMessage);
 });
 
-TrackPlayer.registerPlaybackService(() => require('./service'));
+// TrackPlayer.registerPlaybackService(() => require('./service'));
 
 AppRegistry.registerComponent(appName, () => App);

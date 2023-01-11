@@ -1,13 +1,16 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {hp, wp} from 'src/utils';
+import {imageType, audioType, videoType, docType} from 'src/constants';
 
 const FileType = (type: any) => {
-  if (type?.type === 'mp3') return <Text style={styles.fileText}> Audio</Text>;
-  if (type?.type === 'mp4') return <Text style={styles.fileText}> Video</Text>;
-  if (type?.type === 'jpg') return <Text style={styles.fileText}> Photo</Text>;
-  if (type?.type === 'png') return <Text style={styles.fileText}> Photo</Text>;
-  if (type?.type === 'jpeg') return <Text style={styles.fileText}> Photo</Text>;
+  if (audioType.includes(type?.type))
+    return <Text style={styles.fileText}> Audio</Text>;
+  if (videoType.includes(type?.type))
+    return <Text style={styles.fileText}> Video</Text>;
+  if (imageType.includes(type?.type))
+    return <Text style={styles.fileText}> Photo</Text>;
+
   if (type?.type === 'pdf') return <Text style={styles.fileText}> Pdf</Text>;
 
   return <Text style={styles.fileText}> File</Text>;

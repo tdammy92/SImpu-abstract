@@ -16,22 +16,25 @@ import {
 
 import {StoreState} from 'src/@types/store';
 
-import userSlice from './user/userReducer';
-import inboxSlice from './inbox/reducer';
+import userSlice from 'src/store/user/userReducer';
+import inboxSlice from 'src/store/inbox/reducer';
 import loadingSlice from './Loader';
-import organisationSlice from './organisation/organisationReducer';
+import organisationSlice from 'src/store/organisation/organisationReducer';
+import deviceSlice from 'src/store/device/deviceReducer';
 
 export const reducers = combineReducers<StoreState>({
-  //   loader: loadingSlice,
   user: userSlice,
+  device: deviceSlice,
   inbox: inboxSlice,
   organisation: organisationSlice,
+  loader: loadingSlice,
 });
 
 const persistConfig = {
   key: 'root',
   storage,
   version: 1,
+  blacklist: ['loader'],
 };
 
 const middlewares: Middleware[] = [

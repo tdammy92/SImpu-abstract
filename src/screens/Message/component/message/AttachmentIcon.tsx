@@ -5,10 +5,10 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {colors} from 'src/constants';
 import {hp, wp} from 'src/utils';
-import MusicIcon from 'src/assets/images/thumbnail/MusicIcon.svg';
+import {imageType, audioType, videoType, docType} from 'src/constants';
 
 const AttachmentIcon = (type: any) => {
-  if (type?.type === 'mp3') {
+  if (audioType.includes(type?.type)) {
     return (
       //  <MusicIcon />
       <MaterialIcons
@@ -19,21 +19,21 @@ const AttachmentIcon = (type: any) => {
       />
     );
   }
-  if (type?.type === 'mp4') {
+  if (videoType.includes(type?.type)) {
     return (
       <FontAwesome
         name={'video-camera'}
-        size={14}
+        size={17}
         color={colors.darkGray}
         style={styles.icons}
       />
     );
   }
-  if (type?.type === 'jpg')
+  if (imageType.includes(type?.type))
     return (
       <FontAwesome
         name={'camera'}
-        size={16}
+        size={17}
         color={colors.darkGray}
         style={styles.icons}
       />
@@ -42,7 +42,7 @@ const AttachmentIcon = (type: any) => {
     return (
       <FontAwesome
         name={'file-pdf-o'}
-        size={16}
+        size={17}
         color={colors.darkGray}
         style={styles.icons}
       />
@@ -51,7 +51,7 @@ const AttachmentIcon = (type: any) => {
   return (
     <FontAwesome
       name={'file-text-o'}
-      size={16}
+      size={17}
       color={colors.darkGray}
       style={styles.icons}
     />
@@ -62,7 +62,7 @@ export default AttachmentIcon;
 
 const styles = StyleSheet.create({
   icons: {
-    marginLeft: hp(10),
-    paddingLeft: hp(10),
+    // marginLeft: hp(10),
+    // paddingLeft: hp(10),
   },
 });

@@ -129,7 +129,7 @@ const CustomDrawer = (props: any): JSX.Element => {
               style={{height: hp(40), width: hp(40)}}
               borderRadius={hp(40 * 0.5)}
               name={`${profile?.first_name} ${profile?.last_name}`}
-              src={profile.image}
+              src={profile?.image}
             />
             <View style={{position: 'absolute', bottom: 2, right: 1}}>
               {isAvailable ? <Availble /> : <NotAvailble />}

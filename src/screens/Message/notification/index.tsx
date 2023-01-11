@@ -4,6 +4,7 @@ import {
   Dimensions,
   FlatList,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 import React, {useState, useCallback} from 'react';
 import {Button, Card, Modal, Divider, Text} from '@ui-kitten/components';
@@ -70,6 +71,7 @@ const Notification = (props: any) => {
   };
 
   const List = ({item}: any) => {
+    console.log('Notifications', JSON.stringify(item, null, 2));
     return (
       <>
         <TouchableOpacity
@@ -86,7 +88,20 @@ const Notification = (props: any) => {
           <View style={[styles.listItemContent, {}]}>
             <View style={{flexDirection: 'row', paddingBottom: 10}}>
               <View style={{marginRight: 10}}>
-                <UserAvatar size={40} src={Avatar} />
+                {/* <UserAvatar
+                  src={Avatar}
+                  size={hp(40)}
+                  style={{height: hp(40), width: hp(40)}}
+                  borderRadius={hp(40 * 0.5)}
+                /> */}
+                <Image
+                  source={{uri: Avatar}}
+                  style={{
+                    height: hp(40),
+                    width: hp(40),
+                    borderRadius: hp(40 * 0.5),
+                  }}
+                />
               </View>
               <Text
                 style={{

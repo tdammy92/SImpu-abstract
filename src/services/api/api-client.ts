@@ -28,10 +28,6 @@ export async function client(
     Simpu_Socket_ID: string;
   };
 
-  // console.log('API Client data', data);
-  // console.log('API Client method', method);
-  // console.log('API Customs auth', customConfig?.params?.Auth);
-
   headers.Authorization = customConfig?.params?.Auth ?? '';
   headers.organisationID = customConfig?.params?.organisationId ?? '';
 

@@ -4,9 +4,9 @@ import ChatBubble from './bubble';
 import {useSelector} from 'react-redux';
 import {StoreState} from 'src/@types/store';
 import {ScrollView} from 'react-native-gesture-handler';
+import {hp} from 'src/utils';
 
 const ChatMessage = ({data}: any) => {
-  //   console.log(profile.id);
   return (
     //     <ScrollView showsVerticalScrollIndicator={false}>
     //       {data?.map((item: any, idx: any) => {
@@ -16,7 +16,7 @@ const ChatMessage = ({data}: any) => {
     <FlatList
       showsVerticalScrollIndicator={false}
       contentInset={{bottom: 20}}
-      contentContainerStyle={{marginBottom: 20, paddingBottom: 20}}
+      contentContainerStyle={{marginBottom: hp(20), paddingBottom: hp(20)}}
       inverted
       keyExtractor={(_, id) => `${id}`}
       data={data}

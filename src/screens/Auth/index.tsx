@@ -13,10 +13,16 @@ import styles from './styles';
 import Simpu from 'src/assets/images/SimpuIcon.svg';
 import Google from 'src/assets/images/Google.svg';
 import {Button} from 'src/components/common/Button';
-import {hp, wp} from 'src/utils';
+import {hp, messsageToast, wp} from 'src/utils';
 import {SCREEN_NAME} from 'src/navigation/constants';
 import AuthInput from './component/AuthInput';
-import {addProfile, addToken, addUser} from 'src/store/user/userReducer';
+import {
+  addProfile,
+  logInUser,
+  addToken,
+  addUser,
+} from 'src/store/user/userReducer';
+import {showLoader, hideLoader} from 'src/store/Loader/index';
 import {addOrganisation} from 'src/store/organisation/organisationReducer';
 import {colors, FONTS} from 'src/constants';
 import {loginUser} from 'src/services/query/auth';
@@ -28,9 +34,15 @@ import {StoreState} from 'src/@types/store';
 import {requestNotificationType} from 'src/@types/inbox';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {resquestFcmPermission} from 'src/services/Firebase/firebase';
-import {registerNotification} from 'src/services/notification/notification';
 import useDeviceDetails from 'src/Hooks/useDeviceDetails';
 import {registerDeviceNotification} from 'src/services/query/notification';
+import {addDevice} from 'src/store/device/deviceReducer';
+
+// inital values
+const loginInfo = {
+  email: '',
+  password: '',
+};
 
 //form schema validation
 const ValidationShema = yup.object({
@@ -42,88 +54,107 @@ const Login = ({navigation}: any) => {
   const dispatch = useDispatch();
 
   const DeviceDetails = useDeviceDetails();
-
   const {token} = useSelector((state: StoreState) => state.user);
+  const {Isloading} = useSelector((state: StoreState) => state.loader);
 
   //login user mutation
-  const {isError, data, error, isLoading, isSuccess, mutateAsync} =
-    useMutation(loginUser);
+  const loginMutation = useMutation(loginUser, {
+    onSuccess(data, variables, context) {},
+    onError(error, variables, context) {
+      dispatch(hideLoader());
+    },
+  });
+
+  // console.log('login mutation data response', loginMutation.data);
 
   //fetch user profile query
-  const profile = useProfile(
+  const profileQuery = useProfile(
     'profile',
     {
-      organisationId: data?.data?.organisations[0].id,
-      Auth: data?.data?.token,
+      organisationId: loginMutation?.data?.data?.organisations[0].id,
+      Auth: loginMutation?.data?.data?.token,
     },
     {
-      enabled: !!data?.data?.token,
+      enabled: !!loginMutation?.data?.data?.token,
       retryOnMount: false,
       refetchOnMount: false,
       keepPreviousData: false,
+
       onSuccess: async (data: any) => {
-        try {
-          const Auth = token;
-          const res = await registerDeviceNotification({DeviceDetails, Auth});
-          console.log("response from yomi's API", res);
+        await deviceMutation.mutateAsync({DeviceDetails, Auth: token});
 
-          dispatch(addProfile(data?.data?.profile));
+        /*
+         update user profile
+        */
+        dispatch(addProfile(data?.data?.profile));
 
-          //update user
-          dispatch(addUser(data?.data?.user));
+        /*
+         update user details
+        */
+        dispatch(addUser(data?.data?.user));
 
-          //update organisation
-          dispatch(
-            addOrganisation({
-              id: data?.data?.profile?.organisation_id,
-              name: 'default',
-            }),
-          );
+        /*
+         update organisation
+        */
+        dispatch(
+          addOrganisation({
+            id: data?.data?.profile?.organisation_id,
+            name: 'default',
+          }),
+        );
 
-          navigation.reset({index: 0, routes: [{name: SCREEN_NAME.main}]});
-        } catch (error) {
-          console.log("error from yomi's API", error);
-        }
-        // console.log('device detials', DeviceDetails);
-        // console.log('zzzzzzz', JSON.stringify(data?.data?.profile, null, 2));
+        /*
+        dispatch user login to true
+        */
+        dispatch(logInUser());
+
+        navigation.reset({index: 0, routes: [{name: SCREEN_NAME.main}]});
+
         //@ts-ignore
         // await connect(token, data?.data?.profile, data?.data?.profile?.id);
         //update profile
       },
+      onError: (error: Error) => {
+        dispatch(hideLoader());
+      },
     },
   );
-
-  // inital values
-  const loginInfo = {
-    email: '',
-    password: '',
-  };
+  const deviceMutation = useMutation(registerDeviceNotification, {
+    onSuccess(data, variables, context) {
+      dispatch(addDevice(data?.data));
+      dispatch(hideLoader());
+    },
+    onError(error, variables, context) {
+      //@ts-ignore
+      messsageToast({message: `${error?.message}`, type: 'danger'});
+      dispatch(hideLoader());
+    },
+  });
 
   //handle login function
   const handleLogin = async (values: any) => {
+    dispatch(showLoader());
     const payload = {
       username: values.email,
       password: values.password,
     };
-    const response = await mutateAsync(JSON.stringify(payload));
+    const response = await loginMutation.mutateAsync(JSON.stringify(payload));
 
     // console.log('Auth response', response);
     dispatch(addToken(response.data.token));
   };
 
-  if (isLoading) {
-    return <Loader />;
+  if (loginMutation.isLoading) {
+    // return <Loader />;
   }
 
-  if (isError) {
-    console.log(error);
+  if (loginMutation.isError) {
+    console.log(loginMutation.error);
   }
 
-  if (profile.isLoading) {
-    return <Loader />;
+  if (profileQuery.isLoading) {
+    // return <Loader />;
   }
-
-  // console.log('device details', DeviceDetails);
 
   return (
     <View style={styles.container}>
@@ -213,12 +244,12 @@ const Login = ({navigation}: any) => {
         </View>
       </KeyboardAwareScrollView>
 
-      {isError && (
+      {loginMutation?.isError && (
         <AppModal
           btnTitle="Close"
           //@ts-ignore
-          message={error ?? 'Unable to login'}
-          showModal={isError}
+          message={loginMutation?.error ?? 'Unable to login'}
+          showModal={loginMutation.isError}
           Icon={() => (
             <MaterialIcons
               name="error-outline"

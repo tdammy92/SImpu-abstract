@@ -23,7 +23,7 @@ import {persistor, store} from 'src/store';
 import {PersistGate} from 'redux-persist/integration/react';
 import {MainStackParamList} from './navigation/constants';
 import {RootStack} from './navigation';
-import Loader from './components/common/Loader';
+
 import {requestPermissions} from './services/notification/permission';
 import {resquestFcmPermission} from './services/Firebase/firebase';
 
@@ -69,7 +69,6 @@ export default (): JSX.Element => {
                 />
 
                 <NavigationContainer ref={navigationRef} onReady={onReady}>
-                  {/* <Loader /> */}
                   <RootStack />
                 </NavigationContainer>
               </>

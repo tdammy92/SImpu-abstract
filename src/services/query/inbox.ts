@@ -1,3 +1,4 @@
+import {buildAppsURL} from './../api/api-client';
 import {AxiosRequestConfig, AxiosResponse} from 'axios';
 import {InboxType} from 'src/@types/inbox';
 import {buildConversationUrl, client} from '../api/api-client';
@@ -163,6 +164,52 @@ export const getMessageList = async (
   return client(url, {
     params: {...params, queryS},
   });
+};
+
+//fetch members in a conversation
+export const getMemberList = async (
+  params: AxiosRequestConfig['params'],
+): Promise<any> => {
+  const {threadID, page, organisationId} = params;
+
+  // console.log('from inbox tsxxx', organisationId);
+  const url = buildAppsURL(`organisations/${organisationId}/members `);
+  return client(url, {
+    params: {...params},
+  });
+};
+
+//send message socials
+export const sendMessageSocials = async (payload: any) => {
+  const {
+    message,
+    params: {threadId, Auth, organisationId},
+  } = payload;
+  const url = buildConversationUrl(`conversations/message/${threadId}`);
+  const response = await client(url, {
+    method: 'POST',
+    data: JSON.stringify(message),
+    params: {Auth, organisationId},
+  });
+  return response.data;
+};
+
+//send files
+export const sendFiles = async (params: any) => {
+  // console.log('files to upload', JSON.stringify(params, null, 2));
+  const {file, Auth, organisationId, credentitalId} = params;
+
+  const url = buildConversationUrl(`upload/${credentitalId}`);
+
+  console.log('upload url', url);
+  const response = await client(url, {
+    method: 'POST',
+    data: file,
+    params: {Auth, organisationId},
+  });
+
+  console.log('response from file upload', response);
+  return response.data;
 };
 
 //fetch quick reply

@@ -30,16 +30,31 @@ import {hp, wp} from 'src/utils';
 import {colors} from 'src/constants';
 import LogoutSheet from './component/LogoutSheet';
 import {pusher, queryClient} from 'src/index';
+import {useMutation} from 'react-query';
+import {removeDeviceNotification} from 'src/services/query/notification';
 interface Props
   extends NativeStackScreenProps<MainStackParamList, SCREEN_NAME.settings> {}
 
 const Setting = (props: Props): JSX.Element => {
   const {navigation} = props;
   const dispatch = useDispatch();
-  const {profile} = useSelector((state: StoreState) => state.user);
+  const {profile, token} = useSelector((state: StoreState) => state.user);
+  const {details} = useSelector((state: StoreState) => state.device);
 
   const [checked, setChecked] = useState(false);
   const [notifyCheck, setNotifyCheck] = useState(false);
+
+  const removeDeviceMutation = useMutation(removeDeviceNotification, {
+    onSuccess(data, variables, context) {
+      setTimeout(
+        () => navigation.reset({index: 0, routes: [{name: SCREEN_NAME.auth}]}),
+        300,
+      );
+    },
+    onError(error, variables, context) {
+      console.log(error);
+    },
+  });
 
   const logoutSheet = useRef<any>(null);
 
@@ -86,11 +101,12 @@ const Setting = (props: Props): JSX.Element => {
     //disconnect pusher notifications
     await pusher.disconnect();
 
+    await removeDeviceMutation.mutateAsync({
+      device_id: details.id,
+      Auth: token,
+    });
+
     //timeout before routing back to the login screen
-    setTimeout(
-      () => navigation.reset({index: 0, routes: [{name: SCREEN_NAME.auth}]}),
-      300,
-    );
   };
 
   return (
