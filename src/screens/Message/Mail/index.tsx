@@ -21,11 +21,12 @@ import {colors, FONTS} from 'src/constants';
 import {hp, wp} from 'src/utils';
 import {useSelector} from 'react-redux';
 import {StoreState} from 'src/@types/store';
-import {useMessageListQuery} from 'src/services/query/queries';
+import {useMessageListQuery, useThreadInfo} from 'src/services/query/queries';
 import EmailCard from './components/Email';
+import MailHeader from './components/mailHeader';
 
 const Mail = ({route}: any) => {
-  const {threadDetails} = route.params;
+  const {threadId} = route.params;
   const navigation = useNavigation();
 
   //   items from redux store
@@ -37,11 +38,28 @@ const Mail = ({route}: any) => {
   );
 
   //local state
-  const [User, setUser] = useState<any>(threadDetails);
+  const [threadDetail, setThreadDetail] = useState<any>();
   const [messages, setMessages] = useState<any>();
   const [InputHeight, setInputHeight] = useState(hp(100));
   const [Focused, setFocused] = useState(false);
   const [EnableSend, setEnableSend] = useState(false);
+
+  //fetch message info
+  const {data: messageInfo, isLoading: infoLoading} = useThreadInfo(
+    {
+      threadID: threadId,
+      Auth: token,
+      organisationId: organisation?.id,
+    },
+    {
+      onSuccess(data: any, variables: any, context: any) {
+        setThreadDetail(data?.data);
+      },
+      onError(error: any, variables: any, context: any) {
+        console.log('message info error', error);
+      },
+    },
+  );
 
   const {
     data: messageData,
@@ -51,20 +69,26 @@ const Mail = ({route}: any) => {
     isLoading,
   } = useMessageListQuery(
     {
-      threadID: User?.uuid,
+      threadID: threadId,
       type: 'all',
       // type: 'message',
       page: 1,
       Auth: token,
       organisationId: organisation?.id,
     },
-    {},
+    {
+      onSuccess(data: any, variables: any, context: any) {
+        //This snippet flattens the array
+        const messageList = messageData?.pages
+          ?.map((res: any) => res?.data?.messages?.map((r: any) => r))
+          .flat(2);
+        setMessages(messageList);
+      },
+      onError(error: any, variables: any, context: any) {
+        console.log('post message error', error);
+      },
+    },
   );
-
-  //This snippet flattens the array
-  const messageList = messageData?.pages
-    ?.map((res: any) => res?.data?.messages?.map((r: any) => r))
-    .flat(2);
 
   // console.log('From param', User);
 
@@ -85,66 +109,13 @@ const Mail = ({route}: any) => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <View style={styles.container}>
           {/* chat header */}
-          <View style={styles.header}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}>
-              <View style={styles.headerLeft}>
-                <View style={styles.userDetails}>
-                  <TouchableOpacity
-                    onPress={() => navigation.goBack()}
-                    style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Ionicons
-                      name="arrow-back-sharp"
-                      size={22}
-                      color={colors.secondaryBg}
-                    />
-                    <View style={{marginLeft: 5}}>
-                      {/* @ts-ignore */}
-
-                      <UserAvatar
-                        size={hp(30)}
-                        style={{height: hp(30), width: hp(30)}}
-                        borderRadius={hp(30 * 0.5)}
-                        name={User?.name2 ?? User?.name1}
-                        src={User?.image}
-                      />
-                    </View>
-                  </TouchableOpacity>
-                  <Text style={styles.usernameText}>{User?.name1}</Text>
-                </View>
-              </View>
-              <TouchableOpacity
-                style={{padding: 10}}
-                // onPress={openSheet}
-              >
-                <View style={styles.headerRight}>
-                  <SimpleLineIcons
-                    name="options-vertical"
-                    size={22}
-                    color={'#A5ACB8'}
-                  />
-                </View>
-              </TouchableOpacity>
-            </View>
-            <View style={{marginVertical: hp(5)}}>
-              <Text
-                style={{
-                  marginLeft: wp(15),
-                  width: '80%',
-                  fontFamily: FONTS.TEXT_SEMI_BOLD,
-                }}>
-                {User?.message}
-              </Text>
-            </View>
-          </View>
+          {!infoLoading && threadDetail?.thread && (
+            <MailHeader threadDetail={threadDetail} />
+          )}
           <Divider />
 
           <FlatList
-            data={messageList ?? []}
+            data={messages}
             keyExtractor={(item, i) => i.toString()}
             renderItem={renderItem}
             // style={{backgroundColor: 'yellow'}}

@@ -67,19 +67,20 @@ const MessageCard = (props: any) => {
     attachmentName:
       item?.last_message?.entity?.attachments &&
       item?.last_message?.entity?.attachments[0]?.data,
-    // attachmentTypes:
-    //   item?.last_message?.entity?.attachments &&
-    //   item?.last_message?.entity?.attachments[0]?.data?.resource_type,
   };
 
   const handleNavigate = () => {
+    // console.log(JSON.stringify(threadDetails, null, 2));
     if (threadDetails.channelType === 'email') {
       //@ts-ignore
-      navigation.navigate(SCREEN_NAME.mail as never, {threadDetails});
+      navigation.navigate(SCREEN_NAME.mail as never, {
+        threadId: threadDetails?.uuid,
+      });
     } else {
       //@ts-ignore
-
-      navigation.navigate(SCREEN_NAME.chat as never, {threadDetails});
+      navigation.navigate(SCREEN_NAME.chat as never, {
+        threadId: threadDetails?.uuid,
+      });
     }
   };
 

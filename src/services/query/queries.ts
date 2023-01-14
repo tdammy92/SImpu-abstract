@@ -10,6 +10,7 @@ import {
   getSharedThreads,
   getQuickReplies,
   getMessageList,
+  getThreadInfo,
   getMemberList,
 } from './inbox';
 import {getProfile} from './profile';
@@ -159,9 +160,9 @@ export const useMessageListQuery = (queryParams: any, options: any) => {
     ['conversations', threadID, type, organisationId, page],
     ({pageParam = 1}) => getMessageList(queryParams, pageParam),
     {
-      getNextPageParam: lastPage => {
-        return lastPage?.meta?.page < lastPage?.meta?.page_total
-          ? lastPage?.meta?.page + 1
+      getNextPageParam: (lastPage: any) => {
+        return lastPage?.data?.meta?.page < lastPage?.data?.meta?.page_count
+          ? lastPage?.data?.meta?.page + 1
           : undefined;
       },
       refetchOnWindowFocus: true,
@@ -170,8 +171,17 @@ export const useMessageListQuery = (queryParams: any, options: any) => {
   );
 };
 
+//get thread info
+export const useThreadInfo = (queryParams: any, options?: any) => {
+  // console.log('paramaaa', queryParams);
+  return useQuery(
+    ['threadInfo', queryParams?.threadID, queryParams?.organisationId],
+    () => getThreadInfo(queryParams),
+    options,
+  );
+};
+
 //get members in a conversation query
-//fectch sideBar unread count
 export const useMenberList = (queryParams: any, options?: any) => {
   return useQuery(
     ['Members', queryParams?.threadId, queryParams?.organisationId],

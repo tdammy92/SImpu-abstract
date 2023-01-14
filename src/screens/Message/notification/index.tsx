@@ -12,7 +12,6 @@ import {useDispatch, useSelector} from 'react-redux';
 
 //@ts-ignore
 import UserAvatar from 'react-native-user-avatar';
-
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {colors, FONTS} from 'src/constants';
@@ -26,6 +25,7 @@ import {notificationDateFormat} from 'src/utils/date-utils/date';
 import {StoreState} from 'src/@types/store';
 import {useNotificationTrayQuery} from 'src/services/query/queries';
 import {Avatar} from 'src/constants/general';
+import ChannelIcon from 'src/components/common/ChannelIcon';
 
 const {width, height} = Dimensions.get('screen');
 
@@ -36,7 +36,7 @@ const Notification = (props: any) => {
   const organisaion = useSelector(
     (state: StoreState) => state.organisation.details,
   );
-  const [Data, setData] = useState(() => dummyData);
+  const [notifications, setNotifications] = useState<[]>([]);
 
   const {
     data: notification,
@@ -51,57 +51,70 @@ const Notification = (props: any) => {
       Auth: token,
       organisationId: organisaion.id,
     },
-    {},
+    {
+      onSuccess(data: any, variables: any, context: any) {
+        //This snippet flattens the array
+
+        const notifications = data?.pages
+          ?.map((res: any) => res.data?.map((r: any) => r))
+          .flat(2);
+
+        setNotifications(notifications);
+      },
+      onError(error: any, variables: any, context: any) {
+        console.log('post message error', error);
+        // messsageToast({message: 'Profile updated', type: 'success'});
+        //@ts-ignore
+        // messsageToast({message: `${error?.message}`, type: 'danger'});
+      },
+    },
   );
 
   //formate the notification return
   //This snippet flattens the array
-  const notifications = notification?.pages
-    ?.map((res: any) => res.data?.map((r: any) => r))
-    .flat(2);
 
   //clear all notification
   const ClearNotification = useCallback(() => {
-    setData([]);
+    // setData([]);
   }, []);
 
-  const handleNavigate = (user: any) => {
-    //@ts-ignore
-    // navigation.navigate(SCREEN_NAME.chat as never, {user: user});
-  };
-
   const List = ({item}: any) => {
-    console.log('Notifications', JSON.stringify(item, null, 2));
+    const threadId = item?.event?.data?.thread_id;
+    // console.log(
+    //   'Notifications',
+    //   JSON.stringify(item?.event?.data?.thread_id, null, 2),
+    // );
+
+    const handleNavigate = () => {
+      if (item?.event?.data?.channel_name === 'email') {
+        //@ts-ignore
+        navigation.navigate(SCREEN_NAME.mail as never, {threadId});
+      } else {
+        //@ts-ignore
+
+        navigation.navigate(SCREEN_NAME.chat as never, {threadId});
+      }
+    };
+
     return (
       <>
         <TouchableOpacity
           style={[styles.listItemContainer]}
-          onPress={() => handleNavigate(item)}>
-          {/* <View
-            style={{
-              position: 'absolute',
-              top: hp(10),
-              left: hp(5),
-            }}>
-            <NotificationListIcon />
-          </View> */}
+          onPress={handleNavigate}>
           <View style={[styles.listItemContent, {}]}>
             <View style={{flexDirection: 'row', paddingBottom: 10}}>
               <View style={{marginRight: 10}}>
-                {/* <UserAvatar
-                  src={Avatar}
-                  size={hp(40)}
-                  style={{height: hp(40), width: hp(40)}}
-                  borderRadius={hp(40 * 0.5)}
-                /> */}
-                <Image
-                  source={{uri: Avatar}}
+                <View
                   style={{
-                    height: hp(40),
-                    width: hp(40),
+                    height: 40,
+                    width: 40,
                     borderRadius: hp(40 * 0.5),
-                  }}
-                />
+                    backgroundColor: '#e4e4e4',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <ChannelIcon name={item?.event?.data?.channel_name} />
+                </View>
               </View>
               <Text
                 style={{
@@ -131,8 +144,6 @@ const Notification = (props: any) => {
     );
   };
 
-  // console.log('from notification api', notifications);
-
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
@@ -140,7 +151,11 @@ const Notification = (props: any) => {
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={{flexDirection: 'row'}}>
-            <Ionicons name="arrow-back-sharp" size={25} color={'#026AE8'} />
+            <Ionicons
+              name="arrow-back-sharp"
+              size={25}
+              color={colors?.secondaryBg}
+            />
             <Text style={styles.notificationText}>Notifications</Text>
           </TouchableOpacity>
         </View>
@@ -163,7 +178,10 @@ const Notification = (props: any) => {
         renderItem={List}
         keyExtractor={(_, i) => i.toString()}
         ListEmptyComponent={EmptyNotify}
-        showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator={true}
+        onEndReachedThreshold={0.6}
+        //@ts-ignore
+        onEndReached={fetchNextPage}
         ItemSeparatorComponent={() => <Divider />}
         contentContainerStyle={{paddingHorizontal: hp(10)}}
       />

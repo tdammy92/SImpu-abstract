@@ -23,7 +23,11 @@ const ChatItem = ({message, isUser}: any) => {
       }>
       {/* message text */}
       {entity?.content?.body && (
-        <Hyperlink linkDefault={true} linkStyle={{color: colors.secondaryBg}}>
+        <Hyperlink
+          linkDefault={true}
+          linkStyle={{
+            color: isUser() ? colors.light : colors.secondaryBgDark,
+          }}>
           <Text
             style={[
               styles.messageText,
@@ -48,9 +52,9 @@ const ChatItem = ({message, isUser}: any) => {
             // const type = getFileType(file?.data?.url);
             const type = mime.extension(file?.mimetype);
 
-            console.log('filetype', type);
+            // console.log('filetype', type);
 
-            console.log('typeee23', JSON.stringify(file, null, 2));
+            // console.log('typeee23', JSON.stringify(file, null, 2));
 
             if (imageType.includes(type)) {
               //render image
@@ -99,5 +103,8 @@ const styles = StyleSheet.create({
   messageText: {
     fontFamily: FONTS.TEXT_REGULAR,
     fontSize: hp(14),
+    textAlign: 'auto',
+
+    // letterSpacing: 0,
   },
 });

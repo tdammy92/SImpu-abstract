@@ -87,3 +87,11 @@ export const formatSecToMin = (seconds: number) => {
 export const formatTimeString = (value: number) => {
   return new Date(value * 1000).toISOString().substr(11, 8);
 };
+
+export const splitLastOccurrence = (str: string, character: string) => {
+  const lastIndex = str.lastIndexOf(character);
+  const before = str.slice(0, lastIndex);
+  const after = str.slice(lastIndex + 1);
+  return after.slice(after.length * 0.5, after.length);
+  // return [before, after]
+};

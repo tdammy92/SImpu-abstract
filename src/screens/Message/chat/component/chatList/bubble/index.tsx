@@ -9,6 +9,7 @@ import ChatItem from './chatItem';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Animated, {FadeInLeft, FadeInRight} from 'react-native-reanimated';
+import Quoted from './quoted';
 
 const ChatBubble = ({item}: any): JSX.Element => {
   const {author_id, author, entity, created_datetime} = item;
@@ -57,10 +58,13 @@ const ChatBubble = ({item}: any): JSX.Element => {
             // width: '100%'
           }
         }>
+        {/* quoted message */}
+        {item?.quoted && <Quoted item={item?.quoted} isUser={myUser} />}
         {/* message componentx */}
         <ChatItem message={item} isUser={myUser} />
       </View>
 
+      {/* send message status */}
       {myUser() && (
         <View
           style={{
@@ -97,7 +101,7 @@ const styles = StyleSheet.create({
     paddingVertical: hp(8),
     marginHorizontal: wp(8),
     marginVertical: hp(12),
-    maxWidth: '65%',
+    maxWidth: '70%',
     minWidth: '25%',
     borderRadius: hp(10),
     // shadowColor: '#000',

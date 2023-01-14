@@ -166,6 +166,18 @@ export const getMessageList = async (
   });
 };
 
+//fetch threadInfo
+export const getThreadInfo = async (
+  params: AxiosRequestConfig['params'],
+): Promise<any> => {
+  const {threadID, organisationId} = params;
+
+  const url = buildConversationUrl(`threads/${threadID}?is_full=true`);
+  return client(url, {
+    params: {...params},
+  });
+};
+
 //fetch members in a conversation
 export const getMemberList = async (
   params: AxiosRequestConfig['params'],

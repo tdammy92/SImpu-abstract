@@ -3,7 +3,7 @@ import React from 'react';
 import prettyBytes from 'pretty-bytes';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {FONTS, colors, docType} from 'src/constants';
-import {hp, wp} from 'src/utils';
+import {hp, splitLastOccurrence, wp} from 'src/utils';
 
 const DocView = ({docData, type, isUser}: any) => {
   //   console.log(JSON.stringify(docData, null, 2));
@@ -21,7 +21,7 @@ const DocView = ({docData, type, isUser}: any) => {
 
       case 'ppt':
         return 'pptfile1';
-        break;
+
       case 'xls':
         return 'exclefile1';
 
@@ -35,7 +35,10 @@ const DocView = ({docData, type, isUser}: any) => {
     <View
       style={[
         styles.container,
-        {backgroundColor: isUser() ? '#025AE9' : '#e6e6e6'},
+        {
+          backgroundColor: isUser() ? colors.secondaryBgDark : colors.lightGray,
+          // borderLeftColor: isUser() ? colors.bootomHeaderBg : colors.dark,
+        },
       ]}>
       <View
         style={{
@@ -55,20 +58,35 @@ const DocView = ({docData, type, isUser}: any) => {
                 color: isUser() ? colors.light : colors.dark,
               },
             ]}>
-            {type}
+            {splitLastOccurrence(docData?.data?.url, '/')}
           </Text>
-          <Text
-            style={[
-              styles.sizeText,
-              {
-                color: isUser() ? colors.light : colors.dark,
-              },
-            ]}>
-            {prettyBytes(docData?.size)}
-          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <Text
+              style={[
+                styles.fileTypeText,
+                {
+                  color: isUser() ? colors.lightGray : colors.darkGray,
+                },
+              ]}>
+              {type}/
+            </Text>
+            <Text
+              style={[
+                styles.sizeText,
+                {
+                  color: isUser() ? colors.lightGray : colors.darkGray,
+                },
+              ]}>
+              {prettyBytes(docData?.size)}
+            </Text>
+          </View>
         </View>
       </View>
-      <View style={{width: hp(50)}} />
+      <View style={{width: hp(30)}} />
       <TouchableOpacity
         style={{
           borderWidth: 1,
@@ -95,6 +113,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: hp(4),
     borderRadius: hp(10),
+    // borderLeftWidth: 0.3,
 
     //     width: '100%',
 

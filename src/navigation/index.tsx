@@ -553,7 +553,7 @@ export const RootStack = (): JSX.Element => {
   const onEvent = (event: any) => {
     // console.log('event fired', JSON.stringify(event, null, 2));
 
-    const thread_id = JSON.parse(event?.data)?.thread_id;
+    // const thread_id = JSON.parse(event?.data)?.thread_id;
 
     queryClient.invalidateQueries('threads');
     queryClient.invalidateQueries('conversations');

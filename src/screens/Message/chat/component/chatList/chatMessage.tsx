@@ -6,21 +6,20 @@ import {StoreState} from 'src/@types/store';
 import {ScrollView} from 'react-native-gesture-handler';
 import {hp} from 'src/utils';
 
-const ChatMessage = ({data}: any) => {
+const ChatMessage = ({data, fetchNextPage, chatListRef, Onscroll}: any) => {
   return (
-    //     <ScrollView showsVerticalScrollIndicator={false}>
-    //       {data?.map((item: any, idx: any) => {
-    //         return <ChatBubble item={item} key={idx} />;
-    //       })}
-    //     </ScrollView>
     <FlatList
-      showsVerticalScrollIndicator={false}
+      ref={chatListRef}
+      showsVerticalScrollIndicator={true}
       contentInset={{bottom: 20}}
       contentContainerStyle={{marginBottom: hp(20), paddingBottom: hp(20)}}
       inverted
       keyExtractor={(_, id) => `${id}`}
       data={data}
+      onEndReached={fetchNextPage}
+      onEndReachedThreshold={0.5}
       renderItem={({item}) => <ChatBubble item={item} />}
+      onScroll={Onscroll}
     />
   );
 };

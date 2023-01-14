@@ -14,6 +14,7 @@ const {height} = Dimensions.get('screen');
 
 interface Styles {
   container: ViewStyle;
+  floatingDownBtn: ViewStyle;
 }
 const styles = StyleService.create<Styles>({
   container: {
@@ -21,7 +22,20 @@ const styles = StyleService.create<Styles>({
     width: '100%',
     height: '100%',
     position: 'relative',
-    backgroundColor: '#fff',
+    backgroundColor: colors.light,
+  },
+
+  floatingDownBtn: {
+    backgroundColor: '#e6e6e6',
+
+    height: 35,
+    width: 35,
+    borderRadius: hp(35 * 0.5),
+    position: 'absolute',
+    bottom: 100,
+    right: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 export default styles;

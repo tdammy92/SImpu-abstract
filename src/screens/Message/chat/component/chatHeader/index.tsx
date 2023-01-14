@@ -9,56 +9,77 @@ import {colors} from 'src/constants';
 import {hp} from 'src/utils';
 //@ts-ignore
 import UserAvatar from 'react-native-user-avatar';
+import ChannelIcon from 'src/components/common/ChannelIcon';
 
 type chatHeaderProps = {
-  imageUrl?: string;
-  name: string;
+  threadDetail: any;
   openSheet: any;
 };
 
-const ChatHeader = ({imageUrl, name, openSheet}: chatHeaderProps) => {
+const ChatHeader = ({threadDetail, openSheet}: chatHeaderProps) => {
   const navigation = useNavigation();
+
+  // const {platform_name, image_url, channel_name, name} =
+  //   threadDetail?.thread?.sender;
+  const sender = threadDetail?.thread?.sender;
+
+  // console.log(
+  //   'details in header',
+  //   JSON.stringify(threadDetail?.thread?.sender, null, 2),
+  // );
 
   return (
     <>
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <View style={styles.userDetails}>
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              // onPress={() => navigation.navigate(SCREEN_NAME.main)}
-              style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Ionicons
-                name="arrow-back-sharp"
-                size={22}
-                color={colors.secondaryBg}
-              />
-              <View style={{marginLeft: 5}}>
-                {/* @ts-ignore */}
-
-                <UserAvatar
-                  size={hp(40)}
-                  style={{height: hp(40), width: hp(40)}}
-                  borderRadius={hp(40 * 0.5)}
-                  name={name}
-                  src={imageUrl}
+      {threadDetail?.thread?.sender && (
+        <>
+          <View style={styles.header}>
+            <View style={styles.headerLeft}>
+              <View style={styles.userDetails}>
+                <TouchableOpacity
+                  onPress={() => navigation.goBack()}
+                  style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Ionicons
+                    name="arrow-back-sharp"
+                    size={22}
+                    color={colors.secondaryBg}
+                  />
+                  <View style={{marginLeft: 5}}>
+                    {/* @ts-ignore */}
+                    <UserAvatar
+                      size={hp(40)}
+                      style={{height: hp(40), width: hp(40)}}
+                      borderRadius={hp(40 * 0.5)}
+                      name={sender?.platform_name ?? sender?.name}
+                      src={sender?.image_url}
+                    />
+                    <View
+                      style={{
+                        position: 'absolute',
+                        bottom: hp(-4),
+                        right: hp(-5),
+                      }}>
+                      <ChannelIcon name={sender?.channel_name} />
+                    </View>
+                  </View>
+                </TouchableOpacity>
+                <Text style={styles.usernameText}>
+                  {sender?.platform_name ?? sender?.name}
+                </Text>
+              </View>
+            </View>
+            <TouchableOpacity style={{padding: 10}} onPress={openSheet}>
+              <View style={styles.headerRight}>
+                <SimpleLineIcons
+                  name="options-vertical"
+                  size={22}
+                  color={'#A5ACB8'}
                 />
               </View>
             </TouchableOpacity>
-            <Text style={styles.usernameText}>{name}</Text>
           </View>
-        </View>
-        <TouchableOpacity style={{padding: 10}} onPress={openSheet}>
-          <View style={styles.headerRight}>
-            <SimpleLineIcons
-              name="options-vertical"
-              size={22}
-              color={'#A5ACB8'}
-            />
-          </View>
-        </TouchableOpacity>
-      </View>
-      <Divider />
+          <Divider />
+        </>
+      )}
     </>
   );
 };
