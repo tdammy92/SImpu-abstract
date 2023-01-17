@@ -3,7 +3,7 @@ import React from 'react';
 import ChatBubble from './bubble';
 import {useSelector} from 'react-redux';
 import {StoreState} from 'src/@types/store';
-import {ScrollView} from 'react-native-gesture-handler';
+
 import {hp} from 'src/utils';
 
 const ChatMessage = ({data, fetchNextPage, chatListRef, Onscroll}: any) => {
@@ -11,8 +11,11 @@ const ChatMessage = ({data, fetchNextPage, chatListRef, Onscroll}: any) => {
     <FlatList
       ref={chatListRef}
       showsVerticalScrollIndicator={true}
-      contentInset={{bottom: 20}}
-      contentContainerStyle={{marginBottom: hp(20), paddingBottom: hp(20)}}
+      style={{paddingBottom: hp(100)}}
+      contentInset={{bottom: hp(100)}}
+      contentContainerStyle={{
+        paddingBottom: hp(100),
+      }}
       inverted
       keyExtractor={(_, id) => `${id}`}
       data={data}
@@ -20,6 +23,7 @@ const ChatMessage = ({data, fetchNextPage, chatListRef, Onscroll}: any) => {
       onEndReachedThreshold={0.5}
       renderItem={({item}) => <ChatBubble item={item} />}
       onScroll={Onscroll}
+      ListHeaderComponent={() => <View style={{height: hp(80)}} />}
     />
   );
 };

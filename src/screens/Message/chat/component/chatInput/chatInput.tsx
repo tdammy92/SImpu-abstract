@@ -37,14 +37,22 @@ import {KeyboardAwareScrollView} from 'src/components/common/KeyBoardAvoidingVie
 // import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import {colors} from 'src/constants';
 import {hp, messsageToast, wp} from 'src/utils';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {StoreState} from 'src/@types/store';
 import {useMenberList} from 'src/services/query/queries';
-import {sendFiles, sendMessageSocials} from 'src/services/query/inbox';
+import {
+  replyMessageSocials,
+  sendFiles,
+  sendMessageSocials,
+} from 'src/services/mutations/inbox';
 import {previousDay} from 'date-fns';
 import {appendFile} from 'react-native-fs';
 import {toFormData, uploadFile} from 'src/services/upload/fileUpload';
 import {buildConversationUrl} from 'src/services/api/api-client';
+import BottomSheet from 'src/components/common/ImagePicker';
+import ImagePicker from 'react-native-image-crop-picker';
+import {removeReply} from 'src/store/reply/replyReducer';
+import Reply from './reply';
 // import EmojiPicker from "./emojis/EmojiPicker";
 
 // import { useKeyboard } from "@react-native-community/hooks";
@@ -54,8 +62,6 @@ const {width, height} = Dimensions.get('screen');
 const suggestionBoxBottomMargin = height * 0.065;
 
 const ChatInput = ({
-  reply,
-  closeReply,
   isLeft,
   username,
   name,
@@ -68,6 +74,12 @@ const ChatInput = ({
   const organisation = useSelector(
     (state: StoreState) => state.organisation.details,
   );
+
+  const {reply, replyIsActive} = useSelector(
+    (state: StoreState) => state.reply,
+  );
+
+  const dispatch = useDispatch();
   const queryClient = useQueryClient();
   const [message, setMessage] = useState('');
 
@@ -101,11 +113,25 @@ const ChatInput = ({
       messsageToast({message: `${error?.message}`, type: 'danger'});
     },
   });
+  //reply message mutation
+  const replyMessageMutation = useMutation(replyMessageSocials, {
+    onSuccess(data, variables, context) {
+      //inavlid query conversations
+      setMessage('');
+      queryClient.invalidateQueries('conversations');
+      // dispatch(removeReply());
+    },
+    onError(error, variables, context) {
+      console.log('post message error', error);
+
+      queryClient.invalidateQueries('conversations');
+      //@ts-ignore
+      messsageToast({message: `${error?.message}`, type: 'danger'});
+    },
+  });
   // const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const height = useSharedValue(70);
-
-  // console.log('Thread memberss', data, {isLoading}, {status}, {error});
 
   const renderSuggestions: FC<MentionSuggestionsProps> = ({
     keyword,
@@ -166,14 +192,17 @@ const ChatInput = ({
     );
   };
 
+  //send message handler
   const sendMessage = async () => {
     const data = {
       message: {
+        type: 'message',
         body: message,
         attachment_ids: [],
       },
       params: {
         threadId,
+        messageId: replyIsActive ? reply?.uuid : '',
         Auth: token,
         organisationId: organisation?.id,
       },
@@ -252,10 +281,17 @@ const ChatInput = ({
     };
     setMessageTrail((prev: any) => [tempMessage, ...prev]);
 
-    await sendMessageMutation.mutateAsync(data);
+    if (replyIsActive) {
+      console.log('reply action');
+      await replyMessageMutation.mutateAsync(data);
+      dispatch(removeReply());
+    } else {
+      console.log('send action');
+      await sendMessageMutation.mutateAsync(data);
+    }
   };
 
-  //send file
+  //send file handler
   const sendFile = async () => {
     try {
       const res = await DocumentPicker.pick({
@@ -291,76 +327,6 @@ const ChatInput = ({
         {
           text: 'Send',
           onPress: async () => {
-            // const tempMessage = {
-            //   type: 'message/normal',
-            //   author: {
-            //     meta: {
-            //       account_id: profile?.id,
-            //       is_renewed: true,
-            //     },
-            //     image_url: '',
-            //     platform_id: '',
-            //     channel_name: '',
-            //     name: `${profile?.first_name} ${profile?.last_name}`,
-            //     id: 653085,
-            //     platform_name: `${profile?.first_name} ${profile?.last_name}`,
-            //     platform_nick: null,
-            //     uuid: '',
-            //     channel_id: '',
-            //     is_valid: false,
-            //   },
-            //   entity: {
-            //     content: null,
-            //     id: '',
-            //     pid: '',
-            //     uuid: '',
-            //     meta: {
-            //       type: 'normal',
-            //     },
-            //     status: 'pending',
-            //     quoted_id: null,
-            //     author_id: profile?.id,
-            //     attachments: [
-            //       {
-            //         id: '',
-            //         data: {
-            //           url: '',
-            //           type: 'upload',
-            //           width: 595,
-
-            //           format: 'pdf',
-            //           height: 841,
-            //           api_key: '',
-            //           version: 1673302788,
-            //           asset_id: '',
-            //           signature: '',
-            //           version_id: '',
-            //           placeholder: false,
-            //           resource_type: 'image',
-            //         },
-            //         from: 'cloudinary',
-            //         size: 538640,
-            //         type: 'file',
-            //         mimetype: 'application/pdf',
-            //         created_datetime: new Date(),
-            //       },
-            //     ],
-            //     mention_ids: null,
-            //     recipient_ids: null,
-            //   },
-
-            //   id: 8054444,
-            //   uuid: '44ec06df3d921e77d72d3e4c99988024',
-            //   account_id: null,
-            //   show_in_thread: null,
-            //   created_datetime: new Date(),
-            //   updated_datetime: null,
-            //   author_id: profile?.id,
-            //   author_type: '',
-            //   content_id: '-m_g-',
-            //   content_type: 'comm',
-            // };
-
             // setMessageTrail((prev: any) => [tempMessage, ...prev]);
             const formData = await uploadFile({url, file, data, header});
             const mutatePayload = {
@@ -383,6 +349,64 @@ const ChatInput = ({
     }
   };
 
+  const bottomSheetRef = useRef<any>(null);
+
+  const openSheet = () => {
+    if (bottomSheetRef.current) {
+      bottomSheetRef.current.open();
+    }
+  };
+  const closeSheet = () => {
+    if (bottomSheetRef.current) {
+      bottomSheetRef.current.close();
+    }
+  };
+
+  //open camera code
+  const Snap = async () => {
+    ImagePicker.openCamera({
+      width: 300,
+      height: 400,
+      cropping: true,
+      freeStyleCropEnabled: true,
+      includeBase64: false,
+      mediaType: 'photo',
+    })
+      .then(image => {
+        if (image) {
+          // updateImage(image);
+        }
+        closeSheet();
+      })
+      .catch(err => {
+        console.log(err);
+        closeSheet();
+      });
+  };
+
+  //open gallery code
+  const Gallery = async () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true,
+      freeStyleCropEnabled: true,
+      includeBase64: false,
+      mediaType: 'photo',
+    })
+      .then(image => {
+        if (image) {
+          // updateImage(image);
+
+          closeSheet();
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        closeSheet();
+      });
+  };
+
   // useEffect(() => {
   // 	if (showEmojiPicker) {
   // 		height.value = withTiming(400);
@@ -399,6 +423,80 @@ const ChatInput = ({
   //     }
   //   }, [reply]);
 
+  const getTempMessage = (message: any, isReply: any) => {
+    const temp = {
+      type: 'message/normal',
+      author: {
+        meta: {
+          account_id: profile?.id,
+          is_renewed: true,
+        },
+        image_url: '',
+        platform_id: '',
+        channel_name: '',
+        name: `${profile?.first_name} ${profile?.last_name}`,
+        id: 0,
+        platform_name: `${profile?.first_name} ${profile?.last_name}`,
+        platform_nick: null,
+        uuid: '',
+        channel_id: '',
+        is_valid: false,
+      },
+      entity: {
+        content: null,
+        id: '',
+        pid: '',
+        uuid: '',
+        meta: {
+          type: 'normal',
+        },
+        status: 'pending',
+        quoted_id: null,
+        author_id: profile?.id,
+        attachments: [
+          {
+            id: '',
+            data: {
+              url: '',
+              type: 'upload',
+              width: 0,
+
+              format: 'pdf',
+              height: 0,
+              api_key: '',
+              version: 0,
+              asset_id: '',
+              signature: '',
+              version_id: '',
+              placeholder: false,
+              resource_type: 'image',
+            },
+            from: 'cloudinary',
+            size: 538640,
+            type: 'file',
+            mimetype: 'application/pdf',
+            created_datetime: new Date(),
+          },
+        ],
+        mention_ids: null,
+        recipient_ids: null,
+      },
+
+      id: 0,
+      uuid: '44ec06df3d921e77d72d3e4c99988024',
+      account_id: null,
+      show_in_thread: null,
+      created_datetime: new Date(),
+      updated_datetime: null,
+      author_id: profile?.id,
+      author_type: '',
+      content_id: '-m_g-',
+      content_type: 'comm',
+    };
+
+    return temp;
+  };
+
   const heightAnimatedStyle = useAnimatedStyle(() => {
     return {
       height: height.value,
@@ -407,18 +505,8 @@ const ChatInput = ({
 
   return (
     // <KeyboardAwareScrollView>
-    <Animated.View style={[styles.container, heightAnimatedStyle]}>
-      {reply ? (
-        <View style={styles.replyContainer}>
-          <TouchableOpacity onPress={closeReply} style={styles.closeReply}>
-            <AntDesign name="close" color="#000" size={20} />
-          </TouchableOpacity>
-          <Text style={styles.title}>
-            Response to {isLeft ? username : 'Me'}
-          </Text>
-          <Text style={styles.reply}>{reply}</Text>
-        </View>
-      ) : null}
+    <Animated.View style={[styles.container]}>
+      {replyIsActive && <Reply />}
       <View style={styles.innerContainer}>
         <View style={styles.inputAndMicrophone}>
           {/* <TouchableOpacity
@@ -442,6 +530,7 @@ const ChatInput = ({
             multiline
             placeholder={'Type something...'}
             placeholderTextColor={colors.light}
+            // autoFocus={true}
             style={{
               backgroundColor: 'transparent',
               color: colors.light,
@@ -468,7 +557,9 @@ const ChatInput = ({
             onPress={sendFile}>
             <Entypo name="attachment" size={23} color={colors.light} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.rightIconButtonStyle}>
+          <TouchableOpacity
+            style={styles.rightIconButtonStyle}
+            onPress={openSheet}>
             <AntDesign name="camera" size={23} color={colors.light} />
           </TouchableOpacity>
         </View>
@@ -480,6 +571,12 @@ const ChatInput = ({
         </TouchableOpacity>
       </View>
       {/* <EmojiPicker /> */}
+      {/* <BottomSheet
+        Gallery={Gallery}
+        Snap={Snap}
+        ref={bottomSheetRef}
+        title="Media option"
+      /> */}
     </Animated.View>
     // </KeyboardAwareScrollView>
   );
@@ -488,8 +585,10 @@ const ChatInput = ({
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
-
     backgroundColor: 'transparent',
+    position: 'absolute',
+    width: width,
+    bottom: hp(-5),
   },
   replyContainer: {
     paddingHorizontal: 10,
@@ -518,7 +617,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     backgroundColor: 'transparent',
-    paddingVertical: hp(10),
+
+    // paddingVertical: hp(10),
+    paddingTop: hp(2),
+    paddingBottom: hp(5),
   },
   inputAndMicrophone: {
     flexDirection: 'row',
@@ -533,7 +635,7 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: 'transparent',
-    paddingLeft: 20,
+    paddingLeft: 15,
     color: colors.light,
     flex: 3,
     fontSize: 15,
@@ -589,9 +691,9 @@ const styles = StyleSheet.create({
   },
   sendButton: {
     backgroundColor: colors.secondaryBg,
-    borderRadius: hp(40),
-    height: hp(40),
-    width: hp(40),
+    borderRadius: hp(50 * 0.5),
+    height: hp(50),
+    width: hp(50),
     alignItems: 'center',
     justifyContent: 'center',
   },

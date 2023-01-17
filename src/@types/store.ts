@@ -1,3 +1,4 @@
+import {replyType} from './inbox';
 import {organisationStore, deviceStore} from './profile';
 export interface Profile {
   id: string;
@@ -79,6 +80,10 @@ export interface InboxStoreState {
   inbox: InboxId;
   channels?: Channel[];
 }
+export interface replyStoreState {
+  reply?: replyType | null;
+  replyIsActive: boolean;
+}
 
 export interface StoreState {
   device: deviceStore;
@@ -86,4 +91,5 @@ export interface StoreState {
   user: UserStore;
   inbox: InboxStoreState;
   organisation: organisationStore;
+  reply: replyStoreState;
 }

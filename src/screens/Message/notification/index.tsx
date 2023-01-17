@@ -55,6 +55,12 @@ const Notification = (props: any) => {
       onSuccess(data: any, variables: any, context: any) {
         //This snippet flattens the array
 
+        // console.log(
+        //   '+++++++++++++++++++++++++++++++++++++++++',
+        //   JSON.stringify(data, null, 2),
+        //   '--------------------------------------------',
+        // );
+
         const notifications = data?.pages
           ?.map((res: any) => res.data?.map((r: any) => r))
           .flat(2);

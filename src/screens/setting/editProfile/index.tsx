@@ -31,7 +31,10 @@ import BottomSheet from 'src/components/common/ImagePicker';
 import ImagePicker from 'react-native-image-crop-picker';
 import {StoreState} from 'src/@types/store';
 import {DEMO_API, SECERET_KEY} from '@env';
-import {updateProfiles, updateProfileImage} from 'src/services/query/profile';
+import {
+  updateProfiles,
+  updateProfileImage,
+} from 'src/services/mutations/profile';
 import HeaderNextBtn from 'src/components/common/HeaderNextBtn';
 import {hp, messsageToast} from 'src/utils';
 import Loader from 'src/components/common/Loader';
@@ -267,7 +270,12 @@ const EditProfile = (props: Props): JSX.Element => {
           />
         </View>
 
-        <BottomSheet Gallery={Gallery} Snap={Snap} ref={bottomSheetRef} />
+        <BottomSheet
+          Gallery={Gallery}
+          Snap={Snap}
+          ref={bottomSheetRef}
+          title="Upload option"
+        />
       </View>
     </>
   );

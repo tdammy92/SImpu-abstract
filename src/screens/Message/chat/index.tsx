@@ -29,11 +29,15 @@ import ChatMessage from './component/chatList/chatMessage';
 import ChatInput from './component/chatInput/chatInput';
 import {colors} from 'src/constants';
 import {FlatList} from 'react-native-gesture-handler';
+import {removeReply} from 'src/store/reply/replyReducer';
+import {useNavigation} from '@react-navigation/native';
 
 const scrollLimit = 70;
 
-const ChatBox = ({route, navigation}: any) => {
+const ChatBox = ({route}: any) => {
   // console.log('message Type', MessageType);
+
+  const navigation = useNavigation();
   const {threadId} = route.params;
   const {profile, user, token} = useSelector(
     (state: StoreState) => state?.user,
@@ -45,7 +49,10 @@ const ChatBox = ({route, navigation}: any) => {
   const [messageTrail, setMessageTrail] = useState<any>([]);
   const [members, setMembers] = useState<any>([]);
   const [showScrollTobottom, setshowScrollTobottom] = useState(false);
+  // const [reply, setReply] = useState<any>();
+  // const [isMyUser, setIsMyUser] = useState(false);
 
+  const dispatch = useDispatch();
   const chatOptionRef = useRef<any>(null);
   const chatListRef = useRef<FlatList>(null);
 
@@ -159,6 +166,14 @@ const ChatBox = ({route, navigation}: any) => {
     }
   };
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', () => {
+      dispatch(removeReply());
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
   return (
     <>
       <View style={styles.container}>
@@ -176,6 +191,7 @@ const ChatBox = ({route, navigation}: any) => {
             chatListRef={chatListRef}
             Onscroll={Onscroll}
             fetchNextPage={fetchNextPage}
+            // handleSwipeToReply={handleSwipeToReply}
           />
           {/* chat input */}
           <ChatInput
@@ -184,6 +200,8 @@ const ChatBox = ({route, navigation}: any) => {
             name={threadDetail?.name1 ?? threadDetail?.name2}
             setMessageTrail={setMessageTrail}
             members={members}
+            // reply={reply}
+            // closeReply={closeReply}
           />
         </View>
         {showScrollTobottom && (
@@ -195,7 +213,7 @@ const ChatBox = ({route, navigation}: any) => {
               <Feather
                 name="chevrons-down"
                 size={hp(20)}
-                color={colors.secondaryBg}
+                color={colors.darkGray}
               />
             </Animated.View>
           </TouchableOpacity>

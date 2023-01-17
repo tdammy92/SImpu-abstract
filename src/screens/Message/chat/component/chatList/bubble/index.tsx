@@ -8,8 +8,22 @@ import {format} from 'date-fns';
 import ChatItem from './chatItem';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Animated, {FadeInLeft, FadeInRight} from 'react-native-reanimated';
+import stc from 'string-to-color';
+import {
+  FlingGestureHandler,
+  Directions,
+  State,
+} from 'react-native-gesture-handler';
+import Animated, {
+  FadeInLeft,
+  FadeInRight,
+  withSpring,
+  useAnimatedStyle,
+  useAnimatedGestureHandler,
+  useSharedValue,
+} from 'react-native-reanimated';
 import Quoted from './quoted';
+import {addReply} from 'src/store/reply/replyReducer';
 
 const ChatBubble = ({item}: any): JSX.Element => {
   const {author_id, author, entity, created_datetime} = item;
@@ -18,78 +32,114 @@ const ChatBubble = ({item}: any): JSX.Element => {
     (state: StoreState) => state?.user,
   );
 
+  const dispatch = useDispatch();
+
+  //swipe animation value
+  const startPosition = 0;
+  const x = useSharedValue(startPosition);
+
   const myUser = () => {
     return author_id === profile?.id ? true : false;
   };
 
-  return (
-    <Animated.View
-      entering={myUser() ? FadeInRight.duration(300) : FadeInLeft.duration(300)}
-      style={[
-        styles.bubbleContianer,
-        {
-          backgroundColor: myUser()
-            ? colors.secondaryBg
-            : colors.bootomHeaderBg,
-          alignSelf: myUser() ? 'flex-end' : 'flex-start',
-          borderBottomLeftRadius: myUser() ? hp(10) : hp(0),
-          borderBottomRightRadius: myUser() ? hp(0) : hp(10),
-        },
-      ]}>
-      <View style={styles.messageHeader}>
-        <Text
-          style={[
-            styles.senderName,
-            {color: myUser() ? colors.bootomHeaderBg : colors.darkGray},
-          ]}>
-          {author?.name}
-        </Text>
-        <Text
-          style={[
-            styles.messageDate,
-            {color: myUser() ? colors.bootomHeaderBg : colors.darkGray},
-          ]}>
-          {format(new Date(created_datetime), 'p')}
-        </Text>
-      </View>
-      <View
-        style={
-          {
-            // width: '100%'
-          }
-        }>
-        {/* quoted message */}
-        {item?.quoted && <Quoted item={item?.quoted} isUser={myUser} />}
-        {/* message componentx */}
-        <ChatItem message={item} isUser={myUser} />
-      </View>
+  const isUser = myUser();
 
-      {/* send message status */}
-      {myUser() && (
-        <View
-          style={{
-            height: 20,
-            width: 20,
-            position: 'absolute',
-            right: wp(-7),
-            bottom: Platform.OS === 'android' ? hp(-21) : hp(-18),
-          }}>
-          {entity?.status === 'sent' || entity?.status === 'sending' ? (
-            <Ionicons
-              name="ios-checkmark-circle-outline"
-              color={colors.secondaryBg}
-              size={14}
-            />
-          ) : (
-            <AntDesign
-              name="clockcircleo"
-              color={colors.secondaryBg}
-              size={14}
-            />
-          )}
+  const swipeHandler = useAnimatedGestureHandler({
+    onStart: (event, context) => {},
+    onActive(event, context) {
+      x.value = isUser ? -100 : 100;
+    },
+    onEnd(event, context) {
+      x.value = withSpring(startPosition);
+    },
+  });
+
+  const swipeStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{translateX: x.value}],
+    };
+  });
+
+  return (
+    <FlingGestureHandler
+      direction={isUser ? Directions.LEFT : Directions.RIGHT}
+      //@ts-ignore
+      onGestureEvent={swipeHandler}
+      onHandlerStateChange={({nativeEvent}) => {
+        if (nativeEvent.state === State.ACTIVE) {
+          // console.log('selected reply', JSON.stringify(item, null, 2));
+          dispatch(addReply(item));
+        }
+      }}>
+      <Animated.View
+        entering={isUser ? FadeInRight.duration(300) : FadeInLeft.duration(300)}
+        style={[
+          styles.bubbleContianer,
+          swipeStyle,
+          {
+            backgroundColor: isUser
+              ? colors.secondaryBg
+              : colors.bootomHeaderBg,
+            alignSelf: isUser ? 'flex-end' : 'flex-start',
+            borderBottomLeftRadius: isUser ? hp(10) : hp(0),
+            borderBottomRightRadius: isUser ? hp(0) : hp(10),
+          },
+        ]}>
+        <View style={styles.messageHeader}>
+          <Text
+            style={[
+              styles.senderName,
+              {color: isUser ? colors.bootomHeaderBg : stc(author?.name)},
+            ]}>
+            {author?.name}
+          </Text>
+          <Text
+            style={[
+              styles.messageDate,
+              {color: isUser ? colors.bootomHeaderBg : colors.darkGray},
+            ]}>
+            {format(new Date(created_datetime), 'p')}
+          </Text>
         </View>
-      )}
-    </Animated.View>
+        <View
+          style={
+            {
+              // width: '100%'
+            }
+          }>
+          {/* quoted message */}
+          {item?.quoted && <Quoted item={item?.quoted} isUser={isUser} />}
+          {/* message componentx */}
+          <ChatItem message={item} isUser={isUser} />
+        </View>
+
+        {/* send message status */}
+        {isUser && (
+          <View
+            style={{
+              height: 20,
+              width: 20,
+              position: 'absolute',
+              right: wp(-7),
+              bottom: Platform.OS === 'android' ? hp(-21) : hp(-18),
+            }}>
+            {entity?.status === 'sent' || entity?.status === 'sending' ? (
+              <Ionicons
+                name="ios-checkmark-circle-outline"
+                color={colors.secondaryBg}
+                size={14}
+              />
+            ) : (
+              <AntDesign
+                name="clockcircleo"
+                color={colors.secondaryBg}
+                size={14}
+              />
+            )}
+          </View>
+        )}
+      </Animated.View>
+    </FlingGestureHandler>
   );
 };
 
@@ -104,15 +154,6 @@ const styles = StyleSheet.create({
     maxWidth: '70%',
     minWidth: '25%',
     borderRadius: hp(10),
-    // shadowColor: '#000',
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 1,
-    // },
-    // shadowOpacity: 0.15,
-    // shadowRadius: 1.15,
-
-    // elevation: 1.5,
   },
   messageHeader: {
     flexDirection: 'row',
@@ -123,7 +164,7 @@ const styles = StyleSheet.create({
 
   senderName: {
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: hp(12),
+    fontSize: hp(14),
     marginRight: hp(10),
   },
   messageDate: {

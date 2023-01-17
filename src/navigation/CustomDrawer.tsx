@@ -150,7 +150,7 @@ const CustomDrawer = (props: any): JSX.Element => {
         </View>
         <TouchableOpacity
           onPress={() => props.navigation.navigate(SCREEN_NAME.config)}>
-          <AntDesign name="setting" size={20} color="#7D8282" />
+          <AntDesign name="setting" size={24} color="#7D8282" />
         </TouchableOpacity>
       </View>
 
@@ -203,7 +203,7 @@ const CustomDrawer = (props: any): JSX.Element => {
           <TouchableOpacity
             style={styles.selectOrgBtnContainer}
             onPress={openSheet}>
-            <Octicons name="organization" size={14} color={colors.dark} />
+            <Octicons name="organization" size={20} color={colors.dark} />
             <Text style={styles.selectOrgBtnText}>Organisation:</Text>
 
             <View style={styles.orgPill}>
@@ -211,7 +211,7 @@ const CustomDrawer = (props: any): JSX.Element => {
             </View>
 
             <View style={{position: 'absolute', right: 5}}>
-              <Octicons name="chevron-up" size={18} color={colors.dark} />
+              <Octicons name="chevron-up" size={20} color={colors.dark} />
             </View>
           </TouchableOpacity>
         ) : (
@@ -219,7 +219,7 @@ const CustomDrawer = (props: any): JSX.Element => {
             <Text
               style={{
                 fontFamily: FONTS.TEXT_SEMI_BOLD,
-                fontSize: hp(12),
+                fontSize: hp(14),
                 textAlign: 'center',
               }}>
               Fetching organisations...
@@ -259,12 +259,13 @@ const styles = StyleSheet.create({
 
   userName: {
     fontFamily: FONTS.TEXT_SEMI_BOLD,
+    fontSize: hp(18),
   },
   bottomView: {
     paddingVertical: hp(15),
   },
   statusText: {
-    fontSize: 12,
+    fontSize: 14,
     fontFamily: FONTS.TEXT_REGULAR,
   },
 
@@ -337,7 +338,7 @@ const styles = StyleSheet.create({
   },
   selectOrgBtnText: {
     marginLeft: 5,
-    fontSize: hp(14),
+    fontSize: hp(16),
     fontFamily: FONTS.TEXT_REGULAR,
     color: colors.dark,
   },
@@ -349,7 +350,7 @@ const styles = StyleSheet.create({
   orgPillText: {
     fontFamily: FONTS.TEXT_REGULAR,
     color: colors.dark,
-    fontSize: hp(12),
+    fontSize: hp(16),
   },
 });
 

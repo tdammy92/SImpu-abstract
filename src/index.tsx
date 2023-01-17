@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useRef} from 'react';
 import {LogBox, Linking, StatusBar, Platform} from 'react-native';
-
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import * as eva from '@eva-design/eva';
 import {
   NavigationContainer,
@@ -56,27 +56,29 @@ export default (): JSX.Element => {
   }, []);
   return (
     <>
-      <Provider store={store}>
-        <QueryClientProvider client={queryClient}>
-          <IconRegistry icons={[EvaIconsPack]} />
-          <PersistGate persistor={persistor}>
-            <UIKittenProvider {...eva} theme={{...eva.light, ...theme}}>
-              <>
-                <StatusBar
-                  barStyle="dark-content"
-                  translucent={true}
-                  backgroundColor={'transparent'}
-                />
+      <GestureHandlerRootView style={{flex: 1}}>
+        <Provider store={store}>
+          <QueryClientProvider client={queryClient}>
+            <IconRegistry icons={[EvaIconsPack]} />
+            <PersistGate persistor={persistor}>
+              <UIKittenProvider {...eva} theme={{...eva.light, ...theme}}>
+                <>
+                  <StatusBar
+                    barStyle="dark-content"
+                    translucent={true}
+                    backgroundColor={'transparent'}
+                  />
 
-                <NavigationContainer ref={navigationRef} onReady={onReady}>
-                  <RootStack />
-                </NavigationContainer>
-              </>
-            </UIKittenProvider>
-          </PersistGate>
-        </QueryClientProvider>
-      </Provider>
-      <FlashMessage floating={true} />
+                  <NavigationContainer ref={navigationRef} onReady={onReady}>
+                    <RootStack />
+                  </NavigationContainer>
+                </>
+              </UIKittenProvider>
+            </PersistGate>
+          </QueryClientProvider>
+        </Provider>
+        <FlashMessage floating={true} />
+      </GestureHandlerRootView>
     </>
   );
 };

@@ -178,6 +178,47 @@ export const getThreadInfo = async (
   });
 };
 
+/*
+Search message screen request
+*/
+
+export const searchCustomers = async (QueryParams: any) => {
+  // console.log('inside endpoint call', QueryParams);
+  const {q, page, per_page, headers} = QueryParams;
+
+  const queryS = {
+    q,
+    page,
+    per_page: perPageFetch,
+  };
+
+  const url = buildConversationUrl('search/customers');
+  const response = await client(url, {
+    params: {...headers, queryS},
+  });
+  return response?.data;
+};
+
+export const searchConversations = async (
+  QueryParams?: AxiosRequestConfig['params'],
+) => {
+  const {q, page, per_page, headers} = QueryParams;
+
+  const queryS = {
+    q,
+    page,
+    per_page: perPageFetch,
+  };
+
+  const url = buildConversationUrl(`search`);
+
+  const response = await client(url, {
+    params: {...headers, queryS},
+  });
+
+  return response?.data;
+};
+
 //fetch members in a conversation
 export const getMemberList = async (
   params: AxiosRequestConfig['params'],
@@ -189,39 +230,6 @@ export const getMemberList = async (
   return client(url, {
     params: {...params},
   });
-};
-
-//send message socials
-export const sendMessageSocials = async (payload: any) => {
-  const {
-    message,
-    params: {threadId, Auth, organisationId},
-  } = payload;
-  const url = buildConversationUrl(`conversations/message/${threadId}`);
-  const response = await client(url, {
-    method: 'POST',
-    data: JSON.stringify(message),
-    params: {Auth, organisationId},
-  });
-  return response.data;
-};
-
-//send files
-export const sendFiles = async (params: any) => {
-  // console.log('files to upload', JSON.stringify(params, null, 2));
-  const {file, Auth, organisationId, credentitalId} = params;
-
-  const url = buildConversationUrl(`upload/${credentitalId}`);
-
-  console.log('upload url', url);
-  const response = await client(url, {
-    method: 'POST',
-    data: file,
-    params: {Auth, organisationId},
-  });
-
-  console.log('response from file upload', response);
-  return response.data;
 };
 
 //fetch quick reply

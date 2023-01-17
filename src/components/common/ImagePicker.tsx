@@ -14,6 +14,7 @@ import theme from 'src/constants/theme';
 import {FONTS} from 'src/constants';
 
 type Props = {
+  title: string;
   Snap: (event: GestureResponderEvent) => void;
   Gallery: (event: GestureResponderEvent) => void;
   ref: RBSheetProps;
@@ -46,7 +47,7 @@ const ImagePicker = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
             fontFamily: FONTS.TEXT_REGULAR,
             paddingTop: 10,
           }}>
-          Profile Photo
+          {props?.title}
         </Text>
 
         <View style={styles.IconWrapper}>

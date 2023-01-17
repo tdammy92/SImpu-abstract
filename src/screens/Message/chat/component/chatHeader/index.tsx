@@ -10,6 +10,8 @@ import {hp} from 'src/utils';
 //@ts-ignore
 import UserAvatar from 'react-native-user-avatar';
 import ChannelIcon from 'src/components/common/ChannelIcon';
+import {useDispatch} from 'react-redux';
+import {removeReply} from 'src/store/reply/replyReducer';
 
 type chatHeaderProps = {
   threadDetail: any;
@@ -18,10 +20,15 @@ type chatHeaderProps = {
 
 const ChatHeader = ({threadDetail, openSheet}: chatHeaderProps) => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   // const {platform_name, image_url, channel_name, name} =
   //   threadDetail?.thread?.sender;
   const sender = threadDetail?.thread?.sender;
+
+  const goBack = () => {
+    navigation.goBack();
+  };
 
   // console.log(
   //   'details in header',
@@ -36,7 +43,7 @@ const ChatHeader = ({threadDetail, openSheet}: chatHeaderProps) => {
             <View style={styles.headerLeft}>
               <View style={styles.userDetails}>
                 <TouchableOpacity
-                  onPress={() => navigation.goBack()}
+                  onPress={goBack}
                   style={{flexDirection: 'row', alignItems: 'center'}}>
                   <Ionicons
                     name="arrow-back-sharp"
@@ -45,13 +52,15 @@ const ChatHeader = ({threadDetail, openSheet}: chatHeaderProps) => {
                   />
                   <View style={{marginLeft: 5}}>
                     {/* @ts-ignore */}
-                    <UserAvatar
-                      size={hp(40)}
-                      style={{height: hp(40), width: hp(40)}}
-                      borderRadius={hp(40 * 0.5)}
-                      name={sender?.platform_name ?? sender?.name}
-                      src={sender?.image_url}
-                    />
+                    {sender && (
+                      <UserAvatar
+                        size={hp(40)}
+                        style={{height: hp(40), width: hp(40)}}
+                        borderRadius={hp(40 * 0.5)}
+                        name={sender?.platform_name ?? sender?.platform_nick}
+                        src={sender?.image_url}
+                      />
+                    )}
                     <View
                       style={{
                         position: 'absolute',
@@ -63,7 +72,7 @@ const ChatHeader = ({threadDetail, openSheet}: chatHeaderProps) => {
                   </View>
                 </TouchableOpacity>
                 <Text style={styles.usernameText}>
-                  {sender?.platform_name ?? sender?.name}
+                  {sender?.platform_name ?? sender?.platform_nick}
                 </Text>
               </View>
             </View>

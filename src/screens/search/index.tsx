@@ -5,6 +5,7 @@ import {
   TextInput,
   Dimensions,
   StatusBar,
+  FlatList,
 } from 'react-native';
 import React, {useRef, useEffect, useState} from 'react';
 import {useNavigation, DrawerActions} from '@react-navigation/native';
@@ -24,12 +25,24 @@ import Octicons from 'react-native-vector-icons/Octicons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import dummyData from 'src/constants/dummyData';
-import SearchList from './component/SearchList';
+import SearchList from './component/SearchedThread';
 import styles from './styles';
 import {ScrollView} from 'react-native-gesture-handler';
+import {useSearchCustomers, useSearchThreads} from 'src/services/query/queries';
+import {colors} from 'src/constants';
+import {useSelector} from 'react-redux';
+import {StoreState} from 'src/@types/store';
+import useDebounce from 'src/Hooks/useDebounce';
+import SearchThread from './component/SearchedThread';
+import SearchCustomer from './component/SearchCustomer';
+import {hp} from 'src/utils';
 
 const Search = (props: any) => {
   const navigation = useNavigation();
+  const {profile, token} = useSelector((state: StoreState) => state.user);
+  const organisation = useSelector(
+    (state: StoreState) => state.organisation.details,
+  );
 
   const inputRef = useRef<null>(null);
 
@@ -39,6 +52,13 @@ const Search = (props: any) => {
   const [searchoption, setsearchoption] = useState('');
   const [ShowSearchModal, setsShowSearchModal] = useState(false);
 
+  //state for searched conversation
+  const [searchThreadData, setSearchThreadData] = useState([]);
+  const [searchCustomerData, setSearchCustomerData] = useState([]);
+
+  const debounceValue = useDebounce(searchValue, 500);
+
+  // console.log('dbounce value ', debounceValue);
   //handle Input modal Close
   const closeInpuPop = () => {
     setsShowSearchModal(false);
@@ -50,10 +70,81 @@ const Search = (props: any) => {
     navigation.goBack();
   };
 
+  /**
+   *
+   * @param option
+   * query calls
+   */
+
+  //search customer query
+  const SearchCustomerQuery = useSearchCustomers(
+    {
+      searchQuery: debounceValue,
+      page: 1,
+      headers: {
+        Auth: token,
+        organisationId: organisation?.id,
+      },
+    },
+
+    {
+      enabled: !!debounceValue,
+      onSuccess(data: any, variables: any, context: any) {
+        //This snippet flattens the array
+        const searchCustomerResults = data?.pages
+          ?.map((res: any) => res?.customers?.map((r: any) => r))
+          .flat(2);
+        setSearchCustomerData(searchCustomerResults);
+      },
+      onError(error: any, variables: any, context: any) {
+        console.log('post message error', error);
+        // messsageToast({message: 'Profile updated', type: 'success'});
+        //@ts-ignore
+        // messsageToast({message: `${error?.message}`, type: 'danger'});
+      },
+    },
+  );
+
+  //search thread query
+  const SearchThreadQuery = useSearchThreads(
+    {
+      searchQuery: debounceValue,
+      page: 1,
+      headers: {
+        Auth: token,
+        organisationId: organisation?.id,
+      },
+    },
+
+    {
+      enabled: !!debounceValue,
+      onSuccess(data: any, variables: any, context: any) {
+        //This snippet flattens the array
+        const searchThreadsResults = data?.pages
+          ?.map((res: any) => res?.threads?.map((r: any) => r))
+          .flat(2);
+
+        setSearchThreadData(searchThreadsResults);
+      },
+      onError(error: any, variables: any, context: any) {
+        console.log('post message error', error);
+        // messsageToast({message: 'Profile updated', type: 'success'});
+        //@ts-ignore
+        // messsageToast({message: `${error?.message}`, type: 'danger'});
+      },
+    },
+  );
+
   //handle tag selection
   const handleSelectedInput = (option: string) => {
     setsearchoption(option);
     setsShowSearchOptions(false);
+  };
+
+  const closeSearchOption = () => {
+    setsearchoption('');
+    setsShowSearchOptions(true);
+    setsearchValue('');
   };
 
   useEffect(() => {
@@ -69,7 +160,8 @@ const Search = (props: any) => {
     //@ts-ignore
     inputRef.current.focus();
   }, []);
-
+  // console.log('search tread array data', searchThreadData);
+  // console.log('search debounced value data', debounceValue);
   return (
     <View style={styles.container}>
       <View style={{paddingHorizontal: 15, marginTop: 15}}>
@@ -78,12 +170,12 @@ const Search = (props: any) => {
             styles.inputWrapper,
             {
               borderWidth: ShowSearchModal ? 1 : 0,
-              borderColor: ShowSearchModal ? '#000' : '#EBEEF2',
+              borderColor: ShowSearchModal ? colors.dark : colors.lightGray,
             },
           ]}>
           {ShowSearchModal && (
-            <TouchableOpacity onPress={closeInpuPop}>
-              <AntDesign name="arrowleft" size={18} color="#000" />
+            <TouchableOpacity style={{padding: 4}} onPress={closeInpuPop}>
+              <AntDesign name="arrowleft" size={22} color={colors.dark} />
             </TouchableOpacity>
           )}
 
@@ -103,12 +195,16 @@ const Search = (props: any) => {
             ref={inputRef}
             autoFocus={false}
             style={styles.input}
-            placeholder="Search"
-            placeholderTextColor={'#000'}
+            placeholder="Search..."
+            placeholderTextColor={colors.darkGray}
             onFocus={() => setsShowSearchModal(true)}
             value={searchValue}
             onChangeText={text => setsearchValue(text.toLocaleLowerCase())}
           />
+
+          <TouchableOpacity onPress={closeSearchOption}>
+            <AntDesign name="close" size={20} color={colors.dark} />
+          </TouchableOpacity>
         </View>
 
         {/* message fillter options */}
@@ -120,9 +216,9 @@ const Search = (props: any) => {
                   style={{
                     flexDirection: 'row',
                     alignItems: 'center',
-                    paddingLeft: 5,
+                    paddingLeft: 4,
                   }}>
-                  <AntDesign name="mail" size={17} color="black" />
+                  <AntDesign name="mail" size={20} color="black" />
                   <Text style={styles.pillHeaderText}>SEARCH FOR:</Text>
                 </View>
 
@@ -162,41 +258,66 @@ const Search = (props: any) => {
             {!ShowSearchOptions && (
               <View style={styles.searchBottom}>
                 <View style={styles.peopleContainer}>
-                  <View style={styles.Icontainer}>
-                    <Ionicons name="people-outline" size={20} color="black" />
-                    <Text style={styles.Itext}>PEOPLE</Text>
+                  <View style={styles.sectionHeader}>
+                    <View style={styles.titleConatiner}>
+                      <Ionicons
+                        name="people-outline"
+                        size={20}
+                        color={colors.darkGray}
+                      />
+                      <Text style={styles.Itext}>PEOPLE</Text>
+                    </View>
+                    <Ionicons
+                      name="arrow-forward"
+                      size={20}
+                      color={colors.darkGray}
+                    />
                   </View>
-                  <View style={styles.scrollContainer}>
-                    <ScrollView showsVerticalScrollIndicator={false}>
-                      {/* @ts-ignore */}
-                      {/* <Bullets active listSize={4} /> */}
 
-                      {Data.filter(ite =>
-                        ite.name.toLocaleLowerCase().includes(searchValue),
-                      )
-                        .reverse()
-                        .map((it, i) => {
-                          return <SearchList key={i} item={it} />;
-                        })}
-                    </ScrollView>
-                  </View>
+                  <ScrollView
+                    horizontal
+                    style={[styles.customerScrollContainer, ,]}
+                    showsHorizontalScrollIndicator={false}>
+                    {SearchCustomerQuery?.isLoading ? (
+                      // @ts-ignore
+                      <Bullets active listSize={1} />
+                    ) : (
+                      searchCustomerData?.map((item, i) => {
+                        return <SearchCustomer key={i} item={item} />;
+                      })
+                    )}
+                  </ScrollView>
                 </View>
                 <Divider />
                 <View style={styles.topResultContainer}>
-                  <View style={styles.Icontainer}>
+                  <View style={styles.sectionHeader}>
+                    <View style={styles.titleConatiner}>
+                      <Ionicons
+                        name="newspaper-outline"
+                        size={20}
+                        color={colors.darkGray}
+                      />
+                      <Text style={styles.Itext}>TOP RESULT</Text>
+                    </View>
                     <Ionicons
-                      name="newspaper-outline"
+                      name="arrow-down"
                       size={20}
-                      color="black"
+                      color={colors.darkGray}
                     />
-                    <Text style={styles.Itext}>TOP RESULT</Text>
                   </View>
-                  <View style={styles.scrollContainer}>
-                    <ScrollView showsVerticalScrollIndicator={false}>
-                      {/* @ts-ignore */}
-                      <Bullets active listSize={4} />
-                    </ScrollView>
-                  </View>
+
+                  <ScrollView
+                    style={styles.threadScrollContainer}
+                    showsVerticalScrollIndicator={false}>
+                    {SearchThreadQuery?.isLoading ? (
+                      // @ts-ignore
+                      <Bullets active listSize={3} />
+                    ) : (
+                      searchThreadData?.map((item, i) => {
+                        return <SearchThread key={i} item={item} />;
+                      })
+                    )}
+                  </ScrollView>
                 </View>
               </View>
             )}

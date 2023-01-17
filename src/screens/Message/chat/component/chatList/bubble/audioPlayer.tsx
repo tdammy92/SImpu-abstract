@@ -89,7 +89,7 @@ const AudioPlayer = ({audioData, isUser}: any) => {
     return unsubscribe;
   }, [navigation]);
 
-  console.log('currentTime', currentTime, song?.duration);
+  // console.log('currentTime', currentTime, song?.duration);
 
   return (
     <View style={styles.audioContainer}>
@@ -98,18 +98,18 @@ const AudioPlayer = ({audioData, isUser}: any) => {
         disabled={!audio?.isLoaded()}
         style={[
           styles.playPauseWrapper,
-          {borderColor: isUser() ? colors.bootomHeaderBg : colors.secondaryBg},
+          {borderColor: isUser ? colors.bootomHeaderBg : colors.secondaryBg},
         ]}>
         {audio?.isLoaded() ? (
           <Ionicons
             name={audio?.isPlaying() ? 'pause' : 'play'}
-            color={isUser() ? colors.bootomHeaderBg : colors.secondaryBg}
+            color={isUser ? colors.bootomHeaderBg : colors.secondaryBg}
             size={hp(18)}
           />
         ) : (
           <Ionicons
             name={'stop'}
-            color={isUser() ? colors.bootomHeaderBg : colors.secondaryBg}
+            color={isUser ? colors.bootomHeaderBg : colors.secondaryBg}
             size={hp(18)}
           />
         )}
@@ -122,16 +122,16 @@ const AudioPlayer = ({audioData, isUser}: any) => {
           maximumValue={Math.abs(song?.duration)}
           // maximumValue={duration > 0 ? song?.duration : 0}
           onComplete={(value: any) => {
-            console.log('value from slider', value);
+            // console.log('value from slider', value);
             seekToTime(value);
           }}
           onChange={(value: any) => {
-            console.log('value from slider 2', value);
+            // console.log('value from slider 2', value);
             seekToTime(value);
           }}
           thumbSize={20}
           progressTrackColor={
-            isUser() ? colors.bootomHeaderBg : colors.secondaryBg
+            isUser ? colors.bootomHeaderBg : colors.secondaryBg
           }
           trackStyle={{
             width: 150,
@@ -143,7 +143,7 @@ const AudioPlayer = ({audioData, isUser}: any) => {
             width: 15,
             height: 15,
             borderRadius: hp(10),
-            backgroundColor: isUser()
+            backgroundColor: isUser
               ? colors.bootomHeaderBg
               : colors.secondaryBg,
           }}
@@ -152,14 +152,14 @@ const AudioPlayer = ({audioData, isUser}: any) => {
         <Text
           style={[
             styles.lenghtStart,
-            {color: isUser() ? colors.bootomHeaderBg : colors.dark},
+            {color: isUser ? colors.bootomHeaderBg : colors.dark},
           ]}>
           {formatTimeString(currentTime)}
         </Text>
         <Text
           style={[
             styles.lenghtEnd,
-            {color: isUser() ? colors.bootomHeaderBg : colors.dark},
+            {color: isUser ? colors.bootomHeaderBg : colors.dark},
           ]}>
           {formatTimeString(Math.abs(duration))}
         </Text>

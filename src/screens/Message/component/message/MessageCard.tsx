@@ -44,16 +44,16 @@ const MessageCard = (props: any) => {
 
   //formated data
   const threadDetails = {
-    name1: trimText(item?.sender?.name ?? item?.sender?.platform_nick, 20),
+    name1: trimText(item?.sender?.name ?? item?.sender?.platform_nick, 18),
     name2: removeEmoji(item?.sender?.name ?? item?.sender?.platform_nick),
     date: messgeTimeFormater(item?.updated_datetime),
     image: item?.sender?.image_url,
     message: !!item?.subject
-      ? trimText(removeHtmlTags(item?.subject), 45)
+      ? trimText(removeHtmlTags(item?.subject), 25)
       : removeLineBreak(
           trimText(
             removeHtmlTags(item?.last_message?.entity?.content?.body),
-            45,
+            30,
           ),
         ),
     channelType: item?.channel_name,
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
   lastmessageTextWrapper: {
     flexDirection: 'row',
     color: colors.dark,
-    fontSize: hp(14),
+
     paddingTop: hp(1),
     paddingBottom: hp(5),
     width: '85%',
@@ -220,10 +220,7 @@ const styles = StyleSheet.create({
     fontSize: hp(14),
     paddingTop: hp(1),
     paddingBottom: hp(5),
-    // textAlign: 'left',
-    fontFamily: FONTS.TEXT_REGULAR,
-    // alignItems: 'flex-start',
 
-    // width: '80%',
+    fontFamily: FONTS.TEXT_REGULAR,
   },
 });

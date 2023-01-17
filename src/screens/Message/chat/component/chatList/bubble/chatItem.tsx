@@ -26,12 +26,12 @@ const ChatItem = ({message, isUser}: any) => {
         <Hyperlink
           linkDefault={true}
           linkStyle={{
-            color: isUser() ? colors.light : colors.secondaryBgDark,
+            color: isUser ? colors.light : colors.secondaryBgDark,
           }}>
           <Text
             style={[
               styles.messageText,
-              {color: isUser() ? colors.light : colors.dark},
+              {color: isUser ? colors.light : colors.dark},
             ]}>
             {entity?.content?.body}
           </Text>

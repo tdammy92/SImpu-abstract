@@ -45,7 +45,7 @@ export async function client(
     },
   } as AxiosRequestConfig;
 
-  // console.log('api-config', config);
+  // console.log('api-config', JSON.stringify(config, null, 2));
   try {
     const result = await Axios(config);
     const {data} = result;

@@ -21,6 +21,7 @@ import inboxSlice from 'src/store/inbox/reducer';
 import loadingSlice from './Loader';
 import organisationSlice from 'src/store/organisation/organisationReducer';
 import deviceSlice from 'src/store/device/deviceReducer';
+import replySlice from 'src/store/reply/replyReducer';
 
 export const reducers = combineReducers<StoreState>({
   user: userSlice,
@@ -28,13 +29,14 @@ export const reducers = combineReducers<StoreState>({
   inbox: inboxSlice,
   organisation: organisationSlice,
   loader: loadingSlice,
+  reply: replySlice,
 });
 
 const persistConfig = {
   key: 'root',
   storage,
   version: 1,
-  blacklist: ['loader'],
+  blacklist: ['loader', 'reply'],
 };
 
 const middlewares: Middleware[] = [

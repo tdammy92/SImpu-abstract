@@ -4,6 +4,7 @@ import prettyBytes from 'pretty-bytes';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {FONTS, colors, docType} from 'src/constants';
 import {hp, splitLastOccurrence, wp} from 'src/utils';
+import {FormatText} from 'src/utils/string-utils/string';
 
 const DocView = ({docData, type, isUser}: any) => {
   //   console.log(JSON.stringify(docData, null, 2));
@@ -36,7 +37,7 @@ const DocView = ({docData, type, isUser}: any) => {
       style={[
         styles.container,
         {
-          backgroundColor: isUser() ? colors.secondaryBgDark : colors.lightGray,
+          backgroundColor: isUser ? colors.secondaryBgDark : colors.lightGray,
           // borderLeftColor: isUser() ? colors.bootomHeaderBg : colors.dark,
         },
       ]}>
@@ -49,13 +50,13 @@ const DocView = ({docData, type, isUser}: any) => {
         <AntDesign
           name={iconName()}
           size={24}
-          color={isUser() ? colors.light : colors.dark}
+          color={isUser ? colors.light : colors.dark}
         />
         <View style={styles.infoWrapper}>
           <Text
             style={[
               {
-                color: isUser() ? colors.light : colors.dark,
+                color: isUser ? colors.light : colors.dark,
               },
             ]}>
             {splitLastOccurrence(docData?.data?.url, '/')}
@@ -69,16 +70,16 @@ const DocView = ({docData, type, isUser}: any) => {
               style={[
                 styles.fileTypeText,
                 {
-                  color: isUser() ? colors.lightGray : colors.darkGray,
+                  color: isUser ? colors.lightGray : colors.darkGray,
                 },
               ]}>
-              {type}/
+              {FormatText(type)}/
             </Text>
             <Text
               style={[
                 styles.sizeText,
                 {
-                  color: isUser() ? colors.lightGray : colors.darkGray,
+                  color: isUser ? colors.lightGray : colors.darkGray,
                 },
               ]}>
               {prettyBytes(docData?.size)}
@@ -90,14 +91,14 @@ const DocView = ({docData, type, isUser}: any) => {
       <TouchableOpacity
         style={{
           borderWidth: 1,
-          borderColor: isUser() ? colors.bootomHeaderBg : colors.dark,
+          borderColor: isUser ? colors.bootomHeaderBg : colors.dark,
           padding: hp(4),
           borderRadius: hp(22 * 0.5),
         }}>
         <AntDesign
           name={'clouddownloado'}
           size={hp(20)}
-          color={isUser() ? colors.bootomHeaderBg : colors.dark}
+          color={isUser ? colors.bootomHeaderBg : colors.dark}
         />
       </TouchableOpacity>
     </View>

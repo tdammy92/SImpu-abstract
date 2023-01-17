@@ -8,34 +8,40 @@ import {StoreState} from 'src/@types/store';
 import {hp, splitLastOccurrence, wp} from 'src/utils';
 import {colors} from 'src/constants';
 import {imageType, audioType, videoType, docType} from 'src/constants';
+import stc from 'string-to-color';
 //@ts-ignore
 import * as mime from 'react-native-mime-types';
+import {trimText} from 'src/utils/string-utils/string';
+import AttachmentIcon from 'src/components/common/AttachmentIcon';
+import {FormatText} from 'src/utils/string-utils/string';
 
 const Quoted = ({item, isUser}: any) => {
   const {profile, user, token} = useSelector(
     (state: StoreState) => state?.user,
   );
 
-  console.log('each quoted item', JSON.stringify(item, null, 2));
+  // console.log('each quoted item', JSON.stringify(item, null, 2));
 
   return (
     <View
       style={[
         styles.container,
-        {backgroundColor: isUser() ? colors.secondaryBgDark : colors.lightGray},
+        {backgroundColor: isUser ? colors.secondaryBgDark : colors.lightGray},
         {
-          borderLeftColor: isUser() ? colors.bootomHeaderBg : colors.darkGray,
+          borderLeftColor: isUser
+            ? colors.bootomHeaderBg
+            : stc(item?.author?.platform_name ?? item?.author?.platform_nick),
         },
       ]}>
       <Text
         style={[
           styles.senderName,
           {
-            color: isUser()
+            color: isUser
               ? colors.light
               : item?.author?.uuid === profile?.id
               ? colors.dark
-              : colors.darkGray,
+              : stc(item?.author?.platform_name ?? item?.author?.platform_nick),
           },
         ]}>
         {item?.author?.uuid === profile?.id ? 'You' : item?.author?.name}:
@@ -46,20 +52,20 @@ const Quoted = ({item, isUser}: any) => {
             style={[
               styles.body,
               {
-                color: isUser()
+                color: isUser
                   ? colors.light
                   : item?.author?.uuid === profile?.id
                   ? colors.dark
                   : colors.darkGray,
               },
             ]}>
-            {item?.entity?.content?.body}
+            {trimText(item?.entity?.content?.body ?? '', 150)}
           </Text>
         )}
 
         {item?.entity?.attachments && (
           <View style={{}}>
-            <View style={{minWidth: wp(140)}} />
+            <View style={{minWidth: wp(100)}} />
             {imageType?.includes(
               mime.extension(item?.entity?.attachments[0]?.mimetype),
             ) && (
@@ -68,6 +74,7 @@ const Quoted = ({item, isUser}: any) => {
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'space-between',
+                  maxWidth: hp(70),
                 }}>
                 <Image
                   style={{height: 40, width: 35}}
@@ -79,17 +86,17 @@ const Quoted = ({item, isUser}: any) => {
                     marginLeft: wp(20),
                     alignItems: 'center',
                   }}>
-                  <Ionicons
-                    name="image-outline"
-                    size={hp(18)}
-                    color={isUser() ? colors.lightGray : colors.darkGray}
-                  />
                   <Text
                     style={{
-                      color: isUser() ? colors.lightGray : colors?.darkGray,
+                      color: isUser ? colors.lightGray : colors?.darkGray,
                     }}>
                     Image
                   </Text>
+                  <Ionicons
+                    name="image-outline"
+                    size={hp(18)}
+                    color={isUser ? colors.lightGray : colors.darkGray}
+                  />
                 </View>
               </View>
             )}
@@ -99,15 +106,17 @@ const Quoted = ({item, isUser}: any) => {
             ) && (
               <View>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <AntDesign
-                    name="file1"
-                    size={hp(18)}
-                    color={isUser() ? colors.lightGray : colors.darkGray}
+                  <AttachmentIcon
+                    fileExetension={mime.extension(
+                      item?.entity?.attachments[0]?.mimetype,
+                    )}
+                    size={hp(24)}
+                    color={isUser ? colors.lightGray : colors.darkGray}
                   />
                   <Text
                     style={[
-                      ,
-                      {color: isUser() ? colors.lightGray : colors.darkGray},
+                      styles.fileName,
+                      {color: isUser ? colors.lightGray : colors.darkGray},
                     ]}>
                     {splitLastOccurrence(
                       item?.entity?.attachments[0]?.data?.url,
@@ -118,21 +127,22 @@ const Quoted = ({item, isUser}: any) => {
                 <View
                   style={{
                     flexDirection: 'row',
-                    justifyContent: 'space-between',
                   }}>
                   <Text
                     style={[
                       styles.fileInfoText,
-                      {color: isUser() ? colors.lightGray : colors.darkGray},
+                      {color: isUser ? colors.lightGray : colors.darkGray},
                     ]}>
-                    {mime
-                      .extension(item?.entity?.attachments[0]?.mimetype)
-                      ?.toUpperCase()}
+                    {FormatText(
+                      mime.extension(item?.entity?.attachments[0]?.mimetype),
+                    )}
+                    /
                   </Text>
+
                   <Text
                     style={[
                       styles.fileInfoText,
-                      {color: isUser() ? colors.lightGray : colors.darkGray},
+                      {color: isUser ? colors.lightGray : colors.darkGray},
                     ]}>
                     {prettyBytes(item?.entity?.attachments[0]?.size)}
                   </Text>
@@ -152,17 +162,24 @@ const styles = StyleSheet.create({
   container: {
     marginBottom: hp(5),
     padding: hp(5),
-    borderRadius: hp(5),
-    borderLeftWidth: 1.6,
+    minWidth: wp(150),
+
+    borderTopRightRadius: hp(5),
+    borderBottomRightRadius: hp(5),
+    borderLeftWidth: 1.9,
   },
   senderName: {
-    fontSize: hp(12),
+    fontSize: hp(14),
+    // fontWeight: 'bold',
   },
   body: {
-    fontSize: hp(12),
+    fontSize: hp(14),
+  },
+  fileName: {
+    fontSize: hp(14),
   },
 
   fileInfoText: {
-    fontSize: hp(12),
+    fontSize: hp(13),
   },
 });

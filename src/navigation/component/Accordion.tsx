@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   accordionHeaderText: {
     color: colors.dark,
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: hp(14),
+    fontSize: hp(18),
     marginLeft: 5,
     textTransform: 'uppercase',
   },
@@ -151,14 +151,14 @@ const styles = StyleSheet.create({
 
   customInboxtext: {
     marginLeft: 5,
-    fontSize: 14,
+    fontSize: 16,
     fontFamily: FONTS.TEXT_REGULAR,
     color: colors.dark,
   },
 
   badgeText: {
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: 12,
+    fontSize: 14,
     color: colors.secondaryBg,
     position: 'absolute',
     right: -20,

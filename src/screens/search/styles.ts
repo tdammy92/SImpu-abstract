@@ -1,5 +1,5 @@
 import {StyleService, Input} from '@ui-kitten/components';
-import {ImageStyle, TextStyle, ViewStyle, Dimensions} from 'react-native';
+import {ImageStyle, TextStyle, ViewStyle, Dimensions, View} from 'react-native';
 import {FONTS, colors} from 'src/constants';
 import {hp, wp} from 'src/utils';
 
@@ -15,11 +15,14 @@ interface Styles {
   searchModalContainer: ViewStyle;
   inputWrapper: ViewStyle;
   peopleContainer: ViewStyle;
-  Icontainer: ViewStyle;
+  sectionHeader: ViewStyle;
+  titleConatiner: ViewStyle;
   Itext: TextStyle;
   input: TextStyle;
   topResultContainer: ViewStyle;
-  scrollContainer: ViewStyle;
+
+  customerScrollContainer: ViewStyle;
+  threadScrollContainer: ViewStyle;
 }
 
 const {width, height} = Dimensions.get('screen');
@@ -34,13 +37,16 @@ const styles = StyleService.create<Styles>({
     backgroundColor: '#fff',
   },
 
-  searchTop: {},
+  searchTop: {
+    width: '100%',
+    // backgroundColor: 'yellow',
+  },
   searchBottom: {
-    paddingHorizontal: 5,
+    // paddingHorizontal: 5,
   },
   pillHeaderText: {
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: hp(14),
+    fontSize: hp(16),
     marginVertical: hp(5),
     color: colors.dark,
     marginLeft: 3,
@@ -52,46 +58,58 @@ const styles = StyleService.create<Styles>({
     flexWrap: 'wrap',
   },
   searchPill: {
-    backgroundColor: '#EBEEF2',
-    margin: 5,
-    padding: 0,
+    backgroundColor: colors.lightGray,
+    margin: 4,
+    padding: 5,
     borderRadius: 5,
   },
   pillText: {
-    fontSize: hp(12),
-    padding: 5,
+    fontSize: hp(14),
+    padding: 4,
     fontFamily: FONTS.TEXT_REGULAR,
     color: colors.dark,
   },
 
   searchModalContainer: {
-    backgroundColor: '#fff',
-    padding: 10,
+    backgroundColor: colors.light,
+    // padding: 5,
+    marginVertical: hp(5),
     borderBottomRightRadius: 10,
     borderBottomLeftRadius: 10,
-    width: '100%',
+    // width: '100%',
+    // backgroundColor: 'red',
   },
 
   selectedPill: {
-    backgroundColor: '#026AE8',
-    color: '#fff',
-    padding: 2,
-    paddingHorizontal: 4,
+    backgroundColor: colors.secondaryBgDark,
+    color: colors.light,
+    borderWidth: 0,
+    paddingVertical: hp(5),
+    paddingHorizontal: wp(5),
     borderRadius: 4,
     marginLeft: 2,
-    fontSize: hp(12),
+    fontSize: hp(16),
     elevation: 3,
     zIndex: 3,
   },
 
-  scrollContainer: {
-    marginTop: 10,
-    maxHeight: height * 0.3,
+  customerScrollContainer: {
+    marginVertical: hp(5),
+    maxHeight: hp(70),
+  },
+  threadScrollContainer: {
+    marginTop: hp(5),
+    maxHeight: height * 0.8,
+    minHeight: height * 0.15,
+  },
+
+  titleConatiner: {
+    flexDirection: 'row',
   },
   inputWrapper: {
     flexDirection: 'row',
     marginVertical: hp(10),
-    height: 40,
+    height: hp(52),
     paddingHorizontal: wp(7),
     borderWidth: 1,
     alignItems: 'center',
@@ -103,19 +121,23 @@ const styles = StyleService.create<Styles>({
     marginLeft: 5,
     width: '100%',
     height: '100%',
-    fontSize: hp(16),
+    fontSize: hp(20),
     fontFamily: FONTS.TEXT_REGULAR,
     color: colors.dark,
   },
 
   peopleContainer: {marginTop: 5},
-  Icontainer: {flexDirection: 'row', alignItems: 'center'},
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   Itext: {
     color: colors.dark,
     fontSize: hp(16),
     fontFamily: FONTS.TEXT_REGULAR,
     marginLeft: 5,
   },
-  topResultContainer: {marginTop: 5},
+  topResultContainer: {marginTop: hp(10)},
 });
 export default styles;

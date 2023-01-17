@@ -720,7 +720,7 @@ const themedStyles = StyleService.create({
   titleText: {
     paddingLeft: 5,
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: 14,
+    fontSize: 16,
     color: colors.dark,
   },
   badgeText: {

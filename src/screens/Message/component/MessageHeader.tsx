@@ -130,7 +130,7 @@ const MessageHeader = (props: any) => {
         <TouchableOpacity
           style={{marginTop: 0, backgroundColor: ''}}
           onPress={openSortSheet}>
-          <Octicons name="sort-asc" size={20} color={'#7D8282'} />
+          <Octicons name="sort-asc" size={24} color={'#7D8282'} />
         </TouchableOpacity>
       </View>
 
@@ -140,13 +140,13 @@ const MessageHeader = (props: any) => {
           style={styles.inputWrapper}
           //@ts-ignore
           onPress={() => navigation.navigate(SCREEN_NAME.search)}>
-          <EvilIcons name="search" size={25} color="#828282" />
+          <EvilIcons name="search" size={28} color="#828282" />
 
           <Text
             style={{
               color: '#828282',
               fontFamily: FONTS.TEXT_SEMI_BOLD,
-              fontSize: hp(16),
+              fontSize: hp(18),
               marginLeft: wp(5),
             }}>
             Search...
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
   },
 
   headerTitleText: {
-    fontSize: hp(18),
+    fontSize: hp(20),
 
     fontFamily: FONTS.TEXT_SEMI_BOLD,
     color: colors.dark,
@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
   },
   sliderText: {
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: hp(16),
+    fontSize: hp(20),
     paddingBottom: 5,
     color: colors.dark,
   },

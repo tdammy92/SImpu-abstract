@@ -12,6 +12,8 @@ import {
   getMessageList,
   getThreadInfo,
   getMemberList,
+  searchCustomers,
+  searchConversations,
 } from './inbox';
 import {getProfile} from './profile';
 import {getNotificationTrayItems} from './notification';
@@ -187,6 +189,76 @@ export const useMenberList = (queryParams: any, options?: any) => {
     ['Members', queryParams?.threadId, queryParams?.organisationId],
     () => getMemberList(queryParams),
     options,
+  );
+};
+
+// export const useNotificationTrayQuery = (queryParams: any, options: any) => {
+//   const {status, page, organisationId} = queryParams;
+//   return useInfiniteQuery(
+//     ['notification-tray-items', status, organisationId, page],
+//     ({pageParam = 1}) => getNotificationTrayItems(queryParams, pageParam),
+//     {
+//       getNextPageParam: lastPage => {
+//         return lastPage?.meta?.page < lastPage?.meta?.page_total
+//           ? lastPage.meta.page + 1
+//           : undefined;
+//       },
+//       refetchOnWindowFocus: true,
+//       ...options,
+//     },
+//   );
+// };
+
+/*
+search screen quries seatch by customer
+and search by conversations
+*/
+export const useSearchThreads = (QueryParams: any, options: any) => {
+  const {searchQuery, page} = QueryParams;
+
+  return useInfiniteQuery(
+    ['search', 'threads', searchQuery, page],
+    ({pageParam = 1}) =>
+      searchConversations({
+        ...QueryParams,
+        per_page: 10,
+        page: pageParam ?? 1,
+        q: !!searchQuery ? searchQuery : undefined,
+      }),
+
+    {
+      getNextPageParam: lastPage => {
+        // console.log('lastpage details', lastPage?.data?.meta);
+        return lastPage?.data?.meta?.page < lastPage?.data?.meta.page_count
+          ? lastPage?.data?.meta.page + 1
+          : undefined;
+      },
+      ...options,
+    },
+  );
+};
+export const useSearchCustomers = (QueryParams: any, options: any) => {
+  const {searchQuery, page} = QueryParams;
+
+  return useInfiniteQuery(
+    ['search', 'customer', searchQuery, page],
+    ({pageParam = 1}) =>
+      searchCustomers({
+        ...QueryParams,
+        per_page: 10,
+        page: pageParam ?? 1,
+        q: !!searchQuery ? searchQuery : undefined,
+      }),
+
+    {
+      getNextPageParam: lastPage => {
+        // console.log('lastpage details', lastPage?.data?.meta);
+        return lastPage?.data?.meta?.page < lastPage?.data?.meta.page_count
+          ? lastPage?.data?.meta.page + 1
+          : undefined;
+      },
+      ...options,
+    },
   );
 };
 
