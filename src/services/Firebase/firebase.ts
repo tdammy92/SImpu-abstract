@@ -2,7 +2,11 @@ import messaging from '@react-native-firebase/messaging';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const resquestFcmPermission = async () => {
-  const authStatus = await messaging().requestPermission();
+  const authStatus = await messaging().requestPermission({
+    sound: true,
+    announcement: true,
+    badge: true,
+  });
 
   const enabled =
     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||

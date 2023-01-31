@@ -65,6 +65,13 @@
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
 			remoteInfo = SimpuMobile;
 		};
+		A6864402297FDF5500412DBF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A68643FE297FDF5500412DBF /* RNCCameraRoll.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 58B5115D1A9E6B3D00147676;
+			remoteInfo = RNCCameraRoll;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -88,6 +95,7 @@
 		939BBF1FE4C54A92BF6A62B1 /* Averta-Semibold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Averta-Semibold.otf"; path = "../src/assets/fonts/Averta-Semibold.otf"; sourceTree = "<group>"; };
 		A62941E728BD2FCE00E0F26E /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = SimpuMobile/BootSplash.storyboard; sourceTree = "<group>"; };
 		A63A4A7A293742C500147A78 /* SimpuMobile.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = SimpuMobile.entitlements; path = SimpuMobile/SimpuMobile.entitlements; sourceTree = "<group>"; };
+		A68643FE297FDF5500412DBF /* RNCCameraRoll.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNCCameraRoll.xcodeproj; path = "../node_modules/@react-native-camera-roll/camera-roll/ios/RNCCameraRoll.xcodeproj"; sourceTree = "<group>"; };
 		A68EF7B0294C536F00D7B335 /* SimpuMobile-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SimpuMobile-Bridging-Header.h"; sourceTree = "<group>"; };
 		A68EF7B1294C537000D7B335 /* dummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = dummy.swift; sourceTree = "<group>"; };
 		A6CDDCAF28BF62D600E8F77C /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
@@ -202,6 +210,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				A68643FE297FDF5500412DBF /* RNCCameraRoll.xcodeproj */,
 				A68EF7B1294C537000D7B335 /* dummy.swift */,
 				A6D3F4762934942D00D959AE /* GoogleService-Info.plist */,
 				A6CDDCAE28BF62D600E8F77C /* Fonts */,
@@ -224,6 +233,14 @@
 			children = (
 				13B07F961A680F5B00A75B9A /* SimpuMobile.app */,
 				00E356EE1AD99517003FC87E /* SimpuMobileTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A68643FF297FDF5500412DBF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A6864403297FDF5500412DBF /* libRNCCameraRoll.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -310,7 +327,7 @@
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				C59DA0FBD6956966B86A3779 /* [CP] Embed Pods Frameworks */,
+				81505C70BCEB18124C2888CB /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -332,8 +349,8 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */,
 				E0CB5F4CA1BCBA6417932567 /* [CP-User] [RNFB] Core Configuration */,
+				D0437867276C43E78B287B25 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -372,6 +389,12 @@
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = A68643FF297FDF5500412DBF /* Products */;
+					ProjectRef = A68643FE297FDF5500412DBF /* RNCCameraRoll.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* SimpuMobile */,
@@ -379,6 +402,16 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		A6864403297FDF5500412DBF /* libRNCCameraRoll.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNCCameraRoll.a;
+			remoteRef = A6864402297FDF5500412DBF /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		00E356EC1AD99517003FC87E /* Resources */ = {
@@ -456,21 +489,21 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
 		};
-		00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */ = {
+		81505C70BCEB18124C2888CB /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SimpuMobile/Pods-SimpuMobile-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-SimpuMobile-SimpuMobileTests/Pods-SimpuMobile-SimpuMobileTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			name = "[CP] Embed Pods Frameworks";
+			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SimpuMobile/Pods-SimpuMobile-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-SimpuMobile-SimpuMobileTests/Pods-SimpuMobile-SimpuMobileTests-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SimpuMobile/Pods-SimpuMobile-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SimpuMobile-SimpuMobileTests/Pods-SimpuMobile-SimpuMobileTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A55EABD7B0C7F3A422A6CC61 /* [CP] Check Pods Manifest.lock */ = {
@@ -517,21 +550,21 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		C59DA0FBD6956966B86A3779 /* [CP] Embed Pods Frameworks */ = {
+		D0437867276C43E78B287B25 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SimpuMobile-SimpuMobileTests/Pods-SimpuMobile-SimpuMobileTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-SimpuMobile/Pods-SimpuMobile-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			name = "[CP] Embed Pods Frameworks";
+			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SimpuMobile-SimpuMobileTests/Pods-SimpuMobile-SimpuMobileTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-SimpuMobile/Pods-SimpuMobile-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SimpuMobile-SimpuMobileTests/Pods-SimpuMobile-SimpuMobileTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SimpuMobile/Pods-SimpuMobile-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		E0CB5F4CA1BCBA6417932567 /* [CP-User] [RNFB] Core Configuration */ = {

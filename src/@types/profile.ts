@@ -12,6 +12,18 @@ export type organisation = {
   sender_ids?: senderIdsType[];
 };
 
+export type customertype = {
+  uuid: string;
+  names: [];
+  image_url: string | null;
+  contact_id: null;
+  channel_name: string;
+  platform_name: string | null;
+  platform_nick: string;
+  channel_id: string;
+  type: string;
+};
+
 export type organisationStore = {
   details: organisation;
 };

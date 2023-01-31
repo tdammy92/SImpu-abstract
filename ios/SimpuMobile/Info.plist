@@ -40,11 +40,13 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Simpu requires access to your camera</string>
+	<string>SimpuGo requires access to your camera</string>
 	<key>NSHumanReadableCopyright</key>
 	<string></string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSMicrophoneUsageDescription</key>
+<string>SimpuGo needs access to your Microphone.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Simpu requires access to your gallery</string>
 	<key>UIAppFonts</key>

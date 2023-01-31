@@ -15,6 +15,7 @@ export enum SCREEN_NAME {
   draft = 'app.screen.draft',
   teaminbox = 'app.screen.teaminbox',
   search = 'app.screen.search',
+  customerThreads = 'app.screen.customerthreads',
   notification = 'app.screen.notification',
   compose = 'app.screen.compose',
   main = 'app.screen.main',
@@ -29,6 +30,8 @@ export enum SCREEN_NAME {
   datastorage = 'app.screen.datastorage',
   quickreplies = 'app.screen.quickreplies',
   chat = 'app.screen.chat',
+  camera = 'app.screen.camera',
+  conversationDetails = 'app.screen.conversationdetails',
   imageView = 'app.screen.imageview',
   mail = 'app.screen.mail',
 }
@@ -38,6 +41,7 @@ export type MainStackParamList = {
   [SCREEN_NAME.auth]: undefined;
   [SCREEN_NAME.forgotPassword]: undefined;
   [SCREEN_NAME.search]: undefined;
+  [SCREEN_NAME.customerThreads]: {customerDetails: {}};
   [SCREEN_NAME.notification]: undefined;
   [SCREEN_NAME.welcome]: undefined;
   [SCREEN_NAME.assigned]: undefined;
@@ -54,6 +58,8 @@ export type MainStackParamList = {
   [SCREEN_NAME.settings]: undefined;
   [SCREEN_NAME.about]: undefined;
   [SCREEN_NAME.chat]: {user: any};
+  [SCREEN_NAME.conversationDetails]: {thread: any};
+  [SCREEN_NAME.camera]: {user: any};
   [SCREEN_NAME.imageView]: {image: any};
   [SCREEN_NAME.mail]: {user: any};
   // [SCREEN_NAME.chat]: {

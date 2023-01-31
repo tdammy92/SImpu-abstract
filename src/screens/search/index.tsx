@@ -17,15 +17,13 @@ import {
   Divider,
   useStyleSheet,
 } from '@ui-kitten/components';
-//@ts-ignore
-import {Bullets} from 'react-native-easy-content-loader';
+import ContentLoader, {Bullets} from 'react-native-easy-content-loader';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Octicons from 'react-native-vector-icons/Octicons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import dummyData from 'src/constants/dummyData';
-import SearchList from './component/SearchedThread';
+
 import styles from './styles';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useSearchCustomers, useSearchThreads} from 'src/services/query/queries';
@@ -35,7 +33,8 @@ import {StoreState} from 'src/@types/store';
 import useDebounce from 'src/Hooks/useDebounce';
 import SearchThread from './component/SearchedThread';
 import SearchCustomer from './component/SearchCustomer';
-import {hp} from 'src/utils';
+import {hp, wp} from 'src/utils';
+import Animated, {FlipInXUp, FlipOutXUp} from 'react-native-reanimated';
 
 const Search = (props: any) => {
   const navigation = useNavigation();
@@ -46,7 +45,6 @@ const Search = (props: any) => {
 
   const inputRef = useRef<null>(null);
 
-  const [Data, setData] = useState(() => dummyData);
   const [searchValue, setsearchValue] = useState('');
   const [ShowSearchOptions, setsShowSearchOptions] = useState(true);
   const [searchoption, setsearchoption] = useState('');
@@ -56,7 +54,7 @@ const Search = (props: any) => {
   const [searchThreadData, setSearchThreadData] = useState([]);
   const [searchCustomerData, setSearchCustomerData] = useState([]);
 
-  const debounceValue = useDebounce(searchValue, 500);
+  const debounceValue = useDebounce(searchValue, 400);
 
   // console.log('dbounce value ', debounceValue);
   //handle Input modal Close
@@ -98,7 +96,7 @@ const Search = (props: any) => {
       },
       onError(error: any, variables: any, context: any) {
         console.log('post message error', error);
-        // messsageToast({message: 'Profile updated', type: 'success'});
+
         //@ts-ignore
         // messsageToast({message: `${error?.message}`, type: 'danger'});
       },
@@ -138,7 +136,7 @@ const Search = (props: any) => {
   //handle tag selection
   const handleSelectedInput = (option: string) => {
     setsearchoption(option);
-    setsShowSearchOptions(false);
+    // setsShowSearchOptions(false);
   };
 
   const closeSearchOption = () => {
@@ -153,15 +151,13 @@ const Search = (props: any) => {
     } else {
       setsShowSearchOptions(true);
     }
-    // return () => {};
   }, [searchValue]);
 
   useEffect(() => {
     //@ts-ignore
     inputRef.current.focus();
   }, []);
-  // console.log('search tread array data', searchThreadData);
-  // console.log('search debounced value data', debounceValue);
+
   return (
     <View style={styles.container}>
       <View style={{paddingHorizontal: 15, marginTop: 15}}>
@@ -179,16 +175,13 @@ const Search = (props: any) => {
             </TouchableOpacity>
           )}
 
-          {/* {!ShowSearchModal && (
-            <EvilIcons
-              name="search"
-              size={25}
-              color={ShowSearchModal ? '#026AE8' : 'black'}
-            />
-          )} */}
-
           {searchoption !== '' && (
-            <Text style={styles.selectedPill}>{searchoption}</Text>
+            <Animated.View
+              entering={FlipInXUp}
+              exiting={FlipOutXUp}
+              style={styles.selectedPill}>
+              <Text style={styles.selectedPillText}>{searchoption}</Text>
+            </Animated.View>
           )}
 
           <TextInput
@@ -216,9 +209,9 @@ const Search = (props: any) => {
                   style={{
                     flexDirection: 'row',
                     alignItems: 'center',
-                    paddingLeft: 4,
+                    paddingLeft: wp(4),
                   }}>
-                  <AntDesign name="mail" size={20} color="black" />
+                  <AntDesign name="mail" size={hp(20)} color="black" />
                   <Text style={styles.pillHeaderText}>SEARCH FOR:</Text>
                 </View>
 
@@ -278,14 +271,50 @@ const Search = (props: any) => {
                     horizontal
                     style={[styles.customerScrollContainer, ,]}
                     showsHorizontalScrollIndicator={false}>
-                    {SearchCustomerQuery?.isLoading ? (
-                      // @ts-ignore
-                      <Bullets active listSize={1} />
-                    ) : (
-                      searchCustomerData?.map((item, i) => {
-                        return <SearchCustomer key={i} item={item} />;
-                      })
-                    )}
+                    {SearchCustomerQuery?.isLoading
+                      ? Array(3)
+                          .fill(1)
+                          .map((_, i) => (
+                            <React.Fragment key={`${i}`}>
+                              {/* @ts-ignore */}
+                              <ContentLoader
+                                containerStyles={{
+                                  width: 'auto',
+                                  borderWidth: 0.7,
+                                  borderColor: colors.lightGray,
+                                  marginLeft: wp(5),
+                                  height: hp(60),
+                                  borderRadius: hp(10),
+                                  alignItems: 'center',
+                                }}
+                                loading={true}
+                                avatar
+                                aSize={30}
+                                title={false}
+                                pRows={2}
+                                pHeight={[8, 10]}
+                                pWidth={[80, 100]}
+                              />
+                            </React.Fragment>
+                          ))
+                      : searchCustomerData?.map((item, i) => {
+                          return (
+                            <SearchCustomer
+                              key={i}
+                              item={item}
+                              idx={i}
+                              lt={searchCustomerData?.length}
+                            />
+                          );
+                        })}
+
+                    {!SearchCustomerQuery?.isLoading &&
+                      searchCustomerData?.length === 0 && (
+                        <View
+                          style={[styles.emptyWrapper, {marginLeft: wp(10)}]}>
+                          <Text style={styles.emptyText}>No results found</Text>
+                        </View>
+                      )}
                   </ScrollView>
                 </View>
                 <Divider />
@@ -314,9 +343,22 @@ const Search = (props: any) => {
                       <Bullets active listSize={3} />
                     ) : (
                       searchThreadData?.map((item, i) => {
-                        return <SearchThread key={i} item={item} />;
+                        return (
+                          <SearchThread
+                            key={i}
+                            item={item}
+                            idx={i}
+                            lt={searchThreadData?.length}
+                          />
+                        );
                       })
                     )}
+                    {!SearchThreadQuery?.isLoading &&
+                      searchThreadData?.length === 0 && (
+                        <View style={styles.emptyWrapper}>
+                          <Text style={styles.emptyText}>No results found</Text>
+                        </View>
+                      )}
                   </ScrollView>
                 </View>
               </View>

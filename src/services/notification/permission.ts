@@ -16,7 +16,6 @@ export const requestPermissions = () => {
     //check permission for storage, camera and media
     checkMultiple([
       PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
-      //  PERMISSIONS.ANDROID.POST_NOTIFICATIONS,
       PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
       PERMISSIONS.ANDROID.CAMERA,
       PERMISSIONS.ANDROID.READ_MEDIA_IMAGES,
@@ -29,7 +28,7 @@ export const requestPermissions = () => {
         statuses[PERMISSIONS.ANDROID.CAMERA] === RESULTS.DENIED ||
         statuses[PERMISSIONS.ANDROID.READ_MEDIA_IMAGES] === RESULTS.DENIED
       ) {
-        console.log('all was denied');
+        // console.log('all was denied');
         requestMultiple([
           PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
           PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
@@ -47,35 +46,35 @@ export const requestPermissions = () => {
     });
 
     //check notification permission
-    checkNotifications()
-      .then(({status, settings}) => {
-        // …
-        if (status === RESULTS.GRANTED) return;
+    // checkNotifications()
+    //   .then(({status, settings}) => {
+    //     // …
+    //     if (status === RESULTS.GRANTED) return;
 
-        if (status === RESULTS.UNAVAILABLE) {
-          Alert.alert(
-            'Error',
-            'Kindly note that notification is not supported on your device',
-            [
-              {
-                text: 'Cancel',
-                onPress: () => console.log('Cancel Pressed'),
-                style: 'cancel',
-              },
-            ],
-          );
-        }
+    //     if (status === RESULTS.UNAVAILABLE) {
+    //       Alert.alert(
+    //         'Error',
+    //         'Kindly note that notification is not supported on your device',
+    //         [
+    //           {
+    //             text: 'Cancel',
+    //             onPress: () => console.log('Cancel Pressed'),
+    //             style: 'cancel',
+    //           },
+    //         ],
+    //       );
+    //     }
 
-        //check if status id denied previously, request again
-        if (status === RESULTS.DENIED) {
-          requestNotifications(['alert', 'sound', 'badge'])
-            .then(({status, settings}) => {})
-            .catch(err => {});
-        }
+    //     //check if status id denied previously, request again
+    //     if (status === RESULTS.DENIED) {
+    //       requestNotifications(['alert', 'sound', 'badge'])
+    //         .then(({status, settings}) => {})
+    //         .catch(err => {});
+    //     }
 
-        //    console.log('notification checker', status);
-        //    console.log('notification settings', settings);
-      })
-      .catch(err => console.log(err));
+    //     //    console.log('notification checker', status);
+    //     //    console.log('notification settings', settings);
+    //   })
+    //   .catch(err => console.log(err));
   }
 };

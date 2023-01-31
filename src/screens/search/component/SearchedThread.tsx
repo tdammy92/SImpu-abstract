@@ -7,13 +7,13 @@ import {useNavigation} from '@react-navigation/native';
 import UserAvatar from 'react-native-user-avatar';
 import ChannelIcon from 'src/components/common/ChannelIcon';
 import {hp, wp} from 'src/utils';
-import {colors} from 'src/constants';
+import {FONTS, colors} from 'src/constants';
 import {SCREEN_NAME} from 'src/navigation/constants';
 import {trimText} from 'src/utils/string-utils/string';
 import stc from 'string-to-color';
 
 //Search list item components
-const SearchThread = ({item}: any) => {
+const SearchThread = ({item, idx, lt}: any) => {
   const navigation = useNavigation();
 
   // console.log('from individual conversation', JSON.stringify(item, null, 2));
@@ -32,7 +32,12 @@ const SearchThread = ({item}: any) => {
 
   return (
     <>
-      <TouchableOpacity style={styles.container} onPress={handleNavigation}>
+      <TouchableOpacity
+        style={[
+          styles.container,
+          {marginBottom: idx === lt - 1 ? hp(150) : hp(5)},
+        ]}
+        onPress={handleNavigation}>
         <View>
           <UserAvatar
             name={item?.sender?.platform_name ?? item?.sender?.platform_nick}
@@ -96,11 +101,13 @@ const styles = StyleSheet.create({
     marginLeft: 7,
   },
   nameText: {
-    fontSize: hp(14),
+    fontSize: hp(16),
     color: colors.dark,
+    fontFamily: FONTS.TEXT_REGULAR,
   },
   messageText: {
-    fontSize: hp(12),
+    fontSize: hp(14),
+    fontFamily: FONTS.TEXT_REGULAR,
     color: colors.dark,
   },
 });

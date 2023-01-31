@@ -12,18 +12,18 @@ const ChatMessage = ({data, fetchNextPage, chatListRef, Onscroll}: any) => {
       ref={chatListRef}
       showsVerticalScrollIndicator={true}
       style={{paddingBottom: hp(100)}}
-      contentInset={{bottom: hp(100)}}
+      contentInset={{bottom: hp(150)}}
       contentContainerStyle={{
         paddingBottom: hp(100),
+        marginBottom: hp(150),
       }}
       inverted
       keyExtractor={(_, id) => `${id}`}
       data={data}
       onEndReached={fetchNextPage}
       onEndReachedThreshold={0.5}
-      renderItem={({item}) => <ChatBubble item={item} />}
+      renderItem={({item, index}) => <ChatBubble item={item} id={index} />}
       onScroll={Onscroll}
-      ListHeaderComponent={() => <View style={{height: hp(80)}} />}
     />
   );
 };

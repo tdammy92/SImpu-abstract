@@ -7,7 +7,7 @@ const objectIsEmpty = (obj: object) => {
   }
 };
 
-//upload file
+//handle formdata
 export const toFormData = (
   values: object,
   files?: any,
@@ -35,21 +35,18 @@ export const toFormData = (
   return formData;
 };
 
+//uploadfile
 export async function uploadFile(options: {
   url: string;
   file: any;
+  fileName: string;
   data?: any;
   header: any;
-
-  //   onProgress: (percentage: number) => void;
+  onProgress?: (percentage: number) => void;
 }) {
-  // const localData = loadState();
-  // const token = localData && localData.token;
-  // const { organisations, profile } = localData || {
-  //   organisations: null,
-  //   profile: null,
-  // };
-  const {url, data, file, header} = options;
+  const {url, data, file, fileName, header, onProgress} = options;
+
+  // console.log('param to xhr', JSON.stringify(options, null, 2));
 
   return new Promise<any>((res, rej) => {
     const xhr = new XMLHttpRequest();
@@ -59,18 +56,20 @@ export async function uploadFile(options: {
 
     xhr.onload = () => {
       const resp = JSON.parse(xhr.responseText);
-      res(resp?.data?.upload_ids);
+      // console.log('Xhr response', resp?.data);
+      res(resp?.data);
     };
     xhr.onerror = evt => rej(evt);
     xhr.onabort = evt => console.log(evt);
-    //     xhr.upload.onprogress = event => {
-    //       if (event.lengthComputable) {
-    //         const percentage = (event.loaded / event.total) * 100;
-    //         onProgress(Math.round(percentage));
-    //       }
-    //     };
+    xhr.upload.onprogress = event => {
+      if (event.lengthComputable) {
+        const percentage = (event.loaded / event.total) * 100;
+        //@ts-ignore
+        onProgress(Math.round(percentage));
+      }
+    };
 
-    const formData = toFormData(data, file, 'files');
+    const formData = toFormData(data, file, fileName);
 
     xhr.send(formData);
   });

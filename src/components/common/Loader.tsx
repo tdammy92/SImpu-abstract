@@ -44,12 +44,7 @@ const Loader = () => {
 
   return (
     <>
-      <Modal
-        visible={Isloading}
-        style={[
-          StyleSheet.absoluteFill,
-          {flex: 1, backgroundColor: colors.secondaryBg},
-        ]}>
+      {Isloading && (
         <Animated.View
           entering={SlideInRight}
           exiting={SlideOutLeft}
@@ -85,7 +80,7 @@ const Loader = () => {
             <AntDesign name="mail" size={40} color="rgba(255,255,255,0.9)" />
           </View>
         </Animated.View>
-      </Modal>
+      )}
     </>
   );
 };

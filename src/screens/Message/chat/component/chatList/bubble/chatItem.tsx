@@ -15,12 +15,7 @@ const ChatItem = ({message, isUser}: any) => {
   const {entity} = message;
   //   console.log('message', JSON.stringify(message, null, 2));
   return (
-    <View
-      style={
-        {
-          // width: '100%'
-        }
-      }>
+    <View style={{}}>
       {/* message text */}
       {entity?.content?.body && (
         <Hyperlink
@@ -49,10 +44,11 @@ const ChatItem = ({message, isUser}: any) => {
             },
           ]}>
           {entity?.attachments?.map((file: any, index: number) => {
-            // const type = getFileType(file?.data?.url);
-            const type = mime.extension(file?.mimetype);
+            const type = getFileType(file?.data?.url);
+            // const type = mime.extension(file?.mimetype);
 
             // console.log('filetype', type);
+            // console.log('filetype', file?.mimetype);
 
             // console.log('typeee23', JSON.stringify(file, null, 2));
 
@@ -68,6 +64,8 @@ const ChatItem = ({message, isUser}: any) => {
               );
             } else if (audioType.includes(type)) {
               //render audio
+
+              // console.log('audioooo', JSON.stringify(file, null, 2));
               return (
                 <AudioPlayer
                   audioData={file}

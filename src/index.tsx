@@ -1,6 +1,7 @@
 import React, {useCallback, useEffect, useRef} from 'react';
 import {LogBox, Linking, StatusBar, Platform} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+
 import * as eva from '@eva-design/eva';
 import {
   NavigationContainer,

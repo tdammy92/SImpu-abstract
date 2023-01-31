@@ -1,14 +1,16 @@
 import {StyleSheet, Text, View} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {Channel} from 'src/@types/inbox';
 //@ts-ignore
 import UserAvatar from 'react-native-user-avatar';
 import ChannelIcon from 'src/components/common/ChannelIcon';
 import {hp, wp} from 'src/utils';
-import {colors} from 'src/constants';
+import {FONTS, colors} from 'src/constants';
 import {trimText} from 'src/utils/string-utils/string';
 import stc from 'string-to-color';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {SCREEN_NAME} from 'src/navigation/constants';
 
 type customerType = {
   uuid: string;
@@ -22,14 +24,22 @@ type customerType = {
   type: string;
 };
 
-const SearchCustomer = ({item}: any) => {
-  //   console.log('individual customer', JSON.stringify(item, null, 2));
+const SearchCustomer = ({item, idx, lt}: any) => {
+  const navigation = useNavigation();
+  // console.log('individual customer', JSON.stringify(item, null, 2));
 
-  const handleNavigation = () => {};
+  const handleNavigation = () => {
+    //@ts-ignore
+    navigation.navigate(SCREEN_NAME.customerThreads, {customerDetails: item});
+  };
 
   return (
     <TouchableOpacity onPress={handleNavigation}>
-      <View style={styles.container}>
+      <View
+        style={[
+          styles.container,
+          {marginRight: idx === lt - 1 ? wp(40) : wp(5)},
+        ]}>
         <View>
           <UserAvatar
             name={item?.platform_name ?? item?.platform_nick}
@@ -45,9 +55,9 @@ const SearchCustomer = ({item}: any) => {
               styles.name,
               {color: stc(item?.platform_name ?? item?.platform_nick)},
             ]}>
-            {trimText(item?.platform_name ?? item?.platform_nick, 10)}
+            {trimText(item?.platform_name ?? item?.platform_nick, 15)}
           </Text>
-          <Text style={styles.name2}>{trimText(item?.platform_nick, 11)}</Text>
+          <Text style={styles.name2}>{trimText(item?.platform_nick, 15)}</Text>
         </View>
 
         <View
@@ -70,8 +80,8 @@ export default SearchCustomer;
 
 const styles = StyleSheet.create({
   container: {
-    width: wp(150),
-    height: hp(50),
+    width: wp(170),
+    height: hp(70),
     flexDirection: 'row',
     backgroundColor: colors.bootomHeaderBg,
     marginRight: hp(7),
@@ -84,9 +94,11 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: hp(14),
+    fontFamily: FONTS.TEXT_REGULAR,
   },
   name2: {
-    fontSize: hp(12),
+    fontSize: hp(14),
     color: colors.dark,
+    fontFamily: FONTS.TEXT_REGULAR,
   },
 });

@@ -112,10 +112,10 @@ const Notification = (props: any) => {
               <View style={{marginRight: 10}}>
                 <View
                   style={{
-                    height: 40,
-                    width: 40,
+                    height: hp(40),
+                    width: hp(40),
                     borderRadius: hp(40 * 0.5),
-                    backgroundColor: '#e4e4e4',
+                    backgroundColor: colors.lightGray,
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
@@ -125,7 +125,8 @@ const Notification = (props: any) => {
               <Text
                 style={{
                   width: '90%',
-                  lineHeight: hp(19),
+
+                  lineHeight: hp(18),
                   fontFamily: FONTS.TEXT_SEMI_BOLD,
                 }}>
                 {item?.message}
@@ -136,9 +137,9 @@ const Notification = (props: any) => {
               <View style={{width: 35, marginRight: 10}} />
               <Text
                 style={{
-                  color: '#A5ACB8',
+                  color: colors.darkGray,
                   fontFamily: FONTS.TEXT_SEMI_BOLD,
-                  fontSize: hp(12),
+                  fontSize: hp(14),
                 }}>
                 {notificationDateFormat(item?.created_datetime)}
               </Text>
@@ -173,7 +174,7 @@ const Notification = (props: any) => {
             }}
             onPress={ClearNotification}>
             <Text style={styles.clearText}>Clear All</Text>
-            <Feather name="check-circle" size={18} color={'#000'} />
+            <Feather name="check-circle" size={18} color={colors.secondaryBg} />
           </TouchableOpacity>
         </View>
       </View>
@@ -200,11 +201,11 @@ export default Notification;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.light,
   },
   titleContainer: {
     paddingTop: height * 0.05,
-    backgroundColor: '#fff',
+    backgroundColor: colors.light,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -237,7 +238,7 @@ const styles = StyleSheet.create({
   },
 
   clearText: {
-    fontSize: hp(14),
+    fontSize: hp(16),
     fontFamily: FONTS.TEXT_REGULAR,
     marginRight: hp(5),
     color: colors.dark,
@@ -246,7 +247,7 @@ const styles = StyleSheet.create({
   actionText: {
     fontFamily: FONTS.TEXT_SEMI_BOLD,
     fontSize: hp(16),
-    color: '#026AE8',
+    color: colors.secondaryBg,
   },
 
   ListContainer: {

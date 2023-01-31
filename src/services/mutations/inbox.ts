@@ -36,13 +36,28 @@ export const sendFiles = async (params: any) => {
 
   const url = buildConversationUrl(`upload/${credentitalId}`);
 
-  console.log('upload url', url);
+  // console.log('upload url', url);
   const response = await client(url, {
     method: 'POST',
     data: file,
     params: {Auth, organisationId},
   });
 
-  console.log('response from file upload', response);
+  // console.log('response from file upload', response);
+  return response.data;
+};
+
+//mark thread as read
+export const markThreadAsRead = async (params: any) => {
+  const {Auth, organisationId, threadId} = params;
+
+  const url = buildConversationUrl(`threads/notifications/${threadId}`);
+
+  const response = await client(url, {
+    method: 'PATCH',
+    data: {event: 'read'},
+    params: {Auth, organisationId},
+  });
+
   return response.data;
 };

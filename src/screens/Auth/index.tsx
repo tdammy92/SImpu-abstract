@@ -121,6 +121,7 @@ const Login = ({navigation}: any) => {
   );
   const deviceMutation = useMutation(registerDeviceNotification, {
     onSuccess(data, variables, context) {
+      console.log('Yomi API response', data);
       dispatch(addDevice(data?.data));
       dispatch(hideLoader());
     },

@@ -16,6 +16,8 @@ import {format} from 'date-fns';
 import {FONTS, colors} from 'src/constants';
 import {hp} from 'src/utils';
 import useImageDownload from 'src/Hooks/useImageDownload';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+SafeAreaProvider;
 
 const fallbackUrl =
   'https://spectrumpaint.com/store/media/10071/pv/50_rhinosatin-1604334194.jpg';
@@ -37,13 +39,11 @@ const ImageScreen = ({route}: any) => {
 
   const imageUrl = {
     // Simplest usage.
-    // url: fallbackUrl,
+
     url: data?.url,
     width: data?.width,
     height: data?.height,
-    // Optional, if you know the image size, you can set the optimization performance
 
-    // You can pass props to <Image />.
     props: {},
   };
 
@@ -51,7 +51,7 @@ const ImageScreen = ({route}: any) => {
 
   const header = () => {
     return (
-      <View style={[styles.headerConatinerStyle]}>
+      <SafeAreaProvider style={[styles.headerConatinerStyle]}>
         <View style={[styles.headerConentWrapper, {marginTop: topMargin}]}>
           <View style={{flexDirection: 'row'}}>
             <TouchableOpacity onPress={goBack} style={{padding: hp(7)}}>
@@ -59,8 +59,7 @@ const ImageScreen = ({route}: any) => {
             </TouchableOpacity>
             <View style={{alignItems: 'flex-start'}}>
               <Text style={styles.nameText}>
-                {message?.author?.platform_name ??
-                  message?.author?.platform_nick}
+                {message?.author?.name ?? message?.author?.platform_nick}
               </Text>
               <Text style={styles.dateText}>
                 {format(new Date(message?.created_datetime), 'Pp')}
@@ -72,7 +71,7 @@ const ImageScreen = ({route}: any) => {
             <AntDesign name="download" color={colors.light} size={hp(24)} />
           </TouchableOpacity>
         </View>
-      </View>
+      </SafeAreaProvider>
     );
   };
 

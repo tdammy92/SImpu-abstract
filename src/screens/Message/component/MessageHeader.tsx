@@ -118,7 +118,11 @@ const MessageHeader = (props: any) => {
           <View style={styles.badgeContainer}>
             {dummyData.length > 0 ? <NotificationLabel /> : null}
           </View>
-          <Ionicons name="notifications-outline" size={30} color={'#7D8282'} />
+          <Ionicons
+            name="notifications-outline"
+            size={30}
+            color={colors.darkGray}
+          />
         </TouchableOpacity>
       </View>
 
@@ -130,7 +134,7 @@ const MessageHeader = (props: any) => {
         <TouchableOpacity
           style={{marginTop: 0, backgroundColor: ''}}
           onPress={openSortSheet}>
-          <Octicons name="sort-asc" size={24} color={'#7D8282'} />
+          <Octicons name="sort-asc" size={24} color={colors.darkGray} />
         </TouchableOpacity>
       </View>
 
@@ -140,11 +144,11 @@ const MessageHeader = (props: any) => {
           style={styles.inputWrapper}
           //@ts-ignore
           onPress={() => navigation.navigate(SCREEN_NAME.search)}>
-          <EvilIcons name="search" size={28} color="#828282" />
+          <EvilIcons name="search" size={28} color={colors.darkGray} />
 
           <Text
             style={{
-              color: '#828282',
+              color: colors.darkGray,
               fontFamily: FONTS.TEXT_SEMI_BOLD,
               fontSize: hp(18),
               marginLeft: wp(5),
@@ -170,7 +174,7 @@ const MessageHeader = (props: any) => {
                     <View
                       style={{
                         borderBottomColor:
-                          selectedIndex === index ? '#191A1A' : '',
+                          selectedIndex === index ? colors.primaryBg : '',
                         borderBottomWidth: selectedIndex === index ? 2 : 0,
                       }}>
                       <Text style={[styles.sliderText, {}]}>
@@ -248,7 +252,7 @@ const styles = StyleSheet.create({
   },
 
   badgeText: {
-    color: '#fff',
+    color: colors.light,
     fontFamily: FONTS.TEXT_SEMI_BOLD,
     fontSize: hp(12),
     textAlign: 'center',
@@ -263,7 +267,7 @@ const styles = StyleSheet.create({
   inputWrapper: {
     flexDirection: 'row',
     marginVertical: hp(10),
-    height: 40,
+    height: hp(45),
     paddingHorizontal: wp(7),
     backgroundColor: '#F8F8F8',
 

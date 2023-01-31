@@ -14,15 +14,14 @@ import {colors, FONTS} from 'src/constants';
 import {hp, wp} from 'src/utils';
 import {format} from 'date-fns';
 //@ts-ignore
-import HTMLView from 'react-native-htmlview';
-
+// import HTMLView from 'react-native-htmlview';
 //@ts-ignore
 import UserAvatar from 'react-native-user-avatar';
 import {trimText} from 'src/utils/string-utils/string';
-import {WebView} from 'react-native-webview';
 import Htmlview from './HtmlView';
 
 const Message = ({data}: any) => {
+  // console.log('Html message', JSON.stringify(data, null, 2));
   return (
     <View style={styles.container}>
       <View>
@@ -59,7 +58,7 @@ const Message = ({data}: any) => {
             <SimpleLineIcons
               name="options-vertical"
               size={18}
-              color={'#A5ACB8'}
+              color={colors.darkGray}
             />
           </TouchableOpacity>
         </View>
@@ -105,8 +104,8 @@ const styles = StyleSheet.create({
   },
   messageHeader: {
     flexDirection: 'row',
-
     justifyContent: 'space-between',
+    marginBottom: hp(5),
   },
   messageHeaderTextSmall: {
     fontFamily: FONTS.TEXT_REGULAR,

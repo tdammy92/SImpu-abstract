@@ -14,16 +14,18 @@ import {useNavigation} from '@react-navigation/native';
 //@ts-ignore
 import UserAvatar from 'react-native-user-avatar';
 import ChannelIcon from 'src/components/common/ChannelIcon';
+import {Avatar} from 'src/constants';
 
 const {height} = Dimensions.get('screen');
 
 const MailHeader = ({threadDetail}: any) => {
   const navigation = useNavigation();
 
+  const thread = threadDetail?.thread;
   const subject = threadDetail?.thread?.subject;
-  const sender = threadDetail?.thread?.sender;
+  // const sender = threadDetail?.thread?.sender;
 
-  //   console.log('email header', JSON.stringify(subject, null, 2));
+  // console.log('email header', JSON.stringify(threadDetail, null, 2));
 
   return (
     <View style={styles.header}>
@@ -34,7 +36,7 @@ const MailHeader = ({threadDetail}: any) => {
           alignItems: 'center',
         }}>
         <View style={styles.headerLeft}>
-          <View style={styles.userDetails}>
+          <View style={styles.backBtnWrapper}>
             <TouchableOpacity
               onPress={() => navigation.goBack()}
               style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -43,49 +45,54 @@ const MailHeader = ({threadDetail}: any) => {
                 size={22}
                 color={colors.secondaryBg}
               />
-              <View style={{marginLeft: 5}}>
-                {/* @ts-ignore */}
-                <UserAvatar
-                  size={hp(30)}
-                  style={{height: hp(35), width: hp(35)}}
-                  borderRadius={hp(35 * 0.5)}
-                  name={sender?.platform_nick ?? sender?.platform_id}
-                  src={sender?.image_url}
-                />
-                <View
-                  style={{
-                    position: 'absolute',
-                    bottom: hp(-7),
-                    right: hp(-7),
-                  }}>
-                  <ChannelIcon name={sender?.channel_name} />
-                </View>
+              <View
+                style={[
+                  styles.ChannelIconBackground,
+                  {
+                    backgroundColor: colors.bootomHeaderBg,
+                  },
+                ]}>
+                <ChannelIcon name={thread?.channel_name} />
               </View>
             </TouchableOpacity>
-            <Text style={styles.usernameText}>
-              {sender?.platform_nick ?? sender?.platform_id}
-            </Text>
           </View>
         </View>
-        <TouchableOpacity
-          style={{padding: 10}}
-          // onPress={openSheet}
-        >
-          <View style={styles.headerRight}>
-            <SimpleLineIcons
-              name="options-vertical"
-              size={22}
-              color={'#A5ACB8'}
+
+        <View style={styles.headerRight}>
+          <View style={styles.inboxStyle}>
+            <View
+              style={{
+                height: hp(10),
+                width: hp(10),
+                marginRight: wp(3),
+                borderRadius: hp(10 * 0.5),
+                backgroundColor:
+                  thread?.inbox?.color ?? colors?.secondaryBgDark,
+              }}
             />
+            <Text style={{color: colors.dark}}>{thread?.inbox.name}</Text>
           </View>
-        </TouchableOpacity>
+          <TouchableOpacity style={{padding: 10}}>
+            <View style={{}}>
+              <SimpleLineIcons
+                name="options-vertical"
+                size={22}
+                color={'#A5ACB8'}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
+
+      {/* email subject */}
       <View style={{marginVertical: hp(5)}}>
         <Text
           style={{
+            fontSize: hp(16),
             marginLeft: wp(15),
-            width: '80%',
+            width: '85%',
             fontFamily: FONTS.TEXT_SEMI_BOLD,
+            color: colors.dark,
           }}>
           {subject}
         </Text>
@@ -101,25 +108,34 @@ const styles = StyleSheet.create({
     paddingHorizontal: wp(10),
     paddingTop: hp(height * 0.06),
     paddingBottom: hp(height * 0.015),
+    alignSelf: 'center',
+    width: '100%',
+    // backgroundColor:,
   },
-  headerLeft: {
-    flexDirection: 'row',
+
+  headerLeft: {},
+
+  ChannelIconBackground: {
+    marginLeft: 5,
+    padding: hp(5),
+    height: hp(40),
+    width: hp(40),
+    borderRadius: hp(40 * 0.5),
     alignItems: 'center',
+    justifyContent: 'center',
   },
   headerRight: {
-    // backgroundColor: 'red',
-  },
-
-  userDetails: {
-    marginLeft: hp(10),
     flexDirection: 'row',
     alignItems: 'center',
   },
 
-  usernameText: {
-    fontFamily: FONTS.TEXT_SEMI_BOLD,
-    fontSize: hp(16),
-    color: colors.dark,
-    marginLeft: wp(7),
+  inboxStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: wp(5),
+    backgroundColor: colors.bootomHeaderBg,
+    padding: hp(5),
+    borderRadius: hp(5),
   },
+  backBtnWrapper: {},
 });

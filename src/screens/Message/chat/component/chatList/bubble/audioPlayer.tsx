@@ -12,7 +12,9 @@ useNavigation;
 const AudioPlayer = ({audioData, isUser}: any) => {
   const {data} = audioData;
   const navigation = useNavigation();
+
   // console.log('audio data', JSON.stringify(data?.url, null, 2));
+
   const song = {
     id: data?.asset_id,
     url: data?.url, // Load media from the network
@@ -24,7 +26,7 @@ const AudioPlayer = ({audioData, isUser}: any) => {
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
 
-  SoundPlayer.setCategory('PlayAndRecord');
+  // SoundPlayer.setCategory('PlayAndRecord');
 
   const Initialize = () => {
     let newSong = new SoundPlayer(song?.url, '', error => {
@@ -83,11 +85,9 @@ const AudioPlayer = ({audioData, isUser}: any) => {
     const unsubscribe = navigation.addListener('beforeRemove', () => {
       audio?.stop();
       audio?.release();
-
-      console.log('this component is about to be removed');
     });
     return unsubscribe;
-  }, [navigation]);
+  }, [navigation, audio]);
 
   // console.log('currentTime', currentTime, song?.duration);
 

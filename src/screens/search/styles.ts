@@ -11,7 +11,8 @@ interface Styles {
   pillContainer: ViewStyle;
   searchPill: ViewStyle;
   pillText: TextStyle;
-  selectedPill: TextStyle;
+  selectedPill: ViewStyle;
+  selectedPillText: TextStyle;
   searchModalContainer: ViewStyle;
   inputWrapper: ViewStyle;
   peopleContainer: ViewStyle;
@@ -23,6 +24,9 @@ interface Styles {
 
   customerScrollContainer: ViewStyle;
   threadScrollContainer: ViewStyle;
+
+  emptyWrapper: ViewStyle;
+  emptyText: TextStyle;
 }
 
 const {width, height} = Dimensions.get('screen');
@@ -81,16 +85,16 @@ const styles = StyleService.create<Styles>({
   },
 
   selectedPill: {
-    backgroundColor: colors.secondaryBgDark,
+    backgroundColor: colors.darkGray,
+    padding: hp(5),
+    borderRadius: hp(10),
+    marginLeft: wp(2),
+    elevation: 1,
+    zIndex: 1,
+  },
+  selectedPillText: {
     color: colors.light,
-    borderWidth: 0,
-    paddingVertical: hp(5),
-    paddingHorizontal: wp(5),
-    borderRadius: 4,
-    marginLeft: 2,
-    fontSize: hp(16),
-    elevation: 3,
-    zIndex: 3,
+    fontSize: hp(14),
   },
 
   customerScrollContainer: {
@@ -113,15 +117,15 @@ const styles = StyleService.create<Styles>({
     paddingHorizontal: wp(7),
     borderWidth: 1,
     alignItems: 'center',
-    borderRadius: 10,
+    borderRadius: hp(10),
   },
 
   input: {
     flex: 1,
-    marginLeft: 5,
+    marginLeft: wp(5),
     width: '100%',
     height: '100%',
-    fontSize: hp(20),
+    fontSize: hp(18),
     fontFamily: FONTS.TEXT_REGULAR,
     color: colors.dark,
   },
@@ -135,9 +139,19 @@ const styles = StyleService.create<Styles>({
   Itext: {
     color: colors.dark,
     fontSize: hp(16),
-    fontFamily: FONTS.TEXT_REGULAR,
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
     marginLeft: 5,
   },
   topResultContainer: {marginTop: hp(10)},
+
+  emptyWrapper: {
+    alignSelf: 'center',
+    justifyContent: 'center',
+    marginVertical: hp(20),
+  },
+  emptyText: {
+    fontSize: hp(16),
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
+  },
 });
 export default styles;

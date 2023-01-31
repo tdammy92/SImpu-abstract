@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef, memo, FC} from 'react';
+import React, {useState, useEffect, useRef, memo, FC, useCallback} from 'react';
 import {
   View,
   Alert,
@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
   ScrollView,
   Pressable,
+  Linking,
+  KeyboardAvoidingView,
 } from 'react-native';
 import {
   MentionInput,
@@ -22,6 +24,9 @@ import Animated, {
   withSpring,
   withTiming,
   useAnimatedStyle,
+  withRepeat,
+  withDelay,
+  interpolate,
 } from 'react-native-reanimated';
 import DocumentPicker, {
   DirectoryPickerResponse,
@@ -29,12 +34,13 @@ import DocumentPicker, {
   isInProgress,
   types,
 } from 'react-native-document-picker';
+import {useNavigation} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useMutation, useQueryClient} from 'react-query';
+
 import {KeyboardAwareScrollView} from 'src/components/common/KeyBoardAvoidingView';
-// import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import {colors} from 'src/constants';
 import {hp, messsageToast, wp} from 'src/utils';
 import {useDispatch, useSelector} from 'react-redux';
@@ -47,12 +53,15 @@ import {
 } from 'src/services/mutations/inbox';
 import {previousDay} from 'date-fns';
 import {appendFile} from 'react-native-fs';
-import {toFormData, uploadFile} from 'src/services/upload/fileUpload';
+import {Camera} from 'react-native-vision-camera';
+import {toFormData, uploadFile} from 'src/services/upload/attchments';
 import {buildConversationUrl} from 'src/services/api/api-client';
 import BottomSheet from 'src/components/common/ImagePicker';
 import ImagePicker from 'react-native-image-crop-picker';
 import {removeReply} from 'src/store/reply/replyReducer';
 import Reply from './reply';
+import {SCREEN_NAME} from 'src/navigation/constants';
+
 // import EmojiPicker from "./emojis/EmojiPicker";
 
 // import { useKeyboard } from "@react-native-community/hooks";
@@ -65,10 +74,11 @@ const ChatInput = ({
   isLeft,
   username,
   name,
-  credentitalId,
+  credentialId,
   threadId,
   members,
   setMessageTrail,
+  scrollToChatBottom,
 }: any) => {
   const {token, profile} = useSelector((state: StoreState) => state.user);
   const organisation = useSelector(
@@ -78,6 +88,8 @@ const ChatInput = ({
   const {reply, replyIsActive} = useSelector(
     (state: StoreState) => state.reply,
   );
+  const navigation = useNavigation();
+  const rotateProgrss = useSharedValue(0);
 
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
@@ -102,7 +114,7 @@ const ChatInput = ({
   const sendMessageMutation = useMutation(sendMessageSocials, {
     onSuccess(data, variables, context) {
       //inavlid query conversations
-      setMessage('');
+
       queryClient.invalidateQueries('conversations');
     },
     onError(error, variables, context) {
@@ -117,9 +129,8 @@ const ChatInput = ({
   const replyMessageMutation = useMutation(replyMessageSocials, {
     onSuccess(data, variables, context) {
       //inavlid query conversations
-      setMessage('');
+
       queryClient.invalidateQueries('conversations');
-      // dispatch(removeReply());
     },
     onError(error, variables, context) {
       console.log('post message error', error);
@@ -194,6 +205,7 @@ const ChatInput = ({
 
   //send message handler
   const sendMessage = async () => {
+    scrollToChatBottom();
     const data = {
       message: {
         type: 'message',
@@ -208,87 +220,23 @@ const ChatInput = ({
       },
     };
 
-    const tempMessage = {
-      type: 'message/normal',
-      author: {
-        meta: {
-          account_id: profile?.id,
-          is_renewed: true,
-        },
-        image_url: '',
-        platform_id: '',
-        channel_name: '',
-        name: `${profile?.first_name} ${profile?.last_name}`,
-        id: 653085,
-        platform_name: `${profile?.first_name} ${profile?.last_name}`,
-        platform_nick: null,
-        uuid: '',
-        channel_id: '',
-        is_valid: false,
-      },
-      entity: {
-        content: {
-          body: message,
-        },
-        id: '',
-        pid: '',
-        uuid: '',
-        meta: {
-          type: 'normal',
-        },
-        status: 'pending',
-        quoted_id: null,
-        author_id: profile?.id,
-        attachments: [
-          {
-            id: '',
-            data: {
-              url: '',
-              type: 'upload',
-              width: 595,
-
-              format: 'pdf',
-              height: 841,
-              api_key: '',
-              version: 1673302788,
-              asset_id: '',
-              signature: '',
-              version_id: '',
-              placeholder: false,
-              resource_type: 'image',
-            },
-            from: 'cloudinary',
-            size: 538640,
-            type: 'file',
-            mimetype: 'application/pdf',
-            created_datetime: new Date(),
-          },
-        ],
-        mention_ids: null,
-        recipient_ids: null,
-      },
-
-      id: 8054444,
-      uuid: '44ec06df3d921e77d72d3e4c99988024',
-      account_id: null,
-      show_in_thread: null,
-      created_datetime: new Date(),
-      updated_datetime: null,
-      author_id: profile?.id,
-      author_type: '',
-      content_id: '-m_g-',
-      content_type: 'comm',
-    };
-    setMessageTrail((prev: any) => [tempMessage, ...prev]);
+    const temp = getTempMessage();
+    setMessageTrail((prev: any) => [temp, ...prev]);
 
     if (replyIsActive) {
-      console.log('reply action');
+      // console.log('reply action');
       await replyMessageMutation.mutateAsync(data);
+      setMessage('');
       dispatch(removeReply());
     } else {
-      console.log('send action');
+      // console.log('send action');
+      setMessage('');
       await sendMessageMutation.mutateAsync(data);
     }
+  };
+
+  const onProgress = (percentage: number) => {
+    console.log('percatge of the upload', percentage);
   };
 
   //send file handler
@@ -297,6 +245,7 @@ const ChatInput = ({
       const res = await DocumentPicker.pick({
         allowMultiSelection: false,
         type: [
+          types.images,
           types.audio,
           types.video,
           types.doc,
@@ -304,9 +253,10 @@ const ChatInput = ({
           types.pdf,
           types.xls,
           types.ppt,
-          types.zip,
         ],
       });
+
+      // console.log(`file from ${Platform.OS}`, JSON.stringify(res, null, 2));
 
       const file = {
         uri: res[0]?.uri,
@@ -316,7 +266,7 @@ const ChatInput = ({
 
       const data = {type: 'message'};
       const header = {token, organisationId: organisation?.id};
-      const url = buildConversationUrl(`upload/${credentitalId}`);
+      const url = buildConversationUrl(`upload/${credentialId}`);
 
       Alert.alert('', `Send ${file?.name}  to ${name}`, [
         {
@@ -328,11 +278,19 @@ const ChatInput = ({
           text: 'Send',
           onPress: async () => {
             // setMessageTrail((prev: any) => [tempMessage, ...prev]);
-            const formData = await uploadFile({url, file, data, header});
+
+            const attachmentId = await uploadFile({
+              url,
+              file,
+              fileName: 'files',
+              data,
+              header,
+              onProgress,
+            });
             const mutatePayload = {
               message: {
                 body: message,
-                attachment_ids: formData,
+                attachment_ids: attachmentId?.upload_ids,
               },
               params: {
                 threadId,
@@ -347,64 +305,6 @@ const ChatInput = ({
     } catch (error) {
       // console.log('file picker catch error', error);
     }
-  };
-
-  const bottomSheetRef = useRef<any>(null);
-
-  const openSheet = () => {
-    if (bottomSheetRef.current) {
-      bottomSheetRef.current.open();
-    }
-  };
-  const closeSheet = () => {
-    if (bottomSheetRef.current) {
-      bottomSheetRef.current.close();
-    }
-  };
-
-  //open camera code
-  const Snap = async () => {
-    ImagePicker.openCamera({
-      width: 300,
-      height: 400,
-      cropping: true,
-      freeStyleCropEnabled: true,
-      includeBase64: false,
-      mediaType: 'photo',
-    })
-      .then(image => {
-        if (image) {
-          // updateImage(image);
-        }
-        closeSheet();
-      })
-      .catch(err => {
-        console.log(err);
-        closeSheet();
-      });
-  };
-
-  //open gallery code
-  const Gallery = async () => {
-    ImagePicker.openPicker({
-      width: 300,
-      height: 400,
-      cropping: true,
-      freeStyleCropEnabled: true,
-      includeBase64: false,
-      mediaType: 'photo',
-    })
-      .then(image => {
-        if (image) {
-          // updateImage(image);
-
-          closeSheet();
-        }
-      })
-      .catch(err => {
-        console.log(err);
-        closeSheet();
-      });
   };
 
   // useEffect(() => {
@@ -423,19 +323,32 @@ const ChatInput = ({
   //     }
   //   }, [reply]);
 
-  const getTempMessage = (message: any, isReply: any) => {
-    const temp = {
+  const requestCameraPermission = useCallback(async () => {
+    const permission = await Camera.requestCameraPermission();
+
+    if (permission === 'denied') {
+      await Linking.openSettings();
+    }
+  }, []);
+
+  useEffect(() => {
+    requestCameraPermission();
+  }, []);
+
+  //generate temprary message
+  const getTempMessage = () => {
+    const tempMessage = {
       type: 'message/normal',
       author: {
         meta: {
           account_id: profile?.id,
           is_renewed: true,
         },
-        image_url: '',
+        image_url: profile?.image,
         platform_id: '',
         channel_name: '',
         name: `${profile?.first_name} ${profile?.last_name}`,
-        id: 0,
+        id: 653085,
         platform_name: `${profile?.first_name} ${profile?.last_name}`,
         platform_nick: null,
         uuid: '',
@@ -443,8 +356,10 @@ const ChatInput = ({
         is_valid: false,
       },
       entity: {
-        content: null,
-        id: '',
+        content: {
+          body: message,
+        },
+        id: 6559756,
         pid: '',
         uuid: '',
         meta: {
@@ -453,48 +368,106 @@ const ChatInput = ({
         status: 'pending',
         quoted_id: null,
         author_id: profile?.id,
-        attachments: [
-          {
-            id: '',
-            data: {
-              url: '',
-              type: 'upload',
-              width: 0,
-
-              format: 'pdf',
-              height: 0,
-              api_key: '',
-              version: 0,
-              asset_id: '',
-              signature: '',
-              version_id: '',
-              placeholder: false,
-              resource_type: 'image',
-            },
-            from: 'cloudinary',
-            size: 538640,
-            type: 'file',
-            mimetype: 'application/pdf',
-            created_datetime: new Date(),
-          },
-        ],
+        attachments: null,
         mention_ids: null,
         recipient_ids: null,
       },
-
-      id: 0,
-      uuid: '44ec06df3d921e77d72d3e4c99988024',
-      account_id: null,
+      id: 8097663,
+      uuid: '',
+      account_id: '',
       show_in_thread: null,
       created_datetime: new Date(),
       updated_datetime: null,
       author_id: profile?.id,
-      author_type: '',
-      content_id: '-m_g-',
+      author_type: 'profile',
+      content_id: '',
       content_type: 'comm',
+      quoted: reply?.author
+        ? {
+            type: 'message/normal',
+            author: {
+              contacts: {
+                b1e6077ae02e1afe230265450e91f65d: {
+                  name: '',
+                  account_id: '',
+                },
+              },
+              meta: {
+                is_renewed: true,
+              },
+              image_url: reply?.author?.image_url,
+              platform_id: reply?.author?.platform_id,
+              channel_name: reply?.author?.channel_name,
+              name: reply?.author?.name,
+              id: reply?.author?.id,
+              platform_name: reply?.author?.platform_name,
+              platform_nick: reply?.author?.platform_nick,
+              uuid: reply?.author?.uuid,
+              channel_id: reply?.author?.channel_id,
+              is_valid: reply?.author?.is_valid,
+            },
+            entity: {
+              content: {
+                body: reply?.entity?.content?.body,
+              },
+              id: '',
+              pid: '',
+              uuid: '',
+              meta: {
+                type: '',
+              },
+              status: reply?.entity?.status,
+              quoted_id: null,
+              author_id: reply?.author_id,
+              attachments: reply?.entity?.attachments
+                ? [
+                    {
+                      id: '',
+                      data: {
+                        url: '',
+                        type: reply?.entity?.attachments[0]?.data?.type,
+                        width: 0,
+
+                        format: reply?.entity?.attachments[0]?.data?.format,
+                        height: 841,
+                        api_key: '',
+                        version: 1673302788,
+                        asset_id: '',
+                        signature: '',
+                        version_id: '',
+                        placeholder: false,
+                        resource_type:
+                          reply?.entity?.attachments[0]?.data?.resource_type,
+                      },
+                      from: 'cloudinary',
+                      size: 538640,
+                      type: 'file',
+                      mimetype: reply?.entity?.attachments[0]?.mimetype,
+                      created_datetime: new Date(
+                        reply?.entity?.attachments[0]?.created_datetime,
+                      ),
+                    },
+                  ]
+                : null,
+              mention_ids: null,
+              recipient_ids: null,
+            },
+
+            id: 8054444,
+            uuid: '',
+            account_id: null,
+            show_in_thread: null,
+            created_datetime: new Date(),
+            updated_datetime: null,
+            author_id: reply?.author_id,
+            author_type: '',
+            content_id: '-m_g-',
+            content_type: 'comm',
+          }
+        : null,
     };
 
-    return temp;
+    return tempMessage;
   };
 
   const heightAnimatedStyle = useAnimatedStyle(() => {
@@ -503,8 +476,28 @@ const ChatInput = ({
     };
   });
 
+  const sendAnimationStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {rotate: `${interpolate(rotateProgrss.value, [0, 1], [0, -90])}deg`},
+      ],
+    };
+  });
+
+  useEffect(() => {
+    if (message.length > 0) {
+      rotateProgrss.value = withDelay(200, withSpring(1));
+    } else {
+      rotateProgrss.value = withDelay(200, withSpring(0));
+    }
+  }, [message]);
+
+  const navigateToCamera = () => {
+    //@ts-ignore
+    navigation.navigate(SCREEN_NAME.camera, {threadId, credentialId});
+  };
+
   return (
-    // <KeyboardAwareScrollView>
     <Animated.View style={[styles.container]}>
       {replyIsActive && <Reply />}
       <View style={styles.innerContainer}>
@@ -559,26 +552,22 @@ const ChatInput = ({
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.rightIconButtonStyle}
-            onPress={openSheet}>
+            onPress={navigateToCamera}>
             <AntDesign name="camera" size={23} color={colors.light} />
           </TouchableOpacity>
         </View>
+
         <TouchableOpacity
-          style={styles.sendButton}
           onPress={sendMessage}
           disabled={message === '' ? true : false}>
-          <Ionicons name={'send'} size={20} color={colors.light} />
+          <Animated.View style={[styles.sendButton, sendAnimationStyle]}>
+            <Ionicons name={'send'} size={20} color={colors.light} />
+          </Animated.View>
         </TouchableOpacity>
       </View>
+
       {/* <EmojiPicker /> */}
-      {/* <BottomSheet
-        Gallery={Gallery}
-        Snap={Snap}
-        ref={bottomSheetRef}
-        title="Media option"
-      /> */}
     </Animated.View>
-    // </KeyboardAwareScrollView>
   );
 };
 
@@ -700,3 +689,75 @@ const styles = StyleSheet.create({
 });
 
 export default ChatInput;
+
+// const tempMessage = {
+//   type: 'message/normal',
+//   author: {
+//     meta: {
+//       account_id: profile?.id,
+//       is_renewed: true,
+//     },
+//     image_url: '',
+//     platform_id: '',
+//     channel_name: '',
+//     name: `${profile?.first_name} ${profile?.last_name}`,
+//     id: 653085,
+//     platform_name: `${profile?.first_name} ${profile?.last_name}`,
+//     platform_nick: null,
+//     uuid: '',
+//     channel_id: '',
+//     is_valid: false,
+//   },
+//   entity: {
+//     content: {
+//       body: message,
+//     },
+//     id: '',
+//     pid: '',
+//     uuid: '',
+//     meta: {
+//       type: 'normal',
+//     },
+//     status: 'pending',
+//     quoted_id: null,
+//     author_id: profile?.id,
+//     attachments: [
+//       {
+//         id: '',
+//         data: {
+//           url: '',
+//           type: 'upload',
+//           width: 595,
+
+//           format: 'pdf',
+//           height: 841,
+//           api_key: '',
+//           version: 1673302788,
+//           asset_id: '',
+//           signature: '',
+//           version_id: '',
+//           placeholder: false,
+//           resource_type: 'image',
+//         },
+//         from: 'cloudinary',
+//         size: 538640,
+//         type: 'file',
+//         mimetype: 'application/pdf',
+//         created_datetime: new Date(),
+//       },
+//     ],
+//     mention_ids: null,
+//     recipient_ids: null,
+//   },
+
+//   id: 8054444,
+//   uuid: '44ec06df3d921e77d72d3e4c99988024',
+//   account_id: null,
+//   show_in_thread: null,
+//   created_datetime: new Date(),
+//   updated_datetime: null,
+//   author_id: profile?.id,
+//   author_type: '',
+//   content_id: '-m_g-',
+//   content_type: 'comm',
+// };

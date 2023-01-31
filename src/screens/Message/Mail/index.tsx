@@ -2,6 +2,7 @@ import {
   FlatList,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
   StyleSheet,
   TextInput,
   TouchableOpacity,
@@ -24,6 +25,8 @@ import {StoreState} from 'src/@types/store';
 import {useMessageListQuery, useThreadInfo} from 'src/services/query/queries';
 import EmailCard from './components/Email';
 import MailHeader from './components/mailHeader';
+import EmptyInbox from 'src/components/common/EmptyInbox';
+import MailLoader from './components/MailLoader';
 
 const Mail = ({route}: any) => {
   const {threadId} = route.params;
@@ -39,7 +42,7 @@ const Mail = ({route}: any) => {
 
   //local state
   const [threadDetail, setThreadDetail] = useState<any>();
-  const [messages, setMessages] = useState<any>();
+  const [messages, setMessages] = useState<any>([]);
   const [InputHeight, setInputHeight] = useState(hp(100));
   const [Focused, setFocused] = useState(false);
   const [EnableSend, setEnableSend] = useState(false);
@@ -54,6 +57,7 @@ const Mail = ({route}: any) => {
     {
       onSuccess(data: any, variables: any, context: any) {
         setThreadDetail(data?.data);
+        // console.log('thread info', JSON.stringify(data, null, 2));
       },
       onError(error: any, variables: any, context: any) {
         console.log('message info error', error);
@@ -61,12 +65,13 @@ const Mail = ({route}: any) => {
     },
   );
 
+  //fetch messages
   const {
-    data: messageData,
+    data,
     fetchNextPage,
     hasNextPage,
     isFetching,
-    isLoading,
+    isLoading: messageLoading,
   } = useMessageListQuery(
     {
       threadID: threadId,
@@ -79,9 +84,10 @@ const Mail = ({route}: any) => {
     {
       onSuccess(data: any, variables: any, context: any) {
         //This snippet flattens the array
-        const messageList = messageData?.pages
+        const messageList = data?.pages
           ?.map((res: any) => res?.data?.messages?.map((r: any) => r))
           .flat(2);
+
         setMessages(messageList);
       },
       onError(error: any, variables: any, context: any) {
@@ -98,7 +104,6 @@ const Mail = ({route}: any) => {
   };
 
   const renderItem = ({item}: any) => {
-    // console.log(item);
     return <EmailCard data={item} />;
   };
 
@@ -114,17 +119,27 @@ const Mail = ({route}: any) => {
           )}
           <Divider />
 
-          <FlatList
-            data={messages}
-            keyExtractor={(item, i) => i.toString()}
-            renderItem={renderItem}
-            // style={{backgroundColor: 'yellow'}}
-            contentContainerStyle={{
-              paddingVertical: hp(15),
-              paddingBottom: hp(60),
-            }}
-            contentInset={{bottom: hp(15)}}
-          />
+          {messageLoading ? (
+            <ScrollView showsVerticalScrollIndicator={false}>
+              {Array(2)
+                .fill(1)
+                .map((_, i) => {
+                  return <MailLoader key={`${i}`} />;
+                })}
+            </ScrollView>
+          ) : (
+            <FlatList
+              data={messages}
+              keyExtractor={(item, i) => i.toString()}
+              renderItem={renderItem}
+              contentContainerStyle={{
+                paddingVertical: hp(15),
+                paddingBottom: hp(60),
+              }}
+              contentInset={{bottom: hp(15)}}
+              ListEmptyComponent={<EmptyInbox />}
+            />
+          )}
 
           <View
             style={{

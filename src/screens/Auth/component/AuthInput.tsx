@@ -99,6 +99,8 @@ const styles = StyleSheet.create({
     height: hp(55),
     alignItems: 'center',
     borderRadius: 4,
+    fontSize: hp(18),
+
     // borderWidth: 1,
   },
 
@@ -113,7 +115,7 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: hp(14),
+    fontSize: hp(16),
     paddingVertical: hp(5),
   },
 });

@@ -13,6 +13,7 @@ import co.simpu.inbox.newarchitecture.MainApplicationReactNativeHost;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import com.brentvatne.react.ReactVideoPackage;
+import com.reactnativecommunity.cameraroll.CameraRollPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -30,6 +31,7 @@ public class MainApplication extends Application implements ReactApplication {
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
           // new ReactVideoPackage();
+          // new CameraRollPackage()
           return packages;
         }
 
@@ -67,6 +69,8 @@ public class MainApplication extends Application implements ReactApplication {
    * @param context
    * @param reactInstanceManager
    */
+
+   
   private static void initializeFlipper(
       Context context, ReactInstanceManager reactInstanceManager) {
     if (BuildConfig.DEBUG) {

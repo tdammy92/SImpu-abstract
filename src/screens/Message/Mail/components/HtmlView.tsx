@@ -1,9 +1,9 @@
 import {View, Text, Dimensions} from 'react-native';
 import React from 'react';
 import RenderHtml, {defaultSystemFonts} from 'react-native-render-html';
-import {FONTS} from 'src/constants';
+import {FONTS, colors} from 'src/constants';
 
-const width = Dimensions.get('screen').width * 0.9;
+const width = Dimensions.get('window').width;
 
 const Htmlview = ({htmldata}: any) => {
   const systemFonts = [...defaultSystemFonts, FONTS.TEXT_REGULAR];
@@ -12,30 +12,41 @@ const Htmlview = ({htmldata}: any) => {
     html: htmldata,
   };
 
-  //   const renderersProps = {
-  //     img: {
-  //       enableExperimentalPercentWidth: true,
-  //     },
-  //   };
+  const renderersProps = {
+    img: {
+      enableExperimentalPercentWidth: true,
+    },
+  };
 
-  // console.log(source);
+  console.log('device width', width);
 
   return (
-    <RenderHtml
-      enableCSSInlineProcessing={true}
-      contentWidth={width}
-      source={source}
-      // enableExperimentalMarginCollapsing={true}
-      systemFonts={systemFonts}
-      //  renderersProps={renderersProps}
-      ignoredDomTags={['o:p']}
-      // dangerouslyDisableHoisting={false}
-      // dangerouslyDisableWhitespaceCollapsing={false}
-      //@ts-ignore
-      // tagsStyles={tagsStyles}
+    <View
+      style={{
+        maxWidth: width,
+        overflow: 'hidden',
+      }}>
+      <RenderHtml
+        enableCSSInlineProcessing={true}
+        contentWidth={width}
+        source={source}
+        enableExperimentalMarginCollapsing={true}
+        systemFonts={systemFonts}
+        renderersProps={renderersProps}
+        ignoredDomTags={['o:p']}
+        // dangerouslyDisableHoisting={false}
+        // dangerouslyDisableWhitespaceCollapsing={false}
 
-      //  baseStyle={{padding: 0, margin: 0, backgroundColor: 'red'}}
-    />
+        // tagsStyles={tagsStyles}
+
+        baseStyle={{
+          padding: 0,
+          margin: 0,
+
+          maxWidth: width,
+        }}
+      />
+    </View>
   );
 };
 
@@ -43,10 +54,10 @@ export default Htmlview;
 
 const tagsStyles = {
   body: {
-    //     backgroundColor: 'red',
-    whiteSpace: 'normal',
-    padding: 0,
-    margin: 0,
+    // backgroundColor: 'red',
+    // whiteSpace: 'normal',
+    // width: width,
+    color: colors.dark,
     //     marginTop: 0,
     //     paddingTop: 0,
     //     overflow: 'scroll',
@@ -62,11 +73,39 @@ const tagsStyles = {
     //     alignSelf: 'center',
   },
   a: {
-    //     color: 'red',
+    // color: 'red',
   },
 
-  img: {
-    padding: 0,
-    margin: 0,
-  },
+  // p: {
+  //   color: colors.dark,
+  // },
+  // h1: {
+  //   color: colors.dark,
+  // },
+  // h2: {
+  //   color: colors.dark,
+  // },
+  // h3: {
+  //   color: colors.dark,
+  // },
+  // h4: {
+  //   color: colors.dark,
+  // },
+  // h5: {
+  //   color: colors.dark,
+  // },
+  // h6: {
+  //   color: colors.dark,
+  // },
+  // span: {
+  //   color: colors.dark,
+  // },
+  // div: {
+  //   color: colors.dark,
+  // },
+
+  // img: {
+  //   padding: 0,
+  //   margin: 0,
+  // },
 };

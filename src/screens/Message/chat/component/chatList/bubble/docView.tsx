@@ -92,12 +92,15 @@ const DocView = ({docData, type, isUser}: any) => {
         style={{
           borderWidth: 1,
           borderColor: isUser ? colors.bootomHeaderBg : colors.dark,
-          padding: hp(4),
-          borderRadius: hp(22 * 0.5),
+          height: hp(30),
+          width: hp(30),
+          borderRadius: hp(30 * 0.5),
+          alignItems: 'center',
+          justifyContent: 'center',
         }}>
         <AntDesign
-          name={'clouddownloado'}
-          size={hp(20)}
+          name={'download'}
+          size={hp(18)}
           color={isUser ? colors.bootomHeaderBg : colors.dark}
         />
       </TouchableOpacity>

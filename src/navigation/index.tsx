@@ -4,6 +4,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {MainStackParamList, SCREEN_NAME} from './constants';
 import {useQueryClient} from 'react-query';
+import messaging from '@react-native-firebase/messaging';
 import Payment from 'src/screens/payment';
 
 import Setting from 'src/screens/setting';
@@ -27,6 +28,8 @@ import Settings from 'src/screens/setting/index';
 import EditProfile from 'src/screens/setting/editProfile';
 import ChatBox from 'src/screens/Message/chat';
 import Search from 'src/screens/search';
+import Camera from 'src/screens/Message/chat/component/chatInput/Camera';
+import CustomerThread from 'src/screens/search/customerThreads';
 import Notification from 'src/screens/Message/notification';
 import Compose from 'src/screens/Message/compose';
 import TeamInbox from 'src/screens/Message/teamInbox';
@@ -88,6 +91,7 @@ import useNotification from 'src/Hooks/useNotification';
 import {Notifications} from 'react-native-notifications';
 import ImageScreen from 'src/screens/Message/chat/component/chatList/bubble/imageViewer';
 import Loader from 'src/components/common/Loader';
+import ConversationDetails from 'src/screens/Message/component/message/conversationDetails';
 const Stack = createNativeStackNavigator<MainStackParamList>();
 
 const Drawer = createDrawerNavigator();
@@ -541,13 +545,13 @@ export const RootStack = (): JSX.Element => {
     currentState: string,
     previousState: string,
   ) => {
-    console.log(
-      `onConnectionStateChange. previousState=${previousState} newState=${currentState}`,
-    );
+    // console.log(
+    //   `onConnectionStateChange. previousState=${previousState} newState=${currentState}`,
+    // );
   };
 
   const onError = (message: string, code: Number, error: any) => {
-    console.log(`onError: ${message} code: ${code} exception: ${error}`);
+    // console.log(`onError: ${message} code: ${code} exception: ${error}`);
   };
 
   const onEvent = (event: any) => {
@@ -557,24 +561,50 @@ export const RootStack = (): JSX.Element => {
 
     queryClient.invalidateQueries('threads');
     queryClient.invalidateQueries('conversations');
-
-    // showNotification(event);
   };
 
   const onSubscriptionSucceeded = (channelName: string, data: any) => {
-    console.log(
-      `onSubscriptionSucceeded: ${channelName} data: ${JSON.stringify(
-        data,
-        null,
-        2,
-      )}`,
-    );
+    // console.log(
+    //   `onSubscriptionSucceeded: ${channelName} data: ${JSON.stringify(
+    //     data,
+    //     null,
+    //     2,
+    //   )}`,
+    // );
 
     const channel: PusherChannel = pusher.getChannel(channelName);
     const me = channel.me;
 
-    console.log('Me from chaneel', JSON.stringify(me, null, 2));
+    // console.log('Me from chaneel', JSON.stringify(me, null, 2));
   };
+
+  const handleNotificationNavigation = async (data: any) => {};
+
+  useEffect(() => {
+    messaging().onNotificationOpenedApp(remoteMessage => {
+      console.log(
+        'Notification caused app to open from background state:',
+        remoteMessage.notification,
+      );
+      // navigation.navigate(remoteMessage.data.type);
+    });
+
+    // Check whether an initial notification is available
+    messaging()
+      .getInitialNotification()
+      .then(remoteMessage => {
+        if (remoteMessage) {
+          console.log(
+            'Notification caused app to open from quit state:',
+            remoteMessage.notification,
+          );
+          // setInitialRoute(remoteMessage.data.type); // e.g. "Settings"
+        }
+        // setLoading(false);
+      });
+
+    // return () => {};
+  }, []);
 
   useEffect(() => {
     // registerNotification();
@@ -636,6 +666,23 @@ export const RootStack = (): JSX.Element => {
 
         <Stack.Group screenOptions={{presentation: 'containedModal'}}>
           <Stack.Screen
+            name={SCREEN_NAME.conversationDetails}
+            component={ConversationDetails}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name={SCREEN_NAME.camera}
+            component={Camera}
+            options={{
+              headerShown: false,
+            }}
+          />
+        </Stack.Group>
+
+        <Stack.Group screenOptions={{presentation: 'containedModal'}}>
+          <Stack.Screen
             name={SCREEN_NAME.imageView}
             component={ImageScreen}
             options={{
@@ -662,6 +709,13 @@ export const RootStack = (): JSX.Element => {
         <Stack.Screen
           name={SCREEN_NAME.search}
           component={Search}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name={SCREEN_NAME.customerThreads}
+          component={CustomerThread}
           options={{
             headerShown: false,
           }}

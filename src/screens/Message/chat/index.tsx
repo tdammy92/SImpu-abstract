@@ -6,13 +6,13 @@ import {
   Platform,
   ImageURISource,
   NativeScrollEvent,
+  KeyboardAvoidingView,
 } from 'react-native';
 
 import React, {useState, useCallback, useEffect, useRef} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 
-import {Chat, MessageType, defaultTheme} from '@flyerhq/react-native-chat-ui';
 import Animated, {ZoomIn, ZoomOut} from 'react-native-reanimated';
 import {useSelector, useDispatch} from 'react-redux';
 import {KeyboardAwareScrollView} from 'src/components/common/KeyBoardAvoidingView';
@@ -31,12 +31,13 @@ import {colors} from 'src/constants';
 import {FlatList} from 'react-native-gesture-handler';
 import {removeReply} from 'src/store/reply/replyReducer';
 import {useNavigation} from '@react-navigation/native';
+import {Camera, useCameraDevices} from 'react-native-vision-camera';
+import {useMutation} from 'react-query';
+import {markThreadAsRead} from 'src/services/mutations/inbox';
 
-const scrollLimit = 70;
+const scrollLimit = 80;
 
 const ChatBox = ({route}: any) => {
-  // console.log('message Type', MessageType);
-
   const navigation = useNavigation();
   const {threadId} = route.params;
   const {profile, user, token} = useSelector(
@@ -49,14 +50,36 @@ const ChatBox = ({route}: any) => {
   const [messageTrail, setMessageTrail] = useState<any>([]);
   const [members, setMembers] = useState<any>([]);
   const [showScrollTobottom, setshowScrollTobottom] = useState(false);
-  // const [reply, setReply] = useState<any>();
-  // const [isMyUser, setIsMyUser] = useState(false);
+
+  // console.log('organisation ID', organisation.id);
 
   const dispatch = useDispatch();
-  const chatOptionRef = useRef<any>(null);
+  // const chatOptionRef = useRef<any>(null);
   const chatListRef = useRef<FlatList>(null);
 
   const myUser = {id: profile?.id};
+
+  //Mark conversation as read
+  const markAsReadMutation = useMutation(
+    () =>
+      markThreadAsRead({
+        Auth: token,
+        organisationId: organisation?.id,
+        threadId,
+      }),
+    {
+      onSuccess(data, variables, context) {
+        // console.log('was sucessfull marked as read');
+      },
+      onError(error, variables, context) {
+        // console.log('error from mark as reead', error);
+      },
+    },
+  );
+
+  const markAsRead = async () => {
+    markAsReadMutation.mutate();
+  };
 
   //fetch message info
   const {data: messageInfo, isLoading: infoLoading} = useThreadInfo(
@@ -132,22 +155,12 @@ const ChatBox = ({route}: any) => {
     },
   );
 
-  // console.log('List', messageList);
-
-  //open sheet code
-  const openSheet = () => {
-    // setchannelName(channel);
-    if (chatOptionRef.current) {
-      chatOptionRef.current.open();
-    }
-  };
-
   //close sheet
-  const closeSheet = () => {
-    if (chatOptionRef.current) {
-      chatOptionRef.current.close();
-    }
-  };
+  // const closeSheet = () => {
+  //   if (chatOptionRef.current) {
+  //     chatOptionRef.current.close();
+  //   }
+  // };
 
   const scrollToChatBottom = () => {
     chatListRef.current?.scrollToIndex({
@@ -171,16 +184,24 @@ const ChatBox = ({route}: any) => {
       dispatch(removeReply());
     });
 
+    markAsRead();
+
     return unsubscribe;
   }, [navigation]);
 
+  // console.log(
+  //   'thread details++++++++++++++++++++++',
+  //   JSON.stringify(threadDetail, null, 2),
+  //   '--------------------------------',
+  // );
   return (
-    <>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{flex: 1}}>
       <View style={styles.container}>
         {/* chat header */}
-        {!infoLoading && threadDetail?.thread && (
-          <ChatHeader threadDetail={threadDetail} openSheet={openSheet} />
-        )}
+
+        <ChatHeader threadDetail={threadDetail} infoLoading={infoLoading} />
 
         {/* chat component */}
         <View style={{flex: 1, backgroundColor: 'transparent'}}>
@@ -191,19 +212,21 @@ const ChatBox = ({route}: any) => {
             chatListRef={chatListRef}
             Onscroll={Onscroll}
             fetchNextPage={fetchNextPage}
-            // handleSwipeToReply={handleSwipeToReply}
           />
           {/* chat input */}
           <ChatInput
-            credentitalId={threadDetail?.receiver_id}
-            threadId={threadDetail?.uuid}
-            name={threadDetail?.name1 ?? threadDetail?.name2}
+            scrollToChatBottom={scrollToChatBottom}
+            credentialId={threadDetail?.thread?.receiver_id}
+            threadId={threadDetail?.thread?.uuid}
+            name={
+              threadDetail?.thread?.sender?.platform_name ??
+              threadDetail?.thread?.sender?.platform_nick
+            }
             setMessageTrail={setMessageTrail}
             members={members}
-            // reply={reply}
-            // closeReply={closeReply}
           />
         </View>
+
         {showScrollTobottom && (
           <TouchableOpacity onPress={scrollToChatBottom}>
             <Animated.View
@@ -219,8 +242,7 @@ const ChatBox = ({route}: any) => {
           </TouchableOpacity>
         )}
       </View>
-      <HeaderOption ref={chatOptionRef} />
-    </>
+    </KeyboardAvoidingView>
   );
 };
 

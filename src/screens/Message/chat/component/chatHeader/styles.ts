@@ -42,7 +42,7 @@ const styles = StyleService.create<Styles>({
   },
   usernameText: {
     fontFamily: FONTS.TEXT_SEMI_BOLD,
-    fontSize: hp(16),
+    fontSize: hp(18),
     color: colors.dark,
     marginLeft: wp(7),
   },

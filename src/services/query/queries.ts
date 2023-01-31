@@ -14,6 +14,7 @@ import {
   getMemberList,
   searchCustomers,
   searchConversations,
+  searchConversationsByCustomer,
 } from './inbox';
 import {getProfile} from './profile';
 import {getNotificationTrayItems} from './notification';
@@ -248,6 +249,29 @@ export const useSearchCustomers = (QueryParams: any, options: any) => {
         per_page: 10,
         page: pageParam ?? 1,
         q: !!searchQuery ? searchQuery : undefined,
+      }),
+
+    {
+      getNextPageParam: lastPage => {
+        // console.log('lastpage details', lastPage?.data?.meta);
+        return lastPage?.data?.meta?.page < lastPage?.data?.meta.page_count
+          ? lastPage?.data?.meta.page + 1
+          : undefined;
+      },
+      ...options,
+    },
+  );
+};
+export const useSearchCustomersMessages = (QueryParams: any, options: any) => {
+  const {customerId, page} = QueryParams;
+
+  return useInfiniteQuery(
+    ['customer', customerId, page],
+    ({pageParam = 1}) =>
+      searchConversationsByCustomer({
+        ...QueryParams,
+        per_page: 10,
+        page: pageParam ?? 1,
       }),
 
     {

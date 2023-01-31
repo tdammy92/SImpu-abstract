@@ -181,7 +181,6 @@ export const getThreadInfo = async (
 /*
 Search message screen request
 */
-
 export const searchCustomers = async (QueryParams: any) => {
   // console.log('inside endpoint call', QueryParams);
   const {q, page, per_page, headers} = QueryParams;
@@ -199,6 +198,7 @@ export const searchCustomers = async (QueryParams: any) => {
   return response?.data;
 };
 
+//search conversation
 export const searchConversations = async (
   QueryParams?: AxiosRequestConfig['params'],
 ) => {
@@ -211,6 +211,25 @@ export const searchConversations = async (
   };
 
   const url = buildConversationUrl(`search`);
+
+  const response = await client(url, {
+    params: {...headers, queryS},
+  });
+
+  return response?.data;
+};
+
+//search conversation by customer
+export const searchConversationsByCustomer = async (QueryParams: any) => {
+  const {customerId, page, per_page, headers} = QueryParams;
+
+  const queryS = {
+    page,
+    per_page: perPageFetch,
+    // customer : 'ddff'
+  };
+
+  const url = buildConversationUrl(`search?customer[0]=${customerId}`);
 
   const response = await client(url, {
     params: {...headers, queryS},

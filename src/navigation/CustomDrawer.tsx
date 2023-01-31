@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
   },
   selectOrgBtnText: {
     marginLeft: 5,
-    fontSize: hp(16),
+    fontSize: hp(14),
     fontFamily: FONTS.TEXT_REGULAR,
     color: colors.dark,
   },
@@ -350,7 +350,7 @@ const styles = StyleSheet.create({
   orgPillText: {
     fontFamily: FONTS.TEXT_REGULAR,
     color: colors.dark,
-    fontSize: hp(16),
+    fontSize: hp(14),
   },
 });
 

@@ -40,8 +40,14 @@ import {hp, messsageToast} from 'src/utils';
 import Loader from 'src/components/common/Loader';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {colors} from 'src/constants';
+import {buildAppsURL} from 'src/services/api/api-client';
+import {uploadFile} from 'src/services/upload/attchments';
+import {uploadProfilePicture} from 'src/services/upload/profilePicture';
 
-const mime = require('mime');
+//@ts-ignore
+import * as mime from 'react-native-mime-types';
+
+// const mime = require('mime');
 
 interface Props
   extends NativeStackScreenProps<MainStackParamList, SCREEN_NAME.settings> {}
@@ -56,6 +62,12 @@ const EditProfile = (props: Props): JSX.Element => {
   const {navigation} = props;
   const [firstName, setFirstName] = useState<string>(profile?.first_name);
   const [lastName, setLastName] = useState<string>(profile?.last_name);
+  const [ImagePath, setImagePath] = useState('');
+
+  //image upload progress
+  const onProgress = (percentage: number) => {
+    console.log('percatge of the upload', percentage);
+  };
 
   //update user profile
   const profileUpdate = useMutation(
@@ -81,33 +93,33 @@ const EditProfile = (props: Props): JSX.Element => {
 
   //open camera code
   const Snap = async () => {
-    ImagePicker.openCamera({
-      width: 300,
-      height: 400,
-      cropping: true,
-      freeStyleCropEnabled: true,
-      includeBase64: false,
-      mediaType: 'photo',
-    })
-      .then(image => {
-        if (image) {
-          updateImage(image);
-        }
-        closeSheet();
-      })
-      .catch(err => {
-        console.log(err);
-        closeSheet();
-      });
+    // ImagePicker.openCamera({
+    //   width: 300,
+    //   height: 400,
+    //   cropping: true,
+    //   freeStyleCropEnabled: true,
+    //   includeBase64: false,
+    //   mediaType: 'photo',
+    // })
+    //   .then(image => {
+    //     if (image) {
+    //       updateImage(image);
+    //     }
+    //     closeSheet();
+    //   })
+    //   .catch(err => {
+    //     console.log(err);
+    //     closeSheet();
+    //   });
   };
 
   //open gallery code
   const Gallery = async () => {
     ImagePicker.openPicker({
-      width: 300,
-      height: 400,
-      cropping: true,
-      freeStyleCropEnabled: true,
+      // width: 300,
+      // height: 400,
+      // cropping: true,
+      // freeStyleCropEnabled: true,
       includeBase64: false,
       mediaType: 'photo',
     })
@@ -126,33 +138,46 @@ const EditProfile = (props: Props): JSX.Element => {
 
   //function to handle update image
   const updateImage = async (image: any) => {
-    console.log('Selected Image', image);
-    const imagePath = Platform.OS === 'android' ? image.path : image.sourceURL;
-    const imageType = mime.getType(imagePath);
-    const imageName =
-      Platform.OS === 'android' ? Date.now().toString() : image.filename;
-
-    // console.log(imagePath, imageType, imageName, 'passed into mutate');
+    // console.log('Selected Image', JSON.stringify(image, null, 2));
 
     const imageData = {
-      uri: imagePath,
-      type: imageType,
-      name: imageName,
+      uri: Platform.OS === 'android' ? image?.path : image?.sourceURL,
+      type: image?.mime,
+      name: Platform.OS === 'android' ? Date.now().toString() : image?.filename,
     };
+    // const url = buildAppsURL(`/profile/save_image`);
+    // const header = {token, organisationId: organisation?.id};
+
+    // setImagePath(Platform.OS === 'android' ? image?.path : image?.sourceURL);
+    // console.log(
+    //   `upload profile picture data  ${Platform.OS}`,
+    //   JSON.stringify(image, null, 2),
+    // );
 
     let imageupload = new FormData();
-
     imageupload.append('image', imageData);
 
     try {
-      //@ts-ignore
+      // const uploadData = await uploadFile({
+      //   url,
+      //   file: imageData,
+      //   fileName: 'file',
+      //   header,
+      //   onProgress,
+      // });
+
+      // console.log('upllload with xhr', uploadData);
+      // const newPicture = await uploadProfilePicture(imageupload, header);
+      // @ts-ignore
       await profileImageUpdate.mutateAsync(imageupload, {
         onSuccess: (data, variables, context) => {
           messsageToast({message: 'Profile Image updated', type: 'success'});
           dispatch(updateProfile(data?.profile));
         },
         onError: (error, variables, context) => {
-          messsageToast({message: 'Update failed', type: 'danger'});
+          //@ts-ignore
+          messsageToast({message: error, type: 'danger'});
+          // messsageToast({message: 'Update failed', type: 'danger'});
           console.log('from onError', error);
         },
       });
@@ -269,6 +294,19 @@ const EditProfile = (props: Props): JSX.Element => {
             text="Change Password"
           />
         </View>
+
+        {/* <View>
+          <Image
+            style={{
+              height: 200,
+              width: 200,
+              borderRadius: 10,
+              backgroundColor: 'yellow',
+            }}
+            source={{uri: ImagePath}}
+          />
+          <Text>Image Here</Text>
+        </View> */}
 
         <BottomSheet
           Gallery={Gallery}

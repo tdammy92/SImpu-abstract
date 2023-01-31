@@ -1,6 +1,7 @@
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React, {useRef, useEffect} from 'react';
 import Video from 'react-native-video';
+
 // import {createThumbnail} from 'react-native-create-thumbnail';
 import {wp} from 'src/utils';
 
@@ -40,6 +41,7 @@ const VideoPlayer = ({videoData}: any) => {
         // Store reference
         //   onBuffer={this.onBuffer}                // Callback when remote video is buffering
         //   onError={this.videoError}
+        audioOnly
         ref={videoRef}
         resizeMode="cover" // Callback when video cannot be loaded
         playInBackground={false}
@@ -51,7 +53,7 @@ const VideoPlayer = ({videoData}: any) => {
 
           console.log('resss', res); // this will set first frame of video as thumbnail
         }}
-        poster={`https://images.news18.com/ibnlive/uploads/2020/11/1605155357_featured-image-2020-11-12t095907.122.jpg?impolicy=website&width=510&height=356`}
+        // poster={`https://images.news18.com/ibnlive/uploads/2020/11/1605155357_featured-image-2020-11-12t095907.122.jpg?impolicy=website&width=510&height=356`}
         posterResizeMode="contain"
       />
     </View>
