@@ -28,6 +28,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {organisation} from 'src/@types/profile';
 import {addProfile, updateProfile} from 'src/store/user/userReducer';
 import {useProfile} from 'src/services/query/queries';
+import {pusher} from 'src/index';
 
 const {height} = Dimensions.get('screen');
 const SheetHeight = Math.floor(height * 0.3);
@@ -41,7 +42,9 @@ const OrganisationSheet = forwardRef(
     const organisation = useSelector(
       (state: StoreState) => state.organisation.details,
     );
-    const token = useSelector((state: StoreState) => state.user.token);
+    const {token, profile: profileId} = useSelector(
+      (state: StoreState) => state.user,
+    );
     const [fetchProfile, setfetchProfile] = useState(false);
 
     const profile = useProfile(
@@ -62,8 +65,23 @@ const OrganisationSheet = forwardRef(
       },
     );
 
+    const UnsubscribeCurrentPusherChannel = async () => {
+      const orgChannelName = `presence-organisation-${organisation?.id}`;
+      const liveChatChannelName = `presence-livechat-${organisation?.id}`;
+      const userChannelName = `private-profile-${profileId}`;
+
+      try {
+        await pusher.unsubscribe({channelName: orgChannelName});
+        // await pusher.unsubscribe({channelName: liveChatChannelName});
+        await pusher.unsubscribe({channelName: userChannelName});
+      } catch (e) {
+        console.log('error from pusher unsub', e);
+      }
+    };
+
     //change organisaion
-    const changePrganisations = (index: any) => {
+    const changeOrganisations = async (index: any) => {
+      await UnsubscribeCurrentPusherChannel();
       dispatch(updateOrganisation(organisations[index]));
       setfetchProfile(true);
       props.close();
@@ -114,7 +132,7 @@ const OrganisationSheet = forwardRef(
                   <TouchableOpacity
                     key={org?.name}
                     style={styles.listContainer}
-                    onPress={() => changePrganisations(i)}>
+                    onPress={() => changeOrganisations(i)}>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                       <UserAvatar
                         name={org?.name}

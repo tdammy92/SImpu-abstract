@@ -31,7 +31,7 @@ import Search from 'src/screens/search';
 import Camera from 'src/screens/Message/chat/component/chatInput/Camera';
 import CustomerThread from 'src/screens/search/customerThreads';
 import Notification from 'src/screens/Message/notification';
-import Compose from 'src/screens/Message/compose';
+
 import TeamInbox from 'src/screens/Message/teamInbox';
 import Onboarding from 'src/screens/onbording';
 import QuickReplies from 'src/screens/setting/quickReplies';
@@ -91,7 +91,9 @@ import useNotification from 'src/Hooks/useNotification';
 import {Notifications} from 'react-native-notifications';
 import ImageScreen from 'src/screens/Message/chat/component/chatList/bubble/imageViewer';
 import Loader from 'src/components/common/Loader';
-import ConversationDetails from 'src/screens/Message/component/message/conversationDetails';
+import ConversationDetails from 'src/screens/Message/threadDetails';
+import ComposeMail from 'src/screens/Message/compose/composeMail';
+import ComposeSocial from 'src/screens/Message/compose/composeSocial';
 const Stack = createNativeStackNavigator<MainStackParamList>();
 
 const Drawer = createDrawerNavigator();
@@ -512,16 +514,16 @@ export const RootStack = (): JSX.Element => {
       });
 
       // subscribe to live chat
-      const liveChatChannelName = `presence-livechat-${organisation?.id}`;
-      const LiveChatChannel = await pusher.subscribe({
-        channelName: liveChatChannelName,
-        onEvent: event => {
-          // console.log(
-          //   `liveChat channel event:`,
-          //   JSON.stringify(event, null, 2),
-          // );
-        },
-      });
+      // const liveChatChannelName = `presence-livechat-${organisation?.id}`;
+      // const LiveChatChannel = await pusher.subscribe({
+      //   channelName: liveChatChannelName,
+      //   onEvent: event => {
+      //     // console.log(
+      //     //   `liveChat channel event:`,
+      //     //   JSON.stringify(event, null, 2),
+      //     // );
+      //   },
+      // });
 
       //subscribe to profile
       const userChannelName = `private-profile-${profile?.id}`;
@@ -728,13 +730,22 @@ export const RootStack = (): JSX.Element => {
             headerShown: false,
           }}
         />
-        <Stack.Screen
-          name={SCREEN_NAME.compose}
-          component={Compose}
-          options={{
-            headerShown: false,
-          }}
-        />
+        <Stack.Group screenOptions={{presentation: 'containedModal'}}>
+          <Stack.Screen
+            name={SCREEN_NAME.composeMail}
+            component={ComposeMail}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name={SCREEN_NAME.composeSocial}
+            component={ComposeSocial}
+            options={{
+              headerShown: false,
+            }}
+          />
+        </Stack.Group>
         <Stack.Screen
           name={SCREEN_NAME.teaminbox}
           component={TeamInbox}

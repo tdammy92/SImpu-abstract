@@ -183,11 +183,12 @@ Search message screen request
 */
 export const searchCustomers = async (QueryParams: any) => {
   // console.log('inside endpoint call', QueryParams);
-  const {q, page, per_page, headers} = QueryParams;
+  const {q, page, per_page, channelId, headers} = QueryParams;
 
   const queryS = {
     q,
     page,
+    channel_id: channelId,
     per_page: perPageFetch,
   };
 
@@ -197,6 +198,23 @@ export const searchCustomers = async (QueryParams: any) => {
   });
   return response?.data;
 };
+// export const searchContacts = async (QueryParams: any) => {
+//   // console.log('inside endpoint call', QueryParams);
+//   const {q, page, channelId, headers} = QueryParams;
+
+//   const queryS = {
+//     q,
+//     page,
+//     channel_id: channelId,
+//     per_page: perPageFetch,
+//   };
+
+//   const url = buildConversationUrl('search/customers');
+//   const response = await client(url, {
+//     params: {...headers, queryS},
+//   });
+//   return response?.data;
+// };
 
 //search conversation
 export const searchConversations = async (
@@ -236,6 +254,15 @@ export const searchConversationsByCustomer = async (QueryParams: any) => {
   });
 
   return response?.data;
+};
+
+//get all user's connect channel
+export const getUserChannelAccounts = async (params: any) => {
+  const url = buildConversationUrl(`channels/accounts/member`);
+  const {data} = await client(url, {
+    params,
+  });
+  return data.accounts;
 };
 
 //fetch members in a conversation

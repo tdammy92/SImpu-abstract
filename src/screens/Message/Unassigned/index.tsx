@@ -22,7 +22,7 @@ import themedStyles from './styles';
 
 import EmptyInbox from 'src/components/common/EmptyInbox';
 import MessageCard from '../component/message/MessageCard';
-import ComposeMessageBtn from '../component/ComposeMessageBtn';
+import ComposeMessageBtn from '../compose/ComposeMessageBtn';
 import HiddenItemWithActions from '../component/cardOptions/HiddenItemWithActions';
 import {hp} from 'src/utils';
 import dummyData from 'src/constants/dummyData';

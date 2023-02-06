@@ -40,7 +40,7 @@ const Reply = () => {
       entering={FadeInDown.duration(300)}
       exiting={FadeOutDown.duration(300)}>
       <TouchableOpacity onPress={handleCloseReply} style={styles.closeReply}>
-        <AntDesign name="closecircle" color={colors.darkGray} size={20} />
+        <AntDesign name="closecircle" color={colors.secondaryBg} size={20} />
       </TouchableOpacity>
       <View style={styles.wrapper}>
         <Text style={styles.author}>
@@ -53,8 +53,10 @@ const Reply = () => {
         <View
           style={{
             flexDirection: 'row',
-            backgroundColor: colors.lightGray,
+            backgroundColor: colors.light,
             padding: hp(5),
+            borderWidth: 0.6,
+            borderColor: colors.secondaryBg,
             borderRadius: hp(10),
             minHeight: hp(40),
           }}>
@@ -133,7 +135,9 @@ export default Reply;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.bootomHeaderBg,
+    backgroundColor: colors.light,
+    borderWidth: 1,
+    borderColor: colors.secondaryBg,
     marginLeft: wp(20),
     marginRight: wp(65),
     marginBottom: hp(0),
@@ -151,12 +155,12 @@ const styles = StyleSheet.create({
     padding: hp(5),
   },
   author: {
-    color: colors.dark,
+    color: colors.secondaryBg,
     fontSize: hp(14),
     marginBottom: hp(4),
   },
   message: {
-    color: colors.dark,
+    color: colors.secondaryBg,
     fontSize: hp(14),
   },
 });

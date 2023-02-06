@@ -64,16 +64,16 @@ export interface InboxId {
 }
 
 export interface Channel {
-  id: number;
+  id?: number;
   uuid: string;
-  is_approved: boolean;
-  auth_type: string;
+  is_approved?: boolean;
+  auth_type?: string;
   name: string;
-  group_id: string;
-  urls: null;
-  supported_events: [];
-  updated_datetime: null;
-  created_datetime: string;
+  group_id?: string;
+  urls?: null;
+  supported_events?: [];
+  updated_datetime?: null;
+  created_datetime?: string;
 }
 
 export interface InboxStoreState {

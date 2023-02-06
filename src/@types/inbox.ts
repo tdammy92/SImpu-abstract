@@ -135,3 +135,15 @@ export type replyType = {
   content_type: string;
   quoted: quotedType | null;
 };
+
+export type customerType = {
+  uuid: string;
+  names: [];
+  image_url: string;
+  contact_id: null;
+  channel_name: string;
+  platform_name: string;
+  platform_nick: string;
+  channel_id: string;
+  type: string;
+};

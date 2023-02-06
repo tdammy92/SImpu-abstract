@@ -15,6 +15,7 @@ import {
   searchCustomers,
   searchConversations,
   searchConversationsByCustomer,
+  getUserChannelAccounts,
 } from './inbox';
 import {getProfile} from './profile';
 import {getNotificationTrayItems} from './notification';
@@ -239,10 +240,10 @@ export const useSearchThreads = (QueryParams: any, options: any) => {
   );
 };
 export const useSearchCustomers = (QueryParams: any, options: any) => {
-  const {searchQuery, page} = QueryParams;
+  const {searchQuery, channelId, page} = QueryParams;
 
   return useInfiniteQuery(
-    ['search', 'customer', searchQuery, page],
+    ['search', 'customer', channelId, searchQuery, page],
     ({pageParam = 1}) =>
       searchCustomers({
         ...QueryParams,
@@ -262,6 +263,32 @@ export const useSearchCustomers = (QueryParams: any, options: any) => {
     },
   );
 };
+
+// export const useSearchContacts = (QueryParams: any, options: any) => {
+//   const {searchQuery,channelId, page} = QueryParams;
+
+//   return useInfiniteQuery(
+//     ['search',channelId, searchQuery, page],
+//     ({pageParam = 1}) =>
+//       searchCustomers({
+//         ...QueryParams,
+//         per_page: 10,
+//         page: pageParam ?? 1,
+//         q: !!searchQuery ? searchQuery : undefined,
+//       }),
+
+//     {
+//       getNextPageParam: lastPage => {
+//         // console.log('lastpage details', lastPage?.data?.meta);
+//         return lastPage?.data?.meta?.page < lastPage?.data?.meta.page_count
+//           ? lastPage?.data?.meta.page + 1
+//           : undefined;
+//       },
+//       ...options,
+//     },
+//   );
+// };
+
 export const useSearchCustomersMessages = (QueryParams: any, options: any) => {
   const {customerId, page} = QueryParams;
 
@@ -283,6 +310,17 @@ export const useSearchCustomersMessages = (QueryParams: any, options: any) => {
       },
       ...options,
     },
+  );
+};
+
+//get user connect channel
+// {type: 'all' | 'shared' | 'personal'} = {type: 'all'}
+export const UserConnectChanel = (queryParams: any, options?: any) => {
+  // console.log('paramaaa', queryParams);
+  return useQuery(
+    ['user-channel-accounts', queryParams?.organisationId],
+    () => getUserChannelAccounts(queryParams),
+    options,
   );
 };
 

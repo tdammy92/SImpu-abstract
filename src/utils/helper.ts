@@ -5,6 +5,8 @@ import {
   MessageType,
 } from 'react-native-flash-message';
 import {getDateXDaysAgo} from './date-utils/date';
+import {colors} from 'src/constants';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 type toastMessageType = {
   message: string;
@@ -94,4 +96,15 @@ export const splitLastOccurrence = (str: string, character: string) => {
   const after = str.slice(lastIndex + 1);
   return after.slice(after.length * 0.5, after.length);
   // return [before, after]
+};
+
+export const copyIdToClipboard = (title: string, message: string) => {
+  showMessage({
+    message: title,
+    description: message,
+    type: 'default',
+    backgroundColor: colors.secondaryBg, // background color
+    color: colors.light, // text color
+  });
+  Clipboard.setString(message);
 };

@@ -14,7 +14,7 @@ import {useDispatch} from 'react-redux';
 import {removeReply} from 'src/store/reply/replyReducer';
 import {removeEmoji} from 'src/utils/string-utils/string';
 import ContentLoader from 'react-native-easy-content-loader';
-import HeaderOption from '../chatHeaderOption';
+import HeaderOption from '../../../threadDetails/component/messageHeaderOption';
 
 type chatHeaderProps = {
   threadDetail: any;

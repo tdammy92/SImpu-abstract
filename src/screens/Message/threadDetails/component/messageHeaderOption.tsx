@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import React, {forwardRef, useCallback} from 'react';
 import RBSheet, {RBSheetProps} from 'react-native-raw-bottom-sheet';
-import {hp, wp} from 'src/utils';
+import {copyIdToClipboard, hp, wp} from 'src/utils';
 import Octicons from 'react-native-vector-icons/Octicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -38,6 +38,13 @@ const HeaderOption = forwardRef(
       //@ts-ignore
       ref.current.close();
     }, [thread]);
+
+    const copyId = () => {
+      copyIdToClipboard('Copied Conversation ID', thread?.uuid);
+
+      //@ts-ignore
+      ref.current.close();
+    };
 
     return (
       <>
@@ -101,7 +108,7 @@ const HeaderOption = forwardRef(
                 <Text style={styles.optionListText}>Mark as unread</Text>
               </TouchableOpacity>
               <Divider style={{height: 2}} />
-              <TouchableOpacity style={styles.ListBox}>
+              <TouchableOpacity style={styles.ListBox} onPress={copyId}>
                 <MaterialIcons
                   name="content-copy"
                   size={25}

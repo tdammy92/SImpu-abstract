@@ -18,7 +18,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {KeyboardAwareScrollView} from 'src/components/common/KeyBoardAvoidingView';
 import {SafeAreaView} from 'src/components/common/SafeAreaView';
 import styles from './styles';
-import HeaderOption from './component/chatHeaderOption';
+import HeaderOption from '../threadDetails/component/messageHeaderOption';
 import {SCREEN_NAME} from 'src/navigation/constants';
 import {StoreState} from 'src/@types/store';
 import {useMessageListQuery, useThreadInfo} from 'src/services/query/queries';
@@ -104,7 +104,7 @@ const ChatBox = ({route}: any) => {
     fetchNextPage,
     hasNextPage,
     isFetching,
-    isLoading,
+    isLoading: messageLoading,
   } = useMessageListQuery(
     {
       threadID: threadId,
@@ -155,13 +155,6 @@ const ChatBox = ({route}: any) => {
     },
   );
 
-  //close sheet
-  // const closeSheet = () => {
-  //   if (chatOptionRef.current) {
-  //     chatOptionRef.current.close();
-  //   }
-  // };
-
   const scrollToChatBottom = () => {
     chatListRef.current?.scrollToIndex({
       index: 0,
@@ -207,12 +200,16 @@ const ChatBox = ({route}: any) => {
         <View style={{flex: 1, backgroundColor: 'transparent'}}>
           {/* chat messages */}
 
-          <ChatMessage
-            data={messageTrail}
-            chatListRef={chatListRef}
-            Onscroll={Onscroll}
-            fetchNextPage={fetchNextPage}
-          />
+          {messageLoading ? (
+            <View />
+          ) : (
+            <ChatMessage
+              data={messageTrail}
+              chatListRef={chatListRef}
+              Onscroll={Onscroll}
+              fetchNextPage={fetchNextPage}
+            />
+          )}
           {/* chat input */}
           <ChatInput
             scrollToChatBottom={scrollToChatBottom}

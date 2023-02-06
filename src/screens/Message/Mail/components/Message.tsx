@@ -41,7 +41,7 @@ const Message = ({data}: any) => {
               <Text style={styles.messageHeaderTextBig}>
                 {data?.author?.platform_name ?? data?.author?.platform_nick}
               </Text>
-              <View style={{flexDirection: 'row'}}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <Text style={styles.messageHeaderTextBig}>To:</Text>
                 <Text style={styles.messageHeaderTextSmall}>
                   {trimText(data?.entity?.recipients?.to[0]?.platform_nick, 35)}
@@ -111,13 +111,15 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.TEXT_REGULAR,
     fontSize: hp(14),
     color: colors.dark,
-    lineHeight: hp(18),
+    lineHeight: hp(16),
+    paddingVertical: hp(2),
   },
   messageHeaderTextBig: {
     fontFamily: FONTS.TEXT_SEMI_BOLD,
     fontSize: hp(14),
     color: colors.dark,
     lineHeight: hp(18),
+    paddingVertical: hp(2),
   },
 
   htmlContainer: {

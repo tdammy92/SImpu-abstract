@@ -103,7 +103,7 @@ const CustomDrawer = (props: any): JSX.Element => {
 
   //load organisations
   const {data: organisationData, isLoading: loadingOrganisations} =
-    useGetOrganisations({Auth: token}, {});
+    useGetOrganisations({Auth: token, organisationId: organisation?.id}, {});
 
   useEffect(() => {
     // Subscribe

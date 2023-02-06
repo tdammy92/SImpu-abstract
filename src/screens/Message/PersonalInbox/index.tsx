@@ -16,7 +16,7 @@ import HiddenItemWithActions from '../component/cardOptions/HiddenItemWithAction
 
 import EmptyInbox from 'src/components/common/EmptyInbox';
 import MessageCard from '../component/message/MessageCard';
-import ComposeMessageBtn from '../component/ComposeMessageBtn';
+import ComposeMessageBtn from '../compose/ComposeMessageBtn';
 import {hp} from 'src/utils';
 import SortSheet from '../component/SortSheet';
 import dummyData from 'src/constants/dummyData';

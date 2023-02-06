@@ -17,7 +17,8 @@ export enum SCREEN_NAME {
   search = 'app.screen.search',
   customerThreads = 'app.screen.customerthreads',
   notification = 'app.screen.notification',
-  compose = 'app.screen.compose',
+  composeSocial = 'app.screen.composesocial',
+  composeMail = 'app.screen.composemail',
   main = 'app.screen.main',
   config = 'app.screen.config',
   settings = 'app.screen.settings',
@@ -51,7 +52,8 @@ export type MainStackParamList = {
   [SCREEN_NAME.mentions]: undefined;
   [SCREEN_NAME.unassigned]: undefined;
   [SCREEN_NAME.teaminbox]: undefined;
-  [SCREEN_NAME.compose]: undefined;
+  [SCREEN_NAME.composeMail]: {channel: {}};
+  [SCREEN_NAME.composeSocial]: {channel: {}};
   [SCREEN_NAME.profile]: undefined;
   [SCREEN_NAME.main]: undefined;
   [SCREEN_NAME.config]: undefined;

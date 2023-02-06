@@ -9,14 +9,7 @@ import {
 } from 'react-native';
 import React, {useRef, useEffect, useState} from 'react';
 import {useNavigation, DrawerActions} from '@react-navigation/native';
-import {
-  StyledComponentProps,
-  Text,
-  Input,
-  Icon,
-  Divider,
-  useStyleSheet,
-} from '@ui-kitten/components';
+import {Text, Input, Icon, Divider, useStyleSheet} from '@ui-kitten/components';
 import ContentLoader, {Bullets} from 'react-native-easy-content-loader';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';

@@ -5,6 +5,7 @@ import {useSelector} from 'react-redux';
 import {StoreState} from 'src/@types/store';
 
 import {hp} from 'src/utils';
+import EmptyInbox from 'src/components/common/EmptyInbox';
 
 const ChatMessage = ({data, fetchNextPage, chatListRef, Onscroll}: any) => {
   return (
@@ -24,6 +25,7 @@ const ChatMessage = ({data, fetchNextPage, chatListRef, Onscroll}: any) => {
       onEndReachedThreshold={0.5}
       renderItem={({item, index}) => <ChatBubble item={item} id={index} />}
       onScroll={Onscroll}
+      // ListEmptyComponent={<EmptyInbox />}
     />
   );
 };

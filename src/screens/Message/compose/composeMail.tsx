@@ -17,7 +17,7 @@ import {useNavigation} from '@react-navigation/native';
 import {hp, wp} from 'src/utils';
 import {StoreState} from 'src/@types/store';
 
-const Compose = () => {
+const ComposeMail = () => {
   const navigation = useNavigation();
   const user = useSelector((state: StoreState) => state.user.profile);
   const richText = useRef<RichEditor | undefined>();
@@ -79,9 +79,9 @@ const Compose = () => {
               flex: 1,
             }}>
             {/* <TextInput
-                placeholder="Type your email"
-                placeholderTextColor={'#b3b3b3'}
-              /> */}
+                   placeholder="Type your email"
+                   placeholderTextColor={'#b3b3b3'}
+                 /> */}
 
             <RichEditor
               placeholder="Type your mail"
@@ -128,7 +128,7 @@ const Compose = () => {
   );
 };
 
-export default Compose;
+export default ComposeMail;
 
 const styles = StyleSheet.create({
   container: {

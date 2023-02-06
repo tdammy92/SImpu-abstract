@@ -15,82 +15,25 @@ const ListLoader = () => {
         paddingHorizontal: wp(5),
       }}>
       <View style={{height: hp(20)}} />
-      {/* @ts-ignore */}
-      <ContentLoader
-        avatar
-        pRows={1}
-        pHeight={[15, 20]}
-        pWidth={['100%', 100]}
-        animationDuration={700}
-        loading={true}
-      />
-      <Divider />
-      <View style={{height: hp(30)}} />
-      {/* @ts-ignore */}
-      <ContentLoader
-        avatar
-        pRows={1}
-        pHeight={[15, 20]}
-        pWidth={['100%', 100]}
-        animationDuration={700}
-        loading={true}
-      />
-      <Divider />
-      <View style={{height: hp(30)}} />
-      {/* @ts-ignore */}
-      <ContentLoader
-        avatar
-        pRows={1}
-        pHeight={[15, 20]}
-        pWidth={['100%', 100]}
-        animationDuration={700}
-        loading={true}
-      />
-      <Divider />
-      <View style={{height: hp(30)}} />
-      {/* @ts-ignore */}
-      <ContentLoader
-        avatar
-        pRows={1}
-        pHeight={[15, 20]}
-        pWidth={['100%', 100]}
-        animationDuration={700}
-        loading={true}
-      />
-      <Divider />
-      <View style={{height: hp(30)}} />
-      {/* @ts-ignore */}
-      <ContentLoader
-        avatar
-        pRows={1}
-        pHeight={[15, 20]}
-        pWidth={['100%', 100]}
-        animationDuration={700}
-        loading={true}
-      />
-      <Divider />
-      <View style={{height: hp(30)}} />
-      {/* @ts-ignore */}
-      <ContentLoader
-        avatar
-        pRows={1}
-        pHeight={[15, 20]}
-        pWidth={['100%', 100]}
-        animationDuration={700}
-        loading={true}
-      />
-      <Divider />
-      <View style={{height: hp(30)}} />
-      {/* @ts-ignore */}
-      <ContentLoader
-        avatar
-        pRows={1}
-        pHeight={[15, 20]}
-        pWidth={['100%', 100]}
-        animationDuration={700}
-        loading={true}
-      />
-      <Divider />
+
+      {Array(8)
+        .fill(1)
+        .map((_, i) => (
+          <React.Fragment key={`${i}`}>
+            {/* @ts-ignore */}
+            <ContentLoader
+              avatar
+              pRows={1}
+              active
+              pHeight={[15, 20]}
+              pWidth={['100%', 100]}
+              animationDuration={700}
+              loading={true}
+            />
+            <Divider />
+            <View style={{height: hp(30)}} />
+          </React.Fragment>
+        ))}
     </View>
   );
 };

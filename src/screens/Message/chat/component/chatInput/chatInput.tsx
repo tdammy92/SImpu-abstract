@@ -522,11 +522,11 @@ const ChatInput = ({
           <MentionInput
             multiline
             placeholder={'Type something...'}
-            placeholderTextColor={colors.light}
+            placeholderTextColor={colors.dark}
             // autoFocus={true}
             style={{
               backgroundColor: 'transparent',
-              color: colors.light,
+              color: colors.dark,
               flex: 3,
               fontSize: 15,
               // height: hp(40),
@@ -548,12 +548,12 @@ const ChatInput = ({
           <TouchableOpacity
             style={styles.rightIconButtonStyle}
             onPress={sendFile}>
-            <Entypo name="attachment" size={23} color={colors.light} />
+            <Entypo name="attachment" size={23} color={colors.inputBg} />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.rightIconButtonStyle}
             onPress={navigateToCamera}>
-            <AntDesign name="camera" size={23} color={colors.light} />
+            <AntDesign name="camera" size={23} color={colors.inputBg} />
           </TouchableOpacity>
         </View>
 
@@ -613,8 +613,9 @@ const styles = StyleSheet.create({
   },
   inputAndMicrophone: {
     flexDirection: 'row',
-    backgroundColor: colors.inputBg,
-    borderColor: colors.darkGray,
+    backgroundColor: colors.lightGray,
+    borderColor: colors.secondaryBg,
+    // borderWidth: 1,
     flex: 3,
     marginRight: wp(10),
     paddingVertical: Platform.OS === 'ios' ? 10 : 5,
@@ -625,7 +626,7 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: 'transparent',
     paddingLeft: 15,
-    color: colors.light,
+    color: colors.dark,
     flex: 3,
     fontSize: 15,
     height: hp(40),
@@ -638,7 +639,8 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     paddingLeft: 10,
     borderLeftWidth: 1,
-    borderLeftColor: colors.light,
+    // backgroundColor: colors.darkGray,
+    borderLeftColor: colors.inputBg,
   },
   swipeToCancelView: {
     flexDirection: 'row',

@@ -97,7 +97,6 @@ const Mail = ({route}: any) => {
   );
 
   // console.log('From param', User);
-
   const handleInputHeight = (e: number) => {
     if (InputHeight >= hp(150)) return;
     setInputHeight(e);
@@ -114,9 +113,9 @@ const Mail = ({route}: any) => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <View style={styles.container}>
           {/* chat header */}
-          {!infoLoading && threadDetail?.thread && (
-            <MailHeader threadDetail={threadDetail} />
-          )}
+
+          <MailHeader threadDetail={threadDetail} loading={infoLoading} />
+
           <Divider />
 
           {messageLoading ? (

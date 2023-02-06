@@ -17,12 +17,7 @@ export default EmptyInbox;
 
 const styles = StyleSheet.create({
   emptyContainerView: {
-    // borderWidth: 1,
-
-    // borderColor: 'red',
-
     alignItems: 'center',
-
     marginTop: height * 0.15,
   },
 });
