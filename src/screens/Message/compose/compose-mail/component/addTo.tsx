@@ -12,7 +12,7 @@ import React, {useState, useRef} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {FONTS, colors} from 'src/constants';
 import {hp, messsageToast, wp} from 'src/utils';
-import Autocomplete from 'react-native-autocomplete-input';
+
 import useDebounce from 'src/Hooks/useDebounce';
 import {useSearchCustomers} from 'src/services/query/queries';
 import {StoreState} from 'src/@types/store';
