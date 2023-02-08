@@ -19,9 +19,38 @@ import {format} from 'date-fns';
 import UserAvatar from 'react-native-user-avatar';
 import {trimText} from 'src/utils/string-utils/string';
 import Htmlview from './HtmlView';
+import {useSelector} from 'react-redux';
+import {StoreState} from 'src/@types/store';
+import {useMessageContent} from 'src/services/query/queries';
 
 const Message = ({data}: any) => {
   // console.log('Html message', JSON.stringify(data, null, 2));
+  //   items from redux store
+  const {profile, user, token} = useSelector(
+    (state: StoreState) => state?.user,
+  );
+  const organisation = useSelector(
+    (state: StoreState) => state?.organisation?.details,
+  );
+
+  const {data: messageContent, isLoading} = useMessageContent(
+    {
+      enabled: !!(data?.entity?.has_message && !data?.entity?.content),
+      contentId: data?.uuid,
+      Auth: token,
+      organisationId: organisation?.id,
+    },
+    {
+      onSuccess(data: any, variables: any, context: any) {
+        // setThreadDetail(data?.data);
+        // console.log('message content', JSON.stringify(data, null, 2));
+      },
+      onError(error: any, variables: any, context: any) {
+        console.log('message info error', error);
+      },
+    },
+  );
+
   return (
     <View style={styles.container}>
       <View>
@@ -64,7 +93,11 @@ const Message = ({data}: any) => {
         </View>
         <Divider />
         {/* <View style={styles.htmlContainer}> */}
-        <Htmlview htmldata={data?.entity?.content?.body} />
+        {!isLoading && (
+          <Htmlview
+            htmldata={data?.entity?.content?.body ?? messageContent?.data?.body}
+          />
+        )}
         {/* </View> */}
 
         <Divider />

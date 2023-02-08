@@ -92,8 +92,8 @@ import {Notifications} from 'react-native-notifications';
 import ImageScreen from 'src/screens/Message/chat/component/chatList/bubble/imageViewer';
 import Loader from 'src/components/common/Loader';
 import ConversationDetails from 'src/screens/Message/threadDetails';
-import ComposeMail from 'src/screens/Message/compose/composeMail';
-import ComposeSocial from 'src/screens/Message/compose/composeSocial';
+import ComposeMail from 'src/screens/Message/compose/compose-mail';
+import ComposeSocial from 'src/screens/Message/compose/compose-social';
 const Stack = createNativeStackNavigator<MainStackParamList>();
 
 const Drawer = createDrawerNavigator();
@@ -730,22 +730,22 @@ export const RootStack = (): JSX.Element => {
             headerShown: false,
           }}
         />
-        <Stack.Group screenOptions={{presentation: 'containedModal'}}>
-          <Stack.Screen
-            name={SCREEN_NAME.composeMail}
-            component={ComposeMail}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name={SCREEN_NAME.composeSocial}
-            component={ComposeSocial}
-            options={{
-              headerShown: false,
-            }}
-          />
-        </Stack.Group>
+        {/* <Stack.Group screenOptions={{presentation: 'containedModal'}}> */}
+        <Stack.Screen
+          name={SCREEN_NAME.composeMail}
+          component={ComposeMail}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name={SCREEN_NAME.composeSocial}
+          component={ComposeSocial}
+          options={{
+            headerShown: false,
+          }}
+        />
+        {/* </Stack.Group> */}
         <Stack.Screen
           name={SCREEN_NAME.teaminbox}
           component={TeamInbox}

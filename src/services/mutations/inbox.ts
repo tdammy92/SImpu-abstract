@@ -61,3 +61,15 @@ export const markThreadAsRead = async (params: any) => {
 
   return response.data;
 };
+//mark thread as read
+export const startConversation = async (params: any) => {
+  const {Auth, data, organisationId, credentialId, message} = params;
+  const url = buildConversationUrl(`conversations/start/${credentialId}`);
+  const response = await client(url, {
+    method: 'POST',
+    data: message,
+    params: {Auth, organisationId},
+  });
+
+  return response.data;
+};

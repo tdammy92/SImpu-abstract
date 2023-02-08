@@ -59,7 +59,7 @@ export type MainStackParamList = {
   [SCREEN_NAME.config]: undefined;
   [SCREEN_NAME.settings]: undefined;
   [SCREEN_NAME.about]: undefined;
-  [SCREEN_NAME.chat]: {user: any};
+  [SCREEN_NAME.chat]: {threadId: {}};
   [SCREEN_NAME.conversationDetails]: {thread: any};
   [SCREEN_NAME.camera]: {user: any};
   [SCREEN_NAME.imageView]: {image: any};

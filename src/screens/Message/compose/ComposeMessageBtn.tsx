@@ -130,7 +130,10 @@ const ComposeMessageBtn = () => {
 
     if (selectedChannel?.channel_name === 'email') {
       //@ts-ignore
-      navigation.navigate(SCREEN_NAME.composeMail, {channel: selectedChannel});
+      navigation.navigate(SCREEN_NAME.composeMail, {
+        channel: selectedChannel,
+        connectedChannels: userConnectedAccounts,
+      });
     } else {
       //@ts-ignore
       navigation.navigate(SCREEN_NAME.composeSocial, {
@@ -194,8 +197,7 @@ const styles = StyleSheet.create({
   channelContainer: {
     position: 'absolute',
     alignItems: 'flex-end',
-
-    left: Platform.OS === 'android' ? wp(72) : wp(65),
+    left: Platform.OS === 'android' ? hp(83) : hp(68),
   },
 
   msgBtn: {

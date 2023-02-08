@@ -166,6 +166,24 @@ export const getMessageList = async (
   });
 };
 
+//get messageContent
+export const getMessageContent = async (
+  params: AxiosRequestConfig['params'],
+): Promise<any> => {
+  const {contentId} = params;
+
+  // const queryS = {
+  //   type: params?.type,
+  // };
+
+  const url = buildConversationUrl(
+    `conversations/message-content/${contentId}`,
+  );
+  return client(url, {
+    params: {...params},
+  });
+};
+
 //fetch threadInfo
 export const getThreadInfo = async (
   params: AxiosRequestConfig['params'],
@@ -198,23 +216,6 @@ export const searchCustomers = async (QueryParams: any) => {
   });
   return response?.data;
 };
-// export const searchContacts = async (QueryParams: any) => {
-//   // console.log('inside endpoint call', QueryParams);
-//   const {q, page, channelId, headers} = QueryParams;
-
-//   const queryS = {
-//     q,
-//     page,
-//     channel_id: channelId,
-//     per_page: perPageFetch,
-//   };
-
-//   const url = buildConversationUrl('search/customers');
-//   const response = await client(url, {
-//     params: {...headers, queryS},
-//   });
-//   return response?.data;
-// };
 
 //search conversation
 export const searchConversations = async (

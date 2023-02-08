@@ -22,10 +22,9 @@ import Animated, {
   FadeInUp,
   FadeIn,
 } from 'react-native-reanimated';
-import {useNavigation} from '@react-navigation/native';
-import {hp, wp} from 'src/utils';
+import {useNavigation, StackActions} from '@react-navigation/native';
+import {hp, messsageToast, wp} from 'src/utils';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import DropDownPicker, {ValueType} from 'react-native-dropdown-picker';
 import {FONTS, colors} from 'src/constants';
 import {Divider} from '@ui-kitten/components';
 //@ts-ignore
@@ -42,6 +41,12 @@ import useDebounce from 'src/Hooks/useDebounce';
 import {removeEmoji} from 'src/utils/string-utils/string';
 import {customerType} from 'src/@types/inbox';
 import DocumentPicker, {types} from 'react-native-document-picker';
+import {useMutation} from 'react-query';
+import {startConversation} from 'src/services/mutations/inbox';
+import {SCREEN_NAME} from 'src/navigation/constants';
+import {buildConversationUrl} from 'src/services/api/api-client';
+import {uploadFile} from 'src/services/upload/attchments';
+import Attachament from './component/attachament';
 
 const {width, height} = Dimensions.get('screen');
 
@@ -69,14 +74,35 @@ const ComposeSocial = ({route}: any) => {
   const [SearchContact, setSearchContact] = useState('');
   const [CustomerList, setCustomerList] = useState<customerType[]>([]);
 
+  //attachment sate
+  const [attachmentDetials, setAttachmentDetials] = useState<any>(null);
+  const [attachemntId, setAttachemntId] = useState<any>(null);
+  const [uploading, setuploading] = useState(false);
+
   const debounceValue = useDebounce(SearchContact, 400);
+
+  const StartConversationMutation = useMutation(startConversation, {
+    onSuccess(data, variables, context) {
+      if (data?.thread_id) {
+        navigation.dispatch(
+          StackActions.replace(SCREEN_NAME.chat, {
+            threadId: data?.thread_id,
+          }),
+        );
+      }
+    },
+    onError(error, variables, context) {
+      console.log('error from compose message', error);
+      messsageToast({message: `${error}`, type: 'danger'});
+    },
+  });
 
   //search customer query
   const SearchCustomerQuery = useSearchCustomers(
     {
       searchQuery: debounceValue,
       page: 1,
-      channelId: channel?.channel_id,
+      channelId: SelectedChannel?.channel_id,
       headers: {
         Auth: token,
         organisationId: organisation?.id,
@@ -111,53 +137,71 @@ const ComposeSocial = ({route}: any) => {
     };
   });
 
-  // console.log('slected channel', JSON.stringify(channel, null, 2));
+  // console.log('slected channel', JSON.stringify(SelectedChannel, null, 2));
   // console.log('all channels', JSON.stringify(connectedChannels, null, 2));
 
   const channels = useMemo(() => {
     return connectedChannels?.filter(
-      (item: any) => item?.channel_name === channel?.channel_name,
+      (item: any) => item?.channel_id === SelectedChannel?.channel_id,
     );
   }, [channel, connectedChannels]);
 
   //send message handler
   const sendMessage = async () => {
-    // scrollToChatBottom();
-    const data = {
+    if (!SelectedContact) {
+      messsageToast({message: `Select a recipent`, type: 'warning'});
+      return;
+    }
+
+    const payload = {
       message: {
         type: 'message',
         body: message,
-        attachment_ids: [],
+        attachment_ids: attachemntId,
+        user_nick: SelectedContact?.platform_nick,
       },
-      params: {
-        // threadId,
-        // messageId: replyIsActive ? reply?.uuid : '',
-        Auth: token,
-        organisationId: organisation?.id,
-      },
+
+      credentialId: SelectedChannel?.uuid,
+      Auth: token,
+      organisationId: organisation?.id,
     };
 
-    setMessage('');
-    // await sendMessageMutation.mutateAsync(data);
-    // }
+    // console.log('message payload', JSON.stringify(payload, null, 2));
+
+    try {
+      setMessage('');
+      await StartConversationMutation.mutateAsync(payload);
+    } catch (e) {
+      console.log();
+    }
   };
 
   const handleSelectedChannel = (item: any) => {
     setSelectedChannel(item);
     setShowChannels(false);
   };
+
   const handleSelectedContact = (item: customerType) => {
     setSelectedContact(item);
     setCustomerList([]);
     setSearchContact('');
   };
 
+  const removeAttachment = () => {
+    setAttachemntId([]);
+    setAttachmentDetials(null);
+    setuploading(false);
+  };
+
   const removeSelectedContact = () => {
     setSelectedContact(null);
   };
+  const onProgress = (percentage: number) => {
+    console.log('percatge of the upload', percentage);
+  };
 
   //send file handler
-  const sendFile = async () => {
+  const attachFile = async () => {
     try {
       const res = await DocumentPicker.pick({
         allowMultiSelection: false,
@@ -175,50 +219,38 @@ const ComposeSocial = ({route}: any) => {
 
       // console.log(`file from ${Platform.OS}`, JSON.stringify(res, null, 2));
 
-      //   const file = {
-      //     uri: res[0]?.uri,
-      //     type: res[0]?.type,
-      //     name: res[0]?.name,
-      //   };
+      const file = {
+        uri: res[0]?.uri,
+        type: res[0]?.type,
+        name: res[0]?.name,
+        size: res[0]?.size,
+      };
 
-      //   const data = {type: 'message'};
-      //   const header = {token, organisationId: organisation?.id};
-      //   const url = buildConversationUrl(`upload/${credentialId}`);
+      setAttachmentDetials(file);
+      setuploading(true);
 
-      //   Alert.alert('', `Send ${file?.name}  to ${name}`, [
-      //     {
-      //       text: 'Cancel',
-      //       onPress: () => console.log('Cancel Pressed'),
-      //       style: 'cancel',
-      //     },
-      //     {
-      //       text: 'Send',
-      //       onPress: async () => {
-      //         // setMessageTrail((prev: any) => [tempMessage, ...prev]);
+      const data = {type: 'message'};
+      const header = {token, organisationId: organisation?.id};
+      const url = buildConversationUrl(`upload/${SelectedChannel?.uuid}`);
+      try {
+        const attachmentIds = await uploadFile({
+          url,
+          file,
+          fileName: 'files',
+          data,
+          header,
+          onProgress,
+        });
 
-      //         const attachmentId = await uploadFile({
-      //           url,
-      //           file,
-      //           fileName: 'files',
-      //           data,
-      //           header,
-      //           // onProgress,
-      //         });
-      //         const mutatePayload = {
-      //           message: {
-      //             body: message,
-      //             attachment_ids: attachmentId?.upload_ids,
-      //           },
-      //           params: {
-      //             threadId,
-      //             Auth: token,
-      //             organisationId: organisation?.id,
-      //           },
-      //         };
-      //         await sendMessageMutation.mutateAsync(mutatePayload);
-      //       },
-      //     },
-      //   ]);
+        const attach = await attachmentIds?.upload_ids;
+
+        setAttachemntId(attach);
+
+        setuploading(false);
+      } catch (e) {
+        console.log('error from upload', e);
+        setuploading(false);
+      }
     } catch (error) {
       // console.log('file picker catch error', error);
     }
@@ -233,16 +265,20 @@ const ComposeSocial = ({route}: any) => {
   }, [message]);
   // console.log('new height', height);
   // console.log('selected Item', SelectedChannel);
+  // console.log('selected Contact', JSON.stringify(SelectedContact, null, 2));
   // console.log('selected Item', JSON.stringify(channel, null, 2));
-  // console.log('connected channels', JSON.stringify(channels, null, 2));
+  // console.log('attachment id ', JSON.stringify(attachemntId, null, 2));
+  // console.log('from upload state', attachemntId);
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{flex: 1}}>
       <SafeAreaView style={{flex: 1}}>
-        <View style={styles.Container}>
-          <View style={styles.header}>
+        <View style={[styles.Container, {zIndex: 10}]}>
+          {/* header section */}
+          <View style={[styles.header, {zIndex: 20}]}>
+            {/* close/back icon */}
             <TouchableOpacity
               style={{marginHorizontal: wp(15)}}
               onPress={() => navigation.goBack()}>
@@ -252,13 +288,15 @@ const ComposeSocial = ({route}: any) => {
                 size={hp(24)}
               />
             </TouchableOpacity>
+            {/* from/to container  */}
             <View
               style={{
                 marginTop: hp(10),
                 justifyContent: 'center',
                 position: 'relative',
+                zIndex: 30,
               }}>
-              <View style={styles.headerSecion}>
+              <View style={[styles.headerSecion, {zIndex: 40}]}>
                 <Text style={styles.labelText}>From:</Text>
 
                 <TouchableOpacity
@@ -279,7 +317,7 @@ const ComposeSocial = ({route}: any) => {
                     <AntDesign
                       name={ShowChannels ? 'up' : 'down'}
                       color={colors.darkGray}
-                      size={hp(18)}
+                      size={hp(16)}
                     />
                   </View>
                 </TouchableOpacity>
@@ -291,12 +329,13 @@ const ComposeSocial = ({route}: any) => {
                       position: 'absolute',
                       backgroundColor: colors.light,
                       maxHeight: hp(300),
-                      // height: hp(100),
+
                       width: width * 0.7,
                       top: hp(Platform.OS === 'android' ? 45 : 35),
                       right: wp(20),
                       borderBottomStartRadius: hp(10),
                       borderBottomEndRadius: hp(10),
+                      // zIndex: 40,
                     }}>
                     {channels?.map((item: any, indx: number) => {
                       return (
@@ -306,20 +345,35 @@ const ComposeSocial = ({route}: any) => {
                           style={{
                             flexDirection: 'row',
                             alignItems: 'center',
+                            justifyContent: 'space-between',
                             paddingVertical: hp(10),
-                            paddingHorizontal: wp(5),
+                            paddingHorizontal: wp(10),
                             borderBottomColor: colors.lightGray,
                             borderBottomWidth: 1,
+                            zIndex: 50,
                           }}>
-                          <ChannelIcon name={item?.channel_name} />
-                          <Text
+                          <View
                             style={{
-                              marginLeft: wp(4),
-                              color: colors.dark,
-                              fontSize: hp(14),
+                              flexDirection: 'row',
+                              alignItems: 'center',
                             }}>
-                            {item?.platform_name ?? item?.platform_nick}
-                          </Text>
+                            <ChannelIcon name={item?.channel_name} />
+                            <Text
+                              style={{
+                                marginLeft: wp(4),
+                                color: colors.dark,
+                                fontSize: hp(14),
+                              }}>
+                              {item?.platform_name ?? item?.platform_nick}
+                            </Text>
+                          </View>
+                          {item?.uuid === SelectedChannel?.uuid && (
+                            <AntDesign
+                              name={'check'}
+                              color={colors.darkGray}
+                              size={hp(18)}
+                            />
+                          )}
                         </TouchableOpacity>
                       );
                     })}
@@ -327,7 +381,8 @@ const ComposeSocial = ({route}: any) => {
                 )}
               </View>
               <View style={{backgroundColor: colors.lightGray, height: 1}} />
-              <View style={[styles.headerSecion, {paddingTop: hp(5)}]}>
+              <View
+                style={[styles.headerSecion, {zIndex: 20, paddingTop: hp(5)}]}>
                 <Text style={styles.labelText}>To:</Text>
                 <View style={styles.textInputContainer}>
                   {!SelectedContact && (
@@ -346,10 +401,10 @@ const ComposeSocial = ({route}: any) => {
                         marginLeft: wp(4),
                         flexDirection: 'row',
                         alignItems: 'center',
-                        paddingHorizontal: wp(10),
+                        paddingHorizontal: wp(15),
                         paddingVertical: hp(4),
                         backgroundColor: colors.lightGray,
-                        borderRadius: hp(10),
+                        borderRadius: hp(20),
                       }}>
                       <UserAvatar
                         size={hp(24)}
@@ -402,7 +457,7 @@ const ComposeSocial = ({route}: any) => {
                         backgroundColor: colors.light,
                         maxHeight: hp(300),
                         width: width * 0.7,
-                        top: hp(Platform.OS === 'android' ? 45 : 35),
+                        top: hp(Platform.OS === 'android' ? 55 : 45),
                         right: wp(20),
                         borderBottomStartRadius: hp(10),
                         borderBottomEndRadius: hp(10),
@@ -415,10 +470,12 @@ const ComposeSocial = ({route}: any) => {
                             style={{
                               flexDirection: 'row',
                               alignItems: 'center',
-                              paddingVertical: hp(10),
-                              paddingHorizontal: wp(5),
+                              height: hp(45),
+                              // paddingVertical: hp(10),
+                              paddingHorizontal: wp(10),
                               borderBottomColor: colors.lightGray,
                               borderBottomWidth: 1,
+                              zIndex: 50,
                             }}>
                             <UserAvatar
                               size={hp(24)}
@@ -447,7 +504,17 @@ const ComposeSocial = ({route}: any) => {
             </View>
           </View>
           <View style={{backgroundColor: colors.lightGray, height: 1}} />
-
+          {/* attachment container */}
+          {attachmentDetials && (
+            <View style={{paddingHorizontal: wp(15), marginTop: hp(10)}}>
+              <Attachament
+                attachmentDetials={attachmentDetials}
+                uploading={uploading}
+                removeAttachment={removeAttachment}
+              />
+            </View>
+          )}
+          {/* input section */}
           <View
             style={{
               flex: 1,
@@ -461,7 +528,7 @@ const ComposeSocial = ({route}: any) => {
                       setMessage(text)
                     }
                     style={[styles.input]}
-                    placeholder={'Type something...'}
+                    placeholder={'Type your message...'}
                     placeholderTextColor={colors.dark}
                     maxHeight={120}
                     minHeight={40}
@@ -470,7 +537,7 @@ const ComposeSocial = ({route}: any) => {
 
                   <TouchableOpacity
                     style={styles.rightIconButtonStyle}
-                    onPress={sendFile}>
+                    onPress={attachFile}>
                     <Entypo
                       name="attachment"
                       size={23}
@@ -506,7 +573,7 @@ const styles = StyleSheet.create({
     paddingVertical: hp(10),
   },
   headerSecion: {
-    paddingHorizontal: wp(20),
+    paddingHorizontal: wp(15),
     flexDirection: 'row',
     alignItems: 'center',
     // backgroundColor: 'yellow',

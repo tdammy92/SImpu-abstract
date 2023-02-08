@@ -37,7 +37,12 @@ const Htmlview = ({htmldata}: any) => {
     center: defaultHTMLElementModels.div.extend({
       contentModel: HTMLContentModel.mixed,
     }),
+    font: defaultHTMLElementModels.p.extend({
+      contentModel: HTMLContentModel.mixed,
+    }),
   };
+
+  const ignoredDomTags = ['meta', 'o:p'];
 
   // console.log('html tags', JSON.stringify(htmldata, null, 2));
 
@@ -55,7 +60,7 @@ const Htmlview = ({htmldata}: any) => {
           enableExperimentalMarginCollapsing={true}
           systemFonts={systemFonts}
           // renderersProps={renderersProps}
-          ignoredDomTags={['o:p']}
+          ignoredDomTags={ignoredDomTags}
           customHTMLElementModels={customHTMLElementModels}
           renderersProps={{
             iframe: {
