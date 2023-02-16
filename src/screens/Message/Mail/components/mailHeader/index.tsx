@@ -5,10 +5,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useRef} from 'react';
+import React, {useRef, memo} from 'react';
 import {hp, wp} from 'src/utils';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import {FONTS, colors} from 'src/constants';
+import {FONTS, FontSize, colors} from 'src/constants';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
 import ContentLoader from 'react-native-easy-content-loader';
@@ -17,12 +17,14 @@ import UserAvatar from 'react-native-user-avatar';
 import ChannelIcon from 'src/components/common/ChannelIcon';
 import {Avatar} from 'src/constants';
 import HeaderOption from 'src/screens/Message/threadDetails/component/messageHeaderOption';
+import Resolve from 'src/screens/Message/threadDetails/resolve-thread';
 
 const {height} = Dimensions.get('screen');
 
 const MailHeader = ({threadDetail, loading}: any) => {
   const navigation = useNavigation();
   const chatOptionRef = useRef<any>(null);
+  const resolveRef = useRef<any>(null);
 
   const thread = threadDetail?.thread;
   const subject = threadDetail?.thread?.subject;
@@ -36,6 +38,23 @@ const MailHeader = ({threadDetail, loading}: any) => {
     if (chatOptionRef.current) {
       chatOptionRef.current.open();
     }
+  };
+
+  // close sheet
+  const closeSheet = () => {
+    if (chatOptionRef.current) {
+      chatOptionRef.current.close();
+    }
+  };
+
+  //open sresolveSheet
+  const openResolve = () => {
+    closeSheet();
+    setTimeout(() => {
+      if (resolveRef.current) {
+        resolveRef.current.open();
+      }
+    }, 300);
   };
 
   return (
@@ -65,6 +84,7 @@ const MailHeader = ({threadDetail, loading}: any) => {
                     containerStyles={{}}
                     title={false}
                     pRows={0}
+                    loading={loading}
                   />
                 ) : (
                   <View
@@ -122,12 +142,13 @@ const MailHeader = ({threadDetail, loading}: any) => {
             title={false}
             pRows={2}
             pHeight={[15, 15]}
+            loading={loading}
           />
         ) : (
           <View style={{marginVertical: hp(5)}}>
             <Text
               style={{
-                fontSize: hp(16),
+                fontSize: FontSize.BigText,
                 marginLeft: wp(15),
                 width: '85%',
                 fontFamily: FONTS.TEXT_SEMI_BOLD,
@@ -138,12 +159,17 @@ const MailHeader = ({threadDetail, loading}: any) => {
           </View>
         )}
       </View>
-      <HeaderOption ref={chatOptionRef} threadDetail={threadDetail} />
+      <Resolve ref={resolveRef} threadDetail={threadDetail} />
+      <HeaderOption
+        ref={chatOptionRef}
+        threadDetail={threadDetail}
+        openResolve={openResolve}
+      />
     </>
   );
 };
 
-export default MailHeader;
+export default memo(MailHeader);
 
 const styles = StyleSheet.create({
   header: {

@@ -4,7 +4,7 @@ export const FormatText = (text: string) => {
 };
 
 //snippet to trim length of string
-export const trimText = (text: string, lenght: number) => {
+export const trimText = (text: string | undefined, lenght: number) => {
   if (!text?.length) return '';
   if (text?.length <= lenght) return text;
 

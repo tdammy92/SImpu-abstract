@@ -100,7 +100,7 @@ export default ChatItem;
 const styles = StyleSheet.create({
   messageText: {
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: hp(14),
+    fontSize: 17,
     textAlign: 'auto',
 
     // letterSpacing: 0,

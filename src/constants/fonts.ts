@@ -8,4 +8,12 @@ const FONTS = {
     Platform.OS === 'ios' ? 'AvertaW01-Semibold' : 'Averta-Semibold',
 };
 
+export const FontSize = {
+  HeadingText: 32,
+  subHeadingText: 26,
+  BigText: 22,
+  MediumText: 18,
+  SmallText: 14,
+};
+
 export default FONTS;

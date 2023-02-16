@@ -1,20 +1,22 @@
 import {View, Text, useWindowDimensions, Dimensions} from 'react-native';
-import React from 'react';
+import React, {memo} from 'react';
 import RenderHtml, {
   defaultSystemFonts,
   HTMLContentModel,
   defaultHTMLElementModels,
 } from 'react-native-render-html';
-import {FONTS, colors} from 'src/constants';
+import {FONTS, FontSize, colors} from 'src/constants';
 import {hp} from 'src/utils';
 import {WebView} from 'react-native-webview';
-const cheerio = require('react-native-cheerio');
+// const cheerio = require('react-native-cheerio');
 
-// const width = Dimensions.get('window').width - hp(10);
+const {width} = Dimensions.get('window');
 
 const Htmlview = ({htmldata}: any) => {
-  const {width, height} = useWindowDimensions();
+  // const {width, height} = useWindowDimensions();
   const systemFonts = [...defaultSystemFonts, FONTS.TEXT_REGULAR];
+  // console.log('width from outside', widthA);
+  // console.log('width from inside  widthB', width);
 
   // const $ = cheerio.load(htmldata);
 
@@ -40,6 +42,9 @@ const Htmlview = ({htmldata}: any) => {
     font: defaultHTMLElementModels.p.extend({
       contentModel: HTMLContentModel.mixed,
     }),
+    link: defaultHTMLElementModels.a.extend({
+      contentModel: HTMLContentModel.mixed,
+    }),
   };
 
   const ignoredDomTags = ['meta', 'o:p'];
@@ -51,6 +56,9 @@ const Htmlview = ({htmldata}: any) => {
       <View
         style={{
           maxWidth: width,
+          backgroundColor: colors.bootomHeaderBg,
+          padding: hp(5),
+          borderRadius: hp(10),
         }}>
         <RenderHtml
           enableCSSInlineProcessing={false}
@@ -73,22 +81,10 @@ const Htmlview = ({htmldata}: any) => {
           // dangerouslyDisableHoisting={false}
           // dangerouslyDisableWhitespaceCollapsing={false}
 
-          // tagsStyles={tagsStyles}
-          tagsStyles={{
-            p: {marginTop: 15, marginBottom: 0},
-            iframe: {
-              marginTop: 15,
-              borderRadius: 5,
-              marginHorizontal: 0,
-            },
-            img: {
-              maxWidth: width * 0.7,
-            },
-          }}
+          tagsStyles={tagsStyles}
           baseStyle={{
-            padding: 0,
+            padding: 5,
             margin: 0,
-
             maxWidth: width,
           }}
         />
@@ -97,62 +93,89 @@ const Htmlview = ({htmldata}: any) => {
   );
 };
 
-export default Htmlview;
+export default memo(Htmlview);
 
 const tagsStyles = {
   body: {
-    // backgroundColor: 'red',
-    // whiteSpace: 'normal',
-    // width: width,
-    color: colors.dark,
-    //     marginTop: 0,
-    //     paddingTop: 0,
-    //     overflow: 'scroll',
-
-    //     paddingHorizontal: 0,
-    //     marginHorizontal: 0,
-    //     marginVertical: 0,
-    //     width: '100%',
-    //     alignItems: 'center',
-
-    //     justifyContent: 'center',
-
-    //     alignSelf: 'center',
+    // color: colors.dark,
+    fontSize: FontSize.MediumText,
+    // width: width * 0.7,
   },
   a: {
     // color: 'red',
+    fontSize: FontSize.MediumText,
+    lineHeight: 24,
   },
 
-  // p: {
-  //   color: colors.dark,
-  // },
-  // h1: {
-  //   color: colors.dark,
-  // },
-  // h2: {
-  //   color: colors.dark,
-  // },
-  // h3: {
-  //   color: colors.dark,
-  // },
-  // h4: {
-  //   color: colors.dark,
-  // },
-  // h5: {
-  //   color: colors.dark,
-  // },
-  // h6: {
-  //   color: colors.dark,
-  // },
-  // span: {
-  //   color: colors.dark,
-  // },
-  // div: {
-  //   color: colors.dark,
-  // },
+  table: {
+    // width: width * 0.7,
+  },
+  tr: {},
+  th: {},
+  td: {},
 
-  // img: {
-  //   padding: 0,
-  //   margin: 0,
-  // },
+  iframe: {
+    marginTop: 15,
+    borderRadius: 5,
+    marginHorizontal: 0,
+  },
+  img: {
+    maxWidth: width * 0.9,
+  },
+
+  p: {
+    color: colors.dark,
+    fontSize: FontSize.BigText,
+    lineHeight: 24,
+  },
+
+  h1: {
+    color: colors.dark,
+
+    fontSize: FontSize.subHeadingText,
+    lineHeight: 24,
+  },
+  h2: {
+    color: colors.dark,
+    fontSize: FontSize.BigText - 2,
+    lineHeight: 24,
+  },
+  h3: {
+    color: colors.dark,
+    fontSize: FontSize.BigText - 3,
+    lineHeight: 24,
+  },
+  h4: {
+    color: colors.dark,
+    fontSize: FontSize.BigText - 4,
+    lineHeight: 24,
+  },
+  h5: {
+    color: colors.dark,
+    fontSize: FontSize.BigText - 5,
+    lineHeight: 24,
+  },
+  h6: {
+    color: colors.dark,
+    fontSize: FontSize.BigText - 6,
+    lineHeight: 24,
+  },
+
+  i: {color: colors.dark, fontSize: FontSize.BigText, lineHeight: 24},
+  strong: {color: colors.dark, fontSize: FontSize.BigText, lineHeight: 24},
+  em: {color: colors.dark, fontSize: FontSize.BigText, lineHeight: 24},
+  b: {color: colors.dark, fontSize: FontSize.BigText, lineHeight: 24},
+  small: {color: colors.dark, fontSize: FontSize.BigText, lineHeight: 24},
+  sup: {color: colors.dark, fontSize: FontSize.BigText, lineHeight: 24},
+  sub: {color: colors.dark, fontSize: FontSize.BigText, lineHeight: 24},
+  span: {
+    color: colors.dark,
+    fontSize: FontSize.MediumText,
+    lineHeight: 24,
+  },
+  div: {
+    color: colors.dark,
+    fontSize: FontSize.BigText,
+    lineHeight: 24,
+  },
 };

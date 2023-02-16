@@ -10,7 +10,7 @@ import {
 import React from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {colors} from 'src/constants';
+import {FontSize, colors} from 'src/constants';
 import {copyIdToClipboard, hp, wp} from 'src/utils';
 import {useNavigation} from '@react-navigation/native';
 
@@ -180,7 +180,8 @@ const ConversationDetails = ({route}: any) => {
                 ]}>
                 Conversation ID
               </Text>
-              <Text style={{fontSize: hp(16), color: colors.darkGray}}>
+              <Text
+                style={{fontSize: FontSize.MediumText, color: colors.darkGray}}>
                 {threadDetail?.uuid}
               </Text>
             </View>
@@ -277,12 +278,12 @@ const styles = StyleSheet.create({
   },
 
   nameText: {
-    fontSize: hp(18),
+    fontSize: FontSize.subHeadingText,
     color: colors.dark,
     paddingVertical: hp(4),
   },
   nameText2: {
-    fontSize: hp(16),
+    fontSize: FontSize.BigText,
     color: colors.darkGray,
   },
 
@@ -320,11 +321,11 @@ const styles = StyleSheet.create({
   cardListColumn: {},
 
   headingText: {
-    fontSize: hp(16),
+    fontSize: FontSize.BigText,
     color: colors.dark,
   },
   SubHeadingText: {
-    fontSize: hp(14),
+    fontSize: FontSize.MediumText,
     color: colors.dark,
   },
 
@@ -342,7 +343,7 @@ const styles = StyleSheet.create({
 
   copyBtnTxt: {
     color: colors.dark,
-    fontSize: hp(14),
+    fontSize: FontSize.MediumText,
     marginRight: hp(4),
   },
 });

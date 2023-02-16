@@ -23,6 +23,7 @@ import {QueryClientProvider, QueryClient, focusManager} from 'react-query';
 import {persistor, store} from 'src/store';
 import {PersistGate} from 'redux-persist/integration/react';
 import {MainStackParamList} from './navigation/constants';
+import {MenuProvider} from 'react-native-popup-menu';
 import {RootStack} from './navigation';
 
 import {requestPermissions} from './services/notification/permission';
@@ -63,17 +64,19 @@ export default (): JSX.Element => {
             <IconRegistry icons={[EvaIconsPack]} />
             <PersistGate persistor={persistor}>
               <UIKittenProvider {...eva} theme={{...eva.light, ...theme}}>
-                <>
-                  <StatusBar
-                    barStyle="dark-content"
-                    translucent={true}
-                    backgroundColor={'transparent'}
-                  />
+                <MenuProvider>
+                  <>
+                    <StatusBar
+                      barStyle="dark-content"
+                      translucent={true}
+                      backgroundColor={'transparent'}
+                    />
 
-                  <NavigationContainer ref={navigationRef} onReady={onReady}>
-                    <RootStack />
-                  </NavigationContainer>
-                </>
+                    <NavigationContainer ref={navigationRef} onReady={onReady}>
+                      <RootStack />
+                    </NavigationContainer>
+                  </>
+                </MenuProvider>
               </UIKittenProvider>
             </PersistGate>
           </QueryClientProvider>

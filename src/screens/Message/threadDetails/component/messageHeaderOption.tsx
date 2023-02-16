@@ -4,30 +4,57 @@ import {
   Dimensions,
   TouchableOpacity,
   Platform,
+  ScrollView,
+  TextInput,
 } from 'react-native';
-import React, {forwardRef, useCallback} from 'react';
+import React, {
+  forwardRef,
+  useCallback,
+  useRef,
+  useLayoutEffect,
+  useState,
+} from 'react';
 import RBSheet, {RBSheetProps} from 'react-native-raw-bottom-sheet';
-import {copyIdToClipboard, hp, wp} from 'src/utils';
+import {copyIdToClipboard, hp, messsageToast, wp} from 'src/utils';
 import Octicons from 'react-native-vector-icons/Octicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Divider, Text} from '@ui-kitten/components';
-import {colors, FONTS} from 'src/constants';
+import {colors, FONTS, FontSize} from 'src/constants';
 import {useNavigation} from '@react-navigation/native';
 import {SCREEN_NAME} from 'src/navigation/constants';
+
+import {useSelector} from 'react-redux';
+import {StoreState} from 'src/@types/store';
+import Modal from 'react-native-modal';
+import Resolve from '../resolve-thread';
+import Feather from 'react-native-vector-icons/Feather';
 
 type Props = {
   ref: RBSheetProps;
   threadDetail: any;
+  openResolve: any;
 };
 
-const {height} = Dimensions.get('screen');
+const {height, width} = Dimensions.get('screen');
 
 const HeaderOption = forwardRef(
   (props: Props, ref: React.ForwardedRef<any>) => {
     const navigation = useNavigation();
+    const {openResolve} = props;
     const thread = props?.threadDetail?.thread;
+
+    const {profile, user, token} = useSelector(
+      (state: StoreState) => state?.user,
+    );
+    const organisation = useSelector(
+      (state: StoreState) => state?.organisation?.details,
+    );
+
+    // console.log('thread Detail', JSON.stringify(thread, null, 2));
+
+    // const resolveMutation = useMutation(resolveConversation,{})
 
     const navigateToDetails = useCallback(() => {
       //@ts-ignore
@@ -51,12 +78,12 @@ const HeaderOption = forwardRef(
         {/* @ts-ignore */}
         <RBSheet
           ref={ref}
-          height={height / 2.8}
+          height={height * 0.45}
           openDuration={250}
           closeOnDragDown
           customStyles={{
             wrapper: {
-              backgroundColor: 'rgba(105,105,105,0.7)',
+              backgroundColor: 'rgba(0,0,0,0.3)',
             },
             draggableIcon: {
               backgroundColor: '#E5E4E2',
@@ -66,19 +93,22 @@ const HeaderOption = forwardRef(
               borderTopRightRadius: hp(30),
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: '#E5E4E2',
+              backgroundColor: colors.light,
               padding: 0,
             },
           }}>
-          <View style={styles.container}>
+          <View
+            style={styles.container}
+            // showsVerticalScrollIndicator={false}
+          >
             <View style={styles.gridConatiner}>
               <TouchableOpacity style={styles.boxContainer}>
-                <MaterialCommunityIcons
-                  name="note-text-outline"
-                  size={25}
-                  color={colors.dark}
-                />
-                <Text style={styles.opionText}>Add note</Text>
+                <Feather name="user-check" size={25} color={colors.dark} />
+                <Text style={styles.opionText}>Assign</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.boxContainer}>
+                <Feather name="users" size={23} color="#000" />
+                <Text style={styles.opionText}>Participants</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.boxContainer}>
                 <MaterialCommunityIcons
@@ -88,21 +118,48 @@ const HeaderOption = forwardRef(
                 />
                 <Text style={styles.opionText}>Move to</Text>
               </TouchableOpacity>
-              {/* <TouchableOpacity style={styles.boxContainer}>
-              <MaterialCommunityIcons
-                name="alarm-snooze"
-                size={23}
-                color="#000"
-              />
-              <Text style={styles.opionText}>Snooze</Text>
-            </TouchableOpacity> */}
+
               <TouchableOpacity style={styles.boxContainer}>
                 <AntDesign name="tagso" size={25} color={colors.dark} />
                 <Text style={styles.opionText}>Tags</Text>
               </TouchableOpacity>
             </View>
             <Divider style={{height: 2}} />
-            <View style={styles.ListContainer}>
+            <ScrollView
+              style={styles.ListContainer}
+              showsVerticalScrollIndicator={false}>
+              <TouchableOpacity
+                onPress={openResolve}
+                style={styles.ListBox}
+                disabled={
+                  thread?.state === 'closed' || thread?.state === 'resolved'
+                }>
+                <MaterialCommunityIcons
+                  name="check-all"
+                  size={25}
+                  color={
+                    thread?.state === 'closed' || thread?.state === 'resolved'
+                      ? colors.lightGray
+                      : colors.dark
+                  }
+                />
+                <Text
+                  style={[
+                    styles.optionListText,
+                    {
+                      color:
+                        thread?.state === 'closed' ||
+                        thread?.state === 'resolved'
+                          ? colors.lightGray
+                          : colors.dark,
+                    },
+                  ]}>
+                  {thread?.state === 'closed' || thread?.state === 'resolved'
+                    ? 'Closed'
+                    : 'Resolve'}
+                </Text>
+              </TouchableOpacity>
+              <Divider style={{height: 2}} />
               <TouchableOpacity style={styles.ListBox}>
                 <AntDesign name="mail" size={25} color={colors.dark} />
                 <Text style={styles.optionListText}>Mark as unread</Text>
@@ -130,7 +187,7 @@ const HeaderOption = forwardRef(
                   View conversation details
                 </Text>
               </TouchableOpacity>
-            </View>
+            </ScrollView>
           </View>
         </RBSheet>
       </>
@@ -145,7 +202,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.light,
     width: '96%',
     height: '96%',
-    borderRadius: 15,
+
+    borderTopLeftRadius: hp(15),
+    borderTopRightRadius: hp(15),
   },
   gridConatiner: {
     flexDirection: 'row',
@@ -154,7 +213,7 @@ const styles = StyleSheet.create({
     marginVertical: hp(10),
   },
   ListContainer: {
-    paddingHorizontal: hp(20),
+    paddingHorizontal: hp(15),
   },
   ListBox: {
     flexDirection: 'row',
@@ -170,13 +229,13 @@ const styles = StyleSheet.create({
     textAlign: 'justify',
     paddingTop: hp(5),
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: hp(16),
+    fontSize: FontSize.MediumText,
     color: colors.dark,
   },
   optionListText: {
     marginLeft: hp(8),
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: hp(16),
+    fontSize: FontSize.MediumText,
     color: colors.dark,
   },
 });

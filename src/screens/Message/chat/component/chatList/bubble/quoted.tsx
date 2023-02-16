@@ -6,7 +6,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import prettyBytes from 'pretty-bytes';
 import {StoreState} from 'src/@types/store';
 import {hp, splitLastOccurrence, wp} from 'src/utils';
-import {colors} from 'src/constants';
+import {FontSize, colors} from 'src/constants';
 import {imageType, audioType, videoType, docType} from 'src/constants';
 import stc from 'string-to-color';
 //@ts-ignore
@@ -15,7 +15,7 @@ import {trimText} from 'src/utils/string-utils/string';
 import AttachmentIcon from 'src/components/common/AttachmentIcon';
 import {FormatText} from 'src/utils/string-utils/string';
 
-const Quoted = ({item, isUser}: any) => {
+const Quoted = ({item, isUser, isGroup}: any) => {
   const {profile, user, token} = useSelector(
     (state: StoreState) => state?.user,
   );
@@ -30,7 +30,9 @@ const Quoted = ({item, isUser}: any) => {
         {
           borderLeftColor: isUser
             ? colors.bootomHeaderBg
-            : stc(item?.author?.platform_name ?? item?.author?.platform_nick),
+            : isGroup
+            ? stc(item?.author?.platform_name ?? item?.author?.platform_nick)
+            : colors.secondaryBg,
         },
       ]}>
       <Text
@@ -41,7 +43,9 @@ const Quoted = ({item, isUser}: any) => {
               ? colors.light
               : item?.author?.uuid === profile?.id
               ? colors.dark
-              : stc(item?.author?.platform_name ?? item?.author?.platform_nick),
+              : isGroup
+              ? stc(item?.author?.platform_name ?? item?.author?.platform_nick)
+              : colors.secondaryBg,
           },
         ]}>
         {item?.author?.uuid === profile?.id ? 'You' : item?.author?.name}:
@@ -59,7 +63,7 @@ const Quoted = ({item, isUser}: any) => {
                   : colors.darkGray,
               },
             ]}>
-            {trimText(item?.entity?.content?.body ?? '', 150)}
+            {trimText(item?.entity?.content?.body ?? '', 100)}
           </Text>
         )}
 
@@ -88,6 +92,7 @@ const Quoted = ({item, isUser}: any) => {
                   }}>
                   <Text
                     style={{
+                      fontSize: FontSize.SmallText,
                       color: isUser ? colors.lightGray : colors?.darkGray,
                     }}>
                     Image
@@ -169,17 +174,18 @@ const styles = StyleSheet.create({
     borderLeftWidth: 1.9,
   },
   senderName: {
-    fontSize: hp(14),
-    // fontWeight: 'bold',
+    fontSize: FontSize.SmallText,
+    lineHeight: 18,
   },
   body: {
-    fontSize: hp(14),
+    fontSize: FontSize.SmallText,
+    lineHeight: 18,
   },
   fileName: {
-    fontSize: hp(14),
+    fontSize: FontSize.SmallText,
   },
 
   fileInfoText: {
-    fontSize: hp(13),
+    fontSize: FontSize.SmallText,
   },
 });

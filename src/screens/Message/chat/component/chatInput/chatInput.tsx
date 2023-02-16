@@ -162,6 +162,7 @@ const ChatInput = ({
               bottom: suggestionBoxBottomMargin,
               backgroundColor: colors.bootomHeaderBg,
               width: width * 0.77,
+              maxHeight: 400,
 
               borderColor: colors.darkGray,
               borderWidth: 0.7,
@@ -225,9 +226,9 @@ const ChatInput = ({
 
     if (replyIsActive) {
       // console.log('reply action');
+      dispatch(removeReply());
       await replyMessageMutation.mutateAsync(data);
       setMessage('');
-      dispatch(removeReply());
     } else {
       // console.log('send action');
       setMessage('');
@@ -528,8 +529,7 @@ const ChatInput = ({
               backgroundColor: 'transparent',
               color: colors.dark,
               flex: 3,
-              fontSize: 15,
-              // height: hp(40),
+              fontSize: 16,
             }}
             value={message}
             onChange={text =>
@@ -574,7 +574,7 @@ const ChatInput = ({
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
-    backgroundColor: 'transparent',
+    backgroundColor: colors.light,
     position: 'absolute',
     width: width,
     bottom: hp(-5),
@@ -613,9 +613,9 @@ const styles = StyleSheet.create({
   },
   inputAndMicrophone: {
     flexDirection: 'row',
-    backgroundColor: colors.lightGray,
+    backgroundColor: colors.bootomHeaderBg,
     borderColor: colors.secondaryBg,
-    // borderWidth: 1,
+    fontSize: 16,
     flex: 3,
     marginRight: wp(10),
     paddingVertical: Platform.OS === 'ios' ? 10 : 5,

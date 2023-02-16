@@ -1,7 +1,7 @@
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {getFileType, hp, wp} from 'src/utils';
-import {colors} from 'src/constants';
+import {FontSize, colors} from 'src/constants';
 import prettyBytes from 'pretty-bytes';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   downloadText: {
-    fontSize: hp(12),
+    fontSize: FontSize.SmallText,
     color: colors.darkGray,
   },
 

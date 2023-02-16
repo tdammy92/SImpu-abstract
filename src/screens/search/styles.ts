@@ -1,3 +1,4 @@
+import {FontSize} from './../../constants/fonts';
 import {StyleService, Input} from '@ui-kitten/components';
 import {ImageStyle, TextStyle, ViewStyle, Dimensions, View} from 'react-native';
 import {FONTS, colors} from 'src/constants';
@@ -49,8 +50,8 @@ const styles = StyleService.create<Styles>({
     // paddingHorizontal: 5,
   },
   pillHeaderText: {
-    fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: hp(16),
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
+    fontSize: FontSize.MediumText,
     marginVertical: hp(5),
     color: colors.dark,
     marginLeft: 3,
@@ -68,7 +69,7 @@ const styles = StyleService.create<Styles>({
     borderRadius: 5,
   },
   pillText: {
-    fontSize: hp(14),
+    fontSize: FontSize.MediumText,
     padding: 4,
     fontFamily: FONTS.TEXT_REGULAR,
     color: colors.dark,
@@ -94,7 +95,7 @@ const styles = StyleService.create<Styles>({
   },
   selectedPillText: {
     color: colors.light,
-    fontSize: hp(14),
+    fontSize: FontSize.MediumText,
   },
 
   customerScrollContainer: {
@@ -125,7 +126,7 @@ const styles = StyleService.create<Styles>({
     marginLeft: wp(5),
     width: '100%',
     height: '100%',
-    fontSize: hp(18),
+    fontSize: FontSize.MediumText,
     fontFamily: FONTS.TEXT_REGULAR,
     color: colors.dark,
   },
@@ -138,7 +139,7 @@ const styles = StyleService.create<Styles>({
   },
   Itext: {
     color: colors.dark,
-    fontSize: hp(16),
+    fontSize: FontSize.MediumText,
     fontFamily: FONTS.TEXT_SEMI_BOLD,
     marginLeft: 5,
   },
@@ -150,7 +151,7 @@ const styles = StyleService.create<Styles>({
     marginVertical: hp(20),
   },
   emptyText: {
-    fontSize: hp(16),
+    fontSize: FontSize.MediumText,
     fontFamily: FONTS.TEXT_SEMI_BOLD,
   },
 });

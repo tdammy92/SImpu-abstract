@@ -22,6 +22,8 @@ import loadingSlice from './Loader';
 import organisationSlice from 'src/store/organisation/organisationReducer';
 import deviceSlice from 'src/store/device/deviceReducer';
 import replySlice from 'src/store/reply/replyReducer';
+import forwardSlice from './forward/forwardReducer';
+import messageSlice from './message/message';
 
 export const reducers = combineReducers<StoreState>({
   user: userSlice,
@@ -30,13 +32,15 @@ export const reducers = combineReducers<StoreState>({
   organisation: organisationSlice,
   loader: loadingSlice,
   reply: replySlice,
+  forward: forwardSlice,
+  message: messageSlice,
 });
 
 const persistConfig = {
   key: 'root',
   storage,
   version: 1,
-  blacklist: ['loader', 'reply'],
+  blacklist: ['loader', 'reply', 'forward', 'message'],
 };
 
 const middlewares: Middleware[] = [

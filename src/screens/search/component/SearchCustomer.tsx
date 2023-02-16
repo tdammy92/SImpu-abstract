@@ -6,7 +6,7 @@ import {Channel} from 'src/@types/inbox';
 import UserAvatar from 'react-native-user-avatar';
 import ChannelIcon from 'src/components/common/ChannelIcon';
 import {hp, wp} from 'src/utils';
-import {FONTS, colors} from 'src/constants';
+import {FONTS, FontSize, colors} from 'src/constants';
 import {trimText} from 'src/utils/string-utils/string';
 import stc from 'string-to-color';
 import {TouchableOpacity} from 'react-native-gesture-handler';
@@ -93,11 +93,11 @@ const styles = StyleSheet.create({
     marginLeft: wp(4),
   },
   name: {
-    fontSize: hp(14),
-    fontFamily: FONTS.TEXT_REGULAR,
+    fontSize: FontSize.MediumText,
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
   },
   name2: {
-    fontSize: hp(14),
+    fontSize: FontSize.MediumText,
     color: colors.dark,
     fontFamily: FONTS.TEXT_REGULAR,
   },

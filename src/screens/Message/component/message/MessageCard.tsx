@@ -6,7 +6,7 @@ import UserAvatar from 'react-native-user-avatar';
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {hp, wp} from 'src/utils';
-import {FONTS} from 'src/constants';
+import {FONTS, FontSize} from 'src/constants';
 import {colors} from 'src/constants';
 import {SCREEN_NAME} from 'src/navigation/constants';
 import ChannelIcon from 'src/components/common/ChannelIcon';
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
 
   nameText: {
     fontFamily: FONTS.TEXT_SEMI_BOLD,
-    fontSize: hp(16),
+    fontSize: FontSize.BigText,
     color: colors.dark,
   },
   isRead: {
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   timeText: {
-    fontSize: hp(12),
+    fontSize: FontSize.SmallText,
     fontFamily: FONTS.TEXT_REGULAR,
     color: colors.dark,
     marginRight: wp(10),
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
   },
   messageTitleText: {
     color: colors.dark,
-    fontSize: hp(16),
+    fontSize: FontSize.BigText,
     fontFamily: FONTS.TEXT_SEMI_BOLD,
   },
   lastmessageTextWrapper: {
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
   },
   lastmessageText: {
     color: colors.dark,
-    fontSize: hp(14),
+    fontSize: FontSize.MediumText,
     paddingTop: hp(1),
     paddingBottom: hp(5),
 

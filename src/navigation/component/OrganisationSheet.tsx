@@ -22,7 +22,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import UserAvatar from 'react-native-user-avatar';
 import {hp, wp} from 'src/utils';
 import {updateOrganisation} from 'src/store/organisation/organisationReducer';
-import {colors, FONTS} from 'src/constants';
+import {colors, FONTS, FontSize} from 'src/constants';
 import {StoreState} from 'src/@types/store';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {organisation} from 'src/@types/profile';
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
   sheetHeader: {},
   sheetHeaderText: {
     fontFamily: FONTS.TEXT_SEMI_BOLD,
-    fontSize: hp(18),
+    fontSize: FontSize.BigText,
     textTransform: 'uppercase',
     color: colors.dark,
   },
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
   organisationText: {
     marginLeft: 5,
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: hp(18),
+    fontSize: FontSize.BigText,
     color: colors.dark,
   },
 });

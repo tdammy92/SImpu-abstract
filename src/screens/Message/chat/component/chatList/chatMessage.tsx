@@ -7,7 +7,13 @@ import {StoreState} from 'src/@types/store';
 import {hp} from 'src/utils';
 import EmptyInbox from 'src/components/common/EmptyInbox';
 
-const ChatMessage = ({data, fetchNextPage, chatListRef, Onscroll}: any) => {
+const ChatMessage = ({
+  data,
+  fetchNextPage,
+  chatListRef,
+  Onscroll,
+  isGroup,
+}: any) => {
   return (
     <FlatList
       ref={chatListRef}
@@ -23,7 +29,9 @@ const ChatMessage = ({data, fetchNextPage, chatListRef, Onscroll}: any) => {
       data={data}
       onEndReached={fetchNextPage}
       onEndReachedThreshold={0.5}
-      renderItem={({item, index}) => <ChatBubble item={item} id={index} />}
+      renderItem={({item, index}) => (
+        <ChatBubble item={item} id={index} isGroup={isGroup} />
+      )}
       onScroll={Onscroll}
       // ListEmptyComponent={<EmptyInbox />}
     />

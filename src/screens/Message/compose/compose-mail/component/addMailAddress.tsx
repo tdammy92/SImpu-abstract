@@ -7,10 +7,12 @@ import {
   View,
   Keyboard,
   Dimensions,
+  NativeSyntheticEvent,
+  TextInputKeyPressEventData,
 } from 'react-native';
 import React, {useState, useRef} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {FONTS, colors} from 'src/constants';
+import {FONTS, FontSize, colors} from 'src/constants';
 import {hp, messsageToast, wp} from 'src/utils';
 
 import useDebounce from 'src/Hooks/useDebounce';
@@ -21,13 +23,14 @@ import ChannelIcon from 'src/components/common/ChannelIcon';
 
 const {width, height} = Dimensions.get('screen');
 
-const AddTo = ({
+const AddMail = ({
   zIndex,
   title,
   valueArr,
   setValueArr,
   placeholder,
   SelectedChannel,
+  showSearchCustomer,
 }: any) => {
   const {token} = useSelector((state: StoreState) => state.user);
   const organisation = useSelector(
@@ -54,7 +57,7 @@ const AddTo = ({
     },
 
     {
-      enabled: !!debounceValue,
+      enabled: !!debounceValue && showSearchCustomer,
       onSuccess(data: any, variables: any, context: any) {
         //This snippet flattens the array
         const searchCustomerResults = data?.pages
@@ -93,7 +96,7 @@ const AddTo = ({
     }
 
     Keyboard.dismiss();
-    setValueArr([value, ...valueArr]);
+    setValueArr([...valueArr, value]);
     if (textInputRef?.current) {
       //@ts-ignore
       textInputRef?.current.clear();
@@ -110,12 +113,22 @@ const AddTo = ({
       });
       return;
     }
-    setValueArr([recipient, ...valueArr]);
+    setValueArr([...valueArr, recipient]);
     setsugestion([]);
     if (textInputRef?.current) {
       //@ts-ignore
       textInputRef?.current.clear();
     }
+  };
+  //selected recipent from sugestions
+  const handleAddFromKeyBoard = ({
+    nativeEvent,
+  }: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
+    console.log('eeevent', nativeEvent);
+
+    // if (nativeEvent.key === 'done') {
+    //   console.log('d key i needed');
+    // }
   };
 
   //remove a recipent
@@ -128,7 +141,7 @@ const AddTo = ({
 
   return (
     <View style={{paddingVertical: hp(4), position: 'relative', zIndex}}>
-      {valueArr?.length > 0 && (
+      {/* {valueArr?.length > 0 && (
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -146,7 +159,10 @@ const AddTo = ({
                   {marginLeft: idx === 0 ? wp(10) : wp(3)},
                 ]}>
                 <View style={{marginRight: wp(10)}}>
-                  <Text style={{color: colors.dark}}>{recipent}</Text>
+                  <Text
+                    style={{color: colors.dark, fontSize: FontSize.MediumText}}>
+                    {recipent}
+                  </Text>
                 </View>
                 <TouchableOpacity onPress={() => removeRecipent(recipent)}>
                   <AntDesign
@@ -159,7 +175,7 @@ const AddTo = ({
             );
           })}
         </ScrollView>
-      )}
+      )} */}
       <View
         style={[
           styles.inputWrapper,
@@ -172,23 +188,61 @@ const AddTo = ({
           style={{
             flexDirection: 'row',
             alignItems: 'center',
+            // borderWidth: 1,
+            // borderColor: 'blue',
+            flexWrap: 'wrap',
           }}>
           <Text style={styles.inputLabelText}>{title}:</Text>
+          {valueArr?.map((recipent: string, idx: number) => {
+            return (
+              <View
+                key={`${idx}`}
+                style={[
+                  styles.selectedContactWrapper,
+                  {marginLeft: idx === 0 ? wp(10) : wp(3)},
+                ]}>
+                <View style={{marginRight: wp(10)}}>
+                  <Text
+                    style={{color: colors.dark, fontSize: FontSize.MediumText}}>
+                    {recipent}
+                  </Text>
+                </View>
+                <TouchableOpacity onPress={() => removeRecipent(recipent)}>
+                  <AntDesign
+                    name={'closecircleo'}
+                    color={colors.darkGray}
+                    size={hp(16)}
+                  />
+                </TouchableOpacity>
+              </View>
+            );
+          })}
+
           <TextInput
             ref={textInputRef}
             onBlur={() => {
               setsugestion([]);
+              Keyboard.dismiss();
             }}
-            placeholder={placeholder}
+            returnKeyType="done"
+            onSubmitEditing={handleAddRecipent}
+            onKeyPress={handleAddFromKeyBoard}
+            placeholder={valueArr.length > 0 ? '' : placeholder}
             style={[
               styles.inputStyle,
-              //   {backgroundColor: 'blue', marginRight: wp(15)},
+
+              {
+                // backgroundColor: 'blue',
+                // marginRight: wp(15),
+                // borderColor: 'red',
+                // borderWidth: 1,
+              },
             ]}
             value={value}
             onChangeText={text => setValue(text)}
           />
         </View>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={handleAddRecipent}
           style={{
             position: 'absolute',
@@ -200,10 +254,10 @@ const AddTo = ({
             color={colors.darkGray}
             size={hp(20)}
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
 
-      {sugestion?.length > 0 && value !== '' && (
+      {/* {sugestion?.length > 0 && value !== '' && (
         <ScrollView
           style={{
             position: 'absolute',
@@ -225,36 +279,43 @@ const AddTo = ({
                   flexDirection: 'row',
                   alignItems: 'center',
                   paddingHorizontal: wp(5),
-                  paddingVertical: hp(5),
+                  paddingVertical: hp(8),
                   borderBottomWidth: 0.4,
                   borderBottomColor: colors.darkGray,
+                  backgroundColor: colors.light,
                 }}>
                 <ChannelIcon name={item?.channel_name} />
-                <Text style={{color: colors.dark, marginLeft: wp(4)}}>
+                <Text
+                  style={{
+                    color: colors.dark,
+
+                    fontSize: FontSize.MediumText,
+                    marginLeft: wp(4),
+                  }}>
                   {item?.platform_name ?? item?.platform_nick}
                 </Text>
               </TouchableOpacity>
             );
           })}
         </ScrollView>
-      )}
+      )} */}
     </View>
   );
 };
 
-export default AddTo;
+export default AddMail;
 
 const styles = StyleSheet.create({
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: hp(60),
+    minHeight: hp(60),
     paddingHorizontal: wp(10),
   },
   inputLabelText: {
     color: colors.dark,
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: hp(18),
+    fontSize: FontSize.BigText,
     marginRight: wp(5),
   },
 
@@ -262,7 +323,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderWidth: 0,
     borderColor: 'transparent',
-    fontSize: hp(18),
+    fontSize: FontSize.BigText,
   },
 
   selectedContactWrapper: {

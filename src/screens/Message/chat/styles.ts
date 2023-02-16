@@ -28,12 +28,12 @@ const styles = StyleService.create<Styles>({
   floatingDownBtn: {
     backgroundColor: '#e6e6e6',
 
-    height: 35,
-    width: 35,
+    height: hp(35),
+    width: hp(35),
     borderRadius: hp(35 * 0.5),
     position: 'absolute',
-    bottom: 100,
-    right: 10,
+    bottom: hp(140),
+    right: hp(10),
     justifyContent: 'center',
     alignItems: 'center',
   },

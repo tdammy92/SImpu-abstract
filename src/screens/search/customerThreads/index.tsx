@@ -13,7 +13,7 @@ import {useNavigation} from '@react-navigation/native';
 import HeaderNextBtn from 'src/components/common/HeaderNextBtn';
 import HeaderBackArrow from 'src/components/common/HeaderBackArrow';
 import {hp, wp} from 'src/utils';
-import {FONTS, colors} from 'src/constants';
+import {FONTS, FontSize, colors} from 'src/constants';
 //@ts-ignore
 import UserAvatar from 'react-native-user-avatar';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -257,13 +257,13 @@ const styles = StyleSheet.create({
   nameText: {
     color: colors.dark,
     fontFamily: FONTS.TEXT_SEMI_BOLD,
-    fontSize: hp(18),
+    fontSize: FontSize.BigText,
     paddingBottom: hp(2),
   },
   nameText2: {
     color: colors.dark,
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: hp(16),
+    fontSize: FontSize.BigText,
   },
 
   subHeadingText: {
@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
     marginLeft: wp(15),
     color: colors.dark,
     fontFamily: FONTS.TEXT_SEMI_BOLD,
-    fontSize: hp(14),
+    fontSize: FontSize.MediumText,
   },
   listCard: {
     paddingHorizontal: wp(10),
@@ -287,13 +287,13 @@ const styles = StyleSheet.create({
   },
 
   messageText: {
-    fontSize: hp(16),
+    fontSize: FontSize.BigText,
     color: colors.dark,
     fontFamily: FONTS.TEXT_SEMI_BOLD,
   },
 
   name: {
-    fontSize: hp(14),
+    fontSize: FontSize.MediumText,
     fontFamily: FONTS.TEXT_REGULAR,
     color: colors.dark,
   },

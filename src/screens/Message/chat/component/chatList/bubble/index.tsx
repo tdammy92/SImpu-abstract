@@ -1,9 +1,17 @@
-import React from 'react';
-import {StyleSheet, Platform, Text, View, TouchableOpacity} from 'react-native';
+import React, {useRef, useState} from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Dimensions,
+  TextInput,
+  ScrollView,
+} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {StoreState} from 'src/@types/store';
-import {colors, FONTS} from 'src/constants';
-import {hp, wp} from 'src/utils';
+import {Avatar, colors, FONTS, FontSize} from 'src/constants';
+import {copyIdToClipboard, hp, wp} from 'src/utils';
 import {format} from 'date-fns';
 import ChatItem from './chatItem';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -21,22 +29,44 @@ import Animated, {
   useAnimatedStyle,
   useAnimatedGestureHandler,
   useSharedValue,
+  color,
 } from 'react-native-reanimated';
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+  renderers,
+} from 'react-native-popup-menu';
+//@ts-ignore
+import UserAvatar from 'react-native-user-avatar';
+import Modal from 'react-native-modal';
 import Quoted from './quoted';
 import {addReply} from 'src/store/reply/replyReducer';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
+import {addToForward, removeForward} from 'src/store/forward/forwardReducer';
+import ForwardModal from './fowardToModal';
 
-const ChatBubble = ({item, id}: any): JSX.Element => {
+const {height, width} = Dimensions.get('screen');
+
+const ChatBubble = ({item, id, isGroup}: any): JSX.Element => {
   const {author_id, author, entity, created_datetime} = item;
-
-  // if (id === 0) {
-  //   console.log('quoted item', JSON.stringify(item, null, 2));
-  // }
+  const dispatch = useDispatch();
 
   const {profile, user, token} = useSelector(
     (state: StoreState) => state?.user,
   );
+  const organisation = useSelector(
+    (state: StoreState) => state.organisation.details,
+  );
 
-  const dispatch = useDispatch();
+  const {ContextMenu, SlideInMenu, Popover} = renderers;
+  const [showForwardModal, setshowForwardModal] = useState(false);
+  // const [ForwardItem, setForwardItem] = useState<any>({});
+  // const [searchContact, setsearchContact] = useState('');
+  // const [Contact, setContact] = useState([]);
+  // const [SlectedContact, setSlectedContact] = useState('');
 
   //swipe animation value
   const startPosition = 0;
@@ -58,106 +88,231 @@ const ChatBubble = ({item, id}: any): JSX.Element => {
     },
   });
 
+  const OpenForward = (selectedItem: any) => {
+    setshowForwardModal(true);
+    dispatch(addToForward(selectedItem));
+  };
+
+  const CloseForward = () => {
+    setshowForwardModal(false);
+    dispatch(removeForward());
+  };
+
   const swipeStyle = useAnimatedStyle(() => {
     return {
       transform: [{translateX: x.value}],
     };
   });
+  // console.log('contact', JSON.stringify(item, null, 2));
 
   return (
-    <TouchableOpacity
-      onLongPress={() => {
-        console.log('Holded for long');
-      }}>
-      <FlingGestureHandler
-        direction={isUser ? Directions.LEFT : Directions.RIGHT}
-        //@ts-ignore
-        onGestureEvent={swipeHandler}
-        onHandlerStateChange={({nativeEvent}) => {
-          if (nativeEvent.state === State.ACTIVE) {
-            // console.log('selected reply', JSON.stringify(item, null, 2));
-            dispatch(addReply(item));
-          }
+    <>
+      <Menu
+        renderer={SlideInMenu}
+        rendererProps={{
+          anchorStyle: {},
+          placement: 'auto',
+          preferredPlacement: isUser ? 'right' : 'left',
         }}>
-        <Animated.View
-          entering={
-            isUser ? FadeInRight.duration(300) : FadeInLeft.duration(300)
-          }
-          style={[
-            styles.bubbleContianer,
-            swipeStyle,
-            {
-              backgroundColor: isUser
-                ? colors.secondaryBg
-                : colors.bootomHeaderBg,
-              alignSelf: isUser ? 'flex-end' : 'flex-start',
-              borderBottomLeftRadius: isUser ? hp(10) : hp(0),
-              borderBottomRightRadius: isUser ? hp(0) : hp(10),
-              marginBottom: id === 0 ? hp(80) : hp(10),
+        {/* <TouchableOpacity onLongPress={handleLongPres}> */}
+        <MenuTrigger
+          triggerOnLongPress={true}
+          customStyles={{
+            triggerOuterWrapper: {},
+            triggerWrapper: {},
+            triggerTouchable: {
+              activeOpacity: 1,
+              underlayColor: 'transparent',
             },
-          ]}>
-          <View style={styles.messageHeader}>
-            <Text
-              style={[
-                styles.senderName,
-                {color: isUser ? colors.bootomHeaderBg : stc(author?.name)},
-              ]}>
-              {author?.name}
-            </Text>
-            <Text
-              style={[
-                styles.messageDate,
-                {color: isUser ? colors.bootomHeaderBg : colors.darkGray},
-              ]}>
-              {format(new Date(created_datetime), 'p')}
-            </Text>
-          </View>
-          <View
-            style={
-              {
-                // width: '100%'
+          }}>
+          <FlingGestureHandler
+            direction={isUser ? Directions.LEFT : Directions.RIGHT}
+            //@ts-ignore
+            onGestureEvent={swipeHandler}
+            onHandlerStateChange={({nativeEvent}) => {
+              if (nativeEvent.state === State.ACTIVE) {
+                // console.log('selected reply', JSON.stringify(item, null, 2));
+                dispatch(addReply(item));
               }
-            }>
-            {/* quoted message */}
-            {item?.quoted && <Quoted item={item?.quoted} isUser={isUser} />}
-            {/* message componentx */}
-            <ChatItem message={item} isUser={isUser} />
-          </View>
+            }}>
+            <Animated.View
+              entering={
+                isUser ? FadeInRight.duration(300) : FadeInLeft.duration(300)
+              }
+              style={[
+                styles.bubbleContianer,
+                swipeStyle,
+                {
+                  backgroundColor: isUser
+                    ? colors.secondaryBg
+                    : colors.bootomHeaderBg,
+                  alignSelf: isUser ? 'flex-end' : 'flex-start',
+                  borderBottomLeftRadius: isUser ? hp(10) : hp(0),
+                  borderBottomRightRadius: isUser ? hp(0) : hp(10),
+                  marginBottom: id === 0 ? hp(80) : hp(10),
+                },
+              ]}>
+              <View style={styles.messageHeader}>
+                <Text
+                  style={[
+                    styles.senderName,
+                    {
+                      width: 'auto',
 
-          {/* send message status */}
-          {isUser && (
-            <View
-              style={{
-                height: hp(20),
-                width: wp(20),
-                position: 'absolute',
-                right: wp(-7),
-                bottom: hp(-20),
-                // bottom: Platform.OS === 'android' ? hp(-21) : hp(-18),
-              }}>
-              {entity?.status === 'sent' || entity?.status === 'sending' ? (
-                <Ionicons
-                  name="ios-checkmark-circle-outline"
-                  color={colors.secondaryBg}
-                  size={hp(14)}
-                />
-              ) : (
-                <AntDesign
-                  name="clockcircleo"
-                  color={colors.secondaryBg}
-                  size={hp(12)}
-                  style={{marginTop: hp(3)}}
-                />
+                      color: isUser
+                        ? colors.bootomHeaderBg
+                        : isGroup
+                        ? stc(author?.name)
+                        : colors.secondaryBg,
+                    },
+                  ]}>
+                  {author?.name}
+                </Text>
+                <Text
+                  style={[
+                    styles.messageDate,
+                    {
+                      color: isUser ? colors.bootomHeaderBg : colors.darkGray,
+                      width: 'auto',
+                    },
+                  ]}>
+                  {format(new Date(created_datetime), 'p')}
+                </Text>
+              </View>
+              <View
+                style={
+                  {
+                    // width: '100%'
+                  }
+                }>
+                {/* quoted message */}
+                {item?.quoted && (
+                  <Quoted
+                    item={item?.quoted}
+                    isUser={isUser}
+                    isGroup={isGroup}
+                  />
+                )}
+                {/* message componentx */}
+                <ChatItem message={item} isUser={isUser} />
+              </View>
+
+              {/* send message status */}
+              {isUser && (
+                <View
+                  style={{
+                    height: hp(20),
+                    width: wp(20),
+                    position: 'absolute',
+                    right: wp(-7),
+                    bottom: hp(-20),
+                    // bottom: Platform.OS === 'android' ? hp(-21) : hp(-18),
+                  }}>
+                  {entity?.status === 'sent' || entity?.status === 'sending' ? (
+                    <Ionicons
+                      name="ios-checkmark-circle-outline"
+                      color={colors.secondaryBg}
+                      size={hp(14)}
+                    />
+                  ) : (
+                    <AntDesign
+                      name="clockcircleo"
+                      color={colors.secondaryBg}
+                      size={hp(12)}
+                      style={{marginTop: hp(3)}}
+                    />
+                  )}
+                </View>
               )}
+            </Animated.View>
+          </FlingGestureHandler>
+        </MenuTrigger>
+
+        {/* conetext menu  */}
+        <MenuOptions
+          optionsContainerStyle={{
+            borderTopLeftRadius: hp(15),
+            borderTopRightRadius: hp(15),
+            paddingHorizontal: hp(8),
+            paddingVertical: hp(15),
+          }}>
+          <MenuOption
+            onSelect={() => dispatch(addReply(item))}
+            customStyles={{optionWrapper: optionWrapperStyle}}>
+            <View style={styles.menuOptionConatiner}>
+              <MaterialCommunityIcons
+                name="reply"
+                color={colors.dark}
+                size={hp(22)}
+              />
+              <Text style={styles.menuOptionText}>Reply</Text>
             </View>
-          )}
-        </Animated.View>
-      </FlingGestureHandler>
-    </TouchableOpacity>
+          </MenuOption>
+          <MenuOption
+            onSelect={() => OpenForward(item)}
+            customStyles={{optionWrapper: optionWrapperStyle}}>
+            <View style={styles.menuOptionConatiner}>
+              <Entypo name="forward" color={colors.dark} size={hp(22)} />
+              <Text style={styles.menuOptionText}>Forward</Text>
+            </View>
+          </MenuOption>
+          <MenuOption
+            onSelect={() => {}}
+            customStyles={{
+              optionWrapper: {...optionWrapperStyle},
+            }}>
+            <View style={styles.menuOptionConatiner}>
+              <MaterialCommunityIcons
+                name="trash-can-outline"
+                color={'red'}
+                size={hp(22)}
+              />
+              <Text style={[styles.menuOptionText, {color: 'red'}]}>
+                Delete Message
+              </Text>
+            </View>
+          </MenuOption>
+          <MenuOption
+            onSelect={() =>
+              copyIdToClipboard(
+                'Message copied',
+                item?.entity?.content?.body,
+                false,
+              )
+            }
+            customStyles={{
+              optionWrapper: {...optionWrapperStyle, borderBottomWidth: 0},
+            }}>
+            <View style={styles.menuOptionConatiner}>
+              <MaterialCommunityIcons
+                name="content-copy"
+                color={colors.dark}
+                size={hp(22)}
+              />
+              <Text style={styles.menuOptionText}>Copy Message ID</Text>
+            </View>
+          </MenuOption>
+        </MenuOptions>
+      </Menu>
+
+      {/* forward modal  */}
+      <ForwardModal
+        closeFowardModal={CloseForward}
+        showForwardModal={showForwardModal}
+      />
+    </>
   );
 };
 
 export default ChatBubble;
+
+const optionWrapperStyle = {
+  paddingVertical: hp(10),
+  borderBottomColor: colors.lightGray,
+  borderBottomWidth: 1,
+};
+
+const optionWrapper = {};
 
 const styles = StyleSheet.create({
   bubbleContianer: {
@@ -178,11 +333,22 @@ const styles = StyleSheet.create({
 
   senderName: {
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: hp(14),
+    fontSize: FontSize.MediumText,
     marginRight: hp(10),
   },
   messageDate: {
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: hp(12),
+    fontSize: FontSize.SmallText,
+  },
+
+  menuOptionConatiner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    // justifyContent: 'space-between',
+  },
+  menuOptionText: {
+    fontSize: FontSize.MediumText,
+    color: colors.dark,
+    marginLeft: hp(10),
   },
 });

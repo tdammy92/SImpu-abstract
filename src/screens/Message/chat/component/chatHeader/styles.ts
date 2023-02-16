@@ -1,3 +1,4 @@
+import {FontSize} from './../../../../../constants/fonts';
 import {StyleService} from '@ui-kitten/components';
 import {
   ImageStyle,
@@ -42,7 +43,7 @@ const styles = StyleService.create<Styles>({
   },
   usernameText: {
     fontFamily: FONTS.TEXT_SEMI_BOLD,
-    fontSize: hp(18),
+    fontSize: FontSize.BigText,
     color: colors.dark,
     marginLeft: wp(7),
   },

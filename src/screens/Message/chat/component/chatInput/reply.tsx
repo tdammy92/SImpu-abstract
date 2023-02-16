@@ -4,7 +4,11 @@ import {useSelector, useDispatch} from 'react-redux';
 import {removeReply} from 'src/store/reply/replyReducer';
 import {StoreState} from 'src/@types/store';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Animated, {FadeInDown, FadeOutDown} from 'react-native-reanimated';
+import Animated, {
+  FadeInDown,
+  FadeOutDown,
+  FadeOutUp,
+} from 'react-native-reanimated';
 import {hp, wp} from 'src/utils';
 import {colors, imageType} from 'src/constants';
 import {trimText} from 'src/utils/string-utils/string';
@@ -38,28 +42,24 @@ const Reply = () => {
     <Animated.View
       style={styles.container}
       entering={FadeInDown.duration(300)}
-      exiting={FadeOutDown.duration(300)}>
-      <TouchableOpacity onPress={handleCloseReply} style={styles.closeReply}>
-        <AntDesign name="closecircle" color={colors.darkGray} size={20} />
-      </TouchableOpacity>
+      exiting={FadeOutUp.duration(300)}>
       <View style={styles.wrapper}>
-        <Text style={styles.author}>
-          {isUser
-            ? 'You'
-            : reply?.author?.platform_name ?? reply?.author?.platform_nick}
-          :
-        </Text>
-
         <View
           style={{
-            flexDirection: 'row',
-            backgroundColor: colors.bootomHeaderBg,
+            // flexDirection: 'row',
+
             padding: hp(5),
             paddingVertical: hp(2),
-            borderLeftWidth: 1,
-            borderLeftColor: colors.darkGray,
+            borderLeftWidth: 1.5,
+            borderLeftColor: colors.secondaryBg,
             minHeight: hp(40),
           }}>
+          <Text style={styles.author}>
+            {isUser
+              ? 'You'
+              : reply?.author?.platform_name ?? reply?.author?.platform_nick}
+            :
+          </Text>
           {reply?.entity?.content?.body && (
             <Text style={styles.message}>
               {trimText(reply?.entity?.content?.body, 30)}
@@ -127,6 +127,13 @@ const Reply = () => {
           )}
         </View>
       </View>
+      <TouchableOpacity onPress={handleCloseReply} style={styles.closeReply}>
+        <AntDesign
+          name="closecircleo"
+          color={colors.secondaryBg}
+          size={hp(22)}
+        />
+      </TouchableOpacity>
     </Animated.View>
   );
 };
@@ -135,31 +142,28 @@ export default Reply;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.lightGray,
-
-    marginLeft: wp(20),
-    marginRight: wp(75),
-    marginBottom: hp(0),
-    borderRadius: hp(18),
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     maxheight: hp(80),
-    padding: hp(4),
+    paddingVertical: hp(4),
+    backgroundColor: '#f9f9f9',
   },
   wrapper: {
     padding: hp(4),
   },
   closeReply: {
-    position: 'absolute',
-    top: hp(-12),
-    right: -6,
     padding: hp(5),
+    marginRight: wp(10),
   },
   author: {
-    color: colors.dark,
-    fontSize: hp(14),
+    color: colors.secondaryBg,
+    fontSize: 16,
     marginBottom: hp(4),
   },
   message: {
     color: colors.dark,
-    fontSize: hp(14),
+    fontSize: 16,
   },
 });

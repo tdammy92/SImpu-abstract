@@ -1,20 +1,26 @@
 import {StyleSheet, View, TouchableOpacity, Dimensions} from 'react-native';
 import {Divider, ListItem, Text} from '@ui-kitten/components';
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import {useNavigation} from '@react-navigation/native';
+
 import styles from './styles';
 import {colors} from 'src/constants';
 import {hp, wp} from 'src/utils';
+
 //@ts-ignore
 import UserAvatar from 'react-native-user-avatar';
 import ChannelIcon from 'src/components/common/ChannelIcon';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {removeReply} from 'src/store/reply/replyReducer';
-import {removeEmoji} from 'src/utils/string-utils/string';
+import {removeEmoji, trimText} from 'src/utils/string-utils/string';
 import ContentLoader from 'react-native-easy-content-loader';
 import HeaderOption from '../../../threadDetails/component/messageHeaderOption';
+import Resolve from 'src/screens/Message/threadDetails/resolve-thread';
+import {resolveConversation} from 'src/services/mutations/inbox';
+import {useMutation} from 'react-query';
+import {StoreState} from 'src/@types/store';
 
 type chatHeaderProps = {
   threadDetail: any;
@@ -25,7 +31,15 @@ const ChatHeader = ({threadDetail, infoLoading}: chatHeaderProps) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
+  const {profile, user, token} = useSelector(
+    (state: StoreState) => state?.user,
+  );
+  const organisation = useSelector(
+    (state: StoreState) => state?.organisation?.details,
+  );
+
   const chatOptionRef = useRef<any>(null);
+  const resolveRef = useRef<any>(null);
 
   // const {platform_name, image_url, channel_name, name} =
   //   threadDetail?.thread?.sender;
@@ -48,6 +62,16 @@ const ChatHeader = ({threadDetail, infoLoading}: chatHeaderProps) => {
     if (chatOptionRef.current) {
       chatOptionRef.current.close();
     }
+  };
+
+  //open sresolveSheet
+  const openResolve = () => {
+    closeSheet();
+    setTimeout(() => {
+      if (resolveRef.current) {
+        resolveRef.current.open();
+      }
+    }, 300);
   };
 
   return (
@@ -105,7 +129,7 @@ const ChatHeader = ({threadDetail, infoLoading}: chatHeaderProps) => {
               </TouchableOpacity>
               {!infoLoading ? (
                 <Text style={styles.usernameText}>
-                  {sender?.platform_name ?? sender?.platform_nick}
+                  {trimText(sender?.platform_name ?? sender?.platform_nick, 18)}
                 </Text>
               ) : (
                 // @ts-ignore
@@ -139,7 +163,13 @@ const ChatHeader = ({threadDetail, infoLoading}: chatHeaderProps) => {
         </View>
         <Divider />
       </>
-      <HeaderOption ref={chatOptionRef} threadDetail={threadDetail} />
+
+      <Resolve ref={resolveRef} threadDetail={threadDetail} />
+      <HeaderOption
+        ref={chatOptionRef}
+        threadDetail={threadDetail}
+        openResolve={openResolve}
+      />
     </>
   );
 };

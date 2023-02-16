@@ -12,7 +12,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import CreateIcon from 'src/assets/images/CreateIcon.svg';
 import {hp, wp} from 'src/utils';
-import {colors, FONTS} from 'src/constants';
+import {colors, FONTS, FontSize} from 'src/constants';
 import Animated, {Easing, SlideInRight} from 'react-native-reanimated';
 import {useNavigation} from '@react-navigation/native';
 import {SCREEN_NAME} from 'src/navigation/constants';
@@ -22,6 +22,7 @@ import stc from 'string-to-color';
 import {StoreState} from 'src/@types/store';
 import {UserConnectChanel} from 'src/services/query/queries';
 import {useSelector} from 'react-redux';
+import {hi} from 'date-fns/locale';
 
 const {width, height} = Dimensions.get('screen');
 
@@ -144,10 +145,17 @@ const ComposeMessageBtn = () => {
   };
 
   return (
-    <View style={styles.composeContainer}>
+    <>
       <Modal
         visible={showOption}
-        // style={styles.modalStyle}
+        style={
+          {
+            // backgroundColor: 'yellow',
+            // flex: 1,
+            // height: height,
+            // width: width,
+          }
+        }
         backdropStyle={{backgroundColor: 'rgba(0,0,0,0.2)'}}
         onBackdropPress={() => setshowOption(false)}>
         <View style={styles.channelContainer}>
@@ -159,7 +167,7 @@ const ComposeMessageBtn = () => {
                 style={[
                   styles.msgBtn,
                   {
-                    borderRightWidth: 1.5,
+                    // borderRightWidth: 1.5,
                     borderRightColor: stc(channel?.channel_name),
                   },
                 ]}
@@ -179,7 +187,9 @@ const ComposeMessageBtn = () => {
           <CreateIcon />
         </TouchableOpacity>
       )}
-    </View>
+    </>
+    // <View style={styles.composeContainer}>
+    // </View>
   );
 };
 
@@ -188,16 +198,21 @@ export default ComposeMessageBtn;
 const styles = StyleSheet.create({
   composeContainer: {
     zIndex: 5,
-    position: 'absolute',
-    bottom: hp(30),
-    right: wp(10),
-    alignItems: 'flex-end',
+    // position: 'absolute',
+    // bottom: hp(30),
+    // right: wp(10),
+    // alignItems: 'flex-end',
   },
 
   channelContainer: {
     position: 'absolute',
-    alignItems: 'flex-end',
-    left: Platform.OS === 'android' ? hp(83) : hp(68),
+    // backgroundColor: 'green',
+    // alignItems: 'flex-end',
+    // left: Platform.OS === 'android' ? hp(83) : hp(68),
+    // left: width * 0.5,
+    left: wp(50),
+    // top: hp(50),
+    // right: wp(10),
   },
 
   msgBtn: {
@@ -207,12 +222,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: wp(10),
     paddingVertical: hp(4),
     marginVertical: hp(8),
-    borderTopLeftRadius: hp(15),
-    borderBottomLeftRadius: hp(15),
+    borderRadius: hp(15),
+    // borderBottomLeftRadius: hp(15),
   },
 
   btnText: {
-    fontSize: hp(16),
+    fontSize: FontSize.BigText,
     paddingVertical: hp(4),
     fontFamily: FONTS.TEXT_REGULAR,
     color: colors.dark,
@@ -220,6 +235,10 @@ const styles = StyleSheet.create({
   },
 
   composeBtn: {
+    position: 'absolute',
+    zIndex: 100,
+    bottom: hp(80),
+    right: wp(10),
     width: hp(55),
     height: hp(55),
     backgroundColor: colors.secondaryBg,

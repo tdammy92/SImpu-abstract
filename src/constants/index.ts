@@ -1,4 +1,13 @@
 import colors from './theme';
-import FONTS from './fonts';
+import FONTS, {FontSize} from './fonts';
 import {Avatar, imageType, audioType, videoType, docType} from './general';
-export {colors, FONTS, Avatar, imageType, audioType, videoType, docType};
+export {
+  colors,
+  FONTS,
+  FontSize,
+  Avatar,
+  imageType,
+  audioType,
+  videoType,
+  docType,
+};

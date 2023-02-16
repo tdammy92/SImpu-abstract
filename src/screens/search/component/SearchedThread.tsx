@@ -7,7 +7,7 @@ import {useNavigation} from '@react-navigation/native';
 import UserAvatar from 'react-native-user-avatar';
 import ChannelIcon from 'src/components/common/ChannelIcon';
 import {hp, wp} from 'src/utils';
-import {FONTS, colors} from 'src/constants';
+import {FONTS, FontSize, colors} from 'src/constants';
 import {SCREEN_NAME} from 'src/navigation/constants';
 import {trimText} from 'src/utils/string-utils/string';
 import stc from 'string-to-color';
@@ -101,13 +101,13 @@ const styles = StyleSheet.create({
     marginLeft: 7,
   },
   nameText: {
-    fontSize: hp(16),
+    fontSize: FontSize.MediumText,
     color: colors.dark,
     fontFamily: FONTS.TEXT_REGULAR,
   },
   messageText: {
-    fontSize: hp(14),
-    fontFamily: FONTS.TEXT_REGULAR,
+    fontSize: FontSize.MediumText,
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
     color: colors.dark,
   },
 });

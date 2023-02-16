@@ -35,6 +35,7 @@ export enum SCREEN_NAME {
   conversationDetails = 'app.screen.conversationdetails',
   imageView = 'app.screen.imageview',
   mail = 'app.screen.mail',
+  mailBox = 'app.screen.mailBox',
 }
 
 export type MainStackParamList = {
@@ -64,6 +65,7 @@ export type MainStackParamList = {
   [SCREEN_NAME.camera]: {user: any};
   [SCREEN_NAME.imageView]: {image: any};
   [SCREEN_NAME.mail]: {user: any};
+  [SCREEN_NAME.mailBox]: undefined;
   // [SCREEN_NAME.chat]: {
   //   name: string;
   //   channel: string;

@@ -98,10 +98,14 @@ export const splitLastOccurrence = (str: string, character: string) => {
   // return [before, after]
 };
 
-export const copyIdToClipboard = (title: string, message: string) => {
+export const copyIdToClipboard = (
+  title: string,
+  message: string,
+  showAlert: boolean = true,
+) => {
   showMessage({
     message: title,
-    description: message,
+    description: showAlert ? message : '',
     type: 'default',
     backgroundColor: colors.secondaryBg, // background color
     color: colors.light, // text color

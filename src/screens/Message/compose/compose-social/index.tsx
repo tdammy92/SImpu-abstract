@@ -25,7 +25,7 @@ import Animated, {
 import {useNavigation, StackActions} from '@react-navigation/native';
 import {hp, messsageToast, wp} from 'src/utils';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {FONTS, colors} from 'src/constants';
+import {FONTS, FontSize, colors} from 'src/constants';
 import {Divider} from '@ui-kitten/components';
 //@ts-ignore
 import {AutoGrowingTextInput} from 'react-native-autogrow-textinput';
@@ -68,19 +68,19 @@ const ComposeSocial = ({route}: any) => {
   const [SelectedChannel, setSelectedChannel] = useState<any>(() => channel);
 
   //contact states
-  const [SelectedContact, setSelectedContact] = useState<customerType | null>(
-    null,
-  );
-  const [SearchContact, setSearchContact] = useState('');
+  const [SelectedContact, setSelectedContact] = useState<string>('');
+
+  const [value, setValue] = useState('');
   const [CustomerList, setCustomerList] = useState<customerType[]>([]);
 
-  //attachment sate
+  //attachment state
   const [attachmentDetials, setAttachmentDetials] = useState<any>(null);
-  const [attachemntId, setAttachemntId] = useState<any>(null);
+  const [attachemntId, setAttachemntId] = useState<any>([]);
   const [uploading, setuploading] = useState(false);
 
-  const debounceValue = useDebounce(SearchContact, 400);
+  const debounceValue = useDebounce(value, 400);
 
+  //send message mutation
   const StartConversationMutation = useMutation(startConversation, {
     onSuccess(data, variables, context) {
       if (data?.thread_id) {
@@ -158,7 +158,7 @@ const ComposeSocial = ({route}: any) => {
         type: 'message',
         body: message,
         attachment_ids: attachemntId,
-        user_nick: SelectedContact?.platform_nick,
+        user_nick: SelectedContact,
       },
 
       credentialId: SelectedChannel?.uuid,
@@ -181,10 +181,10 @@ const ComposeSocial = ({route}: any) => {
     setShowChannels(false);
   };
 
-  const handleSelectedContact = (item: customerType) => {
+  const handleSelectedContact = (item: string) => {
     setSelectedContact(item);
     setCustomerList([]);
-    setSearchContact('');
+    setValue('');
   };
 
   const removeAttachment = () => {
@@ -194,7 +194,12 @@ const ComposeSocial = ({route}: any) => {
   };
 
   const removeSelectedContact = () => {
-    setSelectedContact(null);
+    setSelectedContact('');
+  };
+
+  const addInput = () => {
+    setSelectedContact(value);
+    setValue('');
   };
   const onProgress = (percentage: number) => {
     console.log('percatge of the upload', percentage);
@@ -304,7 +309,8 @@ const ComposeSocial = ({route}: any) => {
                   style={[styles.textInputContainer, {marginLeft: wp(5)}]}>
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <ChannelIcon name={SelectedChannel?.channel_name} />
-                    <Text style={{fontSize: hp(16), color: colors.dark}}>
+                    <Text
+                      style={{fontSize: FontSize.BigText, color: colors.dark}}>
                       {SelectedChannel?.platform_name}
                     </Text>
                   </View>
@@ -362,7 +368,7 @@ const ComposeSocial = ({route}: any) => {
                               style={{
                                 marginLeft: wp(4),
                                 color: colors.dark,
-                                fontSize: hp(14),
+                                fontSize: FontSize.MediumText,
                               }}>
                               {item?.platform_name ?? item?.platform_nick}
                             </Text>
@@ -389,8 +395,8 @@ const ComposeSocial = ({route}: any) => {
                     <TextInput
                       ref={contactInputref}
                       style={styles.searchInput}
-                      value={SearchContact}
-                      onChangeText={text => setSearchContact(text)}
+                      value={value}
+                      onChangeText={text => setValue(text)}
                       placeholder="Search contacts with name or number"
                     />
                   )}
@@ -406,7 +412,7 @@ const ComposeSocial = ({route}: any) => {
                         backgroundColor: colors.lightGray,
                         borderRadius: hp(20),
                       }}>
-                      <UserAvatar
+                      {/* <UserAvatar
                         size={hp(24)}
                         style={{height: hp(24), width: hp(24)}}
                         borderRadius={hp(24 * 0.5)}
@@ -415,21 +421,20 @@ const ComposeSocial = ({route}: any) => {
                             SelectedContact?.platform_nick,
                         )}
                         src={SelectedContact?.image_url}
-                      />
+                      /> */}
                       <Text
                         style={{
                           marginLeft: wp(4),
                           color: colors.dark,
-                          fontSize: hp(16),
+                          fontSize: FontSize.MediumText,
                         }}>
-                        {SelectedContact?.platform_name ??
-                          SelectedContact?.platform_nick}
+                        {SelectedContact}
                       </Text>
                     </View>
                   )}
 
                   {/* show close button only when there is a selected item */}
-                  {SelectedContact && (
+                  {SelectedContact ? (
                     <TouchableOpacity
                       onPress={removeSelectedContact}
                       style={{
@@ -443,63 +448,77 @@ const ComposeSocial = ({route}: any) => {
                         size={hp(18)}
                       />
                     </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity
+                      onPress={addInput}
+                      style={{
+                        position: 'absolute',
+                        right: wp(-10),
+                        padding: hp(5),
+                      }}>
+                      <AntDesign
+                        name="pluscircleo"
+                        color={colors.darkGray}
+                        size={hp(18)}
+                      />
+                    </TouchableOpacity>
                   )}
                 </View>
 
                 {/* show list when searching cotact */}
-                {!SelectedContact &&
-                  SearchContact !== '' &&
-                  CustomerList?.length > 0 && (
-                    <Animated.ScrollView
-                      entering={FadeIn.duration(400)}
-                      style={{
-                        position: 'absolute',
-                        backgroundColor: colors.light,
-                        maxHeight: hp(300),
-                        width: width * 0.7,
-                        top: hp(Platform.OS === 'android' ? 55 : 45),
-                        right: wp(20),
-                        borderBottomStartRadius: hp(10),
-                        borderBottomEndRadius: hp(10),
-                      }}>
-                      {CustomerList?.map((item: any, indx) => {
-                        return (
-                          <TouchableOpacity
-                            key={`${indx}`}
-                            onPress={() => handleSelectedContact(item)}
+                {value !== '' && CustomerList?.length > 0 && (
+                  <Animated.ScrollView
+                    entering={FadeIn.duration(400)}
+                    style={{
+                      position: 'absolute',
+                      backgroundColor: colors.light,
+                      maxHeight: hp(300),
+                      width: width * 0.7,
+                      top: hp(Platform.OS === 'android' ? 55 : 45),
+                      right: wp(20),
+                      borderBottomStartRadius: hp(10),
+                      borderBottomEndRadius: hp(10),
+                    }}>
+                    {CustomerList?.map((item: any, indx) => {
+                      return (
+                        <TouchableOpacity
+                          key={`${indx}`}
+                          onPress={() =>
+                            handleSelectedContact(item?.platform_nick)
+                          }
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            height: hp(45),
+
+                            paddingHorizontal: wp(10),
+                            borderBottomColor: colors.lightGray,
+                            borderBottomWidth: 1,
+                            zIndex: 50,
+                          }}>
+                          <UserAvatar
+                            size={hp(24)}
+                            style={{height: hp(24), width: hp(24)}}
+                            borderRadius={hp(24 * 0.5)}
+                            name={removeEmoji(
+                              item?.platform_name ?? item?.platform_nick,
+                            )}
+                            src={item?.image_url}
+                          />
+                          <Text
                             style={{
-                              flexDirection: 'row',
-                              alignItems: 'center',
-                              height: hp(45),
-                              // paddingVertical: hp(10),
-                              paddingHorizontal: wp(10),
-                              borderBottomColor: colors.lightGray,
-                              borderBottomWidth: 1,
-                              zIndex: 50,
+                              marginLeft: wp(4),
+                              color: colors.dark,
+                              fontSize: FontSize.MediumText,
+                              fontFamily: FONTS.TEXT_REGULAR,
                             }}>
-                            <UserAvatar
-                              size={hp(24)}
-                              style={{height: hp(24), width: hp(24)}}
-                              borderRadius={hp(24 * 0.5)}
-                              name={removeEmoji(
-                                item?.platform_name ?? item?.platform_nick,
-                              )}
-                              src={item?.image_url}
-                            />
-                            <Text
-                              style={{
-                                marginLeft: wp(4),
-                                color: colors.dark,
-                                fontSize: hp(14),
-                                fontFamily: FONTS.TEXT_REGULAR,
-                              }}>
-                              {item?.platform_name ?? item?.platform_nick}
-                            </Text>
-                          </TouchableOpacity>
-                        );
-                      })}
-                    </Animated.ScrollView>
-                  )}
+                            {item?.platform_name ?? item?.platform_nick}
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </Animated.ScrollView>
+                )}
               </View>
             </View>
           </View>
@@ -581,7 +600,7 @@ const styles = StyleSheet.create({
   },
   labelText: {
     fontFamily: FONTS.TEXT_SEMI_BOLD,
-    fontSize: hp(18),
+    fontSize: FontSize.BigText,
     color: colors.dark,
     marginVertical: wp(5),
     marginLeft: wp(5),
@@ -596,7 +615,7 @@ const styles = StyleSheet.create({
   },
 
   searchInput: {
-    fontSize: hp(16),
+    fontSize: FontSize.MediumText,
     minHeight: hp(30),
     // paddingVertical: hp(8),
   },
@@ -607,11 +626,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: width,
     bottom: hp(-5),
-  },
-
-  title: {
-    marginTop: 5,
-    fontWeight: 'bold',
   },
 
   innerContainer: {
@@ -645,7 +659,7 @@ const styles = StyleSheet.create({
     paddingVertical: hp(10),
     color: colors.dark,
     flex: 3,
-    fontSize: 16,
+    fontSize: FontSize.MediumText,
     // height: hp(40),
     maxheight: hp(80),
     alignSelf: 'center',

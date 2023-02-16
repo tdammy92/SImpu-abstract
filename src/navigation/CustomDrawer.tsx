@@ -21,7 +21,7 @@ import {Text, Divider} from '@ui-kitten/components';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Octicons from 'react-native-vector-icons/Octicons';
 
-import {colors, FONTS} from 'src/constants';
+import {colors, FONTS, FontSize} from 'src/constants';
 import {SCREEN_NAME} from './constants';
 import {StoreState} from 'src/@types/store';
 import Availble from 'src/assets/images/Available.svg';
@@ -37,6 +37,7 @@ import Accordion from './component/Accordion';
 import OrganisationSheet from './component/OrganisationSheet';
 import {addProfile} from 'src/store/user/userReducer';
 import {useInboxWebsocket} from 'src/Hooks/usePushersocket';
+import {trimText} from 'src/utils/string-utils/string';
 
 const CustomDrawer = (props: any): JSX.Element => {
   const OrganisationSheetRef = useRef<any>(null);
@@ -203,11 +204,13 @@ const CustomDrawer = (props: any): JSX.Element => {
           <TouchableOpacity
             style={styles.selectOrgBtnContainer}
             onPress={openSheet}>
-            <Octicons name="organization" size={20} color={colors.dark} />
-            <Text style={styles.selectOrgBtnText}>Organisation:</Text>
+            <Octicons name="organization" size={22} color={colors.dark} />
+            {/* <Text style={styles.selectOrgBtnText}>Organisation:</Text> */}
 
             <View style={styles.orgPill}>
-              <Text style={styles.orgPillText}>{organisation?.name}</Text>
+              <Text style={styles.orgPillText}>
+                {trimText(organisation?.name, 15)}
+              </Text>
             </View>
 
             <View style={{position: 'absolute', right: 5}}>
@@ -219,7 +222,7 @@ const CustomDrawer = (props: any): JSX.Element => {
             <Text
               style={{
                 fontFamily: FONTS.TEXT_SEMI_BOLD,
-                fontSize: hp(14),
+                fontSize: FontSize.MediumText,
                 textAlign: 'center',
               }}>
               Fetching organisations...
@@ -259,13 +262,13 @@ const styles = StyleSheet.create({
 
   userName: {
     fontFamily: FONTS.TEXT_SEMI_BOLD,
-    fontSize: hp(18),
+    fontSize: FontSize.BigText,
   },
   bottomView: {
     paddingVertical: hp(15),
   },
   statusText: {
-    fontSize: 14,
+    fontSize: FontSize.MediumText,
     fontFamily: FONTS.TEXT_REGULAR,
   },
 
@@ -280,11 +283,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  customInboxTitleText: {
-    fontSize: hp(13),
-    color: '#7D8282',
-    fontFamily: FONTS.TEXT_BOLD,
-  },
+  // customInboxTitleText: {
+  //   fontSize: hp(13),
+  //   color: '#7D8282',
+  //   fontFamily: FONTS.TEXT_BOLD,
+  // },
   customInboxItems: {
     // marginLeft: wp(5),
     width: '100%',
@@ -316,15 +319,14 @@ const styles = StyleSheet.create({
   },
 
   organisationContainer: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 5,
     width: '100%',
     height: hp(50),
     position: 'absolute',
     bottom: 0,
-    // alignItems: 'center',
-
+    left: 0,
     backgroundColor: colors.light,
-    borderTopColor: '#e4e4e4',
+    borderTopColor: colors.lightGray,
     borderTopWidth: 1,
   },
 
@@ -338,7 +340,7 @@ const styles = StyleSheet.create({
   },
   selectOrgBtnText: {
     marginLeft: 5,
-    fontSize: hp(14),
+    fontSize: FontSize.MediumText,
     fontFamily: FONTS.TEXT_REGULAR,
     color: colors.dark,
   },
@@ -350,7 +352,7 @@ const styles = StyleSheet.create({
   orgPillText: {
     fontFamily: FONTS.TEXT_REGULAR,
     color: colors.dark,
-    fontSize: hp(14),
+    fontSize: FontSize.BigText,
   },
 });
 

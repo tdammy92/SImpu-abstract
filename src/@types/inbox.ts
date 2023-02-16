@@ -62,8 +62,39 @@ export type requestNotificationType = {
   os_api_level: number | string | null;
 };
 
+export type contentType = {
+  body: string | null;
+  subject?: string;
+};
+export type recipientType = {
+  contact_id: String;
+  meta?: {
+    locale: string;
+    history_id: String;
+    threads_total: number;
+    messages_total: number;
+  };
+  image_url: string;
+  platform_id: string;
+  channel_name: Channel;
+  name: string;
+  id: number;
+  platform_name: string;
+  platform_nick: string;
+  uuid: string;
+  channel_id: string;
+  is_valid: boolean;
+};
+
+export type recipientsType = {
+  to?: recipientType[];
+  from?: recipientType[];
+  cc?: recipientType[];
+  bcc?: recipientType[];
+};
+
 export type entityType = {
-  content?: {body?: string} | null;
+  content?: contentType;
   id: number;
   pid: string;
   uuid: string;
@@ -74,6 +105,7 @@ export type entityType = {
   attachments: attachmentType[] | null;
   mention_ids: null;
   recipient_ids: null;
+  recipients?: recipientsType;
 };
 
 export type authorType = {
@@ -135,6 +167,24 @@ export type replyType = {
   content_type: string;
   quoted: quotedType | null;
 };
+
+export type messageType = {
+  type: String;
+  author: authorType | null;
+  entity: entityType | null;
+  id: number;
+  uuid: String;
+  account_id?: null;
+  show_in_thread?: null;
+  created_datetime?: String;
+  updated_datetime?: string;
+  author_id?: String;
+  author_type?: String;
+  content_id?: String;
+  content_type?: String;
+};
+
+export type messageOptionType = 'reply' | 'forward' | 'reply all';
 
 export type customerType = {
   uuid: string;

@@ -18,7 +18,7 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 //@ts-ignore
 import UserAvatar from 'react-native-user-avatar';
 import styles from './style';
-import {colors, FONTS} from 'src/constants';
+import {colors, FONTS, FontSize} from 'src/constants';
 import {hp, wp} from 'src/utils';
 import {useSelector} from 'react-redux';
 import {StoreState} from 'src/@types/store';
@@ -26,7 +26,7 @@ import {useMessageListQuery, useThreadInfo} from 'src/services/query/queries';
 import EmailCard from './components/Email';
 import MailHeader from './components/mailHeader';
 import EmptyInbox from 'src/components/common/EmptyInbox';
-import MailLoader from './components/MailLoader';
+import MailLoader from '../../../components/Loaders/MailLoader';
 
 const Mail = ({route}: any) => {
   const {threadId} = route.params;
@@ -46,6 +46,7 @@ const Mail = ({route}: any) => {
   const [InputHeight, setInputHeight] = useState(hp(100));
   const [Focused, setFocused] = useState(false);
   const [EnableSend, setEnableSend] = useState(false);
+  const [comment, setcomment] = useState('');
 
   //fetch message info
   const {data: messageInfo, isLoading: infoLoading} = useThreadInfo(
@@ -102,10 +103,15 @@ const Mail = ({route}: any) => {
     setInputHeight(e);
   };
 
-  const renderItem = ({item}: any) => {
-    return <EmailCard data={item} />;
+  const renderItem = ({item: {item}, receiver}: any) => {
+    // console.log('receiver', receiver);
+    // console.log('item', item);
+    return <EmailCard data={item} receiver={receiver} />;
   };
 
+  const receiver = threadDetail?.thread?.receiver?.user?.platform_nick;
+
+  // console.log('thread detail', JSON.stringify(receiver, null, 2));
   return (
     <>
       <KeyboardAvoidingView
@@ -130,7 +136,7 @@ const Mail = ({route}: any) => {
             <FlatList
               data={messages}
               keyExtractor={(item, i) => i.toString()}
-              renderItem={renderItem}
+              renderItem={item => renderItem({item, receiver})}
               contentContainerStyle={{
                 paddingVertical: hp(15),
                 paddingBottom: hp(60),
@@ -148,45 +154,46 @@ const Mail = ({route}: any) => {
               bottom: 1,
               width: '100%',
               height: hp(75),
-              backgroundColor: colors.bootomHeaderBg,
+              backgroundColor: colors.light,
               alignItems: 'center',
               justifyContent: 'center',
               paddingHorizontal: wp(20),
-              borderTopLeftRadius: 15,
-              borderTopRightRadius: 15,
+              // borderTopLeftRadius: 15,
+              // borderTopRightRadius: 15,
             }}>
             {/* <Divider /> */}
 
             {/* message input container */}
             <View
               style={{
-                backgroundColor: colors.light,
+                backgroundColor: colors.bootomHeaderBg,
                 borderRadius: 10,
                 flexDirection: 'row',
                 position: 'relative',
                 height: '60%',
                 // maxHeight: InputHeight,
                 paddingHorizontal: hp(10),
-                borderColor: colors.secondaryBg,
+                borderColor: colors.darkGray,
                 borderWidth: Focused ? 1 : 0,
               }}>
               <TextInput
                 multiline={true}
+                value={comment}
+                onChangeText={text => setcomment(text)}
                 placeholder="Type an Internal comment"
-                placeholderTextColor={colors.dark}
-                onContentSizeChange={e =>
-                  handleInputHeight(e.nativeEvent.contentSize.height)
-                }
+                placeholderTextColor={colors.darkGray}
+                // onContentSizeChange={e =>
+                //   handleInputHeight(e.nativeEvent.contentSize.height)
+                // }
                 onBlur={() => setFocused(false)}
                 onFocus={() => setFocused(true)}
                 style={{
                   width: '80%',
-                  fontSize: 16,
+                  fontSize: FontSize.MediumText,
                   fontFamily: FONTS.TEXT_REGULAR,
-                  // height: InputHeight,
+
                   color: colors.dark,
                   justifyContent: 'center',
-                  // backgroundColor: 'red',
                 }}
               />
 
@@ -196,17 +203,19 @@ const Mail = ({route}: any) => {
                   alignItems: 'center',
                   paddingRight: hp(10),
                 }}>
-                <TouchableOpacity style={{paddingLeft: hp(5)}}>
+                {/* <TouchableOpacity style={{paddingLeft: hp(5)}}>
                   <Feather name="at-sign" size={22} color={colors.dark} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <TouchableOpacity style={{}}>
-                  <Ionicons name="attach" size={28} color={colors.dark} />
+                  <Ionicons name="attach" size={28} color={colors.darkGray} />
                 </TouchableOpacity>
-                <TouchableOpacity style={{}} disabled={EnableSend}>
+                <TouchableOpacity style={{}} disabled={comment === ''}>
                   <Feather
                     name="navigation"
                     size={22}
-                    color={EnableSend ? colors.secondaryBg : colors.dark}
+                    color={
+                      comment !== '' ? colors.secondaryBg : colors.darkGray
+                    }
                   />
                 </TouchableOpacity>
               </View>

@@ -34,6 +34,7 @@ import {useNavigation} from '@react-navigation/native';
 import {Camera, useCameraDevices} from 'react-native-vision-camera';
 import {useMutation} from 'react-query';
 import {markThreadAsRead} from 'src/services/mutations/inbox';
+import ChatLoader from 'src/components/Loaders/chatLoader';
 
 const scrollLimit = 80;
 
@@ -97,6 +98,8 @@ const ChatBox = ({route}: any) => {
       },
     },
   );
+
+  // console.log('thread from chat', threadId);
 
   //fetch all messages
   const {
@@ -182,9 +185,15 @@ const ChatBox = ({route}: any) => {
     return unsubscribe;
   }, [navigation]);
 
+  const isResolved =
+    threadDetail?.thread?.state === 'resolved' ||
+    threadDetail?.thread?.state === 'closed';
+
+  const isGroup = threadDetail?.thread?.type === 'group' ? true : false;
+
   // console.log(
   //   'thread details++++++++++++++++++++++',
-  //   JSON.stringify(threadDetail, null, 2),
+  //   JSON.stringify(threadDetail?.thread, null, 2),
   //   '--------------------------------',
   // );
   return (
@@ -201,27 +210,30 @@ const ChatBox = ({route}: any) => {
           {/* chat messages */}
 
           {messageLoading ? (
-            <View />
+            <ChatLoader />
           ) : (
             <ChatMessage
               data={messageTrail}
               chatListRef={chatListRef}
               Onscroll={Onscroll}
               fetchNextPage={fetchNextPage}
+              isGroup={isGroup}
             />
           )}
           {/* chat input */}
-          <ChatInput
-            scrollToChatBottom={scrollToChatBottom}
-            credentialId={threadDetail?.thread?.receiver_id}
-            threadId={threadDetail?.thread?.uuid}
-            name={
-              threadDetail?.thread?.sender?.platform_name ??
-              threadDetail?.thread?.sender?.platform_nick
-            }
-            setMessageTrail={setMessageTrail}
-            members={members}
-          />
+          {!isResolved && (
+            <ChatInput
+              scrollToChatBottom={scrollToChatBottom}
+              credentialId={threadDetail?.thread?.receiver_id}
+              threadId={threadDetail?.thread?.uuid}
+              name={
+                threadDetail?.thread?.sender?.platform_name ??
+                threadDetail?.thread?.sender?.platform_nick
+              }
+              setMessageTrail={setMessageTrail}
+              members={members}
+            />
+          )}
         </View>
 
         {showScrollTobottom && (

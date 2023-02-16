@@ -26,19 +26,20 @@ import {Divider} from '@ui-kitten/components';
 import {actions, RichEditor, RichToolbar} from 'react-native-pell-rich-editor';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {colors, FONTS} from 'src/constants';
+import {colors, FONTS, FontSize} from 'src/constants';
 import {StackActions, useNavigation} from '@react-navigation/native';
 import {hp, messsageToast, wp} from 'src/utils';
 import {StoreState} from 'src/@types/store';
 import {buildConversationUrl} from 'src/services/api/api-client';
 import {uploadFile} from 'src/services/upload/attchments';
 import ChannelIcon from 'src/components/common/ChannelIcon';
-import AddTo from './component/addTo';
+import AddMail from './component/addMailAddress';
 import DocumentPicker, {types} from 'react-native-document-picker';
 import {useMutation} from 'react-query';
 import Attachament from '../compose-social/component/attachament';
 import {startConversation} from 'src/services/mutations/inbox';
 import {SCREEN_NAME} from 'src/navigation/constants';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const {width} = Dimensions.get('screen');
 
@@ -219,23 +220,38 @@ const ComposeMail = ({route}: any) => {
           </View>
 
           <TouchableOpacity onPress={sendMessage}>
-            <Text style={styles.sendText}>Send</Text>
+            <MaterialIcons
+              name="send"
+              size={hp(25)}
+              color={
+                To?.length < 1 && message === ''
+                  ? colors.darkGray
+                  : colors?.dark
+              }
+            />
           </TouchableOpacity>
         </View>
         <Divider />
 
         <View style={styles.formWrapper}>
           {/* from */}
-          <View style={[styles.inputWrapper, {zIndex: 40}]}>
+          <View
+            style={[styles.inputWrapper, {zIndex: 50, overflow: 'visible'}]}>
             {/* <View style={[styles.headerSecion, {zIndex: 40}]}> */}
             <Text style={styles.labelText}>From:</Text>
 
             <TouchableOpacity
               onPress={() => setShowChannels(prev => !prev)}
-              style={[styles.textInputContainer, {marginLeft: wp(5)}]}>
+              style={[
+                styles.textInputContainer,
+                {
+                  marginLeft: wp(5),
+                  // zIndex: 30
+                },
+              ]}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <ChannelIcon name={SelectedChannel?.channel_name} />
-                <Text style={{fontSize: hp(16), color: colors.dark}}>
+                <Text style={{fontSize: FontSize.BigText, color: colors.dark}}>
                   {SelectedChannel?.platform_name ??
                     SelectedChannel?.platform_nick}
                 </Text>
@@ -261,12 +277,11 @@ const ComposeMail = ({route}: any) => {
                   position: 'absolute',
                   backgroundColor: colors.light,
                   maxHeight: hp(200),
-                  width: width * 0.7,
-                  top: hp(Platform.OS === 'android' ? 45 : 35),
+                  width: width * 0.8,
+                  // top: hp(Platform.OS === 'android' ? 45 : 35),
                   right: wp(20),
                   borderBottomStartRadius: hp(10),
                   borderBottomEndRadius: hp(10),
-                  // zIndex: 40,
                 }}>
                 {channels?.map((item: any, indx: number) => {
                   return (
@@ -281,19 +296,20 @@ const ComposeMail = ({route}: any) => {
                         paddingHorizontal: wp(10),
                         borderBottomColor: colors.lightGray,
                         borderBottomWidth: 1,
-                        zIndex: 50,
+                        zIndex: 60,
                       }}>
                       <View
                         style={{
                           flexDirection: 'row',
                           alignItems: 'center',
+                          // zIndex: 70,
                         }}>
                         <ChannelIcon name={item?.channel_name} />
                         <Text
                           style={{
                             marginLeft: wp(4),
                             color: colors.dark,
-                            fontSize: hp(14),
+                            fontSize: FontSize.BigText,
                           }}>
                           {item?.platform_name ?? item?.platform_nick}
                         </Text>
@@ -315,26 +331,28 @@ const ComposeMail = ({route}: any) => {
           <Divider />
 
           {/* To */}
-          <AddTo
+          <AddMail
             SelectedChannel={SelectedChannel}
             title="To"
             placeholder="Add recipient"
             valueArr={To}
             setValueArr={setTo}
-            zIndex={20}
+            zIndex={40}
+            showSearchCustomer={true}
           />
           <Divider />
 
           {/* CC*/}
           {showCC && (
             <>
-              <AddTo
+              <AddMail
                 SelectedChannel={SelectedChannel}
                 title="CC"
                 placeholder="Add CC"
                 valueArr={CC}
                 setValueArr={setCC}
                 zIndex={30}
+                showSearchCustomer={true}
               />
               <Divider />
             </>
@@ -343,13 +361,14 @@ const ComposeMail = ({route}: any) => {
           {/* BCC*/}
           {showBCC && (
             <>
-              <AddTo
+              <AddMail
                 SelectedChannel={SelectedChannel}
                 title="BCC"
                 placeholder="Add BCC"
                 valueArr={BCC}
                 setValueArr={setBCC}
-                zIndex={40}
+                zIndex={20}
+                showSearchCustomer={true}
               />
               <Divider />
             </>
@@ -476,7 +495,7 @@ const styles = StyleSheet.create({
   },
   labelText: {
     fontFamily: FONTS.TEXT_SEMI_BOLD,
-    fontSize: hp(18),
+    fontSize: FontSize.BigText,
     color: colors.dark,
     marginVertical: wp(5),
     marginLeft: wp(5),
@@ -493,18 +512,19 @@ const styles = StyleSheet.create({
   messageText: {
     marginLeft: hp(20),
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: hp(18),
+    fontSize: FontSize.BigText,
     color: colors.dark,
   },
 
   sendText: {
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: hp(18),
+    fontSize: FontSize.BigText,
   },
 
   //   formConatiner: {},
   formWrapper: {
     flex: 1,
+    zIndex: 10,
   },
   inputWrapper: {
     flexDirection: 'row',
@@ -515,13 +535,13 @@ const styles = StyleSheet.create({
   inputLabelText: {
     color: colors.dark,
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: hp(18),
+    fontSize: FontSize.BigText,
     marginRight: wp(5),
   },
 
   inputStyle: {
     flex: 1,
-    fontSize: hp(18),
+    fontSize: FontSize.BigText,
   },
 
   inputToggle: {

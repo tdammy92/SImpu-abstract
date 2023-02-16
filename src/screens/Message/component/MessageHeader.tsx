@@ -13,7 +13,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import SidepanelIcon from 'src/assets/images/SidepanelIcon.svg';
 import NotificationLabel from 'src/assets/images/notificationLabel.svg';
-import {colors, FONTS} from 'src/constants';
+import {colors, FONTS, FontSize} from 'src/constants';
 import {hp, wp} from 'src/utils';
 import dummyData from 'src/constants/dummyData';
 
@@ -150,7 +150,7 @@ const MessageHeader = (props: any) => {
             style={{
               color: colors.darkGray,
               fontFamily: FONTS.TEXT_SEMI_BOLD,
-              fontSize: hp(18),
+              fontSize: FontSize.BigText,
               marginLeft: wp(5),
             }}>
             Search...
@@ -259,8 +259,7 @@ const styles = StyleSheet.create({
   },
 
   headerTitleText: {
-    fontSize: hp(20),
-
+    fontSize: FontSize.subHeadingText,
     fontFamily: FONTS.TEXT_SEMI_BOLD,
     color: colors.dark,
   },

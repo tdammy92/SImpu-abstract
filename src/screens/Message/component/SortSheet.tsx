@@ -17,7 +17,6 @@ import React, {
   Fragment,
 } from 'react';
 import RBSheet, {RBSheetProps} from 'react-native-raw-bottom-sheet';
-import SelectDropdown from 'react-native-select-dropdown';
 import {hp, wp} from 'src/utils';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -51,7 +50,7 @@ const SortSheet = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
       return;
     }
 
-    console.log('it gote here');
+    // console.log('it gote here');
 
     changeSort(sortBy[index]?.name);
   };

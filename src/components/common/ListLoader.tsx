@@ -24,11 +24,11 @@ const ListLoader = () => {
             <ContentLoader
               avatar
               pRows={1}
-              active
+              active={true}
               pHeight={[15, 20]}
               pWidth={['100%', 100]}
               animationDuration={700}
-              loading={true}
+              // loading={true}
             />
             <Divider />
             <View style={{height: hp(30)}} />

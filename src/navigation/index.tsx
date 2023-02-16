@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {TouchableOpacity, Text, View, Alert} from 'react-native';
+import {TouchableOpacity, Text, View, Dimensions, Alert} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {MainStackParamList, SCREEN_NAME} from './constants';
@@ -10,7 +10,7 @@ import Payment from 'src/screens/payment';
 import Setting from 'src/screens/setting';
 import CustomDrawer from './CustomDrawer';
 
-import FONTS from 'src/constants/fonts';
+import FONTS, {FontSize} from 'src/constants/fonts';
 import {Avatar} from '@ui-kitten/components';
 
 //@ts-ignore
@@ -94,12 +94,13 @@ import Loader from 'src/components/common/Loader';
 import ConversationDetails from 'src/screens/Message/threadDetails';
 import ComposeMail from 'src/screens/Message/compose/compose-mail';
 import ComposeSocial from 'src/screens/Message/compose/compose-social';
+import messageBox from 'src/screens/Message/Mail/components/message-box';
 const Stack = createNativeStackNavigator<MainStackParamList>();
 
 const Drawer = createDrawerNavigator();
 
 const SettingsStack = createStackNavigator<MainStackParamList>();
-
+const {width} = Dimensions.get('screen');
 //drawer navigator
 function DrawerMenu() {
   const styles = useStyleSheet(themedStyles);
@@ -151,6 +152,7 @@ function DrawerMenu() {
         drawerActiveTintColor: colors.dark,
         drawerInactiveTintColor: 'gray',
         drawerType: 'front',
+        drawerStyle: {width: width * 0.75},
       }}>
       {!isLoadingPersonal && personal && (
         <Drawer.Screen
@@ -700,6 +702,14 @@ export const RootStack = (): JSX.Element => {
             headerShown: false,
           }}
         />
+
+        <Stack.Screen
+          name={SCREEN_NAME.mailBox}
+          component={messageBox}
+          options={{
+            headerShown: false,
+          }}
+        />
         <Stack.Screen
           name={SCREEN_NAME.config}
           component={SettingsStackNavigator}
@@ -768,6 +778,7 @@ const themedStyles = StyleService.create({
   },
   selectedMenu: {
     width: '100%',
+    height: hp(40),
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
@@ -785,12 +796,12 @@ const themedStyles = StyleService.create({
   titleText: {
     paddingLeft: 5,
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: 16,
+    fontSize: FontSize.BigText,
     color: colors.dark,
   },
   badgeText: {
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: 12,
+    fontSize: FontSize.MediumText,
     color: colors.secondaryBg,
   },
 });

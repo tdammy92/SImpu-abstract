@@ -18,7 +18,7 @@ import {DrawerItem} from '@react-navigation/drawer';
 import {Bullets} from 'react-native-easy-content-loader';
 import TagIcon from 'src/assets/images/TagIcon.svg';
 import PendingAvailble from 'src/assets/images/GrayNotification.svg';
-import {colors, FONTS} from 'src/constants';
+import {colors, FONTS, FontSize} from 'src/constants';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {SCREEN_NAME} from '../constants';
 import {toggleAnmiation} from './Animation';
@@ -137,8 +137,8 @@ const styles = StyleSheet.create({
   },
   accordionHeaderText: {
     color: colors.dark,
-    fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: hp(18),
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
+    fontSize: FontSize.BigText,
     marginLeft: 5,
     textTransform: 'uppercase',
   },
@@ -151,14 +151,14 @@ const styles = StyleSheet.create({
 
   customInboxtext: {
     marginLeft: 5,
-    fontSize: 16,
+    fontSize: FontSize.BigText,
     fontFamily: FONTS.TEXT_REGULAR,
     color: colors.dark,
   },
 
   badgeText: {
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: 14,
+    fontSize: FontSize.MediumText,
     color: colors.secondaryBg,
     position: 'absolute',
     right: -20,

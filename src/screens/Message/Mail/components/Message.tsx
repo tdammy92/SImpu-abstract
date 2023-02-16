@@ -6,36 +6,49 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, memo, useRef, useMemo, useCallback} from 'react';
 import {Divider} from '@ui-kitten/components';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import {colors, FONTS} from 'src/constants';
+import {colors, FONTS, FontSize} from 'src/constants';
 import {hp, wp} from 'src/utils';
 import {format} from 'date-fns';
-//@ts-ignore
-// import HTMLView from 'react-native-htmlview';
+import {useNavigation} from '@react-navigation/native';
+
 //@ts-ignore
 import UserAvatar from 'react-native-user-avatar';
 import {trimText} from 'src/utils/string-utils/string';
 import Htmlview from './HtmlView';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {StoreState} from 'src/@types/store';
 import {useMessageContent} from 'src/services/query/queries';
 
-const Message = ({data}: any) => {
-  // console.log('Html message', JSON.stringify(data, null, 2));
-  //   items from redux store
+import Entypo from 'react-native-vector-icons/Entypo';
+import MessageBox from './message-box';
+import OptionSheet from './optionSheet';
+import {SCREEN_NAME} from 'src/navigation/constants';
+import {setMessage} from 'src/store/message/message';
+
+const Message = ({data, receiver}: any) => {
+  // console.log('Html0 message', JSON.stringify(data, null, 2));
+
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+
   const {profile, user, token} = useSelector(
     (state: StoreState) => state?.user,
   );
+
   const organisation = useSelector(
     (state: StoreState) => state?.organisation?.details,
   );
 
+  const optionRef = useRef<any>(null);
+
   const {data: messageContent, isLoading} = useMessageContent(
     {
-      enabled: !!(data?.entity?.has_message && !data?.entity?.content),
+      enabled:
+        data?.entity?.has_message === false && data?.entity?.content === null,
       contentId: data?.uuid,
       Auth: token,
       organisationId: organisation?.id,
@@ -51,30 +64,104 @@ const Message = ({data}: any) => {
     },
   );
 
+  const OpenOptions = () => {
+    if (optionRef.current) {
+      optionRef.current.open();
+    }
+  };
+  const closeOptions = () => {
+    if (optionRef.current) {
+      optionRef.current.close();
+    }
+  };
+
+  // mail={data}
+  //       receiver={receiver}
+  //       messageType={messageType}
+  //       sentFrom={data?.entity?.recipients?.from}
+  //       sentTo={data?.entity?.recipients?.to}
+  //       subject={data?.entity?.content?.subject}
+  //       closeMessageBox={closeMessageBox}
+  //       closeOptions={closeOptions}
+
+  //handle open functions
+  const openReply = useCallback(() => {
+    dispatch(setMessage({message: data, receiver, messageType: 'reply'}));
+
+    closeOptions();
+
+    //@ts-ignore
+    navigation.navigate(SCREEN_NAME.mailBox);
+  }, [navigation, data, receiver]);
+
+  const openForward = useCallback(() => {
+    dispatch(setMessage({message: data, receiver, messageType: 'forward'}));
+
+    closeOptions();
+
+    //@ts-ignore
+    navigation.navigate(SCREEN_NAME.mailBox);
+  }, [navigation, data, receiver]);
+
   return (
-    <View style={styles.container}>
-      <View>
+    <>
+      <View style={styles.container}>
+        {/* <View> */}
         <View style={styles.messageHeader}>
           {/* author avatar */}
           <View style={{flexDirection: 'row'}}>
             <UserAvatar
-              size={hp(30)}
-              style={{height: hp(30), width: hp(30)}}
-              borderRadius={hp(30 * 0.5)}
-              name={data?.author?.platform_name ?? data?.author?.platform_nick}
+              size={hp(35)}
+              style={{height: hp(35), width: hp(35)}}
+              borderRadius={hp(35 * 0.5)}
+              name={data?.author?.platform_nick ?? data?.author?.name}
               src={data?.author?.image_url}
             />
             {/* author message header */}
 
-            <View style={{marginLeft: wp(10)}}>
-              <Text style={styles.messageHeaderTextBig}>
-                {data?.author?.platform_name ?? data?.author?.platform_nick}
-              </Text>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text style={styles.messageHeaderTextBig}>To:</Text>
-                <Text style={styles.messageHeaderTextSmall}>
-                  {trimText(data?.entity?.recipients?.to[0]?.platform_nick, 35)}
+            <View style={{marginLeft: wp(10), maxWidth: '80%'}}>
+              <View style={{flexDirection: 'row'}}>
+                <Text style={styles.messageHeaderTextBig}>
+                  {trimText(
+                    data?.author?.name ??
+                      data?.entity?.recipents?.from[0]?.platform_nick,
+                    15,
+                  )}
                 </Text>
+                {!!data?.author?.platform_nick && (
+                  <Text
+                    style={[
+                      styles.messageHeaderTextBig,
+                      {marginLeft: wp(4), color: colors.darkGray},
+                    ]}>
+                    |{' '}
+                    {trimText(
+                      data?.author?.platform_nick ??
+                        data?.entity?.recipents?.from[0]?.platform_nick,
+                      10,
+                    )}
+                  </Text>
+                )}
+              </View>
+              <View style={{flexDirection: 'row'}}>
+                <Text
+                  style={[
+                    styles.messageHeaderTextSmall,
+                    {fontFamily: FONTS.TEXT_SEMI_BOLD},
+                  ]}>
+                  To:
+                </Text>
+                <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+                  {data?.entity?.recipients?.to?.map(
+                    (recipient: any, i: number) => (
+                      <Text key={`${i}`} style={styles.messageHeaderTextSmall}>
+                        {trimText(recipient?.platform_nick, 35)}
+                        {i !== data?.entity?.recipients?.to?.length - 1 &&
+                          ','}{' '}
+                      </Text>
+                    ),
+                  )}
+                </View>
               </View>
               <Text style={styles.messageHeaderTextSmall}>
                 {format(new Date(data?.created_datetime), 'd LLL, pp')}
@@ -82,27 +169,19 @@ const Message = ({data}: any) => {
             </View>
           </View>
           {/* author options */}
-
-          <TouchableOpacity>
-            <SimpleLineIcons
-              name="options-vertical"
-              size={18}
-              color={colors.darkGray}
-            />
+          <TouchableOpacity style={{padding: hp(5)}} onPress={OpenOptions}>
+            <SimpleLineIcons name="options" size={18} color={colors.darkGray} />
           </TouchableOpacity>
         </View>
-        <Divider />
-        {/* <View style={styles.htmlContainer}> */}
+
         {!isLoading && (
           <Htmlview
             htmldata={data?.entity?.content?.body ?? messageContent?.data?.body}
           />
         )}
-        {/* </View> */}
 
-        <Divider />
         <View style={styles.messageFooter}>
-          <TouchableOpacity style={styles.actionBtn}>
+          <TouchableOpacity style={styles.actionBtn} onPress={openReply}>
             <MaterialCommunityIcons
               name="reply-outline"
               size={20}
@@ -110,8 +189,8 @@ const Message = ({data}: any) => {
             />
             <Text style={styles.actionBtnText}>Reply</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.actionBtn}>
-            <Text style={styles.actionBtnText}>Forward </Text>
+          <TouchableOpacity style={styles.actionBtn} onPress={openForward}>
+            <Text style={styles.actionBtnText}>Forward</Text>
             <MaterialCommunityIcons
               name="share-outline"
               size={20}
@@ -119,21 +198,51 @@ const Message = ({data}: any) => {
             />
           </TouchableOpacity>
         </View>
+        {/* </View> */}
       </View>
-    </View>
+
+      {/* message options */}
+
+      <OptionSheet
+        ref={optionRef}
+        handleReply={openReply}
+        handleForward={openForward}
+      />
+
+      {/* <MessageBox
+        ref={messageBoxRef}
+        mail={data}
+        receiver={receiver}
+        messageType={messageType}
+        sentFrom={data?.entity?.recipients?.from}
+        sentTo={data?.entity?.recipients?.to}
+        subject={data?.entity?.content?.subject}
+        closeMessageBox={closeMessageBox}
+        closeOptions={closeOptions}
+      /> */}
+    </>
   );
 };
 
-export default Message;
+export default memo(Message);
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.bootomHeaderBg,
+    backgroundColor: colors.light,
     marginVertical: hp(15),
     marginHorizontal: wp(10),
     paddingHorizontal: wp(8),
     paddingVertical: hp(8),
     borderRadius: hp(10),
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+
+    elevation: 4,
   },
   messageHeader: {
     flexDirection: 'row',
@@ -142,16 +251,16 @@ const styles = StyleSheet.create({
   },
   messageHeaderTextSmall: {
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: hp(14),
+    fontSize: FontSize.MediumText,
     color: colors.dark,
-    lineHeight: hp(16),
+    lineHeight: 22,
     paddingVertical: hp(2),
   },
   messageHeaderTextBig: {
     fontFamily: FONTS.TEXT_SEMI_BOLD,
-    fontSize: hp(14),
+    fontSize: FontSize.MediumText,
     color: colors.dark,
-    lineHeight: hp(18),
+    lineHeight: 24,
     paddingVertical: hp(2),
   },
 
@@ -172,10 +281,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: hp(5),
     paddingHorizontal: hp(10),
-    width: 100,
+    width: wp(100),
     borderRadius: hp(5),
     alignItems: 'center',
     justifyContent: 'center',
   },
-  actionBtnText: {fontFamily: FONTS.TEXT_SEMI_BOLD, color: colors.light},
+  actionBtnText: {
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
+    color: colors.light,
+    fontSize: FontSize.MediumText,
+    // padding: hp(5),
+  },
 });
