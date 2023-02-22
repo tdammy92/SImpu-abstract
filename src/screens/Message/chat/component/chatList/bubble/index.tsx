@@ -47,6 +47,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Entypo from 'react-native-vector-icons/Entypo';
 import {addToForward, removeForward} from 'src/store/forward/forwardReducer';
 import ForwardModal from './fowardToModal';
+import {trimText} from 'src/utils/string-utils/string';
 
 const {height, width} = Dimensions.get('screen');
 
@@ -166,7 +167,7 @@ const ChatBubble = ({item, id, isGroup}: any): JSX.Element => {
                         : colors.secondaryBg,
                     },
                   ]}>
-                  {author?.name}
+                  {trimText(author?.name, 10)}
                 </Text>
                 <Text
                   style={[

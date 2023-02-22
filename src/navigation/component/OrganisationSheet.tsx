@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
   sheetHeader: {},
   sheetHeaderText: {
     fontFamily: FONTS.TEXT_SEMI_BOLD,
-    fontSize: FontSize.BigText,
+    fontSize: FontSize.MediumText,
     textTransform: 'uppercase',
     color: colors.dark,
   },
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
   organisationText: {
     marginLeft: 5,
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: FontSize.BigText,
+    fontSize: FontSize.MediumText,
     color: colors.dark,
   },
 });

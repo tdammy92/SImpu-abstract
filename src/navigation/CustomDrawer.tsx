@@ -205,7 +205,6 @@ const CustomDrawer = (props: any): JSX.Element => {
             style={styles.selectOrgBtnContainer}
             onPress={openSheet}>
             <Octicons name="organization" size={22} color={colors.dark} />
-            {/* <Text style={styles.selectOrgBtnText}>Organisation:</Text> */}
 
             <View style={styles.orgPill}>
               <Text style={styles.orgPillText}>
@@ -352,7 +351,7 @@ const styles = StyleSheet.create({
   orgPillText: {
     fontFamily: FONTS.TEXT_REGULAR,
     color: colors.dark,
-    fontSize: FontSize.BigText,
+    fontSize: FontSize.MediumText,
   },
 });
 

@@ -29,6 +29,7 @@ import dummyData from 'src/constants/dummyData';
 import {useSelector} from 'react-redux';
 import {StoreState} from 'src/@types/store';
 import {useMessageThreads} from 'src/services/query/queries';
+import {queryClient} from 'src/index';
 
 const Assigned = ({navigation}: any) => {
   const SortSheetRef = useRef<any>(null);
@@ -182,6 +183,14 @@ const Assigned = ({navigation}: any) => {
             contentContainerStyle={{
               paddingBottom: hp(40),
             }}
+            refreshControl={
+              <RefreshControl
+                refreshing={isFetching}
+                onRefresh={() =>
+                  queryClient.invalidateQueries(['threads', 'assigned'])
+                }
+              />
+            }
             contentInset={{bottom: hp(15)}}
             useNativeDriver={false}
             showsVerticalScrollIndicator={false}

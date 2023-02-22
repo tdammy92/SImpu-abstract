@@ -134,12 +134,12 @@ const Message = ({data, receiver}: any) => {
                       styles.messageHeaderTextBig,
                       {marginLeft: wp(4), color: colors.darkGray},
                     ]}>
-                    |{' '}
+                    {/* |{' '}
                     {trimText(
                       data?.author?.platform_nick ??
                         data?.entity?.recipents?.from[0]?.platform_nick,
                       10,
-                    )}
+                    )} */}
                   </Text>
                 )}
               </View>

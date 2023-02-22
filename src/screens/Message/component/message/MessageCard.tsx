@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
 
   nameText: {
     fontFamily: FONTS.TEXT_SEMI_BOLD,
-    fontSize: FontSize.BigText,
+    fontSize: FontSize.MediumText,
     color: colors.dark,
   },
   isRead: {

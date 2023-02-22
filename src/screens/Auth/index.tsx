@@ -59,9 +59,12 @@ const Login = ({navigation}: any) => {
 
   //login user mutation
   const loginMutation = useMutation(loginUser, {
-    onSuccess(data, variables, context) {},
+    onSuccess(data, variables, context) {
+      // console.log('data from login mutation', JSON.stringify(data, null, 2));
+    },
     onError(error, variables, context) {
       dispatch(hideLoader());
+      // console.log('error from login mutation', JSON.stringify(error, null, 2));
     },
   });
 
@@ -115,17 +118,19 @@ const Login = ({navigation}: any) => {
         //update profile
       },
       onError: (error: Error) => {
+        console.log('profile', JSON.stringify(error, null, 2));
         dispatch(hideLoader());
       },
     },
   );
   const deviceMutation = useMutation(registerDeviceNotification, {
     onSuccess(data, variables, context) {
-      console.log('Yomi API response', data);
+      // console.log('Yomi API response', data);
       dispatch(addDevice(data?.data));
       dispatch(hideLoader());
     },
     onError(error, variables, context) {
+      // console.log('error from yomi mutation', JSON.stringify(error, null, 2));
       //@ts-ignore
       messsageToast({message: `${error?.message}`, type: 'danger'});
       dispatch(hideLoader());

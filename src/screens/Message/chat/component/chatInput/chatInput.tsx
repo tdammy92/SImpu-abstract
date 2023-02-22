@@ -45,7 +45,7 @@ import {colors} from 'src/constants';
 import {hp, messsageToast, wp} from 'src/utils';
 import {useDispatch, useSelector} from 'react-redux';
 import {StoreState} from 'src/@types/store';
-import {useMenberList} from 'src/services/query/queries';
+import {useMemberList} from 'src/services/query/queries';
 import {
   replyMessageSocials,
   sendFiles,
@@ -210,7 +210,7 @@ const ChatInput = ({
     const data = {
       message: {
         type: 'message',
-        body: message,
+        body: message.trim(),
         attachment_ids: [],
       },
       params: {
@@ -358,7 +358,7 @@ const ChatInput = ({
       },
       entity: {
         content: {
-          body: message,
+          body: message.trim(),
         },
         id: 6559756,
         pid: '',

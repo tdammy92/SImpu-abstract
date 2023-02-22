@@ -17,6 +17,9 @@ import {
   searchConversationsByCustomer,
   getUserChannelAccounts,
   getMessageContent,
+  listTeams,
+  listTags,
+  getInboxes,
 } from './inbox';
 import {getProfile} from './profile';
 import {getNotificationTrayItems} from './notification';
@@ -68,7 +71,7 @@ export const usePersonalThreads = (queryParams: any, options: any) => {
   const {filter, sort, page, start_date, end_date} = queryParams;
   return useInfiniteQuery(
     [
-      `threads`,
+      'threads',
       filter,
       sort,
       page,
@@ -198,10 +201,47 @@ export const useThreadInfo = (queryParams: any, options?: any) => {
 };
 
 //get members in a conversation query
-export const useMenberList = (queryParams: any, options?: any) => {
+export const useMemberList = (queryParams: any, options?: any) => {
+  // console.log('from member fetch', queryParams);
   return useQuery(
     ['Members', queryParams?.threadId, queryParams?.organisationId],
     () => getMemberList(queryParams),
+    options,
+  );
+};
+
+//get Team List  query
+export const useTeamsList = (queryParams: any, options?: any) => {
+  return useQuery(
+    ['Teams', queryParams?.organisationId],
+    () => listTeams(queryParams),
+    options,
+  );
+};
+
+//get Team List  query
+export const useTagList = (queryParams: any, options?: any) => {
+  return useQuery(
+    ['Tags', queryParams.type, queryParams?.organisationId],
+    () => listTags(queryParams),
+    options,
+  );
+};
+
+//get personal Inbox List
+export const usePersonalInbox = (queryParams: any, options?: any) => {
+  return useQuery(
+    ['personal-inbox', queryParams.type, queryParams?.organisationId],
+    () => getInboxes({...queryParams, type: 'personal'}),
+    options,
+  );
+};
+
+//get Shared Inbox List
+export const useSharedInbox = (queryParams: any, options?: any) => {
+  return useQuery(
+    ['shared-inbox', queryParams.type, queryParams?.organisationId],
+    () => getInboxes({...queryParams, type: 'shared'}),
     options,
   );
 };

@@ -13,38 +13,67 @@ import React, {
   useRef,
   useLayoutEffect,
   useState,
+  memo,
+  useMemo,
 } from 'react';
 import RBSheet, {RBSheetProps} from 'react-native-raw-bottom-sheet';
 import {copyIdToClipboard, hp, messsageToast, wp} from 'src/utils';
 import Octicons from 'react-native-vector-icons/Octicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
 import {Divider, Text} from '@ui-kitten/components';
 import {colors, FONTS, FontSize} from 'src/constants';
 import {useNavigation} from '@react-navigation/native';
 import {SCREEN_NAME} from 'src/navigation/constants';
+//@ts-ignore
+import UserAvatar from 'react-native-user-avatar';
 
 import {useSelector} from 'react-redux';
 import {StoreState} from 'src/@types/store';
 import Modal from 'react-native-modal';
 import {useMutation} from 'react-query';
-import {resolveConversation} from 'src/services/mutations/inbox';
+import {
+  assignConversationThread,
+  moveThread,
+  resolveConversation,
+} from 'src/services/mutations/inbox';
 import {trimText} from 'src/utils/string-utils/string';
+import {
+  AssineeType,
+  InboxTagType,
+  InboxType,
+  MemberType,
+  TeamType,
+  ThreadType,
+} from 'src/@types/inbox';
+import {
+  useMemberList,
+  usePersonalInbox,
+  useSharedInbox,
+  useTagList,
+  useTeamsList,
+} from 'src/services/query/queries';
+import {queryClient} from 'src/index';
+import TagIcon from 'src/assets/images/TagIcon.svg';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import PendingAvailble from 'src/assets/images/GrayNotification.svg';
 
 type Props = {
   ref: RBSheetProps;
-  threadDetail: any;
+  threadDetail: ThreadType;
 };
 
 const {height, width} = Dimensions.get('screen');
 
-const Resolve = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
+const MoveThread = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
   const navigation = useNavigation();
 
-  const thread = props?.threadDetail?.thread;
+  const thread: ThreadType = props?.threadDetail;
 
-  // console.log('resolve', JSON.stringify(thread, null, 2));
+  const inbox = props?.threadDetail?.inbox;
+
+  // console.log('Taaags', JSON.stringify(tags, null, 2));
 
   const {profile, user, token} = useSelector(
     (state: StoreState) => state?.user,
@@ -53,29 +82,69 @@ const Resolve = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
     (state: StoreState) => state?.organisation?.details,
   );
 
-  const [resolveNote, setResolveNote] = useState('');
-  const ListRef = useRef(null);
+  const moveMutations = useMutation(moveThread, {
+    onSuccess(data, variables, context) {
+      messsageToast({message: `Conversation moved`, type: 'success'});
+      console.log('data after moving Inbox', JSON.stringify(data, null, 2));
+      queryClient.invalidateQueries(['threadInfo']);
+      queryClient.invalidateQueries(['personal-inbox']);
+      queryClient.invalidateQueries(['shared-inbox']);
+    },
+    onError(error, variables, context) {
+      console.log('error moving conversation', error);
+      messsageToast({message: `${error}`, type: 'warning'});
+    },
+  });
 
-  //Mark conversation as read
-  const resolveMutation = useMutation(
-    () =>
-      resolveConversation({
-        data: {request_rating: true},
-        Auth: token,
-        organisationId: organisation?.id,
-        threadId: thread?.uuid,
-      }),
+  //hooks to fetch personal inbox
+  const {data: personalInbox} = usePersonalInbox(
     {
-      onSuccess(data, variables, context) {
-        //@ts-ignore
-        ref.current.close();
-        messsageToast({message: `Conversation resolved`, type: 'success'});
+      Auth: token,
+      organisationId: organisation?.id,
+    },
+    {
+      enabled: inbox?.type !== 'shared',
+      onSuccess(data: any, variables: any, context: any) {
+        // setThreadDetail(data?.data);
+        // console.log('data from personal inbox', JSON.stringify(data, null, 2));
       },
-      onError(error, variables, context) {
-        console.log('error from resolve', error);
+      onError(error: any, variables: any, context: any) {
+        console.log('Move To personal inbox error', error);
       },
     },
   );
+  //hooks to fetch shared inbox
+  const {data: sharedInbox} = useSharedInbox(
+    {
+      Auth: token,
+      organisationId: organisation?.id,
+    },
+    {
+      onSuccess(data: any, variables: any, context: any) {
+        // setThreadDetail(data?.data);
+        // console.log('data from assigned', JSON.stringify(data, null, 2));
+        // console.log('data from shared inbox', JSON.stringify(data, null, 2));
+      },
+      onError(error: any, variables: any, context: any) {
+        console.log('Move To shared inbox error', error);
+      },
+    },
+  );
+
+  // filter out current inbox
+  const allInboxes = useMemo(() => {
+    const Inboxes = [...(sharedInbox ?? []), ...(personalInbox ?? [])];
+    return Inboxes?.filter((inbx: InboxType) => inbx?.uuid !== inbox?.uuid);
+  }, [sharedInbox, personalInbox, thread]);
+
+  const moveTo = (id: string) => {
+    moveMutations.mutate({
+      inboxId: id,
+      Auth: token,
+      organisationId: organisation.id,
+      threadId: thread?.uuid,
+    });
+  };
 
   const closeSheet = () => {
     //@ts-ignore
@@ -85,25 +154,46 @@ const Resolve = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
     }
   };
 
-  const handleResolve = () => {
-    resolveMutation.mutate();
+  const InboX = (inbx: InboxType) => {
+    return (
+      <>
+        <TouchableOpacity
+          style={styles.inboxWrapper}
+          onPress={() => moveTo(inbx?.uuid)}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <PendingAvailble
+              width={10}
+              height={10}
+              color={inbx?.color ?? '#A5ABB3'}
+            />
+            <Text style={[styles.inboxName, {marginLeft: wp(5)}]}>
+              {inbx?.name}
+            </Text>
+          </View>
+
+          <View>
+            <Entypo name="circle" size={hp(18)} color={colors.dark} />
+          </View>
+        </TouchableOpacity>
+        <Divider />
+      </>
+    );
   };
 
-  const isEmail = thread?.channel_name === 'email';
-  const sender = thread?.sender?.name ?? thread?.sender?.platform_nick;
-  const subject = thread?.subject;
+  // console.log('Member', JSON.stringify(organisationMember, null, 2));
+  // console.log('tread', JSON.stringify(thread?.inbox, null, 2));
 
   return (
     <>
       {/* @ts-ignore */}
       <RBSheet
         ref={ref}
-        height={height * 0.47}
+        height={height * 0.6}
         openDuration={250}
-        closeOnDragDown
+        // closeOnDragDown={false}
         customStyles={{
           wrapper: {
-            backgroundColor: 'rgba(105,105,105,0.7)',
+            backgroundColor: 'rgba(0,0,0,0.1)',
           },
           draggableIcon: {
             backgroundColor: '#E5E4E2',
@@ -111,7 +201,7 @@ const Resolve = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
           container: {
             borderTopLeftRadius: hp(30),
             borderTopRightRadius: hp(30),
-            // alignItems: 'center',
+
             height: 'auto',
             justifyContent: 'center',
             backgroundColor: colors.light,
@@ -119,104 +209,54 @@ const Resolve = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
         }}>
         <View
           style={{
-            alignSelf: 'center',
-            backgroundColor: colors.light,
+            // alignSelf: 'center',
+            // backgroundColor: 'red',
+            // backgroundColor: colors.light,
             width: '100%',
-            alignItems: 'center',
-            padding: hp(10),
+            // height: '100%',
+            minHeight: hp(300),
+
+            // alignItems: 'center',
+            // padding: hp(10),
           }}>
-          <Text style={styles.resolveTitle}>Resolve Conversation</Text>
-          <View
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '100%',
-            }}>
-            <Text style={styles.infoText}>
-              You are about to resolve a conversation with{' '}
-              {!isEmail ? (
-                <Text style={styles.infoText2}>{trimText(sender, 20)}</Text>
-              ) : (
-                <Text style={styles.infoText2}>
-                  the subject {trimText(subject, 35)}
-                </Text>
-              )}
-              , Once a conversation is resolved it is moved to the closed tab
-              for this inbox.
-            </Text>
-            <View
-              style={{
-                width: '95%',
-                maxHeight: hp(250),
-                height: hp(140),
-                borderRadius: hp(10),
-                borderWidth: 1,
-                borderColor: colors.secondaryBg,
-                backgroundColor: colors.bootomHeaderBg,
-                marginVertical: hp(10),
-              }}>
-              <TextInput
-                style={styles.inputStyle}
-                value={resolveNote}
-                autoFocus={true}
-                onChangeText={text => setResolveNote(text)}
-                maxLength={160}
-                multiline
-                placeholder="Enter note!"
-              />
-              <View
-                style={{
-                  position: 'absolute',
-                  bottom: 2,
-                  right: 4,
-                  padding: hp(2),
-                }}>
-                <Text
-                  style={{
-                    fontSize: FontSize.SmallText,
-                    color:
-                      resolveNote.length > 145 ? 'red' : colors.secondaryBg,
-                  }}>
-                  {resolveNote?.length}/160
+          <Text style={styles.TitleText}>Move</Text>
+          <Divider />
+
+          <ScrollView style={{maxHeight: height * 0.57}}>
+            <View style={[styles.inboxWrapper]}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <PendingAvailble
+                  width={10}
+                  height={10}
+                  color={inbox?.color ?? '#A5ABB3'}
+                />
+                <Text style={[styles.inboxName, {marginLeft: wp(5)}]}>
+                  {inbox?.name}
                 </Text>
               </View>
+              <View>
+                <AntDesign
+                  name="checkcircleo"
+                  size={hp(18)}
+                  color={colors.dark}
+                />
+              </View>
             </View>
-            <View style={styles.btnWrapper}>
-              <TouchableOpacity
-                onPress={closeSheet}
-                style={[
-                  styles.resolveButton,
-                  {
-                    borderColor: colors.secondaryBg,
-                  },
-                ]}>
-                <Text style={[styles.btnText, {color: colors.secondaryBg}]}>
-                  Cancel
-                </Text>
-              </TouchableOpacity>
-              <View style={{width: wp(30)}} />
-              <TouchableOpacity
-                onPress={handleResolve}
-                style={[
-                  styles.resolveButton,
-                  {
-                    backgroundColor: colors.secondaryBg,
-                    borderColor: colors.secondaryBg,
-                  },
-                ]}>
-                <Text style={[styles.btnText, {color: colors.light}]}>
-                  Resolve
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+
+            <Divider />
+
+            {allInboxes &&
+              allInboxes?.map((inbx: InboxType, i: number) => (
+                <InboX {...inbx} key={`${i}`} />
+              ))}
+          </ScrollView>
         </View>
       </RBSheet>
     </>
   );
 });
 
-export default Resolve;
+export default memo(MoveThread);
 
 const styles = StyleSheet.create({
   container: {
@@ -226,13 +266,13 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: hp(15),
     borderTopRightRadius: hp(15),
   },
-  resolveTitle: {
+  TitleText: {
     fontSize: FontSize.BigText,
-    marginTop: hp(10),
+    // marginTop: hp(10),
     textAlign: 'center',
     color: colors.dark,
     fontFamily: FONTS.TEXT_SEMI_BOLD,
-    padding: hp(5),
+    paddingVertical: hp(10),
   },
   infoText: {
     textAlign: 'justify',
@@ -275,5 +315,44 @@ const styles = StyleSheet.create({
   },
   btnText: {
     fontSize: FontSize.MediumText,
+  },
+
+  sectionTitle: {
+    marginLeft: wp(10),
+    paddingTop: hp(5),
+    fontSize: FontSize.BigText,
+    fontFamily: FONTS.TEXT_REGULAR,
+  },
+
+  //assignee container
+  asigneeContainer: {
+    borderBottomColor: colors.bootomHeaderBg,
+    borderBottomWidth: 1,
+    paddingVertical: hp(15),
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: wp(10),
+  },
+
+  //assignee wrapppr
+  inboxWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: wp(15),
+    paddingVertical: hp(10),
+    justifyContent: 'space-between',
+  },
+
+  inboxName: {
+    fontFamily: FONTS.TEXT_REGULAR,
+    fontSize: FontSize.MediumText,
+    // textTransform: 'capitalize',
+  },
+
+  emptyText: {
+    fontFamily: FONTS.TEXT_REGULAR,
+    fontSize: FontSize.SmallText + 2,
+    textAlign: 'center',
   },
 });

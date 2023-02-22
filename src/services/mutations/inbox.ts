@@ -1,3 +1,4 @@
+import {InboxId} from './../../@types/store';
 import {buildConversationUrl, client} from '../api/api-client';
 
 //send message socials
@@ -128,6 +129,65 @@ export const startConversation = async (params: any) => {
   const response = await client(url, {
     method: 'POST',
     data: message,
+    params: {Auth, organisationId},
+  });
+
+  return response.data;
+};
+
+//assigned to coversations
+export const assignConversationThread = async (payload: {
+  type?: 'user' | 'team';
+  Auth: string | null;
+  organisationId: string | null;
+  threadId: string;
+  assignee_id: string;
+}) => {
+  const {type, Auth, threadId, organisationId, assignee_id} = payload;
+
+  const url = buildConversationUrl(`threads/assign/${threadId}`);
+
+  const response = await client(url, {
+    data: {assignee_id, type},
+    method: 'PATCH',
+    params: {Auth, organisationId},
+  });
+  console.log('from assigned Api', JSON.stringify(response, null, 2));
+  return response;
+};
+
+//add a participant to a conversation
+export const addParticipants = async (payload: {
+  user_ids: string[];
+  threadId: string;
+  Auth: string | null;
+  organisationId: string | null;
+}) => {
+  const {user_ids, threadId, Auth, organisationId} = payload;
+  const url = buildConversationUrl(`threads/participant/${threadId}`);
+
+  const {data} = await client(url, {
+    method: 'POST',
+    data: {user_ids},
+    params: {Auth, organisationId},
+  });
+
+  return data;
+};
+
+//move thread
+export const moveThread = async (payload: {
+  Auth: string | null;
+  threadId: string;
+  organisationId: string | null;
+  inboxId: string;
+}) => {
+  const {Auth, threadId, organisationId, inboxId} = payload;
+
+  const url = buildConversationUrl(`threads/move/${threadId}/inbox/${inboxId}`);
+
+  const response = await client(url, {
+    method: 'POST',
     params: {Auth, organisationId},
   });
 

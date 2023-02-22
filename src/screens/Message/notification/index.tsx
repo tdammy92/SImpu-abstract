@@ -14,7 +14,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import UserAvatar from 'react-native-user-avatar';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {colors, FONTS} from 'src/constants';
+import {colors, FONTS, FontSize} from 'src/constants';
 import {hp, wp} from 'src/utils';
 import {SCREEN_NAME} from 'src/navigation/constants';
 import dummyData from 'src/constants/dummyData';
@@ -26,6 +26,8 @@ import {StoreState} from 'src/@types/store';
 import {useNotificationTrayQuery} from 'src/services/query/queries';
 import {Avatar} from 'src/constants/general';
 import ChannelIcon from 'src/components/common/ChannelIcon';
+import Entypo from 'react-native-vector-icons/Entypo';
+import Animated, {SlideInLeft} from 'react-native-reanimated';
 
 const {width, height} = Dimensions.get('screen');
 
@@ -64,7 +66,7 @@ const Notification = (props: any) => {
         const notifications = data?.pages
           ?.map((res: any) => res.data?.map((r: any) => r))
           .flat(2);
-
+        // const filteredMessageNotofocations =
         setNotifications(notifications);
       },
       onError(error: any, variables: any, context: any) {
@@ -84,7 +86,8 @@ const Notification = (props: any) => {
     // setData([]);
   }, []);
 
-  const List = ({item}: any) => {
+  const List = ({item, index}: any) => {
+    // console.log(index);
     const threadId = item?.event?.data?.thread_id;
     // console.log(
     //   'Notifications',
@@ -103,9 +106,10 @@ const Notification = (props: any) => {
     };
 
     return (
-      <>
+      <Animated.View entering={SlideInLeft.delay(150 * index)}>
         <TouchableOpacity
           style={[styles.listItemContainer]}
+          disabled={!item?.event?.data?.hasOwnProperty('channel_name')}
           onPress={handleNavigate}>
           <View style={[styles.listItemContent, {}]}>
             <View style={{flexDirection: 'row', paddingBottom: 10}}>
@@ -119,27 +123,36 @@ const Notification = (props: any) => {
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
-                  <ChannelIcon name={item?.event?.data?.channel_name} />
+                  {!!item?.event?.data?.hasOwnProperty('channel_name') ? (
+                    <ChannelIcon name={item?.event?.data?.channel_name} />
+                  ) : (
+                    <Entypo
+                      name={'info'}
+                      size={hp(16)}
+                      color={colors.secondaryBg}
+                    />
+                  )}
                 </View>
               </View>
               <Text
                 style={{
                   width: '90%',
-
+                  fontSize: FontSize.MediumText,
                   lineHeight: hp(18),
-                  fontFamily: FONTS.TEXT_SEMI_BOLD,
+                  fontFamily: FONTS.TEXT_REGULAR,
                 }}>
                 {item?.message}
               </Text>
             </View>
 
-            <View style={{flexDirection: 'row', paddingTop: 5}}>
+            <View
+              style={{flexDirection: 'row', paddingTop: 5, marginLeft: wp(10)}}>
               <View style={{width: 35, marginRight: 10}} />
               <Text
                 style={{
                   color: colors.darkGray,
                   fontFamily: FONTS.TEXT_SEMI_BOLD,
-                  fontSize: hp(14),
+                  fontSize: FontSize.SmallText,
                 }}>
                 {notificationDateFormat(item?.created_datetime)}
               </Text>
@@ -147,7 +160,7 @@ const Notification = (props: any) => {
           </View>
         </TouchableOpacity>
         <Divider />
-      </>
+      </Animated.View>
     );
   };
 

@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   TouchableHighlight,
   Image,
+  RefreshControl,
 } from 'react-native';
 import {StyledComponentProps, Text, useStyleSheet} from '@ui-kitten/components';
 import React, {useState, useRef, useEffect, useCallback} from 'react';
@@ -29,6 +30,7 @@ import {useMessageThreads} from 'src/services/query/queries';
 import {useSelector} from 'react-redux';
 import {StoreState} from 'src/@types/store';
 import ListLoader from 'src/components/common/ListLoader';
+import {queryClient} from 'src/index';
 
 const Mentions = ({navigation}: any) => {
   const {profile, token} = useSelector((state: StoreState) => state.user);
@@ -181,6 +183,14 @@ const Mentions = ({navigation}: any) => {
             contentContainerStyle={{
               paddingBottom: hp(40),
             }}
+            refreshControl={
+              <RefreshControl
+                refreshing={isFetching}
+                onRefresh={() =>
+                  queryClient.invalidateQueries(['threads', 'mention'])
+                }
+              />
+            }
             contentInset={{bottom: hp(15)}}
             useNativeDriver={false}
             showsVerticalScrollIndicator={false}

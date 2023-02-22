@@ -1,4 +1,4 @@
-import {SafeAreaView, View, Animated} from 'react-native';
+import {SafeAreaView, View, Animated, RefreshControl} from 'react-native';
 import {
   StyledComponentProps,
   Text,
@@ -24,6 +24,7 @@ import {usePersonalThreads} from 'src/services/query/queries';
 import {useSelector} from 'react-redux';
 import {StoreState} from 'src/@types/store';
 import ListLoader from 'src/components/common/ListLoader';
+import {queryClient} from 'src/index';
 
 const Social = ({navigation}: any) => {
   const SortSheetRef = useRef<any>(null);
@@ -191,6 +192,12 @@ const Social = ({navigation}: any) => {
               paddingBottom: hp(40),
               paddingVertical: hp(5),
             }}
+            refreshControl={
+              <RefreshControl
+                refreshing={isFetching}
+                onRefresh={() => queryClient.invalidateQueries(['threads'])}
+              />
+            }
             contentInset={{bottom: hp(15)}}
             useNativeDriver={false}
             showsVerticalScrollIndicator={false}

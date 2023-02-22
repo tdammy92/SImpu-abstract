@@ -164,6 +164,7 @@ const MailHeader = ({threadDetail, loading}: any) => {
         ref={chatOptionRef}
         threadDetail={threadDetail}
         openResolve={openResolve}
+        closeSheet={closeSheet}
       />
     </>
   );

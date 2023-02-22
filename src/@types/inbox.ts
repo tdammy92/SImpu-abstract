@@ -51,6 +51,22 @@ export type InboxType = {
   credentials?: InboxTypeCredentials[];
 };
 
+export type InboxTagType = {
+  id?: number;
+  name: string;
+  uuid: string;
+  color: string;
+  parent_id?: string;
+  creator_id?: string;
+  is_pinned?: boolean;
+  children: InboxTagType[];
+  description?: string;
+  organisation_id?: string;
+  created_datetime?: string;
+  updated_datetime?: string | null;
+  parent?: InboxTagType;
+};
+
 export type requestNotificationType = {
   imei?: string;
   fcm_token: string | null;
@@ -60,6 +76,70 @@ export type requestNotificationType = {
   os: string | null;
   os_version: string | null;
   os_api_level: number | string | null;
+};
+
+export type NotificationType = {
+  uuid: string;
+  id?: number;
+  updated_datetime?: string;
+  created_datetime?: string;
+  user_id: string; // => InboxUserSchma
+  message_id: string; // => MessageSchema
+  status: 'sent' | 'read' | 'delivered' | 'unsent';
+};
+
+export type ThreadType = {
+  state: string;
+  uuid: string;
+  type: string;
+  sender: SenderType;
+  subject?: string;
+  sender_id: string;
+  receiver_id: string;
+  unread_count?: string;
+  created_datetime: string;
+  updated_datetime: string;
+  integration_name: string;
+  assignments: {
+    uuid: string;
+    assigner_id: string;
+    assignee_id: string;
+  }[];
+  assignees?: {
+    uuid?: string;
+    name?: string;
+    image?: string;
+    user_id: string;
+    last_name: string;
+    first_name: string;
+    image_url?: string;
+    organisation_id: string;
+    created_datetime?: string;
+    updated_datetime?: string;
+  }[];
+  tags: InboxTagType[];
+  is_snoozed?: boolean;
+  is_favorited: boolean;
+  last_message: Partial<messageType>;
+  participants?: ThreadParticipantType[];
+  receiver: {
+    uuid: string;
+    status: string;
+    user_id: string;
+    inbox_id: string;
+    integration_id: string;
+    organisation_id: string;
+    integration_name: string;
+    user: SenderType;
+  };
+  inbox_id?: string;
+  inbox?: Partial<InboxType>;
+  attachments?: attachemtDataType[];
+  notificaitons?: NotificationType[];
+  draft?: {content: {body: string; subject?: string}; message_id?: string};
+  is_assignee?: boolean;
+  channel_id?: string;
+  is_read?: boolean;
 };
 
 export type contentType = {
@@ -106,6 +186,20 @@ export type entityType = {
   mention_ids: null;
   recipient_ids: null;
   recipients?: recipientsType;
+};
+
+export type SenderType = {
+  uuid: string;
+  channel_id: string;
+  platform_id: string;
+  contact_id?: string;
+  name: string | null;
+  channel_name: Channel;
+  platform_nick: string;
+  platform_name?: string;
+  image_url: string | null;
+  credential_id?: string;
+  meta?: {[key: string]: any};
 };
 
 export type authorType = {
@@ -196,4 +290,46 @@ export type customerType = {
   platform_nick: string;
   channel_id: string;
   type: string;
+};
+
+export type AssineeType = {
+  name: string;
+  id: number;
+  uuid: string;
+  user_id: string;
+  image_url: string;
+  type: 'profile' | 'team';
+};
+
+export type MemberType = {
+  id: string;
+  profile_id: string;
+  first_name: string;
+  last_name: string;
+  image: null;
+  permission_id: string;
+  name: string;
+  permissions?: ['*'];
+  roles_page_access?: ['*'];
+  page_access?: ['*'];
+};
+export type TeamType = {
+  id: string;
+  name: string;
+  organisation_id: string;
+  color: string;
+  created_datetime: string;
+  updated_datetime: string;
+  members: MemberType[];
+};
+
+export type ThreadParticipantType = {
+  name: string;
+  last_name?: string;
+  first_name?: string;
+  uuid: string;
+  user_id?: string;
+  image?: string;
+  type: 'user' | 'team';
+  role_page_access: string[];
 };

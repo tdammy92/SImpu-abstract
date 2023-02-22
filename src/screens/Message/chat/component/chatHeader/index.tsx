@@ -129,7 +129,7 @@ const ChatHeader = ({threadDetail, infoLoading}: chatHeaderProps) => {
               </TouchableOpacity>
               {!infoLoading ? (
                 <Text style={styles.usernameText}>
-                  {trimText(sender?.platform_name ?? sender?.platform_nick, 18)}
+                  {trimText(sender?.platform_name ?? sender?.platform_nick, 12)}
                 </Text>
               ) : (
                 // @ts-ignore
@@ -169,6 +169,7 @@ const ChatHeader = ({threadDetail, infoLoading}: chatHeaderProps) => {
         ref={chatOptionRef}
         threadDetail={threadDetail}
         openResolve={openResolve}
+        closeSheet={closeSheet}
       />
     </>
   );

@@ -30,11 +30,16 @@ import {StoreState} from 'src/@types/store';
 import Modal from 'react-native-modal';
 import Resolve from '../resolve-thread';
 import Feather from 'react-native-vector-icons/Feather';
+import AssignThread from '../assign-thread';
+import ParticipantThread from '../participant-thread';
+import TagsThread from '../tags-thread';
+import MoveThread from '../move-thread';
 
 type Props = {
   ref: RBSheetProps;
   threadDetail: any;
   openResolve: any;
+  closeSheet: any;
 };
 
 const {height, width} = Dimensions.get('screen');
@@ -42,8 +47,13 @@ const {height, width} = Dimensions.get('screen');
 const HeaderOption = forwardRef(
   (props: Props, ref: React.ForwardedRef<any>) => {
     const navigation = useNavigation();
-    const {openResolve} = props;
+    const {openResolve, closeSheet} = props;
     const thread = props?.threadDetail?.thread;
+
+    const assignRef = useRef<null>(null);
+    const participantRef = useRef<null>(null);
+    const moveRef = useRef<null>(null);
+    const tagsRef = useRef<null>(null);
 
     const {profile, user, token} = useSelector(
       (state: StoreState) => state?.user,
@@ -55,6 +65,53 @@ const HeaderOption = forwardRef(
     // console.log('thread Detail', JSON.stringify(thread, null, 2));
 
     // const resolveMutation = useMutation(resolveConversation,{})
+
+    //Open Assign sheet
+    const openAssign = () => {
+      closeSheet();
+
+      setTimeout(() => {
+        if (assignRef.current) {
+          //@ts-ignore
+          assignRef.current.open();
+        }
+      }, 300);
+    };
+
+    //Open Participant sheet
+    const openParticipant = () => {
+      closeSheet();
+
+      setTimeout(() => {
+        if (participantRef.current) {
+          //@ts-ignore
+          participantRef.current.open();
+        }
+      }, 300);
+    };
+    //Open Participant sheet
+    const openMove = () => {
+      closeSheet();
+
+      setTimeout(() => {
+        if (moveRef.current) {
+          //@ts-ignore
+          moveRef.current.open();
+        }
+      }, 300);
+    };
+
+    //Open Participant sheet
+    const openTags = () => {
+      closeSheet();
+
+      setTimeout(() => {
+        if (tagsRef.current) {
+          //@ts-ignore
+          tagsRef.current.open();
+        }
+      }, 300);
+    };
 
     const navigateToDetails = useCallback(() => {
       //@ts-ignore
@@ -102,15 +159,19 @@ const HeaderOption = forwardRef(
             // showsVerticalScrollIndicator={false}
           >
             <View style={styles.gridConatiner}>
-              <TouchableOpacity style={styles.boxContainer}>
+              <TouchableOpacity
+                style={styles.boxContainer}
+                onPress={openAssign}>
                 <Feather name="user-check" size={25} color={colors.dark} />
                 <Text style={styles.opionText}>Assign</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.boxContainer}>
+              <TouchableOpacity
+                style={styles.boxContainer}
+                onPress={openParticipant}>
                 <Feather name="users" size={23} color="#000" />
                 <Text style={styles.opionText}>Participants</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.boxContainer}>
+              <TouchableOpacity style={styles.boxContainer} onPress={openMove}>
                 <MaterialCommunityIcons
                   name="arrow-right-bold-outline"
                   size={25}
@@ -119,7 +180,7 @@ const HeaderOption = forwardRef(
                 <Text style={styles.opionText}>Move to</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.boxContainer}>
+              <TouchableOpacity style={styles.boxContainer} onPress={openTags}>
                 <AntDesign name="tagso" size={25} color={colors.dark} />
                 <Text style={styles.opionText}>Tags</Text>
               </TouchableOpacity>
@@ -190,6 +251,12 @@ const HeaderOption = forwardRef(
             </ScrollView>
           </View>
         </RBSheet>
+
+        {/* thread options e.g assign,tags,move */}
+        <AssignThread ref={assignRef} threadDetail={thread} />
+        <ParticipantThread ref={participantRef} threadDetail={thread} />
+        <TagsThread ref={tagsRef} threadDetail={thread} />
+        <MoveThread ref={moveRef} threadDetail={thread} />
       </>
     );
   },

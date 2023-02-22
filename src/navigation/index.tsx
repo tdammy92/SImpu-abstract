@@ -787,7 +787,7 @@ const themedStyles = StyleService.create({
     justifyContent: 'center',
     position: 'absolute',
     right: wp(-18),
-    top: 5,
+    top: '30%',
   },
   menuLeft: {
     flexDirection: 'row',
@@ -796,7 +796,7 @@ const themedStyles = StyleService.create({
   titleText: {
     paddingLeft: 5,
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: FontSize.BigText,
+    fontSize: FontSize.MediumText,
     color: colors.dark,
   },
   badgeText: {

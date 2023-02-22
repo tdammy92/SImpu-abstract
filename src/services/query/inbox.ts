@@ -1,4 +1,4 @@
-import {buildAppsURL} from './../api/api-client';
+import {buildAppsURL} from 'src/services/api/api-client';
 import {AxiosRequestConfig, AxiosResponse} from 'axios';
 import {InboxType} from 'src/@types/inbox';
 import {buildConversationUrl, client} from '../api/api-client';
@@ -272,11 +272,56 @@ export const getMemberList = async (
 ): Promise<any> => {
   const {threadID, page, organisationId} = params;
 
-  // console.log('from inbox tsxxx', organisationId);
-  const url = buildAppsURL(`organisations/${organisationId}/members `);
-  return client(url, {
+  const url = buildAppsURL(`/organisations/${organisationId}/members`);
+  return await client(url, {
     params: {...params},
   });
+};
+
+//fetch List of  teams in an organisation
+export const listTeams = async (
+  params: AxiosRequestConfig['params'],
+): Promise<any> => {
+  const {organisationId} = params;
+
+  const url = buildAppsURL(`/teams/${organisationId}`);
+
+  return await client(url, {
+    params: {...params},
+  });
+};
+
+//fetch tags
+export const listTags = async (
+  params: AxiosRequestConfig['params'],
+): Promise<any> => {
+  const {organisationId, type} = params;
+  const url = buildConversationUrl(`tags/list/${type}`);
+  return await client(url, {
+    params: {...params},
+  });
+};
+
+//
+export const getInboxes = async (params: {
+  q?: string;
+  members?: boolean;
+  is_pinned?: boolean;
+  credentials?: boolean;
+  show_report?: boolean;
+  Auth: string;
+  organisationId: string;
+  type: InboxType['type'];
+}) => {
+  const {type, ...rest} = params;
+
+  const url = buildConversationUrl(`inbox/list/${type}`);
+
+  const {data} = await client(url, {
+    params: rest,
+  });
+
+  return data.inboxes;
 };
 
 //fetch quick reply

@@ -127,10 +127,16 @@ const Accordion = ({
 export default Accordion;
 
 const styles = StyleSheet.create({
-  accordionContainer: {flex: 1, width: '100%', overflow: 'hidden'},
+  accordionContainer: {
+    flex: 1,
+    width: '100%',
+    overflow: 'hidden',
+    marginTop: hp(10),
+  },
   accordionHeaderContainer: {
     flexDirection: 'row',
     width: '100%',
+    alignItems: 'center',
   },
   accordionBodyContainer: {
     width: '100%',
@@ -138,7 +144,7 @@ const styles = StyleSheet.create({
   accordionHeaderText: {
     color: colors.dark,
     fontFamily: FONTS.TEXT_SEMI_BOLD,
-    fontSize: FontSize.BigText,
+    fontSize: FontSize.MediumText,
     marginLeft: 5,
     textTransform: 'uppercase',
   },
@@ -151,7 +157,7 @@ const styles = StyleSheet.create({
 
   customInboxtext: {
     marginLeft: 5,
-    fontSize: FontSize.BigText,
+    fontSize: FontSize.MediumText,
     fontFamily: FONTS.TEXT_REGULAR,
     color: colors.dark,
   },

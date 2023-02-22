@@ -43,7 +43,7 @@ const styles = StyleService.create<Styles>({
   },
   usernameText: {
     fontFamily: FONTS.TEXT_SEMI_BOLD,
-    fontSize: FontSize.BigText,
+    fontSize: FontSize.MediumText,
     color: colors.dark,
     marginLeft: wp(7),
   },

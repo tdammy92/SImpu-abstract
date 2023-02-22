@@ -29,6 +29,7 @@ import dummyData from 'src/constants/dummyData';
 import {useMessageThreads} from 'src/services/query/queries';
 import {StoreState} from 'src/@types/store';
 import ListLoader from 'src/components/common/ListLoader';
+import {queryClient} from 'src/index';
 
 const Unassigned = ({navigation}: any) => {
   const styles = useStyleSheet(themedStyles);
@@ -164,12 +165,19 @@ const Unassigned = ({navigation}: any) => {
             contentContainerStyle={{
               paddingBottom: hp(40),
             }}
+            refreshControl={
+              <RefreshControl
+                refreshing={isFetching}
+                onRefresh={() =>
+                  queryClient.invalidateQueries(['threads', 'open'])
+                }
+              />
+            }
             contentInset={{bottom: hp(15)}}
             //@ts-ignore
             onEndReached={fetchNextPage}
             onEndReachedThreshold={3}
             useNativeDriver={false}
-            // refreshControl={<RefreshControl refreshing={}/>}
             showsVerticalScrollIndicator={false}
             closeOnRowBeginSwipe
             closeOnRowOpen
