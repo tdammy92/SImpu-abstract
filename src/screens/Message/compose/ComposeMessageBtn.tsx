@@ -171,8 +171,12 @@ const ComposeMessageBtn = () => {
                     borderRightColor: stc(channel?.channel_name),
                   },
                 ]}
-                entering={SlideInRight.duration(idx * 150)}>
-                <ChannelIcon name={channel?.channel_name} />
+                entering={SlideInRight.duration(idx * 100)}>
+                <ChannelIcon
+                  name={channel?.channel_name}
+                  height={25}
+                  width={25}
+                />
                 <Text style={[styles.btnText]}>
                   {FormatText(channel?.channel_name)}
                 </Text>
@@ -184,7 +188,7 @@ const ComposeMessageBtn = () => {
 
       {!showOption && (
         <TouchableOpacity style={styles.composeBtn} onPress={ShowComponse}>
-          <CreateIcon />
+          <CreateIcon height={hp(30)} width={hp(30)} />
         </TouchableOpacity>
       )}
     </>
@@ -198,6 +202,9 @@ export default ComposeMessageBtn;
 const styles = StyleSheet.create({
   composeContainer: {
     zIndex: 5,
+    backgroundColor: 'yellow',
+    height: '100%',
+    width: '100%',
     // position: 'absolute',
     // bottom: hp(30),
     // right: wp(10),
@@ -207,7 +214,10 @@ const styles = StyleSheet.create({
   channelContainer: {
     position: 'absolute',
     // backgroundColor: 'green',
+    // alignSelf: 'flex-end',
     // alignItems: 'flex-end',
+    // justifyContent: 'flex-end',
+    // width: width * 0.5,
     // left: Platform.OS === 'android' ? hp(83) : hp(68),
     // left: width * 0.5,
     left: wp(50),
@@ -227,7 +237,7 @@ const styles = StyleSheet.create({
   },
 
   btnText: {
-    fontSize: FontSize.BigText,
+    fontSize: FontSize.MediumText,
     paddingVertical: hp(4),
     fontFamily: FONTS.TEXT_REGULAR,
     color: colors.dark,

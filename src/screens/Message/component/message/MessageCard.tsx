@@ -99,7 +99,11 @@ const MessageCard = (props: any) => {
             />
 
             <View style={{position: 'absolute', bottom: -4, right: -4}}>
-              <ChannelIcon name={threadDetails?.channelType} />
+              <ChannelIcon
+                name={threadDetails?.channelType}
+                width={22}
+                height={22}
+              />
             </View>
           </View>
         </View>

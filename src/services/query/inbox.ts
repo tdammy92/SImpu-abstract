@@ -238,6 +238,27 @@ export const searchConversations = async (
   return response?.data;
 };
 
+//Advanced search conversation
+export const AdvancedSearchConversations = async (
+  QueryParams?: AxiosRequestConfig['params'],
+) => {
+  const {filterQuery, page, per_page, headers} = QueryParams;
+
+  const queryS = {
+    ...filterQuery,
+    page,
+    per_page: perPageFetch,
+  };
+
+  const url = buildConversationUrl(`search`);
+
+  const response = await client(url, {
+    params: {...headers, queryS},
+  });
+
+  return response?.data;
+};
+
 //search conversation by customer
 export const searchConversationsByCustomer = async (QueryParams: any) => {
   const {customerId, page, per_page, headers} = QueryParams;

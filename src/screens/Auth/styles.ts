@@ -1,7 +1,7 @@
 import {StyleService} from '@ui-kitten/components';
 import {ImageStyle, TextStyle, ViewStyle} from 'react-native';
 import {color} from 'react-native-reanimated';
-import {colors} from 'src/constants';
+import {colors, FontSize} from 'src/constants';
 import FONTS from 'src/constants/fonts';
 import {hp, wp} from 'src/utils';
 
@@ -40,16 +40,16 @@ const styles = StyleService.create<Styles>({
   headerText: {
     textAlign: 'left',
     fontFamily: FONTS.TEXT_SEMI_BOLD,
-    fontSize: hp(26),
+    fontSize: FontSize.BigText,
     color: colors.dark,
     paddingVertical: hp(20),
   },
   InfoText: {
     color: colors.darkGray,
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: hp(17),
+    fontSize: FontSize.MediumText,
     textAlign: 'left',
-    width: '80%',
+    width: '90%',
   },
   btnContainer: {
     // flex: 1,
@@ -97,7 +97,7 @@ const styles = StyleService.create<Styles>({
   linkText: {
     fontFamily: FONTS.TEXT_REGULAR,
     color: colors.dark,
-    fontSize: hp(16),
+    fontSize: FontSize.MediumText,
   },
 
   inputConatiner: {

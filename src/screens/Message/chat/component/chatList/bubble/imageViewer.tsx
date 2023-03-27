@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import React from 'react';
 import ImageViewer from 'react-native-image-zoom-viewer';
+import FastImage from 'react-native-fast-image';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {getStatusBarHeight} from 'react-native-status-bar-height';

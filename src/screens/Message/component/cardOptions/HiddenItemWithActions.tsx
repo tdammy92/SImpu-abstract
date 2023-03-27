@@ -12,7 +12,9 @@ import {
 import {StyledComponentProps, Text, useStyleSheet} from '@ui-kitten/components';
 import React, {useState, useRef, useEffect, useCallback} from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {FONTS} from 'src/constants';
+import {FONTS, FontSize, colors} from 'src/constants';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {hp} from 'src/utils';
 
 const HiddenItemWithActions = (props: any) => {
   const {
@@ -88,7 +90,8 @@ const HiddenItemWithActions = (props: any) => {
               style={[
                 // styles.sides,
                 {
-                  marginRight: 7,
+                  // marginRight: 7,
+                  alignItems: 'center',
                   transform: [
                     {
                       scale: swipeAnimatedValue.interpolate({
@@ -100,18 +103,18 @@ const HiddenItemWithActions = (props: any) => {
                   ],
                 },
               ]}>
-              <MaterialCommunityIcons
-                name="trash-can-outline"
-                size={30}
-                color="#FF4848"
+              <Ionicons
+                name="checkmark-done-circle-outline"
+                size={hp(30)}
+                color={colors.secondaryBgDark}
               />
               <Text
                 style={{
-                  fontSize: 12,
+                  fontSize: FontSize.SmallText,
                   fontFamily: FONTS.TEXT_REGULAR,
-                  color: '#FF4848',
+                  color: colors.secondaryBgDark,
                 }}>
-                Delete
+                Resolve
               </Text>
             </Animated.View>
           </TouchableOpacity>
@@ -143,6 +146,8 @@ const styles = StyleSheet.create({
     top: 0,
     width: 75,
     paddingRight: 17,
+    alignContent: 'center',
+    // backgroundColor: 'red',
   },
   backRightBtnLeft: {
     backgroundColor: '#276EF1',

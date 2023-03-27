@@ -8,15 +8,22 @@ import WhatsAppThumbnail from 'src/assets/images/thumbnail/WhatsAppThumb.svg';
 import Outlook from 'src/assets/images/thumbnail/Outlook.svg';
 import LiveChat from 'src/assets/images/thumbnail/LiveChat.svg';
 import Gmail from 'src/assets/images/thumbnail/Gmail.svg';
+import {hp} from 'src/utils';
 
-const ChannelIcon = ({name}: any) => {
-  if (name === 'messenger') return <FbMessenger />;
-  if (name === 'instagram') return <IgThumbnail />;
-  if (name === 'whatsapp') return <WhatsAppThumbnail />;
-  if (name === 'twitter') return <TwitterThumbnail />;
-  if (name === 'outlook') return <Outlook />;
-  if (name === 'livechat') return <LiveChat />;
-  if (name === 'email') return <Gmail />;
+const ChannelIcon = ({name, width, height}: any) => {
+  if (name === 'messenger')
+    return <FbMessenger width={hp(width)} height={hp(height)} />;
+  if (name === 'instagram')
+    return <IgThumbnail width={hp(width)} height={hp(height)} />;
+  if (name === 'whatsapp')
+    return <WhatsAppThumbnail width={hp(width)} height={hp(height)} />;
+  if (name === 'twitter')
+    return <TwitterThumbnail width={hp(width)} height={hp(height)} />;
+  if (name === 'outlook')
+    return <Outlook width={hp(width)} height={hp(height)} />;
+  if (name === 'livechat')
+    return <LiveChat width={hp(width)} height={hp(height)} />;
+  if (name === 'email') return <Gmail width={hp(width)} height={hp(height)} />;
 
   return <View />;
 };

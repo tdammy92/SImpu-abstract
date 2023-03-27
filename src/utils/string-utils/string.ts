@@ -1,6 +1,6 @@
 //snippet to capitalize first letter of a text
 export const FormatText = (text: string) => {
-  return text?.replace(/(^|\s)\S/g, (letter: string) => letter.toUpperCase());
+  return text?.replace(/(^|\s)\S/g, (letter: string) => letter?.toUpperCase());
 };
 
 //snippet to trim length of string
@@ -12,7 +12,10 @@ export const trimText = (text: string | undefined, lenght: number) => {
 };
 
 //snippet to remove all html tags in a string
-export const removeHtmlTags = (text: string) => {
+export const removeHtmlTags = (text: string | null): string => {
+  if (!text) {
+    return '';
+  }
   return text?.replace(new RegExp('<[^>]*>', 'g'), '');
 };
 

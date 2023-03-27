@@ -9,6 +9,7 @@ type attachmentIcon = {
 };
 
 const AttachmentIcon = ({fileExetension, size, color}: attachmentIcon) => {
+  // console.log('from attach icon', fileExetension);
   if (fileExetension === 'pdf')
     return <AntDesign name="pdffile1" size={size} color={color} />;
   if (fileExetension === 'doc')

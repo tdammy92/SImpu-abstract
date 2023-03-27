@@ -26,8 +26,10 @@ const Reply = () => {
     (state: StoreState) => state.reply,
   );
 
+  // console.log('both Ids', JSON.stringify({reply, profile}, null, 2));
+
   const myUser = () => {
-    return reply?.author_id === profile?.id ? true : false;
+    return reply?.author?.user_id === profile?.user_id ? true : false;
   };
 
   const isUser = myUser();

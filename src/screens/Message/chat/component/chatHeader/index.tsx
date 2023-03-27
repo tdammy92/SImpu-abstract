@@ -122,7 +122,11 @@ const ChatHeader = ({threadDetail, infoLoading}: chatHeaderProps) => {
                         bottom: hp(-4),
                         right: hp(-5),
                       }}>
-                      <ChannelIcon name={sender?.channel_name} />
+                      <ChannelIcon
+                        name={sender?.channel_name}
+                        height={20}
+                        width={20}
+                      />
                     </View>
                   </View>
                 )}

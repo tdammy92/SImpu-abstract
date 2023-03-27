@@ -1,7 +1,7 @@
 import {Text} from '@ui-kitten/components';
 import React, {ComponentProps} from 'react';
 import {Pressable, StyleSheet, View} from 'react-native';
-import {FONTS} from 'src/constants';
+import {FONTS, FontSize} from 'src/constants';
 import {globalStyles} from 'src/styles';
 import {hp} from 'src/utils';
 
@@ -31,6 +31,7 @@ const FloatLabel = ({
       borderTopColor: 'rgba(60, 60, 67, 0.1)',
       minHeight: 53,
       paddingHorizontal: 10,
+      paddingVertical: 5,
     },
     iconWidth: {
       width: '60%',
@@ -38,19 +39,19 @@ const FloatLabel = ({
     textStyle: {
       color: simpuBlue ? '#3525E6' : '#0A0748',
       fontWeight: '400',
-      fontSize: hp(17),
+      fontSize: FontSize.MediumText,
       fontFamily: FONTS.TEXT_REGULAR,
     },
     textStyle2: {
       width: '65%',
       color: '#908FA8',
-      fontSize: hp(16),
+      fontSize: FontSize.MediumText,
       textAlign: 'right',
       marginRight: 10,
       fontFamily: FONTS.TEXT_REGULAR,
     },
     float: {
-      width: '65%',
+      width: '70%',
     },
   });
   return (

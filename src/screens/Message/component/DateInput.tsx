@@ -18,7 +18,7 @@ import RBSheet, {RBSheetProps} from 'react-native-raw-bottom-sheet';
 import {Divider, Text} from '@ui-kitten/components';
 import {endOfDay, format, formatISO, startOfDay} from 'date-fns';
 import {hp, wp} from 'src/utils';
-import {colors, FONTS} from 'src/constants';
+import {colors, FONTS, FontSize} from 'src/constants';
 
 const {height} = Dimensions.get('screen');
 
@@ -94,7 +94,7 @@ const DateInput = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
         container: {
           borderTopLeftRadius: hp(15),
           borderTopRightRadius: hp(15),
-          backgroundColor: '#E5E4E2',
+          backgroundColor: colors.light,
           padding: 0,
         },
       }}>
@@ -112,12 +112,13 @@ const DateInput = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
                   {
                     flexDirection: 'row',
                     width: '100%',
+                    alignItems: 'center',
                     justifyContent: 'space-between',
                   },
                 ]}>
                 <Text style={styles.dateBoxText}>Date</Text>
                 <Text style={styles.dateBoxText}>{SpecificDate}</Text>
-                <AntDesign name="calendar" size={18} color="#000" />
+                <AntDesign name="calendar" size={hp(19)} color="#000" />
               </TouchableOpacity>
             )}
             {DateIndex === 3 && (
@@ -136,13 +137,18 @@ const DateInput = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
                   style={{
                     flexDirection: 'row',
                     width: '43%',
+                    alignItems: 'center',
                     justifyContent: 'space-between',
                   }}>
                   <Text style={styles.dateBoxText}>Start</Text>
-                  <Text style={[styles.dateBoxText, {fontSize: hp(12)}]}>
+                  <Text
+                    style={[
+                      styles.dateBoxText,
+                      {fontSize: FontSize.SmallText},
+                    ]}>
                     {StartDate}
                   </Text>
-                  <AntDesign name="calendar" size={18} color="#000" />
+                  <AntDesign name="calendar" size={hp(19)} color="#000" />
                 </TouchableOpacity>
 
                 {/* line divider box */}
@@ -159,16 +165,20 @@ const DateInput = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
                   onPress={() => setShowEndDate(true)}
                   style={{
                     flexDirection: 'row',
-
+                    alignItems: 'center',
                     width: '45%',
                     justifyContent: 'space-between',
                   }}>
                   <Text style={styles.dateBoxText}>End</Text>
-                  <Text style={[styles.dateBoxText, {fontSize: hp(12)}]}>
+                  <Text
+                    style={[
+                      styles.dateBoxText,
+                      {fontSize: FontSize.SmallText},
+                    ]}>
                     {EndDate}
                   </Text>
 
-                  <AntDesign name="calendar" size={18} color="#000" />
+                  <AntDesign name="calendar" size={hp(19)} color="#000" />
                 </TouchableOpacity>
               </View>
             )}
@@ -267,7 +277,7 @@ const styles = StyleSheet.create({
   },
   sortTitle: {
     textAlign: 'center',
-    fontSize: hp(16),
+    fontSize: FontSize.MediumText,
     fontFamily: FONTS.TEXT_SEMI_BOLD,
     marginVertical: hp(5),
   },
@@ -295,7 +305,7 @@ const styles = StyleSheet.create({
   dateBoxText: {
     fontFamily: FONTS.TEXT_REGULAR,
     color: colors.dark,
-    fontSize: hp(14),
+    fontSize: FontSize.MediumText,
   },
 
   modalStyle: {
@@ -313,8 +323,8 @@ const styles = StyleSheet.create({
     width: '100%',
     borderTopRightRadius: 10,
     borderTopLeftRadius: 10,
-    backgroundColor: colors.bootomHeaderBg,
-    borderBottomColor: '#e4e4e4',
+    backgroundColor: colors.light,
+    borderBottomColor: colors.bootomHeaderBg,
     borderBottomWidth: 1,
     paddingVertical: 5,
   },
@@ -337,7 +347,7 @@ const styles = StyleSheet.create({
   },
 
   dateTitleText: {
-    fontSize: 16,
+    fontSize: FontSize.MediumText,
     fontFamily: FONTS.TEXT_REGULAR,
     color: colors.dark,
     textTransform: 'uppercase',

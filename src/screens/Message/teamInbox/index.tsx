@@ -5,7 +5,7 @@ import React, {useState, useRef, useEffect, useCallback} from 'react';
 //@ts-ignore
 // import SwipeActionList from 'react-native-swipe-action-list';
 import {SwipeListView} from 'react-native-swipe-list-view';
-import MessageHeader from '../component/MessageHeader';
+import MessageHeader from '../component/headers/MessageHeader';
 import themedStyles from './styles';
 import HiddenItemWithActions from '../component/cardOptions/HiddenItemWithActions';
 
@@ -20,6 +20,7 @@ import {useSelector} from 'react-redux';
 import {StoreState} from 'src/@types/store';
 import ListLoader from 'src/components/common/ListLoader';
 import {queryClient} from 'src/index';
+import useScrollAnimation from 'src/Hooks/useScrollAnimation';
 
 const TeamInbox = ({navigation, route}: any) => {
   const {
@@ -38,6 +39,8 @@ const TeamInbox = ({navigation, route}: any) => {
     'closed',
   ]);
   const [selectedIndex, setselectedIndex] = useState(0);
+
+  const {animatedValue, scrollEvent, scrollEventEnd} = useScrollAnimation();
 
   //filter state
   const [filter, setFilter] = useState({
@@ -158,12 +161,16 @@ const TeamInbox = ({navigation, route}: any) => {
           HandlePress={() => navigation.goBack()}
           filter={filter}
           setFilter={setFilter}
+          animatedValue={animatedValue}
         />
 
         {!isLoading ? (
           <SwipeListView
             useFlatList={true}
             data={sharedData}
+            onScroll={scrollEvent}
+            onScrollEndDrag={scrollEventEnd}
+            scrollEventThrottle={16}
             //@ts-ignore
             onEndReached={fetchNextPage}
             onEndReachedThreshold={3}

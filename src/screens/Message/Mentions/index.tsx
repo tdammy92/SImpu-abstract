@@ -16,7 +16,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 //@ts-ignore
 // import SwipeActionList from 'react-native-swipe-action-list';
 import {SwipeListView} from 'react-native-swipe-list-view';
-import MessageHeader from '../component/MessageHeader';
+import MessageHeader from '../component/headers/MessageHeader';
 import themedStyles from './styles';
 
 import EmptyInbox from 'src/components/common/EmptyInbox';
@@ -31,6 +31,7 @@ import {useSelector} from 'react-redux';
 import {StoreState} from 'src/@types/store';
 import ListLoader from 'src/components/common/ListLoader';
 import {queryClient} from 'src/index';
+import useScrollAnimation from 'src/Hooks/useScrollAnimation';
 
 const Mentions = ({navigation}: any) => {
   const {profile, token} = useSelector((state: StoreState) => state.user);
@@ -49,6 +50,8 @@ const Mentions = ({navigation}: any) => {
 
   const [Message, setMessage] = useState(() => dummyData);
 
+  const {animatedValue, scrollEvent, scrollEventEnd} = useScrollAnimation();
+
   const {
     data: mentionThreadData,
     fetchNextPage,
@@ -57,7 +60,7 @@ const Mentions = ({navigation}: any) => {
     isLoading,
   } = useMessageThreads(
     {
-      filter: 'mention',
+      filter: 'mentions',
       sort: filter?.sortbyFilter,
       start_date: filter?.startDate,
       end_date: filter?.endDate,
@@ -163,12 +166,13 @@ const Mentions = ({navigation}: any) => {
       <View style={{height: '100%'}}>
         <MessageHeader
           name="Mentions"
-          openSortSheet={openSheet}
-          closeSortSheet={openSheet}
-          isSocial={false}
-          isTeamInbox={false}
+          // openSortSheet={openSheet}
+          // closeSortSheet={openSheet}
+          // isSocial={false}
+          // isTeamInbox={false}
           filter={filter}
           setFilter={setFilter}
+          animatedValue={animatedValue}
         />
 
         {!isLoading ? (
@@ -176,6 +180,9 @@ const Mentions = ({navigation}: any) => {
             data={mentionData}
             useAnimatedList={true}
             useFlatList={true}
+            onScroll={scrollEvent}
+            onScrollEndDrag={scrollEventEnd}
+            scrollEventThrottle={16}
             //@ts-ignore
             onEndReached={fetchNextPage}
             onEndReachedThreshold={3}

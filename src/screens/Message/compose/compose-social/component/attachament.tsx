@@ -11,17 +11,19 @@ import {getFileType, hp, wp} from 'src/utils';
 //@ts-ignore
 import * as mime from 'react-native-mime-types';
 import prettyBytes from 'pretty-bytes';
-import {FONTS, colors} from 'src/constants';
+import {FONTS, FontSize, colors} from 'src/constants';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {audioType, videoType, docType, imageType} from 'src/constants';
-import AttachmentIcon from '../../../component/message/AttachmentIcon';
+import AttachmentIcon from 'src/components/common/AttachmentIcon';
 
 const Attachament = ({attachmentDetials, uploading, removeAttachment}: any) => {
-  //   console.log('details', JSON.stringify(attachmentDetials, null, 2));
+  // console.log('details', JSON.stringify(attachmentDetials, null, 2));
 
   const type = useMemo(() => {
     return mime.extension(attachmentDetials?.type);
   }, [attachmentDetials]);
+
+  // console.log('tipe form mimitype', type);
 
   return (
     <View style={styles.container}>
@@ -39,7 +41,7 @@ const Attachament = ({attachmentDetials, uploading, removeAttachment}: any) => {
             />
           </>
         )}
-        {docType.includes(type) && (
+        {[...docType, ...videoType, ...audioType].includes(type) && (
           <>
             <View
               style={{
@@ -55,16 +57,23 @@ const Attachament = ({attachmentDetials, uploading, removeAttachment}: any) => {
                 color={colors.darkGray}
                 style={{position: 'absolute'}}
               />
-              <AntDesign name="file1" color={colors.secondaryBg} size={25} />
+              {/* <AntDesign name="file1" color={colors.secondaryBg} size={25} />
+               */}
+
+              <AttachmentIcon
+                fileExetension={type}
+                color={colors.secondaryBgDark}
+                size={hp(22)}
+              />
             </View>
           </>
         )}
       </View>
       <View style={{marginLeft: wp(5)}}>
         <Text style={styles.nameText}>{attachmentDetials?.name}</Text>
-        {/* <Text style={styles.sizeText}>
+        <Text style={styles.sizeText}>
           {prettyBytes(attachmentDetials?.size)}
-        </Text> */}
+        </Text>
       </View>
 
       <TouchableOpacity
@@ -111,12 +120,12 @@ const styles = StyleSheet.create({
   nameText: {
     fontFamily: FONTS.TEXT_REGULAR,
     color: colors.dark,
-    fontSize: hp(16),
-    paddingVertical: hp(5),
+    fontSize: FontSize.MediumText,
+    // paddingVertical: hp(5),
   },
   sizeText: {
     fontFamily: FONTS.TEXT_REGULAR,
     color: colors.dark,
-    fontSize: hp(16),
+    fontSize: FontSize.SmallText,
   },
 });

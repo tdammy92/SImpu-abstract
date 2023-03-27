@@ -10,7 +10,7 @@ import React, {useState, useRef, useEffect, useCallback} from 'react';
 //@ts-ignore
 // import SwipeActionList from 'react-native-swipe-action-list';
 import {SwipeListView} from 'react-native-swipe-list-view';
-import MessageHeader from '../component/MessageHeader';
+import MessageHeader from '../component/headers/MessageHeader';
 import themedStyles from './styles';
 import HiddenItemWithActions from '../component/cardOptions/HiddenItemWithActions';
 
@@ -25,6 +25,7 @@ import {useSelector} from 'react-redux';
 import {StoreState} from 'src/@types/store';
 import ListLoader from 'src/components/common/ListLoader';
 import {queryClient} from 'src/index';
+import useScrollAnimation from 'src/Hooks/useScrollAnimation';
 
 const Social = ({navigation}: any) => {
   const SortSheetRef = useRef<any>(null);
@@ -41,6 +42,8 @@ const Social = ({navigation}: any) => {
     'snoozed',
   ]);
   const [selectedIndex, setselectedIndex] = useState(0);
+
+  const {animatedValue, scrollEvent, scrollEventEnd} = useScrollAnimation();
 
   //filter state
   const [filter, setFilter] = useState({
@@ -172,11 +175,12 @@ const Social = ({navigation}: any) => {
           messageOption={messageOption}
           handleSelectedIndex={handleSelectedIndex}
           selectedIndex={selectedIndex}
-          openSortSheet={openSheet}
-          closeSortSheet={closeSheet}
+          // openSortSheet={openSheet}
+          // closeSortSheet={closeSheet}
           shoMessageOptions={true}
           filter={filter}
           setFilter={setFilter}
+          animatedValue={animatedValue}
         />
 
         {!isLoading ? (
@@ -185,6 +189,9 @@ const Social = ({navigation}: any) => {
             useAnimatedList={true}
             renderItem={renderItem}
             useFlatList={true}
+            onScroll={scrollEvent}
+            onScrollEndDrag={scrollEventEnd}
+            scrollEventThrottle={16}
             //@ts-ignore
             onEndReached={fetchNextPage}
             onEndReachedThreshold={3}

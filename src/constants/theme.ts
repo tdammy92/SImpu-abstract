@@ -10,4 +10,7 @@ export default {
   darkGray: '#959898',
   inputBg: '#6D7580',
   bootomHeaderBg: '#f5f5f5',
+  onlineBg: '#287D3C',
+  onlineBgLight: '#5ACA75',
+  offlineBg: '#EB5757',
 };

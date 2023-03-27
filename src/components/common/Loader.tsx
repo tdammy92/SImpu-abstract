@@ -22,6 +22,8 @@ import Animated, {
 } from 'react-native-reanimated';
 import {colors} from 'src/constants';
 
+const iconColor = 'rgba(255,255,255,0.9)';
+
 const Loader = () => {
   const opacity = useSharedValue(0.9);
   const scale = useSharedValue(0.9);
@@ -50,18 +52,10 @@ const Loader = () => {
           exiting={SlideOutLeft}
           style={[StyleSheet.absoluteFill, styles.container]}>
           <View style={{position: 'absolute', top: 63, right: 45}}>
-            <Feather
-              name="message-square"
-              size={50}
-              color="rgba(255,255,255,0.9)"
-            />
+            <Feather name="message-square" size={50} color={iconColor} />
           </View>
           <View style={{position: 'absolute', bottom: 63, left: 45}}>
-            <Feather
-              name="message-circle"
-              size={40}
-              color="rgba(255,255,255,0.9)"
-            />
+            <Feather name="message-circle" size={40} color={iconColor} />
           </View>
 
           {/* simpu logo animation */}
@@ -73,11 +67,11 @@ const Loader = () => {
             <MaterialCommunityIcons
               name="android-messages"
               size={50}
-              color="rgba(255,255,255,0.9)"
+              color={iconColor}
             />
           </View>
           <View style={{position: 'absolute', bottom: 180, right: 45}}>
-            <AntDesign name="mail" size={40} color="rgba(255,255,255,0.9)" />
+            <AntDesign name="mail" size={40} color={iconColor} />
           </View>
         </Animated.View>
       )}

@@ -33,13 +33,22 @@ import Entypo from 'react-native-vector-icons/Entypo';
 type Props = {
   ref: RBSheetProps;
   handleReply: any;
+  handleReplyAll: any;
   handleForward: any;
+  handleMessageId: any;
+  showMoreReplyOptions?: boolean;
 };
 
 const {height, width} = Dimensions.get('screen');
 
 const OptionSheet = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
-  const {handleReply, handleForward} = props;
+  const {
+    handleReply,
+    handleReplyAll,
+    handleForward,
+    handleMessageId,
+    showMoreReplyOptions,
+  } = props;
 
   const {profile, user, token} = useSelector(
     (state: StoreState) => state?.user,
@@ -53,7 +62,7 @@ const OptionSheet = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
       {/* @ts-ignore */}
       <RBSheet
         ref={ref}
-        height={height * 0.3}
+        height={height * 0.35}
         openDuration={250}
         closeOnDragDown
         customStyles={{
@@ -84,12 +93,29 @@ const OptionSheet = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
               />
               <Text style={styles.optionText}>Reply</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.btnOptionWrapper}
-              onPress={() => {}}>
-              <Entypo name="reply-all" color={colors.dark} size={hp(22)} />
-              <Text style={styles.optionText}>Reply all</Text>
-            </TouchableOpacity>
+            {!!showMoreReplyOptions && (
+              <TouchableOpacity
+                style={styles.btnOptionWrapper}
+                disabled={!showMoreReplyOptions}
+                onPress={handleReplyAll}>
+                <Entypo
+                  name="reply-all"
+                  color={showMoreReplyOptions ? colors.dark : colors.darkGray}
+                  size={hp(22)}
+                />
+                <Text
+                  style={[
+                    styles.optionText,
+                    {
+                      color: showMoreReplyOptions
+                        ? colors.dark
+                        : colors.darkGray,
+                    },
+                  ]}>
+                  Reply all
+                </Text>
+              </TouchableOpacity>
+            )}
             <TouchableOpacity
               style={[styles.btnOptionWrapper]}
               onPress={handleForward}>
@@ -107,6 +133,7 @@ const OptionSheet = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
+              onPress={handleMessageId}
               style={[
                 styles.btnOptionWrapper,
                 {borderBottomWidth: 0, paddingBottom: hp(15)},

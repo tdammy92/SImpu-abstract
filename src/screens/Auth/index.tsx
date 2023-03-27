@@ -1,5 +1,5 @@
 import {View, Linking, TouchableOpacity} from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {Text} from '@ui-kitten/components';
 import {useDispatch, useSelector} from 'react-redux';
 import {Formik} from 'formik';
@@ -24,9 +24,9 @@ import {
 } from 'src/store/user/userReducer';
 import {showLoader, hideLoader} from 'src/store/Loader/index';
 import {addOrganisation} from 'src/store/organisation/organisationReducer';
-import {colors, FONTS} from 'src/constants';
+import {colors, FONTS, FontSize} from 'src/constants';
 import {loginUser} from 'src/services/query/auth';
-import AppModal from 'src/components/common/Modal';
+import AppModal from 'src/components/common/AppModal';
 import {useProfile} from 'src/services/query/queries';
 import Loader from 'src/components/common/Loader';
 import {connect} from 'src/services/notification/pusher';
@@ -35,8 +35,9 @@ import {requestNotificationType} from 'src/@types/inbox';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {resquestFcmPermission} from 'src/services/Firebase/firebase';
 import useDeviceDetails from 'src/Hooks/useDeviceDetails';
-import {registerDeviceNotification} from 'src/services/query/notification';
+import {registerDeviceNotification} from 'src/services/mutations/notification';
 import {addDevice} from 'src/store/device/deviceReducer';
+import Prompt from 'src/components/common/Prompt';
 
 // inital values
 const loginInfo = {
@@ -56,6 +57,9 @@ const Login = ({navigation}: any) => {
   const DeviceDetails = useDeviceDetails();
   const {token} = useSelector((state: StoreState) => state.user);
   const {Isloading} = useSelector((state: StoreState) => state.loader);
+  const emailInputRef = useRef(null);
+  const passwordInputRef = useRef(null);
+  const [showError, setshowError] = useState<boolean>(false);
 
   //login user mutation
   const loginMutation = useMutation(loginUser, {
@@ -64,6 +68,7 @@ const Login = ({navigation}: any) => {
     },
     onError(error, variables, context) {
       dispatch(hideLoader());
+      setshowError(true);
       // console.log('error from login mutation', JSON.stringify(error, null, 2));
     },
   });
@@ -162,6 +167,36 @@ const Login = ({navigation}: any) => {
     // return <Loader />;
   }
 
+  // const handleKeyDown = (e: any): void => {
+  //   const key = e?.nativeEvent?.key;
+  //   // console.log('key from key press', key);
+
+  //   // if (key === 'Enter') {
+  //   //   console.log('next key was pressed');
+  //   // }
+  // };
+
+  const handleNext = () => {
+    // console.log('this input filed closed fired');
+
+    if (passwordInputRef?.current) {
+      //@ts-ignore
+      passwordInputRef?.current?.focus();
+    }
+  };
+  const handleDone = () => {
+    // console.log('this input password done');
+
+    if (passwordInputRef?.current) {
+      //@ts-ignore
+      // passwordInputRef?.current?.focus();
+    }
+  };
+
+  function closeModal() {
+    setshowError(false);
+  }
+
   return (
     <View style={styles.container}>
       <KeyboardAwareScrollView>
@@ -169,7 +204,7 @@ const Login = ({navigation}: any) => {
           <View style={styles.topContainer}>
             <Text style={styles.headerText}>Login</Text>
             <Text style={styles.InfoText}>
-              Enter your email address and password to access your account
+              Enter your email address and password to access your account.
             </Text>
           </View>
           <View style={styles.btnContainer}>
@@ -191,21 +226,36 @@ const Login = ({navigation}: any) => {
                       <AuthInput
                         label="Email"
                         type="email"
+                        ref={emailInputRef}
                         value={email}
                         onChangeText={handleChange('email')}
                         keyboardType="email-address"
+                        returnKeyType="next"
+                        returnKeyLabel="next"
+                        enterKeyHint="next"
+                        enableReturnKeyAutomatically={true}
+                        // onKeyPress={handleKeyDown}
+                        handleNext={handleNext}
                         error={errors.email && touched.email && errors.email}
                       />
 
                       <View style={{height: 7}} />
                       <AuthInput
                         label="Password"
+                        ref={passwordInputRef}
                         error={
                           errors.password && touched.password && errors.password
                         }
                         value={password}
+                        // onKeyPress={handleKeyDown}
                         onChangeText={handleChange('password')}
+                        onEn
                         isPassword={true}
+                        returnKeyType="done"
+                        returnKeyLabel="done"
+                        enterKeyHint="done"
+                        handleDone={handleDone}
+                        enableReturnKeyAutomatically={true}
                       />
 
                       <View
@@ -216,15 +266,16 @@ const Login = ({navigation}: any) => {
                           alignItems: 'flex-end',
                         }}>
                         <TouchableOpacity
-                          style={{width: '40%'}}
+                          style={{width: '50%'}}
                           onPress={() =>
                             navigation.navigate(SCREEN_NAME.forgotPassword)
                           }>
                           <Text
                             style={{
                               textAlign: 'right',
-                              color: `${colors.secondaryBg}`,
+                              color: colors.secondaryBg,
                               fontFamily: FONTS.TEXT_REGULAR,
+                              fontSize: FontSize.MediumText,
                             }}>
                             Forgot Password?
                           </Text>
@@ -250,21 +301,19 @@ const Login = ({navigation}: any) => {
         </View>
       </KeyboardAwareScrollView>
 
-      {loginMutation?.isError && (
-        <AppModal
-          btnTitle="Close"
-          //@ts-ignore
-          message={loginMutation?.error ?? 'Unable to login'}
-          showModal={loginMutation.isError}
-          Icon={() => (
-            <MaterialIcons
-              name="error-outline"
-              size={60}
-              color={colors.secondaryBg}
-            />
-          )}
-        />
-      )}
+      <Prompt
+        //@ts-ignore
+        message={loginMutation?.error ?? 'Unable to login'}
+        closeModal={closeModal}
+        showModal={showError}
+        Icon={() => (
+          <MaterialIcons
+            name="error-outline"
+            size={hp(60)}
+            color={colors.secondaryBg}
+          />
+        )}
+      />
     </View>
   );
 };

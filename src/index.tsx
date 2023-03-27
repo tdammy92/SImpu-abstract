@@ -1,9 +1,10 @@
-import React, {useCallback, useEffect, useRef} from 'react';
+import React, {createRef, useCallback, useEffect, useRef} from 'react';
 import {LogBox, Linking, StatusBar, Platform} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 import * as eva from '@eva-design/eva';
 import {
+  DrawerActions,
   NavigationContainer,
   NavigationContainerRef,
 } from '@react-navigation/native';
@@ -35,14 +36,28 @@ export const queryClient = new QueryClient({
 
 export const pusher = Pusher.getInstance();
 
+// const navigationRef =create;
+
+// export const navigationRef = createRef();
+// export function openDrawer() {
+//   //@ts-ignore
+//   navigationRef?.current?.dispatch(DrawerActions.openDrawer());
+// }
+
 export default (): JSX.Element => {
   const navigationRef =
     useRef<NavigationContainerRef<MainStackParamList>>(null);
+
   const routeNameRef = useRef<string>();
+
+  //@ts-ignore
+  const ALART_PADDING_TOP = StatusBar.currentHeight * 2;
 
   LogBox.ignoreAllLogs();
 
   const onReady = useCallback(() => {
+    //please remove ts ignore after testing
+    //@ts-ignore
     routeNameRef.current = navigationRef.current?.getCurrentRoute()?.name;
   }, [routeNameRef, navigationRef]);
 
@@ -56,6 +71,8 @@ export default (): JSX.Element => {
       resquestFcmPermission();
     });
   }, []);
+
+  console.log('statusbar height', ALART_PADDING_TOP);
   return (
     <>
       <GestureHandlerRootView style={{flex: 1}}>
@@ -81,7 +98,12 @@ export default (): JSX.Element => {
             </PersistGate>
           </QueryClientProvider>
         </Provider>
-        <FlashMessage floating={true} />
+        <FlashMessage
+          statusBarHeight={ALART_PADDING_TOP}
+          floating={true}
+          position={'center'}
+          style={{width: '80%'}}
+        />
       </GestureHandlerRootView>
     </>
   );

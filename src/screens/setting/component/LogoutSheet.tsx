@@ -5,7 +5,7 @@ import RBSheet, {RBSheetProps} from 'react-native-raw-bottom-sheet';
 import {hp, wp} from 'src/utils';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import {FONTS, colors} from 'src/constants';
+import {FONTS, FontSize, colors} from 'src/constants';
 
 type Props = {
   ref: RBSheetProps;
@@ -33,7 +33,7 @@ const LogoutSheet = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
         container: {
           borderTopLeftRadius: hp(10),
           borderTopRightRadius: hp(10),
-          backgroundColor: 'rgba(255,255,255,0.9)',
+          backgroundColor: colors.light,
           height: SheetHeight,
         },
       }}>
@@ -61,33 +61,33 @@ export default LogoutSheet;
 const styles = StyleSheet.create({
   sortContainer: {
     width: '100%',
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
   },
 
   signOutContent: {
     width: '100%',
-
+    paddingHorizontal: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
   signOutText: {
     textAlign: 'center',
-    fontSize: hp(18),
+    fontSize: FontSize.BigText,
     fontFamily: FONTS.TEXT_SEMI_BOLD,
-
     color: colors.dark,
+    paddingVertical: hp(5),
   },
 
   messageText: {
     marginTop: 10,
-    fontSize: hp(16),
+    fontSize: FontSize.MediumText,
     fontFamily: FONTS.TEXT_REGULAR,
     color: colors.dark,
   },
 
   confirmBtn: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
+    backgroundColor: colors.bootomHeaderBg,
     width: '100%',
     marginVertical: hp(15),
     paddingVertical: hp(8),
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   confirmText: {
     color: colors.dark,
     fontFamily: FONTS.TEXT_SEMI_BOLD,
-    fontSize: hp(18),
+    fontSize: FontSize.MediumText,
     marginLeft: wp(15),
   },
 });

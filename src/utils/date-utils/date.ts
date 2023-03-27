@@ -13,7 +13,7 @@ export const messgeTimeFormater = (time: string) => {
     const currrentDate = new Date();
     const olDDate = new Date(time);
 
-    let DateDiff = currrentDate.getTime() - olDDate.getTime();
+    let DateDiff = currrentDate?.getTime() - olDDate?.getTime();
     let msDays = 1000 * 3600 * 24;
     let DaysPassed = DateDiff / msDays;
 
@@ -25,7 +25,7 @@ export const messgeTimeFormater = (time: string) => {
             includeSeconds: true,
           });
 
-    return TimePased.replace(/about/g, '');
+    return TimePased?.replace(/about/g, '');
   } catch (error) {
     console.log(error);
   }
@@ -48,7 +48,7 @@ export const notificationDateFormat = (time: string) => {
 
 //get the date of a specific day ago
 export const getDateXDaysAgo = (numOfDays: any, date = new Date()) => {
-  const daysAgo = new Date(date.getTime());
-  daysAgo.setDate(date.getDate() - numOfDays);
+  const daysAgo = new Date(date?.getTime());
+  daysAgo?.setDate(date.getDate() - numOfDays);
   return daysAgo;
 };

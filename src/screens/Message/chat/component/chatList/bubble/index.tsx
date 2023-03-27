@@ -41,7 +41,7 @@ import {
 //@ts-ignore
 import UserAvatar from 'react-native-user-avatar';
 import Modal from 'react-native-modal';
-import Quoted from './quoted';
+import Quoted from '../../../../Quoted/quoted';
 import {addReply} from 'src/store/reply/replyReducer';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -51,7 +51,7 @@ import {trimText} from 'src/utils/string-utils/string';
 
 const {height, width} = Dimensions.get('screen');
 
-const ChatBubble = ({item, id, isGroup}: any): JSX.Element => {
+const ChatBubble = ({item, id, isGroup, scrollToMessage}: any): JSX.Element => {
   const {author_id, author, entity, created_datetime} = item;
   const dispatch = useDispatch();
 
@@ -95,6 +95,7 @@ const ChatBubble = ({item, id, isGroup}: any): JSX.Element => {
   };
 
   const CloseForward = () => {
+    // console.log('modal close got clicked');
     setshowForwardModal(false);
     dispatch(removeForward());
   };
@@ -192,6 +193,8 @@ const ChatBubble = ({item, id, isGroup}: any): JSX.Element => {
                     item={item?.quoted}
                     isUser={isUser}
                     isGroup={isGroup}
+                    isSocials={true}
+                    scrollToMessage={scrollToMessage}
                   />
                 )}
                 {/* message componentx */}

@@ -9,6 +9,8 @@ import {
   TouchableHighlight,
   Image,
   RefreshControl,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
 } from 'react-native';
 import {StyledComponentProps, Text, useStyleSheet} from '@ui-kitten/components';
 import React, {useState, useRef, useEffect, useCallback, useMemo} from 'react';
@@ -17,7 +19,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 //@ts-ignore
 // import SwipeActionList from 'react-native-swipe-action-list';
 import {SwipeListView} from 'react-native-swipe-list-view';
-import MessageHeader from '../component/MessageHeader';
+import MessageHeader from '../component/headers/MessageHeader';
 import themedStyles from './styles';
 
 import EmptyInbox from 'src/components/common/EmptyInbox';
@@ -30,10 +32,16 @@ import {useMessageThreads} from 'src/services/query/queries';
 import {StoreState} from 'src/@types/store';
 import ListLoader from 'src/components/common/ListLoader';
 import {queryClient} from 'src/index';
+import {HEADER_HEIGHT} from '../component/headers/utils';
+import SmallHeader from '../component/headers/smallHeader';
+import {colors} from 'src/constants';
+import useScrollAnimation from 'src/Hooks/useScrollAnimation';
 
 const Unassigned = ({navigation}: any) => {
   const styles = useStyleSheet(themedStyles);
   const [Message, setMessage] = useState(() => dummyData);
+
+  const {animatedValue, scrollEvent, scrollEventEnd} = useScrollAnimation();
 
   //filter state
   const [filter, setFilter] = useState({
@@ -143,17 +151,16 @@ const Unassigned = ({navigation}: any) => {
     );
   };
 
-  // console.log('filter Unassigned', filter);
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={{height: '100%'}}>
         <MessageHeader
           name="Unassigned"
-          isSocial={false}
-          isTeamInbox={false}
+          // isSocial={false}
+          // isTeamInbox={false}
           filter={filter}
           setFilter={setFilter}
+          animatedValue={animatedValue}
         />
 
         {!isLoading ? (
@@ -161,6 +168,9 @@ const Unassigned = ({navigation}: any) => {
             data={unassignedData ?? []}
             useAnimatedList={true}
             useFlatList={true}
+            onScroll={scrollEvent}
+            onScrollEndDrag={scrollEventEnd}
+            scrollEventThrottle={16}
             renderItem={renderItem}
             contentContainerStyle={{
               paddingBottom: hp(40),

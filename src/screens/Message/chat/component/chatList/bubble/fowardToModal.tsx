@@ -31,6 +31,7 @@ import {useSearchCustomers} from 'src/services/query/queries';
 import {useMutation, useQueryClient} from 'react-query';
 import {forwardMessageSocials} from 'src/services/mutations/inbox';
 import CustomerLoader from 'src/components/Loaders/customerLoader';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 const {height, width} = Dimensions.get('screen');
 
@@ -119,15 +120,17 @@ const ForwardModal = ({closeFowardModal, showForwardModal}: any) => {
     <Modal
       isVisible={showForwardModal}
       statusBarTranslucent={true}
+      onBackdropPress={closeFowardModal}
+
       // style={[StyleSheet.absoluteFillObject]}
     >
       <View style={styles.ModalContainer}>
         <TouchableOpacity
           style={{
             position: 'absolute',
-            right: 10,
-            top: 5,
-            padding: hp(5),
+            right: hp(10),
+            top: hp(10),
+            padding: hp(10),
             // backgroundColor: 'red',
           }}
           onPress={closeFowardModal}>
@@ -139,7 +142,7 @@ const ForwardModal = ({closeFowardModal, showForwardModal}: any) => {
           />
         </TouchableOpacity>
         <View style={styles.HeadingWrapper}>
-          <Text style={styles.searchTitle}>Forward to...</Text>
+          <Text style={styles.searchTitle}>Forward </Text>
           <View
             style={{
               borderLeftColor: colors.secondaryBg,
@@ -148,7 +151,7 @@ const ForwardModal = ({closeFowardModal, showForwardModal}: any) => {
               marginVertical: hp(5),
             }}>
             <Text
-              style={{fontSize: FontSize.SmallText, color: colors.darkGray}}>
+              style={{fontSize: FontSize.MediumText, color: colors.darkGray}}>
               {ForwardItem?.author?.platform_name ??
                 ForwardItem?.author?.platform_nick}
               :
@@ -174,7 +177,7 @@ const ForwardModal = ({closeFowardModal, showForwardModal}: any) => {
                   )}
                 </View>
               )}
-              <Text style={{fontSize: FontSize.MediumText, color: colors.dark}}>
+              <Text style={{fontSize: FontSize.SmallText, color: colors.dark}}>
                 {trimText(ForwardItem?.entity?.content?.body ?? '', 30)}
               </Text>
             </View>
@@ -211,8 +214,8 @@ const ForwardModal = ({closeFowardModal, showForwardModal}: any) => {
                     justifyContent: 'space-between',
                     paddingVertical: hp(7),
                     paddingHorizontal: hp(10),
-                    borderBottomColor: colors.darkGray,
-                    borderBottomWidth: 0.8,
+                    borderBottomColor: colors.lightGray,
+                    borderBottomWidth: 0.6,
                   }}>
                   <View
                     style={{
@@ -240,7 +243,23 @@ const ForwardModal = ({closeFowardModal, showForwardModal}: any) => {
                       <Text>{contact?.platform_nick}</Text>
                     </View>
                   </View>
-                  <View style={{}}>
+
+                  <View>
+                    {SelectedContact === contact?.platform_nick ? (
+                      <AntDesign
+                        name="checkcircleo"
+                        size={hp(18)}
+                        color={colors.secondaryBg}
+                      />
+                    ) : (
+                      <Entypo
+                        name="circle"
+                        size={hp(18)}
+                        color={colors.secondaryBg}
+                      />
+                    )}
+                  </View>
+                  {/* <View style={{}}>
                     <AntDesign
                       name={
                         SelectedContact === contact?.platform_nick
@@ -255,7 +274,7 @@ const ForwardModal = ({closeFowardModal, showForwardModal}: any) => {
                       size={hp(18)}
                       style={{marginTop: hp(3)}}
                     />
-                  </View>
+                  </View> */}
                 </TouchableOpacity>
               );
             })}
@@ -318,7 +337,7 @@ const styles = StyleSheet.create({
   },
 
   searchTitle: {
-    fontSize: FontSize.BigText,
+    fontSize: FontSize.MediumText,
     fontFamily: FONTS.TEXT_SEMI_BOLD,
     color: colors.dark,
     marginTop: hp(10),
@@ -329,28 +348,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: colors.secondaryBg,
-    borderRadius: hp(15),
+    borderRadius: hp(10),
     paddingHorizontal: hp(10),
     marginVertical: hp(5),
     height: hp(50),
   },
   searchInput: {
     marginLeft: wp(10),
-    fontSize: FontSize.BigText,
+    color: colors.dark,
+    fontSize: FontSize.MediumText,
   },
   contactListContainer: {
-    borderColor: colors.secondaryBg,
-    borderWidth: 1,
+    // borderColor: colors.secondaryBg,
+    // borderWidth: 1,
     borderRadius: hp(15),
     maxHeight: hp(height * 0.27),
   },
   forwardBtn: {
     //     backgroundColor: colors.secondaryBg,
-    paddingVertical: hp(15),
+    paddingVertical: hp(10),
     marginVertical: hp(10),
     marginTop: hp(15),
     alignItems: 'center',
-    borderRadius: hp(15),
+    borderRadius: hp(10),
   },
   forwardBtnText: {
     fontSize: FontSize.MediumText,

@@ -16,34 +16,89 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Octicons from 'react-native-vector-icons/Octicons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
+//@ts-ignore
+import UserAvatar from 'react-native-user-avatar';
 
 import styles from './styles';
 import {ScrollView} from 'react-native-gesture-handler';
-import {useSearchCustomers, useSearchThreads} from 'src/services/query/queries';
-import {colors} from 'src/constants';
-import {useSelector} from 'react-redux';
+import {
+  useAdvanvedSearchThreads,
+  useSearchCustomers,
+  useSearchThreads,
+} from 'src/services/query/queries';
+import {FONTS, FontSize, colors} from 'src/constants';
+import {useDispatch, useSelector} from 'react-redux';
 import {StoreState} from 'src/@types/store';
 import useDebounce from 'src/Hooks/useDebounce';
 import SearchThread from './component/SearchedThread';
 import SearchCustomer from './component/SearchCustomer';
 import {hp, wp} from 'src/utils';
-import Animated, {FlipInXUp, FlipOutXUp} from 'react-native-reanimated';
+import Animated, {
+  FlipInXUp,
+  FlipOutXUp,
+  ZoomIn,
+  ZoomOut,
+} from 'react-native-reanimated';
+import {ThreadType, customerType, filterType} from 'src/@types/inbox';
+import {
+  addSelectedFilter,
+  removeSelectedFilter,
+} from 'src/store/search/filterMessageReducer';
+import {removeEmoji} from 'src/utils/string-utils/string';
+import ChannelIcon from 'src/components/common/ChannelIcon';
+import Customer from './component/Customer';
+
+const getType = (
+  type: filterType | null,
+  value: string | null | undefined,
+): any => {
+  switch (type) {
+    case 'Email:to':
+      return {to: [value]};
+    case 'Email:from':
+      return {from: [value]};
+    case 'Email:cc':
+      return {cc: [value]};
+    case 'Email:bcc':
+      return {bcc: [value]};
+    case 'Email:subject':
+      return {subject: value};
+    // case 'Recipient':
+    //   return {recipeint: value};
+    case 'Conversation ID':
+      return {uuid: [value]};
+    default:
+      return {};
+  }
+};
 
 const Search = (props: any) => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+
   const {profile, token} = useSelector((state: StoreState) => state.user);
   const organisation = useSelector(
     (state: StoreState) => state.organisation.details,
+  );
+
+  const {filterMessageType, selectedFilter} = useSelector(
+    (state: StoreState) => state.filterMessageBy,
   );
 
   const inputRef = useRef<null>(null);
 
   const [searchValue, setsearchValue] = useState('');
   const [ShowSearchOptions, setsShowSearchOptions] = useState(true);
-  const [searchoption, setsearchoption] = useState('');
   const [ShowSearchModal, setsShowSearchModal] = useState(false);
 
+  const [SelectedCustomer, setSelectedCustomer] = useState<customerType | null>(
+    null,
+  );
+
   //state for searched conversation
+  const [AdvancedSearchedThreadData, setAdvancedSearchedThreadData] = useState(
+    [],
+  );
   const [searchThreadData, setSearchThreadData] = useState([]);
   const [searchCustomerData, setSearchCustomerData] = useState([]);
 
@@ -53,8 +108,12 @@ const Search = (props: any) => {
   //handle Input modal Close
   const closeInpuPop = () => {
     setsShowSearchModal(false);
-    setsearchoption('');
+
+    setSelectedCustomer(null);
+    dispatch(removeSelectedFilter());
     setsShowSearchOptions(true);
+
+    setAdvancedSearchedThreadData([]);
     //@ts-ignore
     inputRef.current.blur();
 
@@ -125,16 +184,51 @@ const Search = (props: any) => {
       },
     },
   );
+  //Advanced search thread query
+  const AdvancedSearchThreadQuery = useAdvanvedSearchThreads(
+    {
+      filterQuery: getType(
+        selectedFilter,
+        SelectedCustomer?.uuid || debounceValue,
+      ),
+      page: 1,
+      headers: {
+        Auth: token,
+        organisationId: organisation?.id,
+      },
+    },
 
-  //handle tag selection
-  const handleSelectedInput = (option: string) => {
-    setsearchoption(option);
-    // setsShowSearchOptions(false);
+    {
+      enabled: !!selectedFilter && (!!SelectedCustomer || !!debounceValue),
+      onSuccess(data: any, variables: any, context: any) {
+        //This snippet flattens the array
+        const searchThreadsResults = data?.pages
+          ?.map((res: any) => res?.threads?.map((r: any) => r))
+          .flat(2);
+
+        // console.log('1234damyy', JSON.stringify(searchThreadsResults, null, 2));
+
+        setAdvancedSearchedThreadData(searchThreadsResults);
+      },
+      onError(error: any, variables: any, context: any) {
+        console.log('post message error', error);
+        // messsageToast({message: 'Profile updated', type: 'success'});
+        //@ts-ignore
+        // messsageToast({message: `${error?.message}`, type: 'danger'});
+      },
+    },
+  );
+
+  // function to close and reset all selected and typed in fields
+  const closeSearchOption = () => {
+    setsShowSearchOptions(true);
+    setsearchValue('');
+    setSelectedCustomer(null);
+    dispatch(removeSelectedFilter());
   };
 
-  const closeSearchOption = () => {
-    setsearchoption('');
-    setsShowSearchOptions(true);
+  const selectCustomer = (customer: customerType) => {
+    setSelectedCustomer(customer);
     setsearchValue('');
   };
 
@@ -150,6 +244,25 @@ const Search = (props: any) => {
     //@ts-ignore
     inputRef.current.focus();
   }, []);
+
+  // console.log('filterBy', selectedFilter);
+
+  // console.log(
+  //   'Advanced search data',
+  //   JSON.stringify(AdvancedSearchedThreadData, null, 2),
+  // );
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', () => {
+      setsShowSearchModal(false);
+      setSelectedCustomer(null);
+      dispatch(removeSelectedFilter());
+      setsShowSearchOptions(true);
+      dispatch(removeSelectedFilter());
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
@@ -168,24 +281,46 @@ const Search = (props: any) => {
             </TouchableOpacity>
           )}
 
-          {searchoption !== '' && (
+          {/* slsected filter options */}
+          {!!selectedFilter && (
             <Animated.View
-              entering={FlipInXUp}
-              exiting={FlipOutXUp}
+              entering={ZoomIn}
+              exiting={ZoomOut}
               style={styles.selectedPill}>
-              <Text style={styles.selectedPillText}>{searchoption}</Text>
+              <Text style={styles.selectedPillText}>{selectedFilter}</Text>
+            </Animated.View>
+          )}
+
+          {/* Selected filter value */}
+          {!!selectedFilter && !!SelectedCustomer && (
+            <Animated.View
+              entering={ZoomIn}
+              exiting={ZoomOut}
+              style={[
+                styles.selectedPill,
+                {
+                  backgroundColor: 'transparent',
+                  borderWidth: 0.8,
+                  borderColor: colors.darkGray,
+                },
+              ]}>
+              <Text style={[styles.selectedPillText, {color: colors.dark}]}>
+                {SelectedCustomer?.platform_nick ??
+                  SelectedCustomer?.platform_name}
+              </Text>
             </Animated.View>
           )}
 
           <TextInput
             ref={inputRef}
+            editable={!SelectedCustomer}
             autoFocus={false}
             style={styles.input}
-            placeholder="Search..."
+            placeholder={!SelectedCustomer ? 'Search...' : ''}
             placeholderTextColor={colors.darkGray}
             onFocus={() => setsShowSearchModal(true)}
             value={searchValue}
-            onChangeText={text => setsearchValue(text.toLocaleLowerCase())}
+            onChangeText={text => setsearchValue(text)}
           />
 
           <TouchableOpacity onPress={closeSearchOption}>
@@ -196,7 +331,7 @@ const Search = (props: any) => {
         {/* message fillter options */}
         {ShowSearchModal && (
           <View style={styles.searchModalContainer}>
-            {ShowSearchOptions && (
+            {!selectedFilter && ShowSearchOptions && (
               <View style={styles.searchTop}>
                 <View
                   style={{
@@ -209,31 +344,16 @@ const Search = (props: any) => {
                 </View>
 
                 <View style={styles.pillContainer}>
-                  <TouchableOpacity
-                    style={styles.searchPill}
-                    onPress={() => handleSelectedInput('Email:to')}>
-                    <Text style={styles.pillText}>Email:to</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.searchPill}
-                    onPress={() => handleSelectedInput('Email:cc')}>
-                    <Text style={styles.pillText}>Email:cc</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.searchPill}
-                    onPress={() => handleSelectedInput('Email:bcc')}>
-                    <Text style={styles.pillText}>Email:bcc</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.searchPill}
-                    onPress={() => handleSelectedInput('Emai:subject')}>
-                    <Text style={styles.pillText}>Email:subject</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.searchPill}
-                    onPress={() => handleSelectedInput('Converstaion ID')}>
-                    <Text style={styles.pillText}>Conversation ID</Text>
-                  </TouchableOpacity>
+                  {filterMessageType?.map((item: filterType, index: number) => {
+                    return (
+                      <TouchableOpacity
+                        key={`${index}`}
+                        style={styles.searchPill}
+                        onPress={() => dispatch(addSelectedFilter(item))}>
+                        <Text style={styles.pillText}>{item}</Text>
+                      </TouchableOpacity>
+                    );
+                  })}
                 </View>
               </View>
             )}
@@ -241,8 +361,9 @@ const Search = (props: any) => {
             <Divider />
 
             {/* search list items */}
-            {!ShowSearchOptions && (
+            {!selectedFilter && !ShowSearchOptions && (
               <View style={styles.searchBottom}>
+                {/* customer search container */}
                 <View style={styles.peopleContainer}>
                   <View style={styles.sectionHeader}>
                     <View style={styles.titleConatiner}>
@@ -262,7 +383,7 @@ const Search = (props: any) => {
 
                   <ScrollView
                     horizontal
-                    style={[styles.customerScrollContainer, ,]}
+                    style={[styles.customerScrollContainer, {}]}
                     showsHorizontalScrollIndicator={false}>
                     {SearchCustomerQuery?.isLoading
                       ? Array(3)
@@ -311,6 +432,8 @@ const Search = (props: any) => {
                   </ScrollView>
                 </View>
                 <Divider />
+
+                {/* top result search container */}
                 <View style={styles.topResultContainer}>
                   <View style={styles.sectionHeader}>
                     <View style={styles.titleConatiner}>
@@ -347,7 +470,7 @@ const Search = (props: any) => {
                       })
                     )}
                     {!SearchThreadQuery?.isLoading &&
-                      searchThreadData?.length === 0 && (
+                      !searchThreadData?.length && (
                         <View style={styles.emptyWrapper}>
                           <Text style={styles.emptyText}>No results found</Text>
                         </View>
@@ -355,6 +478,47 @@ const Search = (props: any) => {
                   </ScrollView>
                 </View>
               </View>
+            )}
+
+            {/* filter customer result with filter options */}
+            {!(!!selectedFilter && !!SelectedCustomer) && (
+              <>
+                {!!selectedFilter &&
+                  !SearchCustomerQuery?.isLoading &&
+                  !!searchCustomerData?.length && (
+                    <View>
+                      <ScrollView>
+                        {searchCustomerData?.map(
+                          (item: customerType, i: number) => {
+                            return (
+                              <Customer
+                                item={item}
+                                selectCustomer={selectCustomer}
+                                key={`${i}`}
+                              />
+                            );
+                          },
+                        )}
+                      </ScrollView>
+                    </View>
+                  )}
+              </>
+            )}
+
+            {!!selectedFilter && !!SelectedCustomer && (
+              <ScrollView
+                style={styles.threadScrollContainer}
+                showsVerticalScrollIndicator={false}>
+                {AdvancedSearchedThreadData?.map((item: any, i) => {
+                  return <SearchThread key={`${i}`} item={item} index={i} />;
+                })}
+                {!AdvancedSearchThreadQuery?.isLoading &&
+                  !AdvancedSearchedThreadData?.length && (
+                    <View style={styles.emptyWrapper}>
+                      <Text style={styles.emptyText}>No results found</Text>
+                    </View>
+                  )}
+              </ScrollView>
             )}
           </View>
         )}

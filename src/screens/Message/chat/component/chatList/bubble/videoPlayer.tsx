@@ -1,11 +1,11 @@
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React, {useRef, useEffect} from 'react';
 import Video from 'react-native-video';
-
+import VideoPlayer from 'react-native-media-console';
 // import {createThumbnail} from 'react-native-create-thumbnail';
 import {wp} from 'src/utils';
 
-const VideoPlayer = ({videoData}: any) => {
+const VideoView = ({videoData}: any) => {
   // console.log('video', JSON.stringify(videoData, null, 2));
   const {data} = videoData;
   const videoRef = useRef<any>(null);
@@ -23,12 +23,12 @@ const VideoPlayer = ({videoData}: any) => {
     videoRef.current.save();
   };
 
-  // useEffect(() => {
-  //   getVideoThumbNail();
-  //   return () => {
-  //     //  videoRef.current.paused=
-  //   };
-  // }, []);
+  useEffect(() => {
+    // getVideoThumbNail();
+    return () => {
+      //  videoRef.current.paused=
+    };
+  }, []);
 
   return (
     <View>
@@ -41,7 +41,7 @@ const VideoPlayer = ({videoData}: any) => {
         // Store reference
         //   onBuffer={this.onBuffer}                // Callback when remote video is buffering
         //   onError={this.videoError}
-        audioOnly
+
         ref={videoRef}
         resizeMode="cover" // Callback when video cannot be loaded
         playInBackground={false}
@@ -60,7 +60,7 @@ const VideoPlayer = ({videoData}: any) => {
   );
 };
 
-export default VideoPlayer;
+export default VideoView;
 
 const styles = StyleSheet.create({
   backgroundVideo: {

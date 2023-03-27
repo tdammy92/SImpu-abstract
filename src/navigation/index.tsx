@@ -1,11 +1,13 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, createRef} from 'react';
 import {TouchableOpacity, Text, View, Dimensions, Alert} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createNavigationContainerRef} from '@react-navigation/native';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {MainStackParamList, SCREEN_NAME} from './constants';
 import {useQueryClient} from 'react-query';
 import messaging from '@react-native-firebase/messaging';
 import Payment from 'src/screens/payment';
+import RNBeep from 'react-native-a-beep';
 
 import Setting from 'src/screens/setting';
 import CustomDrawer from './CustomDrawer';
@@ -77,15 +79,7 @@ import {buildConversationUrl} from 'src/services/api/api-client';
 import HeaderBack from './HeaderBack';
 import About from 'src/screens/setting/about';
 import {pusher} from 'src/index';
-import {
-  DEMO_API,
-  PRODUCTION_API,
-  CONVERSATION_API_DEMO,
-  INTEGRATIONS_API_DEMO,
-  INTEGRATIONS_API_PRODUCTION,
-  PUSHER_APP_CLUSTER,
-  PUSHER_APP_KEY_DEMO,
-} from '@env';
+import {PUSHER_APP_CLUSTER, PUSHER_APP_KEY_DEMO} from '@env';
 import Mail from 'src/screens/Message/Mail';
 import useNotification from 'src/Hooks/useNotification';
 import {Notifications} from 'react-native-notifications';
@@ -95,6 +89,8 @@ import ConversationDetails from 'src/screens/Message/threadDetails';
 import ComposeMail from 'src/screens/Message/compose/compose-mail';
 import ComposeSocial from 'src/screens/Message/compose/compose-social';
 import messageBox from 'src/screens/Message/Mail/components/message-box';
+import {useNavigation, DrawerActions} from '@react-navigation/native';
+
 const Stack = createNativeStackNavigator<MainStackParamList>();
 
 const Drawer = createDrawerNavigator();
@@ -148,7 +144,7 @@ function DrawerMenu() {
       screenOptions={{
         headerShown: false,
         drawerLabelStyle: {marginLeft: hp(-22)},
-        drawerActiveBackgroundColor: '#F2F2F2',
+        drawerActiveBackgroundColor: colors.light,
         drawerActiveTintColor: colors.dark,
         drawerInactiveTintColor: 'gray',
         drawerType: 'front',
@@ -321,7 +317,7 @@ function DrawerMenu() {
             return (
               <View style={styles.selectedMenu}>
                 <View style={styles.menuLeft}>
-                  <Draf width={20} height={20} color={color} />
+                  <Draf width={18} height={18} color={color} />
                   <Text style={styles.titleText}>Draft</Text>
                 </View>
 
@@ -338,6 +334,32 @@ function DrawerMenu() {
         }}
         name={SCREEN_NAME.draft}
         component={Draft}
+      />
+      <Drawer.Screen
+        options={{
+          title: 'team',
+          drawerItemStyle: styles.dHiddenDrawItemStyle,
+          drawerLabel: ({color}) => {
+            return (
+              <View style={styles.selectedMenu}>
+                <View style={styles.menuLeft}>
+                  <Draf width={18} height={18} color={color} />
+                  <Text style={styles.titleText}>Draft</Text>
+                </View>
+
+                <View style={styles.menuRight}>
+                  {count && (
+                    <Text style={styles.badgeText}>
+                      {count['drafts'] > 0 && formatNumbers(count['drafts'])}
+                    </Text>
+                  )}
+                </View>
+              </View>
+            );
+          },
+        }}
+        name={SCREEN_NAME.teaminbox}
+        component={TeamInbox}
       />
     </Drawer.Navigator>
   );
@@ -378,7 +400,7 @@ const SettingsStackNavigator = (): JSX.Element => {
             textAlign: 'center',
             color: colors.dark,
             fontFamily: FONTS.TEXT_SEMI_BOLD,
-            fontSize: hp(18),
+            fontSize: FontSize.MediumText,
           },
           headerLeft: HeaderBack,
           headerBackTitle: '',
@@ -404,7 +426,7 @@ const SettingsStackNavigator = (): JSX.Element => {
             textAlign: 'center',
             color: colors.dark,
             fontFamily: FONTS.TEXT_SEMI_BOLD,
-            fontSize: hp(18),
+            fontSize: FontSize.MediumText,
           },
           headerLeft: HeaderBack,
           headerBackTitle: '',
@@ -422,7 +444,7 @@ const SettingsStackNavigator = (): JSX.Element => {
             textAlign: 'center',
             color: colors.dark,
             fontFamily: FONTS.TEXT_SEMI_BOLD,
-            fontSize: hp(18),
+            fontSize: FontSize.MediumText,
           },
           headerLeft: HeaderBack,
           headerBackTitle: '',
@@ -440,7 +462,7 @@ const SettingsStackNavigator = (): JSX.Element => {
             textAlign: 'center',
             color: colors.dark,
             fontFamily: FONTS.TEXT_SEMI_BOLD,
-            fontSize: hp(18),
+            fontSize: FontSize.MediumText,
           },
           headerLeft: HeaderBack,
           headerBackTitle: '',
@@ -456,9 +478,16 @@ const SettingsStackNavigator = (): JSX.Element => {
           headerLeft: HeaderBack,
           headerBackTitle: '',
           headerBackTitleVisible: false,
+          headerTitleStyle: {
+            textAlign: 'center',
+            color: colors.dark,
+            fontFamily: FONTS.TEXT_SEMI_BOLD,
+            fontSize: FontSize.MediumText,
+          },
           headerBackTitleStyle: {
             color: colors.dark,
-            fontFamily: FONTS.TEXT_REGULAR,
+            fontFamily: FONTS.TEXT_SEMI_BOLD,
+            fontSize: FontSize.MediumText,
           },
         }}
         component={QuickReplies}
@@ -558,16 +587,24 @@ export const RootStack = (): JSX.Element => {
     // console.log(`onError: ${message} code: ${code} exception: ${error}`);
   };
 
-  const onEvent = (event: any) => {
-    // console.log('event fired', JSON.stringify(event, null, 2));
+  const onEvent = async (event: any) => {
+    const data = await JSON.parse(event?.data);
+    const eventName = await event?.eventName;
+    // console.log('eventName fired', JSON.stringify(eventName, null, 2));
+    // console.log('event fired', JSON.stringify(data, null, 2));
+
+    if (eventName === 'message_new') {
+      RNBeep?.beep();
+      await queryClient.invalidateQueries('conversations');
+      await queryClient.invalidateQueries('threads');
+      await queryClient.invalidateQueries('filters-unread-count');
+    }
 
     // const thread_id = JSON.parse(event?.data)?.thread_id;
-
-    queryClient.invalidateQueries('threads');
-    queryClient.invalidateQueries('conversations');
+    await queryClient.invalidateQueries('notifications-outline');
   };
 
-  const onSubscriptionSucceeded = (channelName: string, data: any) => {
+  const onSubscriptionSucceeded = async (channelName: string, data: any) => {
     // console.log(
     //   `onSubscriptionSucceeded: ${channelName} data: ${JSON.stringify(
     //     data,
@@ -582,7 +619,7 @@ export const RootStack = (): JSX.Element => {
     // console.log('Me from chaneel', JSON.stringify(me, null, 2));
   };
 
-  const handleNotificationNavigation = async (data: any) => {};
+  // const handleNotificationNavigation = async (data: any) => {};
 
   useEffect(() => {
     messaging().onNotificationOpenedApp(remoteMessage => {
@@ -613,7 +650,7 @@ export const RootStack = (): JSX.Element => {
   useEffect(() => {
     // registerNotification();
 
-    if (!!token && !!organisation?.id && !!isloggedIn) {
+    if (!!token && !!organisation?.id && isloggedIn) {
       connect();
     }
   }, [token, organisation?.id, profile?.id]);
@@ -740,7 +777,7 @@ export const RootStack = (): JSX.Element => {
             headerShown: false,
           }}
         />
-        {/* <Stack.Group screenOptions={{presentation: 'containedModal'}}> */}
+
         <Stack.Screen
           name={SCREEN_NAME.composeMail}
           component={ComposeMail}
@@ -756,13 +793,13 @@ export const RootStack = (): JSX.Element => {
           }}
         />
         {/* </Stack.Group> */}
-        <Stack.Screen
+        {/* <Stack.Screen
           name={SCREEN_NAME.teaminbox}
           component={TeamInbox}
           options={{
             headerShown: false,
           }}
-        />
+        /> */}
       </Stack.Navigator>
     </>
   );
@@ -773,6 +810,12 @@ const themedStyles = StyleService.create({
   drawItemStyle: {
     borderRadius: 18,
     height: hp(40),
+    justifyContent: 'center',
+    widthe: '100%',
+  },
+  dHiddenDrawItemStyle: {
+    borderRadius: 18,
+    height: 0,
     justifyContent: 'center',
     widthe: '100%',
   },
@@ -787,7 +830,7 @@ const themedStyles = StyleService.create({
     justifyContent: 'center',
     position: 'absolute',
     right: wp(-18),
-    top: '30%',
+    top: '25%',
   },
   menuLeft: {
     flexDirection: 'row',

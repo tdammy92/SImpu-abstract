@@ -53,11 +53,11 @@ const SearchCustomer = ({item, idx, lt}: any) => {
           <Text
             style={[
               styles.name,
-              {color: stc(item?.platform_name ?? item?.platform_nick)},
+              // {color: stc(item?.platform_name ?? item?.platform_nick)},
             ]}>
-            {trimText(item?.platform_name ?? item?.platform_nick, 15)}
+            {trimText(item?.platform_name ?? item?.platform_nick, 10)}
           </Text>
-          <Text style={styles.name2}>{trimText(item?.platform_nick, 15)}</Text>
+          <Text style={styles.name2}>{trimText(item?.platform_nick, 12)}</Text>
         </View>
 
         <View
@@ -69,7 +69,9 @@ const SearchCustomer = ({item, idx, lt}: any) => {
             borderRadius: hp(10),
             padding: hp(2),
           }}>
-          {item?.channel_name && <ChannelIcon name={item?.channel_name} />}
+          {item?.channel_name && (
+            <ChannelIcon name={item?.channel_name} width={24} height={24} />
+          )}
         </View>
       </View>
     </TouchableOpacity>
@@ -80,13 +82,13 @@ export default SearchCustomer;
 
 const styles = StyleSheet.create({
   container: {
-    width: wp(170),
+    width: wp(200),
     height: hp(70),
     flexDirection: 'row',
     backgroundColor: colors.bootomHeaderBg,
     marginRight: hp(7),
     padding: hp(4),
-    alignItems: 'center',
+    // alignItems: 'center',
     borderRadius: hp(5),
   },
   details: {
@@ -95,6 +97,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: FontSize.MediumText,
     fontFamily: FONTS.TEXT_SEMI_BOLD,
+    color: colors.dark,
   },
   name2: {
     fontSize: FontSize.MediumText,

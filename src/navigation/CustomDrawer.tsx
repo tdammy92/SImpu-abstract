@@ -1,5 +1,5 @@
 import {StyleSheet, View, TouchableOpacity, Dimensions} from 'react-native';
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect, useCallback} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {Layout, MenuItem, OverflowMenu} from '@ui-kitten/components';
@@ -11,7 +11,7 @@ import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import {useNavigation} from '@react-navigation/native';
 //@ts-ignore
 import UserAvatar from 'react-native-user-avatar';
-import {hp, wp} from 'src/utils';
+import {hp, messsageToast, wp} from 'src/utils';
 import {
   DrawerContentScrollView,
   DrawerItemList,
@@ -25,7 +25,6 @@ import {colors, FONTS, FontSize} from 'src/constants';
 import {SCREEN_NAME} from './constants';
 import {StoreState} from 'src/@types/store';
 import Availble from 'src/assets/images/Available.svg';
-import NotAvailble from 'src/assets/images/notificationLabel.svg';
 
 import {
   useSidebarTags,
@@ -38,9 +37,11 @@ import OrganisationSheet from './component/OrganisationSheet';
 import {addProfile} from 'src/store/user/userReducer';
 import {useInboxWebsocket} from 'src/Hooks/usePushersocket';
 import {trimText} from 'src/utils/string-utils/string';
+import {queryClient} from '..';
 
 const CustomDrawer = (props: any): JSX.Element => {
   const OrganisationSheetRef = useRef<any>(null);
+  const navigation = useNavigation();
 
   const {count, ...rest} = props;
   const {profile, token} = useSelector((state: StoreState) => state.user);
@@ -102,6 +103,10 @@ const CustomDrawer = (props: any): JSX.Element => {
     {},
   );
 
+  async function reFetchAllQueries() {
+    await queryClient.invalidateQueries();
+  }
+
   //load organisations
   const {data: organisationData, isLoading: loadingOrganisations} =
     useGetOrganisations({Auth: token, organisationId: organisation?.id}, {});
@@ -110,7 +115,17 @@ const CustomDrawer = (props: any): JSX.Element => {
     // Subscribe
     const unsubscribe = NetInfo.addEventListener(state => {
       // console.log('Connection type', state.type);
+      // console.log('Connection state', state.isConnected);
       setisAvailable(state.isConnected);
+
+      if (state.isConnected === true) {
+        reFetchAllQueries();
+      } else if (state.isConnected === false) {
+        messsageToast({
+          message: 'Your internet connection is down',
+          type: 'warning',
+        });
+      }
     });
 
     return () => {
@@ -119,39 +134,67 @@ const CustomDrawer = (props: any): JSX.Element => {
     };
   }, []);
 
+  // const filteredProps = {
+  //   ...props,
+  //   state: {
+  //     ...props.state,
+  //     routeNames: props.state.routeNames.filter((routeName: any) => {
+  //       return routeName !== SCREEN_NAME.teaminbox;
+  //     }),
+  //     routes: props.state.routes.filter((route: any) => {
+  //       return route.name !== SCREEN_NAME.teaminbox;
+  //     }),
+  //   },
+  // };
+
+  const navigateToProfile = useCallback(() => {
+    //@ts-ignore
+    navigation.navigate(SCREEN_NAME.config, {screen: SCREEN_NAME.editprofile});
+  }, [navigation]);
+
+  const navigateToSettings = useCallback(() => {
+    //@ts-ignore
+    navigation.navigate(SCREEN_NAME.config);
+  }, [navigation]);
+
   return (
     <View style={styles.container}>
       {/* user profile  */}
       <View style={styles.headerContainer}>
-        <View style={styles.userDetails}>
-          <View>
-            <UserAvatar
-              size={hp(40)}
-              style={{height: hp(40), width: hp(40)}}
-              borderRadius={hp(40 * 0.5)}
-              name={`${profile?.first_name} ${profile?.last_name}`}
-              src={profile?.image}
-            />
-            <View style={{position: 'absolute', bottom: 2, right: 1}}>
-              {isAvailable ? <Availble /> : <NotAvailble />}
+        <TouchableOpacity onPress={navigateToProfile}>
+          <View style={styles.userDetails}>
+            <View>
+              <UserAvatar
+                size={hp(40)}
+                style={{height: hp(40), width: hp(40)}}
+                borderRadius={hp(40 * 0.5)}
+                name={`${profile?.first_name} ${profile?.last_name}`}
+                src={profile?.image}
+              />
+              <View style={{position: 'absolute', bottom: hp(1), right: hp(1)}}>
+                <Availble
+                  color={isAvailable ? colors.onlineBgLight : colors.offlineBg}
+                  height={hp(12)}
+                  width={hp(12)}
+                />
+              </View>
+            </View>
+            <View style={{paddingLeft: 5}}>
+              <Text style={styles.userName}>
+                {profile?.first_name} {profile?.last_name}
+              </Text>
+              <Text
+                style={[
+                  styles.statusText,
+                  {color: isAvailable ? colors.onlineBg : colors.offlineBg},
+                ]}>
+                {isAvailable ? 'Available' : 'offline'}
+              </Text>
             </View>
           </View>
-          <View style={{paddingLeft: 5}}>
-            <Text style={styles.userName}>
-              {profile?.first_name} {profile?.last_name}
-            </Text>
-            <Text
-              style={[
-                styles.statusText,
-                {color: isAvailable ? '#287D3C' : '#EB5757'},
-              ]}>
-              {isAvailable ? 'Available' : 'offline'}
-            </Text>
-          </View>
-        </View>
-        <TouchableOpacity
-          onPress={() => props.navigation.navigate(SCREEN_NAME.config)}>
-          <AntDesign name="setting" size={24} color="#7D8282" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={navigateToSettings}>
+          <AntDesign name="setting" size={hp(24)} color={colors.darkGray} />
         </TouchableOpacity>
       </View>
 
@@ -172,7 +215,7 @@ const CustomDrawer = (props: any): JSX.Element => {
         }}
         contentInset={{bottom: hp(15)}}>
         {/* menu list item*/}
-        <DrawerItemList {...rest} />
+        <DrawerItemList {...props} />
 
         {/* tag and team inbox list */}
         <View style={styles.customInboxContainer}>
@@ -204,7 +247,7 @@ const CustomDrawer = (props: any): JSX.Element => {
           <TouchableOpacity
             style={styles.selectOrgBtnContainer}
             onPress={openSheet}>
-            <Octicons name="organization" size={22} color={colors.dark} />
+            <Octicons name="organization" size={hp(20)} color={colors.dark} />
 
             <View style={styles.orgPill}>
               <Text style={styles.orgPillText}>
@@ -261,7 +304,7 @@ const styles = StyleSheet.create({
 
   userName: {
     fontFamily: FONTS.TEXT_SEMI_BOLD,
-    fontSize: FontSize.BigText,
+    fontSize: FontSize.MediumText,
   },
   bottomView: {
     paddingVertical: hp(15),
@@ -282,11 +325,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  // customInboxTitleText: {
-  //   fontSize: hp(13),
-  //   color: '#7D8282',
-  //   fontFamily: FONTS.TEXT_BOLD,
-  // },
   customInboxItems: {
     // marginLeft: wp(5),
     width: '100%',

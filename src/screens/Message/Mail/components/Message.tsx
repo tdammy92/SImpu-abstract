@@ -11,7 +11,7 @@ import {Divider} from '@ui-kitten/components';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import {colors, FONTS, FontSize} from 'src/constants';
-import {hp, wp} from 'src/utils';
+import {copyIdToClipboard, hp, wp} from 'src/utils';
 import {format} from 'date-fns';
 import {useNavigation} from '@react-navigation/native';
 
@@ -24,13 +24,18 @@ import {StoreState} from 'src/@types/store';
 import {useMessageContent} from 'src/services/query/queries';
 
 import Entypo from 'react-native-vector-icons/Entypo';
-import MessageBox from './message-box';
+// import MessageBox from './message-box';
 import OptionSheet from './optionSheet';
 import {SCREEN_NAME} from 'src/navigation/constants';
 import {setMessage} from 'src/store/message/message';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
-const Message = ({data, receiver}: any) => {
+const Message = ({data, receiver, index}: any) => {
   // console.log('Html0 message', JSON.stringify(data, null, 2));
+
+  const checkIndex = index === 0 ? true : false;
+
+  const [showContent, setshowContent] = useState<boolean>(checkIndex);
 
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -47,8 +52,7 @@ const Message = ({data, receiver}: any) => {
 
   const {data: messageContent, isLoading} = useMessageContent(
     {
-      enabled:
-        data?.entity?.has_message === false && data?.entity?.content === null,
+      enabled: data?.entity?.has_message && !data?.entity?.content,
       contentId: data?.uuid,
       Auth: token,
       organisationId: organisation?.id,
@@ -64,6 +68,47 @@ const Message = ({data, receiver}: any) => {
     },
   );
 
+  // console.log('messageContent', JSON.stringify(messageContent, null, 2));
+
+  const {entity} = data;
+  const {recipients} = entity ?? {};
+  const hasCC = !!(recipients?.cc ?? []).length;
+  const hasBCC = !!(recipients?.bcc ?? []).length;
+  const hasMultipleTo = (recipients?.to ?? []).length > 1;
+  const showMoreReplyOptions = !!hasMultipleTo || !!hasCC || !!hasBCC;
+
+  const to = useMemo(() => {
+    return recipients?.to
+      ?.map((item: any) => item.platform_nick ?? '')
+      .map((item: any, index: number) =>
+        index === (recipients?.to?.length ?? 0) - 1 ? `${item}` : `${item}, `,
+      );
+  }, [data]);
+
+  const from = useMemo(() => {
+    return recipients?.from
+      ?.map((item: any) => item.platform_nick ?? '')
+      .map((item: any, index: number) =>
+        index === (recipients?.from?.length ?? 0) - 1 ? `${item}` : `${item}, `,
+      );
+  }, [data]);
+
+  const cc = useMemo(() => {
+    return recipients?.cc
+      ?.map((item: any) => item.platform_nick ?? '')
+      .map((item: any, index: number) =>
+        index === (recipients?.cc?.length ?? 0) - 1 ? `${item}` : `${item}, `,
+      );
+  }, [data]);
+
+  const bcc = useMemo(() => {
+    return recipients?.bcc
+      ?.map((item: any) => item.platform_nick ?? '')
+      .map((item: any, index: number) =>
+        index === (recipients?.bcc?.length ?? 0) - 1 ? `${item}` : `${item}, `,
+      );
+  }, [data]);
+
   const OpenOptions = () => {
     if (optionRef.current) {
       optionRef.current.open();
@@ -75,34 +120,67 @@ const Message = ({data, receiver}: any) => {
     }
   };
 
-  // mail={data}
-  //       receiver={receiver}
-  //       messageType={messageType}
-  //       sentFrom={data?.entity?.recipients?.from}
-  //       sentTo={data?.entity?.recipients?.to}
-  //       subject={data?.entity?.content?.subject}
-  //       closeMessageBox={closeMessageBox}
-  //       closeOptions={closeOptions}
+  const messageDetails = useMemo(() => {
+    return {
+      // subject:data?.
+    };
+  }, []);
 
   //handle open functions
   const openReply = useCallback(() => {
-    dispatch(setMessage({message: data, receiver, messageType: 'reply'}));
+    dispatch(
+      setMessage({
+        message: data,
+        receiver,
+        messageType: 'reply',
+        messageContent: messageContent?.data,
+      }),
+    );
 
     closeOptions();
 
     //@ts-ignore
     navigation.navigate(SCREEN_NAME.mailBox);
-  }, [navigation, data, receiver]);
+  }, [navigation, messageContent, receiver]);
+
+  const openReplyAll = useCallback(() => {
+    dispatch(
+      setMessage({
+        message: data,
+        receiver,
+        messageType: 'reply all',
+        messageContent: messageContent?.data,
+      }),
+    );
+
+    closeOptions();
+
+    //@ts-ignore
+    navigation.navigate(SCREEN_NAME.mailBox);
+  }, [navigation, messageContent, receiver]);
 
   const openForward = useCallback(() => {
-    dispatch(setMessage({message: data, receiver, messageType: 'forward'}));
+    dispatch(
+      setMessage({
+        message: data,
+        receiver,
+        messageType: 'forward',
+        messageContent: messageContent?.data,
+      }),
+    );
 
     closeOptions();
 
     //@ts-ignore
     navigation.navigate(SCREEN_NAME.mailBox);
-  }, [navigation, data, receiver]);
+  }, [navigation, messageContent, receiver]);
 
+  const copyMessageID = useCallback(() => {
+    closeOptions();
+    copyIdToClipboard('Copied Message ID', data?.uuid, true);
+  }, [navigation, messageContent]);
+
+  // console.log('email data', JSON.stringify(data, null, 2));
   return (
     <>
       <View style={styles.container}>
@@ -110,38 +188,33 @@ const Message = ({data, receiver}: any) => {
         <View style={styles.messageHeader}>
           {/* author avatar */}
           <View style={{flexDirection: 'row'}}>
-            <UserAvatar
-              size={hp(35)}
-              style={{height: hp(35), width: hp(35)}}
-              borderRadius={hp(35 * 0.5)}
-              name={data?.author?.platform_nick ?? data?.author?.name}
-              src={data?.author?.image_url}
-            />
+            <TouchableOpacity
+              style={{padding: hp(6)}}
+              onPress={() => setshowContent(!showContent)}>
+              <AntDesign
+                name={showContent ? 'down' : 'right'}
+                size={hp(16)}
+                color={colors.darkGray}
+              />
+            </TouchableOpacity>
+            {data?.author && (
+              <UserAvatar
+                size={hp(35)}
+                style={{height: hp(35), width: hp(35)}}
+                borderRadius={hp(35 * 0.5)}
+                name={
+                  data?.author?.platform_name ?? data?.author?.platform_nick
+                }
+                src={data?.author?.image_url}
+              />
+            )}
             {/* author message header */}
 
             <View style={{marginLeft: wp(10), maxWidth: '80%'}}>
-              <View style={{flexDirection: 'row'}}>
+              <View style={{flexDirection: 'column'}}>
                 <Text style={styles.messageHeaderTextBig}>
-                  {trimText(
-                    data?.author?.name ??
-                      data?.entity?.recipents?.from[0]?.platform_nick,
-                    15,
-                  )}
+                  {trimText(data?.author?.platform_nick ?? from, 25)}
                 </Text>
-                {!!data?.author?.platform_nick && (
-                  <Text
-                    style={[
-                      styles.messageHeaderTextBig,
-                      {marginLeft: wp(4), color: colors.darkGray},
-                    ]}>
-                    {/* |{' '}
-                    {trimText(
-                      data?.author?.platform_nick ??
-                        data?.entity?.recipents?.from[0]?.platform_nick,
-                      10,
-                    )} */}
-                  </Text>
-                )}
               </View>
               <View style={{flexDirection: 'row'}}>
                 <Text
@@ -152,74 +225,81 @@ const Message = ({data, receiver}: any) => {
                   To:
                 </Text>
                 <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                  {data?.entity?.recipients?.to?.map(
-                    (recipient: any, i: number) => (
-                      <Text key={`${i}`} style={styles.messageHeaderTextSmall}>
-                        {trimText(recipient?.platform_nick, 35)}
-                        {i !== data?.entity?.recipients?.to?.length - 1 &&
-                          ','}{' '}
-                      </Text>
-                    ),
-                  )}
+                  {data?.entity?.recipients?.to?.map((rcpt: any, i: number) => (
+                    <Text
+                      key={`${i}`}
+                      style={[styles.messageHeaderTextSmall, {width: '90%'}]}>
+                      {trimText(rcpt?.platform_nick, 35)}
+                      {i !== data?.entity?.recipients?.to?.length - 1 &&
+                        ','}{' '}
+                    </Text>
+                  ))}
                 </View>
               </View>
-              <Text style={styles.messageHeaderTextSmall}>
-                {format(new Date(data?.created_datetime), 'd LLL, pp')}
+              <Text
+                style={[
+                  styles.messageHeaderTextSmall,
+                  {fontSize: FontSize.SmallText},
+                ]}>
+                {format(new Date(data?.created_datetime), 'd LLL, p')}
               </Text>
             </View>
           </View>
           {/* author options */}
-          <TouchableOpacity style={{padding: hp(5)}} onPress={OpenOptions}>
+          <TouchableOpacity
+            style={{
+              padding: hp(5),
+              position: 'absolute',
+              top: 0,
+              right: hp(4),
+            }}
+            onPress={OpenOptions}>
             <SimpleLineIcons name="options" size={18} color={colors.darkGray} />
           </TouchableOpacity>
         </View>
 
-        {!isLoading && (
-          <Htmlview
-            htmldata={data?.entity?.content?.body ?? messageContent?.data?.body}
-          />
-        )}
+        {showContent && (
+          <>
+            {!isLoading && (
+              <Htmlview
+                htmldata={
+                  data?.entity?.content?.body ?? messageContent?.data?.body
+                }
+              />
+            )}
 
-        <View style={styles.messageFooter}>
-          <TouchableOpacity style={styles.actionBtn} onPress={openReply}>
-            <MaterialCommunityIcons
-              name="reply-outline"
-              size={20}
-              color={colors.light}
-            />
-            <Text style={styles.actionBtnText}>Reply</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.actionBtn} onPress={openForward}>
-            <Text style={styles.actionBtnText}>Forward</Text>
-            <MaterialCommunityIcons
-              name="share-outline"
-              size={20}
-              color={colors.light}
-            />
-          </TouchableOpacity>
-        </View>
-        {/* </View> */}
+            <View style={styles.messageFooter}>
+              <TouchableOpacity style={styles.actionBtn} onPress={openReply}>
+                <MaterialCommunityIcons
+                  name="reply-outline"
+                  size={20}
+                  color={colors.light}
+                />
+                <Text style={styles.actionBtnText}>Reply</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.actionBtn} onPress={openForward}>
+                <Text style={styles.actionBtnText}>Forward</Text>
+                <MaterialCommunityIcons
+                  name="share-outline"
+                  size={20}
+                  color={colors.light}
+                />
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
       </View>
 
       {/* message options */}
 
       <OptionSheet
         ref={optionRef}
+        showMoreReplyOptions={showMoreReplyOptions}
         handleReply={openReply}
+        handleReplyAll={openReplyAll}
         handleForward={openForward}
+        handleMessageId={copyMessageID}
       />
-
-      {/* <MessageBox
-        ref={messageBoxRef}
-        mail={data}
-        receiver={receiver}
-        messageType={messageType}
-        sentFrom={data?.entity?.recipients?.from}
-        sentTo={data?.entity?.recipients?.to}
-        subject={data?.entity?.content?.subject}
-        closeMessageBox={closeMessageBox}
-        closeOptions={closeOptions}
-      /> */}
     </>
   );
 };

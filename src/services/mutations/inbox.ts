@@ -44,9 +44,31 @@ export const forwardMessageSocials = async (payload: any) => {
   return response.data;
 };
 
+//coment message mail
+export const sendComment = async (payload: {
+  Auth: string | null;
+  threadId: string;
+  body: string;
+  participants: {}[];
+  attachment_ids: string[];
+  organisationId: string | null;
+}) => {
+  const {threadId, Auth, organisationId, body, participants, attachment_ids} =
+    payload;
+  const url = buildConversationUrl(`conversations/comment/${threadId}`);
+  console.log('send comment payload', JSON.stringify(payload, null, 2));
+  const response = await client(url, {
+    data: {body, participants, attachment_ids},
+    method: 'POST',
+    params: {Auth, organisationId},
+  });
+
+  return response.data;
+};
+
 //reply message mail
 export const replyMessageMail = async (payload: any) => {
-  console.log('mail from mutation', JSON.stringify(payload, null, 2));
+  // console.log('mail from mutation', JSON.stringify(payload, null, 2));
 
   const {message, messageId, Auth, organisationId} = payload;
 
@@ -61,17 +83,15 @@ export const replyMessageMail = async (payload: any) => {
 
 //forward message mail
 export const forwardMessageMail = async (payload: any) => {
-  const {
-    body,
-    params: {messageId, Auth, organisationId},
-  } = payload;
+  const {message, messageId, Auth, organisationId} = payload;
+
   const url = buildConversationUrl(`conversations/forward/${messageId}`);
   const response = await client(url, {
     method: 'POST',
-    data: body,
+    data: message,
     params: {Auth, organisationId},
   });
-  return response.data;
+  return response?.data;
 };
 
 //send files
@@ -188,6 +208,47 @@ export const moveThread = async (payload: {
 
   const response = await client(url, {
     method: 'POST',
+    params: {Auth, organisationId},
+  });
+
+  return response.data;
+};
+
+//add tag to a thread
+export const tagThread = async (payload: {
+  Auth: string | null;
+  tagId: string[];
+  threadId: string;
+  organisationId: string | null;
+}) => {
+  const {Auth, tagId, threadId, organisationId} = payload;
+
+  // console.log('unPingTag', JSON.stringify(payload, null, 2));
+  const url = buildConversationUrl(`threads/tag/${threadId}`);
+
+  const response = await client(url, {
+    method: 'POST',
+    data: {tag_ids: tagId},
+    params: {Auth, organisationId},
+  });
+
+  return response.data;
+};
+
+//remove tag from a thread
+export const untagThread = async (payload: {
+  Auth: string | null;
+  tagId: string[];
+  threadId: string;
+  organisationId: string | null;
+}) => {
+  const {Auth, tagId, threadId, organisationId} = payload;
+
+  const url = buildConversationUrl(`threads/${threadId}/tag/${tagId}`);
+
+  const response = await client(url, {
+    method: 'DELETE',
+    // data: {tag_ids: tagId},
     params: {Auth, organisationId},
   });
 

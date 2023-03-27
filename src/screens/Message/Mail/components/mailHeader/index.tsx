@@ -16,6 +16,7 @@ import ContentLoader from 'react-native-easy-content-loader';
 import UserAvatar from 'react-native-user-avatar';
 import ChannelIcon from 'src/components/common/ChannelIcon';
 import {Avatar} from 'src/constants';
+import Availble from 'src/assets/images/Available.svg';
 import HeaderOption from 'src/screens/Message/threadDetails/component/messageHeaderOption';
 import Resolve from 'src/screens/Message/threadDetails/resolve-thread';
 
@@ -94,7 +95,11 @@ const MailHeader = ({threadDetail, loading}: any) => {
                         backgroundColor: colors.bootomHeaderBg,
                       },
                     ]}>
-                    <ChannelIcon name={thread?.channel_name} />
+                    <ChannelIcon
+                      name={thread?.channel_name}
+                      height={20}
+                      width={20}
+                    />
                   </View>
                 )}
               </TouchableOpacity>
@@ -103,24 +108,21 @@ const MailHeader = ({threadDetail, loading}: any) => {
 
           <View style={styles.headerRight}>
             <View style={styles.inboxStyle}>
-              <View
-                style={{
-                  height: hp(10),
-                  width: hp(10),
-                  marginRight: wp(3),
-                  borderRadius: hp(10 * 0.5),
-                  backgroundColor:
-                    thread?.inbox?.color ?? colors?.secondaryBgDark,
-                }}
+              <Availble
+                height={hp(12)}
+                width={hp(12)}
+                color={thread?.inbox?.color ?? colors?.secondaryBgDark}
               />
-              <Text style={{color: colors.dark}}>{thread?.inbox.name}</Text>
+              <Text style={{color: colors.dark, marginLeft: wp(3)}}>
+                {thread?.inbox.name}
+              </Text>
             </View>
             <TouchableOpacity style={{padding: 10}} onPress={openSheet}>
               <View style={{}}>
                 <SimpleLineIcons
                   name="options-vertical"
                   size={22}
-                  color={'#A5ACB8'}
+                  color={colors?.darkGray}
                 />
               </View>
             </TouchableOpacity>
@@ -148,7 +150,7 @@ const MailHeader = ({threadDetail, loading}: any) => {
           <View style={{marginVertical: hp(5)}}>
             <Text
               style={{
-                fontSize: FontSize.BigText,
+                fontSize: FontSize.MediumText,
                 marginLeft: wp(15),
                 width: '85%',
                 fontFamily: FONTS.TEXT_SEMI_BOLD,

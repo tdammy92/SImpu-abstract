@@ -1,3 +1,4 @@
+import {FontSize} from 'src/constants/fonts';
 import {StyleService} from '@ui-kitten/components';
 import {ImageStyle, TextStyle, ViewStyle} from 'react-native';
 import {FONTS, colors} from 'src/constants';
@@ -43,18 +44,18 @@ const styles = StyleService.create<Styles>({
     bottom: 0,
   },
   headerText: {
-    fontSize: hp(20),
+    fontSize: FontSize.BigText,
     fontFamily: FONTS.TEXT_REGULAR,
     textAlign: 'center',
     marginBottom: hp(3),
     paddingTop: hp(10),
     color: '#0A0748',
     // color: colors.secondaryBg,
-    fontWeight: '600',
+
     lineHeight: 22,
   },
   lowerText: {
-    fontSize: hp(16),
+    fontSize: FontSize.MediumText,
     fontFamily: FONTS.TEXT_REGULAR,
     opacity: 0.5,
     textAlign: 'center',
@@ -64,7 +65,7 @@ const styles = StyleService.create<Styles>({
     color: '#1B1212',
     backgroundColor: '#f4f4f4',
     fontWeight: '300',
-    fontSize: hp(14),
+    fontSize: FontSize.MediumText,
     fontFamily: FONTS.TEXT_REGULAR,
     padding: 4,
   },
@@ -92,14 +93,14 @@ const styles = StyleService.create<Styles>({
   infoText1: {
     textAlign: 'center',
     fontFamily: FONTS.TEXT_REGULAR,
-    color: '#A5ACB8',
-    fontSize: hp(13),
+    color: colors.darkGray,
+    fontSize: FontSize.SmallText,
   },
   infoText2: {
     textAlign: 'center',
-    fontSize: hp(12),
+    fontSize: FontSize.SmallText,
     fontFamily: FONTS.TEXT_REGULAR,
-    color: '#A5ACB8',
+    color: colors.darkGray,
   },
 });
 export default styles;

@@ -30,6 +30,8 @@ export async function client(
 
   headers.Authorization = customConfig?.params?.Auth ?? '';
   headers.organisationID = customConfig?.params?.organisationId ?? '';
+  headers['content-type'] =
+    customConfig?.params?.contentType ?? 'application/json';
 
   //   if (pusher?.connection?.socket_id) {
   //     headers['Simpu_Socket_ID'] = pusher.connection.socket_id;
@@ -45,7 +47,7 @@ export async function client(
     },
   } as AxiosRequestConfig;
 
-  // console.log('api-config', JSON.stringify(config, null, 2));
+  // console.log('api-config params', JSON.stringify(config, null, 2));
   try {
     const result = await Axios(config);
     const {data} = result;

@@ -4,6 +4,7 @@ import {
   Dimensions,
   TouchableOpacity,
   KeyboardAvoidingView,
+  ScrollView,
 } from 'react-native';
 import {Divider, Text} from '@ui-kitten/components';
 
@@ -21,7 +22,7 @@ import {hp, wp} from 'src/utils';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {colors, FONTS} from 'src/constants';
+import {colors, FONTS, FontSize} from 'src/constants';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {FormatText} from 'src/utils/string-utils/string';
 import SortByDate from './SortByDate';
@@ -32,7 +33,7 @@ type Props = {
 
 const {height} = Dimensions.get('screen');
 
-const SheetHeight = Math.floor(height * 0.34);
+const SheetHeight = Math.floor(height * 0.35);
 
 const SortSheet = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
   const {changeSort, openDateFilter, filter, setFilter}: any = props;
@@ -79,17 +80,19 @@ const SortSheet = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
           backgroundColor: 'rgba(105,105,105,0.7)',
         },
         draggableIcon: {
-          backgroundColor: '#000',
+          backgroundColor: colors.bootomHeaderBg,
         },
         container: {
           borderTopLeftRadius: hp(15),
           borderTopRightRadius: hp(15),
-          backgroundColor: '#E5E4E2',
+          backgroundColor: colors.light,
           padding: 0,
         },
       }}>
       <KeyboardAvoidingView>
-        <View style={styles.sortContainer}>
+        <ScrollView
+          style={styles.sortContainer}
+          contentContainerStyle={{alignItems: 'center', position: 'relative'}}>
           <Text style={styles.sortTitle}>Sort by</Text>
           <View style={styles.sortCard}>
             {sortBy.map((sortItem, i) => {
@@ -139,7 +142,7 @@ const SortSheet = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
               </View>
             </TouchableOpacity>
           </View>
-        </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     </RBSheet>
   );
@@ -151,12 +154,10 @@ const styles = StyleSheet.create({
   sortContainer: {
     width: '100%',
     height: '100%',
-    alignItems: 'center',
-    position: 'relative',
   },
   sortTitle: {
     textAlign: 'center',
-    fontSize: hp(18),
+    fontSize: FontSize.BigText,
     fontFamily: FONTS.TEXT_SEMI_BOLD,
     marginVertical: hp(5),
   },
@@ -186,8 +187,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.light,
     height: '90%',
     width: '97%',
-    borderRadius: hp(10),
-    elevation: 2,
+    // borderRadius: hp(10),
+    // elevation: 2,
   },
 
   listItem: {
@@ -205,7 +206,7 @@ const styles = StyleSheet.create({
 
   sortText: {
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: hp(16),
+    fontSize: FontSize.MediumText,
     color: colors.dark,
     marginLeft: wp(10),
   },

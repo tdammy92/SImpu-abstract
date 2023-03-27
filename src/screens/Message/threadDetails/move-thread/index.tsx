@@ -22,7 +22,7 @@ import Octicons from 'react-native-vector-icons/Octicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {Divider, Text} from '@ui-kitten/components';
+import {CheckBox, Divider, Text} from '@ui-kitten/components';
 import {colors, FONTS, FontSize} from 'src/constants';
 import {useNavigation} from '@react-navigation/native';
 import {SCREEN_NAME} from 'src/navigation/constants';
@@ -73,7 +73,7 @@ const MoveThread = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
 
   const inbox = props?.threadDetail?.inbox;
 
-  // console.log('Taaags', JSON.stringify(tags, null, 2));
+  // console.log('Taaags', JSON.stringify(inbox, null, 2));
 
   const {profile, user, token} = useSelector(
     (state: StoreState) => state?.user,
@@ -83,12 +83,14 @@ const MoveThread = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
   );
 
   const moveMutations = useMutation(moveThread, {
-    onSuccess(data, variables, context) {
+    onSuccess: async (data, variables, context) => {
+      await queryClient.invalidateQueries(['threadInfo']);
+      // await queryClient.invalidateQueries(['personal-inbox']);
+      // await queryClient.invalidateQueries(['shared-inbox']);
+      closeSheet();
+
       messsageToast({message: `Conversation moved`, type: 'success'});
-      console.log('data after moving Inbox', JSON.stringify(data, null, 2));
-      queryClient.invalidateQueries(['threadInfo']);
-      queryClient.invalidateQueries(['personal-inbox']);
-      queryClient.invalidateQueries(['shared-inbox']);
+      // console.log('data after moving Inbox', JSON.stringify(data, null, 2));
     },
     onError(error, variables, context) {
       console.log('error moving conversation', error);
@@ -133,8 +135,7 @@ const MoveThread = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
 
   // filter out current inbox
   const allInboxes = useMemo(() => {
-    const Inboxes = [...(sharedInbox ?? []), ...(personalInbox ?? [])];
-    return Inboxes?.filter((inbx: InboxType) => inbx?.uuid !== inbox?.uuid);
+    return [...(sharedInbox ?? []), ...(personalInbox ?? [])];
   }, [sharedInbox, personalInbox, thread]);
 
   const moveTo = (id: string) => {
@@ -146,13 +147,13 @@ const MoveThread = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
     });
   };
 
-  const closeSheet = () => {
+  function closeSheet() {
     //@ts-ignore
     if (ref?.current) {
       //@ts-ignore
       ref?.current.close();
     }
-  };
+  }
 
   const InboX = (inbx: InboxType) => {
     return (
@@ -164,16 +165,16 @@ const MoveThread = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
             <PendingAvailble
               width={10}
               height={10}
-              color={inbx?.color ?? '#A5ABB3'}
+              color={inbx?.color ?? colors.secondaryBgDark}
             />
             <Text style={[styles.inboxName, {marginLeft: wp(5)}]}>
               {inbx?.name}
             </Text>
           </View>
 
-          <View>
-            <Entypo name="circle" size={hp(18)} color={colors.dark} />
-          </View>
+          <CheckBox
+            checked={inbox?.uuid === inbx?.uuid}
+            onChange={() => {}}></CheckBox>
         </TouchableOpacity>
         <Divider />
       </>
@@ -209,42 +210,15 @@ const MoveThread = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
         }}>
         <View
           style={{
-            // alignSelf: 'center',
-            // backgroundColor: 'red',
-            // backgroundColor: colors.light,
             width: '100%',
-            // height: '100%',
             minHeight: hp(300),
-
-            // alignItems: 'center',
-            // padding: hp(10),
           }}>
           <Text style={styles.TitleText}>Move</Text>
           <Divider />
 
-          <ScrollView style={{maxHeight: height * 0.57}}>
-            <View style={[styles.inboxWrapper]}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <PendingAvailble
-                  width={10}
-                  height={10}
-                  color={inbox?.color ?? '#A5ABB3'}
-                />
-                <Text style={[styles.inboxName, {marginLeft: wp(5)}]}>
-                  {inbox?.name}
-                </Text>
-              </View>
-              <View>
-                <AntDesign
-                  name="checkcircleo"
-                  size={hp(18)}
-                  color={colors.dark}
-                />
-              </View>
-            </View>
-
-            <Divider />
-
+          <ScrollView
+            style={{maxHeight: height * 0.57, paddingBottom: hp(10)}}
+            contentInset={{bottom: hp(15)}}>
             {allInboxes &&
               allInboxes?.map((inbx: InboxType, i: number) => (
                 <InboX {...inbx} key={`${i}`} />
@@ -340,7 +314,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: wp(15),
-    paddingVertical: hp(10),
+    paddingVertical: hp(15),
     justifyContent: 'space-between',
   },
 

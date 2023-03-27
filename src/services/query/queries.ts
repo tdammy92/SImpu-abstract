@@ -20,6 +20,7 @@ import {
   listTeams,
   listTags,
   getInboxes,
+  AdvancedSearchConversations,
 } from './inbox';
 import {getProfile} from './profile';
 import {getNotificationTrayItems} from './notification';
@@ -263,6 +264,34 @@ export const useSharedInbox = (queryParams: any, options?: any) => {
 //   );
 // };
 
+/*
+search screen quries seatch by customer
+and search by conversations
+*/
+export const useAdvanvedSearchThreads = (QueryParams: any, options: any) => {
+  const {filterQuery, page} = QueryParams;
+
+  return useInfiniteQuery(
+    ['search', 'threads', filterQuery, page],
+    ({pageParam = 1}) =>
+      AdvancedSearchConversations({
+        ...QueryParams,
+        per_page: 10,
+        page: pageParam ?? 1,
+        filterQuery,
+      }),
+
+    {
+      getNextPageParam: lastPage => {
+        // console.log('lastpage details', lastPage?.data?.meta);
+        return lastPage?.data?.meta?.page < lastPage?.data?.meta.page_count
+          ? lastPage?.data?.meta.page + 1
+          : undefined;
+      },
+      ...options,
+    },
+  );
+};
 /*
 search screen quries seatch by customer
 and search by conversations

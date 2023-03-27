@@ -66,7 +66,7 @@ const styles = StyleService.create<Styles>({
     backgroundColor: colors.lightGray,
     margin: 4,
     padding: 5,
-    borderRadius: 5,
+    borderRadius: hp(10),
   },
   pillText: {
     fontSize: FontSize.MediumText,
@@ -88,14 +88,12 @@ const styles = StyleService.create<Styles>({
   selectedPill: {
     backgroundColor: colors.darkGray,
     padding: hp(5),
-    borderRadius: hp(10),
+    borderRadius: hp(5),
     marginLeft: wp(2),
-    elevation: 1,
-    zIndex: 1,
   },
   selectedPillText: {
     color: colors.light,
-    fontSize: FontSize.MediumText,
+    fontSize: FontSize.SmallText,
   },
 
   customerScrollContainer: {

@@ -22,10 +22,10 @@ import Animated, {
 } from 'react-native-reanimated';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {Divider} from '@ui-kitten/components';
+import {Divider, IndexPath} from '@ui-kitten/components';
 import {actions, RichEditor, RichToolbar} from 'react-native-pell-rich-editor';
 import {useDispatch, useSelector} from 'react-redux';
-
+import {Icon, Layout, Select, SelectItem} from '@ui-kitten/components';
 import {colors, FONTS, FontSize} from 'src/constants';
 import {StackActions, useNavigation} from '@react-navigation/native';
 import {hp, messsageToast, wp} from 'src/utils';
@@ -44,17 +44,41 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 const {width} = Dimensions.get('screen');
 
 const ComposeMail = ({route}: any) => {
-  const {channel, connectedChannels} = route.params;
   const navigation = useNavigation();
+  const {channel, connectedChannels} = route.params;
+
+  const [SelectedChannel, setSelectedChannel] = useState<any>(() => channel);
+  const channels = useMemo(() => {
+    return connectedChannels?.filter(
+      (item: any) => item?.channel_id === SelectedChannel?.channel_id,
+    );
+  }, [channel, connectedChannels]);
+
+  // console.log(JSON.stringify(channel, null, 2));
+
+  const indexOfSelectedChannel = useMemo(
+    () =>
+      channels.findIndex(
+        (val: any) => val?.platform_nick === channel?.platform_nick,
+      ),
+    [channel, connectedChannels],
+  );
+
+  // console.log('selecred indddex', indexOfSelectedChannel);
 
   const {token, profile} = useSelector((state: StoreState) => state.user);
   const organisation = useSelector(
     (state: StoreState) => state.organisation.details,
   );
+  const [selectedIndex, setSelectedIndex] = useState(
+    new IndexPath(indexOfSelectedChannel),
+  );
 
+  // console.log('whats inside', new IndexPath(0));
+  // console.log('whats inside selected index', selectedIndex);
   // channel state
   const [ShowChannels, setShowChannels] = useState(false);
-  const [SelectedChannel, setSelectedChannel] = useState<any>(() => channel);
+  // const [SelectedChannel, setSelectedChannel] = useState<any>(1);
 
   //To(recipient)  state
   const [To, setTo] = useState<string[]>([]);
@@ -69,12 +93,6 @@ const ComposeMail = ({route}: any) => {
 
   const richText = useRef<RichEditor | undefined>();
 
-  const channels = useMemo(() => {
-    return connectedChannels?.filter(
-      (item: any) => item?.channel_id === SelectedChannel?.channel_id,
-    );
-  }, [channel, connectedChannels]);
-
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
 
@@ -82,14 +100,16 @@ const ComposeMail = ({route}: any) => {
   const [attachmentDetials, setAttachmentDetials] = useState<any>(null);
   const [attachemntId, setAttachemntId] = useState<any>([]);
   const [uploading, setuploading] = useState(false);
+  // console.log('from sleeect', channels);
 
   const handleSelectedChannel = (item: any) => {
-    setSelectedChannel(item);
-    setShowChannels(false);
+    // setSelectedChannel(item);
+    // setShowChannels(false);
   };
 
   const StartConversationMutation = useMutation(startConversation, {
     onSuccess(data, variables, context) {
+      setMessage('');
       if (data?.thread_id) {
         navigation.dispatch(
           StackActions.replace(SCREEN_NAME.mail, {
@@ -99,6 +119,7 @@ const ComposeMail = ({route}: any) => {
       }
     },
     onError(error, variables, context) {
+      setMessage('');
       console.log('error from compose message', error);
       messsageToast({message: `${error}`, type: 'danger'});
     },
@@ -139,7 +160,9 @@ const ComposeMail = ({route}: any) => {
 
       const data = {type: 'message'};
       const header = {token, organisationId: organisation?.id};
-      const url = buildConversationUrl(`upload/${SelectedChannel?.uuid}`);
+      const url = buildConversationUrl(
+        `upload/${channels[selectedIndex?.row]?.uuid}`,
+      );
       try {
         const attachmentIds = await uploadFile({
           url,
@@ -190,7 +213,7 @@ const ComposeMail = ({route}: any) => {
         // user_nick: SelectedContact?.platform_nick,
       },
 
-      credentialId: SelectedChannel?.uuid,
+      credentialId: channels[selectedIndex?.row]?.uuid,
       Auth: token,
       organisationId: organisation?.id,
     };
@@ -198,7 +221,6 @@ const ComposeMail = ({route}: any) => {
     // console.log('message payload', JSON.stringify(payload, null, 2));
 
     try {
-      setMessage('');
       await StartConversationMutation.mutateAsync(payload);
     } catch (e) {
       console.log();
@@ -206,10 +228,17 @@ const ComposeMail = ({route}: any) => {
   };
 
   // console.log('selected Item', JSON.stringify(channel, null, 2));
-  // console.log('connected channels', JSON.stringify(channels, null, 2));
+  // console.log(
+  //   'selected channels',
+  //   JSON.stringify(channels[selectedIndex?.row], null, 2),
+  // );
+
+  console.log('message HTML', message);
 
   return (
-    <KeyboardAvoidingView style={{flex: 1}}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{flex: 1}}>
       <View style={styles.container}>
         <View style={[styles.headerContainer, {}]}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -240,18 +269,97 @@ const ComposeMail = ({route}: any) => {
             {/* <View style={[styles.headerSecion, {zIndex: 40}]}> */}
             <Text style={styles.labelText}>From:</Text>
 
-            <TouchableOpacity
+            <Select
+              style={{
+                width: '85%',
+                marginLeft: wp(4),
+                // borderWidth: 0,
+                // borderColor: 'transparent',
+                // backgroundColor: 'red',
+              }}
+              placeholder={'Default'}
+              selectedIndex={selectedIndex}
+              value={() => (
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <ChannelIcon
+                    name={SelectedChannel?.channel_name}
+                    height={20}
+                    width={20}
+                  />
+                  <Text
+                    style={{
+                      marginLeft: wp(3),
+                      fontSize: FontSize.MediumText,
+                      fontFamily: FONTS.TEXT_REGULAR,
+                      color: colors.dark,
+                    }}>
+                    {channels[selectedIndex?.row]?.platform_nick}
+                  </Text>
+                </View>
+              )}
+              //@ts-ignore
+              onSelect={index => setSelectedIndex(index)}>
+              {channels?.map((item: any, i: number) => (
+                <SelectItem
+                  key={`${i}`}
+                  accessoryRight={() => (
+                    <>
+                      {i === selectedIndex?.row && (
+                        <AntDesign
+                          name={'check'}
+                          color={colors.darkGray}
+                          size={hp(16)}
+                        />
+                      )}
+                    </>
+                  )}
+                  title={evaProps => (
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <ChannelIcon
+                        name={item?.channel_name}
+                        height={20}
+                        width={20}
+                      />
+                      <Text
+                        style={{
+                          marginLeft: wp(3),
+                          fontSize: FontSize.MediumText,
+                          fontFamily: FONTS.TEXT_REGULAR,
+                          color: colors.dark,
+                        }}>
+                        {item?.platform_nick}
+                      </Text>
+                    </View>
+                    // <Text
+                    //   {...evaProps}
+                    //   style={{
+                    //     fontSize: FontSize.MediumText,
+                    //     fontFamily: FONTS.TEXT_REGULAR,
+                    //     color: colors.dark,
+                    //   }}>
+                    //   {item?.platform_nick}
+                    // </Text>
+                  )}
+                />
+              ))}
+            </Select>
+
+            {/* <TouchableOpacity
               onPress={() => setShowChannels(prev => !prev)}
               style={[
                 styles.textInputContainer,
                 {
                   marginLeft: wp(5),
-                  // zIndex: 30
                 },
               ]}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <ChannelIcon name={SelectedChannel?.channel_name} />
-                <Text style={{fontSize: FontSize.BigText, color: colors.dark}}>
+                <ChannelIcon
+                  name={SelectedChannel?.channel_name}
+                  height={20}
+                  width={20}
+                />
+                <Text
+                  style={{fontSize: FontSize.MediumText, color: colors.dark}}>
                   {SelectedChannel?.platform_name ??
                     SelectedChannel?.platform_nick}
                 </Text>
@@ -268,9 +376,9 @@ const ComposeMail = ({route}: any) => {
                   size={hp(16)}
                 />
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
-            {ShowChannels && channels?.length > 0 && (
+            {/* {ShowChannels && channels?.length > 0 && (
               <Animated.ScrollView
                 entering={FadeIn.duration(400)}
                 style={{
@@ -304,7 +412,11 @@ const ComposeMail = ({route}: any) => {
                           alignItems: 'center',
                           // zIndex: 70,
                         }}>
-                        <ChannelIcon name={item?.channel_name} />
+                        <ChannelIcon
+                          name={item?.channel_name}
+                          width={16}
+                          height={16}
+                        />
                         <Text
                           style={{
                             marginLeft: wp(4),
@@ -325,20 +437,21 @@ const ComposeMail = ({route}: any) => {
                   );
                 })}
               </Animated.ScrollView>
-            )}
+            )} */}
           </View>
           {/* </View> */}
           <Divider />
 
           {/* To */}
           <AddMail
-            SelectedChannel={SelectedChannel}
+            SelectedChannel={channels[selectedIndex?.row]?.uuid}
             title="To"
             placeholder="Add recipient"
             valueArr={To}
             setValueArr={setTo}
-            zIndex={40}
+            // zIndex={40}
             showSearchCustomer={true}
+            channelType="email"
           />
           <Divider />
 
@@ -346,13 +459,14 @@ const ComposeMail = ({route}: any) => {
           {showCC && (
             <>
               <AddMail
-                SelectedChannel={SelectedChannel}
+                SelectedChannel={channels[selectedIndex?.row]?.uuid}
                 title="CC"
                 placeholder="Add CC"
                 valueArr={CC}
                 setValueArr={setCC}
-                zIndex={30}
+                // zIndex={30}
                 showSearchCustomer={true}
+                channelType="email"
               />
               <Divider />
             </>
@@ -362,13 +476,14 @@ const ComposeMail = ({route}: any) => {
           {showBCC && (
             <>
               <AddMail
-                SelectedChannel={SelectedChannel}
+                SelectedChannel={channels[selectedIndex?.row]?.uuid}
                 title="BCC"
                 placeholder="Add BCC"
                 valueArr={BCC}
                 setValueArr={setBCC}
-                zIndex={20}
+                // zIndex={20}
                 showSearchCustomer={true}
+                channelType="email"
               />
               <Divider />
             </>
@@ -379,6 +494,7 @@ const ComposeMail = ({route}: any) => {
             <Text style={styles.inputLabelText}>Subject:</Text>
             <TextInput
               placeholder="Add a Subject"
+              placeholderTextColor={colors.darkGray}
               style={styles.inputStyle}
               value={subject}
               onChangeText={text => setSubject(text)}
@@ -396,7 +512,7 @@ const ComposeMail = ({route}: any) => {
             <RichEditor
               placeholder="Type your mail"
               androidLayerType="software"
-              style={{zIndex: -20}}
+              style={{}}
               //@ts-ignore
               ref={richText}
               onChange={descriptionText => {
@@ -483,7 +599,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: wp(15),
     justifyContent: 'space-between',
     elevation: 2,
-    zIndex: 2,
+    // zIndex: 2,
   },
 
   headerSecion: {
@@ -495,7 +611,7 @@ const styles = StyleSheet.create({
   },
   labelText: {
     fontFamily: FONTS.TEXT_SEMI_BOLD,
-    fontSize: FontSize.BigText,
+    fontSize: FontSize.MediumText,
     color: colors.dark,
     marginVertical: wp(5),
     marginLeft: wp(5),
@@ -510,9 +626,9 @@ const styles = StyleSheet.create({
   },
 
   messageText: {
-    marginLeft: hp(20),
-    fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: FontSize.BigText,
+    marginLeft: hp(15),
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
+    fontSize: FontSize.MediumText,
     color: colors.dark,
   },
 
@@ -524,7 +640,7 @@ const styles = StyleSheet.create({
   //   formConatiner: {},
   formWrapper: {
     flex: 1,
-    zIndex: 10,
+    // zIndex: 10,
   },
   inputWrapper: {
     flexDirection: 'row',
@@ -541,7 +657,8 @@ const styles = StyleSheet.create({
 
   inputStyle: {
     flex: 1,
-    fontSize: FontSize.BigText,
+    fontSize: FontSize.MediumText,
+    color: colors.dark,
   },
 
   inputToggle: {

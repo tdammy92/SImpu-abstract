@@ -15,12 +15,14 @@ const messagSlice = createSlice({
       state.message = payload.message;
       state.messageType = payload.messageType;
       state.receiver = payload.receiver;
+      state.messageContent = payload.messageContent;
     },
 
     removeMessage: (state: messageStoreState) => {
       state.message = undefined;
       state.messageType = 'reply';
       state.receiver = '';
+      state.messageContent = {body: '', subject: ''};
     },
   },
 });

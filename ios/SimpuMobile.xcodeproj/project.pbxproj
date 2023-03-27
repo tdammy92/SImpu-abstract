@@ -695,7 +695,7 @@
 				CODE_SIGN_ENTITLEMENTS = SimpuMobile/SimpuMobile.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = W6SZ22J8C2;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = SimpuMobile/Info.plist;
@@ -729,7 +729,7 @@
 				CODE_SIGN_ENTITLEMENTS = SimpuMobile/SimpuMobile.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = W6SZ22J8C2;
 				INFOPLIST_FILE = SimpuMobile/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

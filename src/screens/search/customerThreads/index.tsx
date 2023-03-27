@@ -135,7 +135,9 @@ const CustomerThreads = ({route}: any) => {
             borderRadius: hp(15),
             padding: hp(5),
           }}>
-          {item?.channel_name && <ChannelIcon name={item?.channel_name} />}
+          {item?.channel_name && (
+            <ChannelIcon name={item?.channel_name} height={20} width={20} />
+          )}
         </View>
       </TouchableOpacity>
     );
@@ -150,7 +152,7 @@ const CustomerThreads = ({route}: any) => {
           onPress={handleBack}>
           <Ionicons
             name="arrow-back-outline"
-            size={30}
+            size={hp(25)}
             color={colors.secondaryBg}
           />
         </TouchableOpacity>
@@ -158,16 +160,16 @@ const CustomerThreads = ({route}: any) => {
           name={removeEmoji(
             customerDetails?.platform_name ?? customerDetails?.platform_nick,
           )}
-          size={hp(45)}
-          style={{height: hp(45), width: hp(45)}}
-          borderRadius={hp(45 * 0.5)}
+          size={hp(40)}
+          style={{height: hp(40), width: hp(40)}}
+          borderRadius={hp(40 * 0.5)}
           src={customerDetails?.image_url}
         />
         <View style={styles.nameWrapper}>
           <Text style={styles.nameText}>
             {trimText(
               customerDetails?.platform_name ?? customerDetails?.platform_nick,
-              20,
+              18,
             )}
           </Text>
           <Text style={styles.nameText2}>
@@ -187,7 +189,7 @@ const CustomerThreads = ({route}: any) => {
             with{' '}
             {trimText(
               customerDetails?.platform_name ?? customerDetails?.platform_nick,
-              20,
+              15,
             )}
           </Text>
         </View>
@@ -257,13 +259,13 @@ const styles = StyleSheet.create({
   nameText: {
     color: colors.dark,
     fontFamily: FONTS.TEXT_SEMI_BOLD,
-    fontSize: FontSize.BigText,
+    fontSize: FontSize.MediumText,
     paddingBottom: hp(2),
   },
   nameText2: {
     color: colors.dark,
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: FontSize.BigText,
+    fontSize: FontSize.MediumText,
   },
 
   subHeadingText: {
@@ -287,7 +289,7 @@ const styles = StyleSheet.create({
   },
 
   messageText: {
-    fontSize: FontSize.BigText,
+    fontSize: FontSize.MediumText,
     color: colors.dark,
     fontFamily: FONTS.TEXT_SEMI_BOLD,
   },

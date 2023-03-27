@@ -10,7 +10,7 @@ import {
 import React from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {FontSize, colors} from 'src/constants';
+import {FONTS, FontSize, colors} from 'src/constants';
 import {copyIdToClipboard, hp, wp} from 'src/utils';
 import {useNavigation} from '@react-navigation/native';
 
@@ -24,6 +24,7 @@ import {showMessage, hideMessage} from 'react-native-flash-message';
 import Share from 'react-native-share';
 
 import Attachment from './component/attachment';
+import {InboxTagType} from 'src/@types/inbox';
 
 const height = Dimensions.get('window').height;
 
@@ -31,12 +32,12 @@ const ConversationDetails = ({route}: any) => {
   const {threadDetail} = route.params;
   const navigation = useNavigation();
 
-  // console.log('threaddd', JSON.stringify(threadDetail, null, 2));
+  // console.log('threaddd', JSON.stringify(threadDetail?.uuid, null, 2));
 
   const {sender, inbox} = threadDetail;
 
   const ShareConversationLink = async () => {
-    const link = ``;
+    const link = threadDetail?.uuid;
 
     const shareResponse = await Share.open({
       title: 'Share link',
@@ -67,7 +68,12 @@ const ConversationDetails = ({route}: any) => {
                 />
                 <View style={{alignItems: 'center', paddingVertical: hp(5)}}>
                   <Text style={styles.nameText}>{sender?.platform_name}</Text>
-                  <Text style={styles.nameText2}>{sender?.platform_nick}</Text>
+
+                  {threadDetail?.type !== 'group' && (
+                    <Text style={styles.nameText2}>
+                      {sender?.platform_nick}
+                    </Text>
+                  )}
                 </View>
               </>
             )}
@@ -84,9 +90,9 @@ const ConversationDetails = ({route}: any) => {
           )}
         </View>
 
-        <View style={{marginTop: hp(15)}}>
+        <ScrollView style={{marginTop: hp(0)}}>
           <View style={[styles.cardList, {paddingHorizontal: wp(20)}]}>
-            <Text style={styles.headingText}>Attachaments</Text>
+            <Text style={styles.headingText}>Attachments</Text>
             <Text style={styles.SubHeadingText}>
               {threadDetail?.attachments?.length ?? '0'}
             </Text>
@@ -119,7 +125,8 @@ const ConversationDetails = ({route}: any) => {
               <View
                 style={{
                   backgroundColor: colors.bootomHeaderBg,
-                  padding: hp(5),
+                  paddingVertical: hp(4),
+                  paddingHorizontal: wp(10),
                   borderRadius: hp(10),
                   flexDirection: 'row',
                   alignItems: 'center',
@@ -127,7 +134,11 @@ const ConversationDetails = ({route}: any) => {
                 <Text style={[styles.SubHeadingText, {marginRight: hp(4)}]}>
                   {FormatText(threadDetail?.channel_name)}
                 </Text>
-                <ChannelIcon name={threadDetail?.channel_name} />
+                <ChannelIcon
+                  name={threadDetail?.channel_name}
+                  height={22}
+                  width={22}
+                />
               </View>
             </View>
             <Divider style={styles.dividerStyle} />
@@ -162,6 +173,40 @@ const ConversationDetails = ({route}: any) => {
               </View>
             </View>
           </View>
+          <View style={[styles.cardList, {paddingHorizontal: wp(20)}]}>
+            <Text style={styles.headingText}>Tags</Text>
+            <Text style={styles.SubHeadingText}>
+              {threadDetail?.tags?.length ?? '0'}
+            </Text>
+          </View>
+          {threadDetail?.tags?.length > 0 && (
+            <ScrollView
+              style={styles.tagsList}
+              horizontal
+              // contentContainerStyle={{alignItems: 'center'}}
+              showsHorizontalScrollIndicator={false}>
+              {threadDetail?.tags?.map((item: InboxTagType, idx: number) => (
+                <View
+                  key={`${idx}`}
+                  style={{
+                    borderColor: item?.color,
+
+                    borderWidth: 0.8,
+                    paddingHorizontal: wp(10),
+                    borderRadius: hp(4),
+                    marginHorizontal: wp(2),
+                    marginLeft: idx === 0 ? wp(10) : wp(4),
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Text
+                    style={{color: item?.color, textTransform: 'capitalize'}}>
+                    {item?.name}
+                  </Text>
+                </View>
+              ))}
+            </ScrollView>
+          )}
           <View
             style={[
               styles.cardList,
@@ -250,7 +295,7 @@ const ConversationDetails = ({route}: any) => {
               </View>
             </View>
           </View>
-        </View>
+        </ScrollView>
       </View>
     </>
   );
@@ -278,12 +323,13 @@ const styles = StyleSheet.create({
   },
 
   nameText: {
-    fontSize: FontSize.subHeadingText,
+    fontSize: FontSize.MediumText,
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
     color: colors.dark,
     paddingVertical: hp(4),
   },
   nameText2: {
-    fontSize: FontSize.BigText,
+    fontSize: FontSize.MediumText,
     color: colors.darkGray,
   },
 
@@ -299,6 +345,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.lightGray,
     // backgroundColor: 'transparent',
     // backgroundColor: colors.light,
+  },
+  tagsList: {
+    maxHeight: hp(30),
+    minHeight: hp(30),
+    backgroundColor: colors.lightGray,
   },
 
   cardList: {
@@ -321,7 +372,8 @@ const styles = StyleSheet.create({
   cardListColumn: {},
 
   headingText: {
-    fontSize: FontSize.BigText,
+    fontSize: FontSize.MediumText,
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
     color: colors.dark,
   },
   SubHeadingText: {

@@ -20,18 +20,31 @@ import {useSearchCustomers} from 'src/services/query/queries';
 import {StoreState} from 'src/@types/store';
 import {useSelector} from 'react-redux';
 import ChannelIcon from 'src/components/common/ChannelIcon';
+import {Channel} from 'src/@types/inbox';
 
 const {width, height} = Dimensions.get('screen');
 
+type admailProps = {
+  // zIndex: number;
+  title: string;
+  channelType: Channel;
+  valueArr: string[];
+  setValueArr: Function;
+  placeholder: string;
+  SelectedChannel: any;
+  showSearchCustomer: boolean;
+};
+
 const AddMail = ({
-  zIndex,
+  // zIndex,
   title,
+  channelType,
   valueArr,
   setValueArr,
   placeholder,
   SelectedChannel,
   showSearchCustomer,
-}: any) => {
+}: admailProps) => {
   const {token} = useSelector((state: StoreState) => state.user);
   const organisation = useSelector(
     (state: StoreState) => state.organisation.details,
@@ -62,12 +75,10 @@ const AddMail = ({
         //This snippet flattens the array
         const searchCustomerResults = data?.pages
           ?.map((res: any) => res?.customers?.map((r: any) => r))
-          .flat(2);
+          ?.flat(2)
+          ?.filter((item: any) => item?.channel_name === channelType)
+          ?.filter((item: any) => !valueArr?.includes(item?.platform_nick));
 
-        //remove already selected recipent
-        //    const filteredRecpient = searchCustomerResults?.filter(
-        //      (item: any) => !valueArr?.inludes(item?.platform_nick),
-        //    );
         setsugestion(searchCustomerResults);
       },
       onError(error: any, variables: any, context: any) {
@@ -87,6 +98,13 @@ const AddMail = ({
 
   //add typed recipent
   const handleAddRecipent = () => {
+    if (textInputRef?.current) {
+      //@ts-ignore
+      textInputRef?.current.clear();
+    }
+
+    setValue('');
+
     if (checkExistance(value)) {
       messsageToast({
         message: `${value} has been added to recipient`,
@@ -97,10 +115,6 @@ const AddMail = ({
 
     Keyboard.dismiss();
     setValueArr([...valueArr, value]);
-    if (textInputRef?.current) {
-      //@ts-ignore
-      textInputRef?.current.clear();
-    }
   };
 
   //selected recipent from sugestions
@@ -114,6 +128,7 @@ const AddMail = ({
       return;
     }
     setValueArr([...valueArr, recipient]);
+    setValue('');
     setsugestion([]);
     if (textInputRef?.current) {
       //@ts-ignore
@@ -124,8 +139,7 @@ const AddMail = ({
   const handleAddFromKeyBoard = ({
     nativeEvent,
   }: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
-    console.log('eeevent', nativeEvent);
-
+    // console.log('eeevent', nativeEvent);
     // if (nativeEvent.key === 'done') {
     //   console.log('d key i needed');
     // }
@@ -140,42 +154,7 @@ const AddMail = ({
   };
 
   return (
-    <View style={{paddingVertical: hp(4), position: 'relative', zIndex}}>
-      {/* {valueArr?.length > 0 && (
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{alignItems: 'center'}}
-          contentInset={{}}
-          style={{
-            maxHeight: hp(40),
-          }}>
-          {valueArr?.map((recipent: string, idx: number) => {
-            return (
-              <View
-                key={`${idx}`}
-                style={[
-                  styles.selectedContactWrapper,
-                  {marginLeft: idx === 0 ? wp(10) : wp(3)},
-                ]}>
-                <View style={{marginRight: wp(10)}}>
-                  <Text
-                    style={{color: colors.dark, fontSize: FontSize.MediumText}}>
-                    {recipent}
-                  </Text>
-                </View>
-                <TouchableOpacity onPress={() => removeRecipent(recipent)}>
-                  <AntDesign
-                    name={'closecircleo'}
-                    color={colors.darkGray}
-                    size={hp(16)}
-                  />
-                </TouchableOpacity>
-              </View>
-            );
-          })}
-        </ScrollView>
-      )} */}
+    <View style={{paddingVertical: hp(4), position: 'relative'}}>
       <View
         style={[
           styles.inputWrapper,
@@ -199,7 +178,7 @@ const AddMail = ({
                 key={`${idx}`}
                 style={[
                   styles.selectedContactWrapper,
-                  {marginLeft: idx === 0 ? wp(10) : wp(3)},
+                  {marginLeft: idx === 0 ? wp(4) : wp(3)},
                 ]}>
                 <View style={{marginRight: wp(10)}}>
                   <Text
@@ -221,23 +200,15 @@ const AddMail = ({
           <TextInput
             ref={textInputRef}
             onBlur={() => {
-              setsugestion([]);
-              Keyboard.dismiss();
+              // setsugestion([]);
+              // Keyboard.dismiss();
             }}
             returnKeyType="done"
             onSubmitEditing={handleAddRecipent}
             onKeyPress={handleAddFromKeyBoard}
             placeholder={valueArr.length > 0 ? '' : placeholder}
-            style={[
-              styles.inputStyle,
-
-              {
-                // backgroundColor: 'blue',
-                // marginRight: wp(15),
-                // borderColor: 'red',
-                // borderWidth: 1,
-              },
-            ]}
+            placeholderTextColor={colors.darkGray}
+            style={[styles.inputStyle, {}]}
             value={value}
             onChangeText={text => setValue(text)}
           />
@@ -257,17 +228,17 @@ const AddMail = ({
         </TouchableOpacity> */}
       </View>
 
-      {/* {sugestion?.length > 0 && value !== '' && (
+      {sugestion?.length > 0 && value !== '' && (
         <ScrollView
           style={{
-            position: 'absolute',
-            top: valueArr?.length > 0 ? hp(80) : hp(58),
-            borderBottomLeftRadius: hp(15),
-            borderBottomRightRadius: hp(15),
+            // position: 'absolute',
+            // top: valueArr?.length > 0 ? hp(80) : hp(58),
+            // borderBottomLeftRadius: hp(15),
+            // borderBottomRightRadius: hp(15),
             backgroundColor: colors.light,
-            right: wp(8),
-            maxHeight: hp(300),
-            width: width * 0.7,
+            // right: wp(8),
+            // maxHeight: hp(300),
+            width: width,
           }}>
           {sugestion?.map((item: any, indx: number) => {
             return (
@@ -277,18 +248,18 @@ const AddMail = ({
                 style={{
                   marginVertical: hp(4),
                   flexDirection: 'row',
-                  alignItems: 'center',
-                  paddingHorizontal: wp(5),
-                  paddingVertical: hp(8),
-                  borderBottomWidth: 0.4,
-                  borderBottomColor: colors.darkGray,
-                  backgroundColor: colors.light,
+                  // alignItems: 'center',
+                  paddingHorizontal: wp(10),
+                  paddingVertical: hp(10),
+                  // borderBottomWidth: 0.4,
+                  // borderBottomColor: colors.darkGray,
+                  // backgroundColor: colors.light,
                 }}>
-                <ChannelIcon name={item?.channel_name} />
+                <ChannelIcon name={item?.channel_name} height={20} width={20} />
                 <Text
                   style={{
                     color: colors.dark,
-
+                    fontFamily: FONTS.TEXT_REGULAR,
                     fontSize: FontSize.MediumText,
                     marginLeft: wp(4),
                   }}>
@@ -298,7 +269,7 @@ const AddMail = ({
             );
           })}
         </ScrollView>
-      )} */}
+      )}
     </View>
   );
 };
@@ -314,8 +285,8 @@ const styles = StyleSheet.create({
   },
   inputLabelText: {
     color: colors.dark,
-    fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: FontSize.BigText,
+    fontFamily: FONTS.TEXT_SEMI_BOLD,
+    fontSize: FontSize.MediumText,
     marginRight: wp(5),
   },
 
@@ -323,21 +294,18 @@ const styles = StyleSheet.create({
     flex: 1,
     borderWidth: 0,
     borderColor: 'transparent',
-    fontSize: FontSize.BigText,
+    color: colors?.dark,
+    fontSize: FontSize.MediumText,
   },
 
   selectedContactWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: wp(4),
-    paddingVertical: hp(4),
-    //    width: wp(150),
-    height: hp(30),
+    paddingHorizontal: wp(5),
+    paddingVertical: hp(6),
     marginVertical: hp(2),
     marginHorizontal: wp(3),
-    borderRadius: hp(10),
+    borderRadius: hp(15),
     backgroundColor: colors.bootomHeaderBg,
-    //     zIndex: 5,
-    //     justifyContent: 'space-between',
   },
 });

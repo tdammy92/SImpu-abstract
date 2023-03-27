@@ -17,7 +17,7 @@ import {DrawerItem} from '@react-navigation/drawer';
 //@ts-ignore
 import {Bullets} from 'react-native-easy-content-loader';
 import TagIcon from 'src/assets/images/TagIcon.svg';
-import PendingAvailble from 'src/assets/images/GrayNotification.svg';
+import Availble from 'src/assets/images/Available.svg';
 import {colors, FONTS, FontSize} from 'src/constants';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {SCREEN_NAME} from '../constants';
@@ -78,17 +78,17 @@ const Accordion = ({
                         <View style={[styles.customInboxItemList]}>
                           {threadType === 'tag' && (
                             <TagIcon
-                              width={15}
-                              height={15}
-                              color={item?.color ?? '#A5ABB3'}
+                              width={hp(16)}
+                              height={hp(16)}
+                              color={item?.color ?? colors.darkGray}
                             />
                           )}
 
                           {threadType === 'inbox' && (
-                            <PendingAvailble
-                              width={10}
-                              height={10}
-                              color={item?.color ?? '#A5ABB3'}
+                            <Availble
+                              width={hp(10)}
+                              height={hp(10)}
+                              color={item?.color ?? colors.secondaryBgDark}
                             />
                           )}
 

@@ -75,6 +75,7 @@ const Onboarding = ({navigation}: any) => {
 
     return (
       <Animated.Text
+        allowFontScaling={false}
         style={{
           backgroundColor: '#fff',
           width: ProgressAni,
@@ -151,7 +152,9 @@ const Onboarding = ({navigation}: any) => {
               source={require('../../assets/images/icon.png')}
               style={styles.simpuIcon}
             />
-            <Text style={styles.simpuText}>Welcome to Simpu</Text>
+            <Text allowFontScaling={false} style={styles.simpuText}>
+              Welcome to Simpu
+            </Text>
           </View>
           <FlatList
             ref={ListRef}

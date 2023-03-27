@@ -22,7 +22,7 @@ import Octicons from 'react-native-vector-icons/Octicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {Divider, Text} from '@ui-kitten/components';
+import {CheckBox, Divider, Text} from '@ui-kitten/components';
 import {colors, FONTS, FontSize} from 'src/constants';
 import {useNavigation} from '@react-navigation/native';
 import {SCREEN_NAME} from 'src/navigation/constants';
@@ -54,8 +54,9 @@ const Assign = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
 
   const thread: ThreadType = props?.threadDetail;
   const assignees: AssineeType[] = props?.threadDetail?.assignees;
+  const assigneesIds: string[] = assignees?.map(it => it?.uuid);
 
-  // console.log('assigned', JSON.stringify(assignees, null, 2));
+  // console.log('assigned', JSON.stringify(assigneesIds, null, 2));
 
   const {profile, user, token} = useSelector(
     (state: StoreState) => state?.user,
@@ -65,18 +66,20 @@ const Assign = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
   );
 
   const assignMutations = useMutation(assignConversationThread, {
-    onSuccess(data, variables, context) {
+    onSuccess: async (data, variables, context) => {
       // console.log('data after assigned', JSON.stringify(data, null, 2));
+      // queryClient.invalidateQueries(['Teams']);
+      // queryClient.invalidateQueries(['Members']);
+      await queryClient.invalidateQueries(['threadInfo', thread?.uuid]);
+      await queryClient.invalidateQueries(['conversations', thread?.uuid]);
+
+      closeSheet();
+
       messsageToast({
         message: 'Assigned Conversation',
         type: 'success',
         // description: 'Error',
       });
-
-      queryClient.invalidateQueries(['Teams']);
-      queryClient.invalidateQueries(['Members']);
-      queryClient.invalidateQueries(['threadInfo', thread?.uuid]);
-      queryClient.invalidateQueries(['conversations', thread?.uuid]);
     },
     onError(error, variables, context) {
       // console.log('error after assigned', error);
@@ -160,13 +163,13 @@ const Assign = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
     });
   };
 
-  const closeSheet = () => {
+  function closeSheet() {
     //@ts-ignore
     if (ref?.current) {
       //@ts-ignore
       ref?.current.close();
     }
-  };
+  }
 
   const Assignee = (assignee: AssineeType) => {
     return (
@@ -186,9 +189,10 @@ const Assign = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
             </Text>
           </View>
         </View>
-        <View>
-          <AntDesign name="checkcircleo" size={hp(18)} color={colors.dark} />
-        </View>
+
+        <CheckBox
+          checked={!!assigneesIds?.includes(assignee?.uuid)}
+          onChange={() => {}}></CheckBox>
       </View>
     );
   };
@@ -215,9 +219,10 @@ const Assign = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
           </Text> */}
           </View>
         </View>
-        <View>
-          <Entypo name="circle" size={hp(18)} color={colors.dark} />
-        </View>
+
+        <CheckBox
+          checked={!!assigneesIds?.includes(member?.id)}
+          onChange={() => {}}></CheckBox>
       </TouchableOpacity>
     );
   };
@@ -242,9 +247,10 @@ const Assign = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
             </Text>
           </View>
         </View>
-        <View>
-          <Entypo name="circle" size={hp(18)} color={colors.dark} />
-        </View>
+
+        <CheckBox
+          checked={!!assigneesIds?.includes(team?.id)}
+          onChange={() => {}}></CheckBox>
       </TouchableOpacity>
     );
   };
@@ -291,7 +297,9 @@ const Assign = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
           <Text style={styles.TitleText}>Assign</Text>
           <Divider />
 
-          <ScrollView style={{maxHeight: height * 0.57}}>
+          <ScrollView
+            style={{maxHeight: height * 0.57, paddingBottom: hp(10)}}
+            contentInset={{bottom: hp(15)}}>
             <View style={[styles.sectionwrapper]}>
               <Text style={[styles.sectionTitle]}>Assigned</Text>
               {assignees &&

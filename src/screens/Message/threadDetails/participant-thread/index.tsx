@@ -22,7 +22,7 @@ import Octicons from 'react-native-vector-icons/Octicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {Divider, Text} from '@ui-kitten/components';
+import {CheckBox, Divider, Text} from '@ui-kitten/components';
 import {colors, FONTS, FontSize} from 'src/constants';
 import {useNavigation} from '@react-navigation/native';
 import {SCREEN_NAME} from 'src/navigation/constants';
@@ -47,7 +47,7 @@ import {
 } from 'src/@types/inbox';
 import {useMemberList, useTeamsList} from 'src/services/query/queries';
 import {queryClient} from 'src/index';
-import {Button} from 'src/components/common/Button';
+import Animated, {BounceInDown, BounceOutDown} from 'react-native-reanimated';
 
 type Props = {
   ref: RBSheetProps;
@@ -76,28 +76,23 @@ const Participant = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
   );
 
   const ParticipantMutations = useMutation(addParticipants, {
-    onSuccess(data, variables, context) {
-      // console.log(
-      //   'data after adding participant',
-      //   JSON.stringify(data, null, 2),
-      // );
+    onSuccess: async (data, variables, context) => {
       setAddedMembers([]);
+      await queryClient.invalidateQueries(['Members', thread?.uuid]);
+      await queryClient.invalidateQueries(['threadInfo', thread?.uuid]);
+      await queryClient.invalidateQueries(['conversations', thread?.uuid]);
+      closeSheet();
+
       messsageToast({
         message: 'Added new participant',
         type: 'success',
         // description: 'Error',
       });
-      queryClient.invalidateQueries(['Members']);
-      queryClient.invalidateQueries(['Members', thread?.uuid]);
-      queryClient.invalidateQueries(['threadInfo']);
-      queryClient.invalidateQueries(['threadInfo', thread?.uuid]);
-      queryClient.invalidateQueries(['conversations', thread?.uuid]);
     },
     onError(error, variables, context) {
       console.log('error after participant', error);
-
       //@ts-ignore
-      messsageToast({message: error, type: 'danger', description: 'Error'});
+      messsageToast({message: error, type: 'danger'});
     },
   });
 
@@ -156,13 +151,13 @@ const Participant = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
     });
   };
 
-  const closeSheet = () => {
+  function closeSheet() {
     //@ts-ignore
     if (ref?.current) {
       //@ts-ignore
       ref?.current.close();
     }
-  };
+  }
 
   const Participant = (participant: ThreadParticipantType) => {
     return (
@@ -212,13 +207,10 @@ const Participant = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
           </Text> */}
           </View>
         </View>
-        <View>
-          {addedMembers.includes(member?.id) ? (
-            <AntDesign name="checkcircleo" size={hp(18)} color={colors.dark} />
-          ) : (
-            <Entypo name="circle" size={hp(18)} color={colors.dark} />
-          )}
-        </View>
+
+        <CheckBox
+          checked={!!addedMembers.includes(member?.id)}
+          onChange={() => {}}></CheckBox>
       </TouchableOpacity>
     );
   };
@@ -238,7 +230,7 @@ const Participant = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
   }
 
   // console.log('Member', JSON.stringify(organisationMember, null, 2));
-  console.log('Thread', JSON.stringify(addedMembers, null, 2));
+  // console.log('Thread', JSON.stringify(addedMembers, null, 2));
   // console.log('Thread', JSON.stringify(thread?, null, 2));
 
   return (
@@ -248,6 +240,7 @@ const Participant = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
         ref={ref}
         height={height * 0.6}
         openDuration={250}
+        onClose={() => setAddedMembers([])}
         // closeOnDragDown={false}
         customStyles={{
           wrapper: {
@@ -279,9 +272,10 @@ const Participant = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
           }}>
           <Text style={styles.TitleText}>Participant</Text>
           <Divider />
-          <ScrollView style={{maxHeight: height * 0.57}}>
+          <ScrollView
+            style={{maxHeight: height * 0.57, paddingBottom: hp(10)}}
+            contentInset={{bottom: hp(15)}}>
             <View style={[styles.sectionwrapper]}>
-              {/* <Text style={[styles.sectionTitle]}>Participants</Text> */}
               {participants &&
                 participants?.map((part: ThreadParticipantType, i: number) => (
                   <Participant {...part} key={`${i}`} />
@@ -308,38 +302,49 @@ const Participant = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
 
           {/* show button only when there is member to add */}
           {organisationMember?.length && (
-            <View
-              style={{
-                width: '100%',
-                alignItems: 'center',
-                justifyContent: 'center',
-                position: 'absolute',
-                bottom: hp(20),
-              }}>
-              <TouchableOpacity
-                disabled={!addedMembers.length}
-                onPress={handleAddParticipant}
-                style={{
-                  backgroundColor: colors.secondaryBg,
-                  width: wp(100),
-                  height: hp(35),
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: hp(8),
-                  paddingVertical: hp(5),
-                }}>
-                <Text
+            <>
+              {!!addedMembers.length && (
+                <Animated.View
+                  entering={BounceInDown}
+                  exiting={BounceOutDown}
                   style={{
-                    color: colors.light,
-                    fontFamily: FONTS.TEXT_REGULAR,
-                    fontSize: FontSize.MediumText,
+                    width: '100%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    position: 'absolute',
+                    bottom: hp(20),
                   }}>
-                  Add
-                </Text>
-                <AntDesign name="adduser" color={colors.light} size={hp(22)} />
-              </TouchableOpacity>
-            </View>
+                  <TouchableOpacity
+                    disabled={!addedMembers.length}
+                    onPress={handleAddParticipant}
+                    style={{
+                      backgroundColor: colors.secondaryBg,
+                      width: wp(120),
+                      height: hp(35),
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: hp(8),
+                      paddingVertical: hp(5),
+                    }}>
+                    <Text
+                      style={{
+                        color: colors.light,
+                        fontFamily: FONTS.TEXT_REGULAR,
+                        fontSize: FontSize.MediumText,
+                        marginRight: wp(4),
+                      }}>
+                      Add
+                    </Text>
+                    <AntDesign
+                      name="adduser"
+                      color={colors.light}
+                      size={hp(22)}
+                    />
+                  </TouchableOpacity>
+                </Animated.View>
+              )}
+            </>
           )}
         </View>
       </RBSheet>

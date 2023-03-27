@@ -26,7 +26,7 @@ import {useNavigation, StackActions} from '@react-navigation/native';
 import {hp, messsageToast, wp} from 'src/utils';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {FONTS, FontSize, colors} from 'src/constants';
-import {Divider} from '@ui-kitten/components';
+import {Divider, IndexPath, Select, SelectItem} from '@ui-kitten/components';
 //@ts-ignore
 import {AutoGrowingTextInput} from 'react-native-autogrow-textinput';
 //@ts-ignore
@@ -54,6 +54,24 @@ const ComposeSocial = ({route}: any) => {
   const {channel, connectedChannels} = route.params;
   const navigation = useNavigation();
 
+  const [SelectedChannel, setSelectedChannel] = useState<any>(() => channel);
+
+  const channels = useMemo(() => {
+    return connectedChannels?.filter(
+      (item: any) => item?.channel_id === SelectedChannel?.channel_id,
+    );
+  }, [channel, connectedChannels]);
+
+  // console.log(JSON.stringify(channel, null, 2));
+
+  const indexOfSelectedChannel = useMemo(
+    () =>
+      channels.findIndex(
+        (val: any) => val?.platform_nick === channel?.platform_nick,
+      ),
+    [channel, connectedChannels],
+  );
+
   const contactInputref = useRef(null);
 
   const {token, profile} = useSelector((state: StoreState) => state.user);
@@ -65,7 +83,10 @@ const ComposeSocial = ({route}: any) => {
 
   // channel state
   const [ShowChannels, setShowChannels] = useState(false);
-  const [SelectedChannel, setSelectedChannel] = useState<any>(() => channel);
+
+  const [selectedIndex, setSelectedIndex] = useState(
+    new IndexPath(indexOfSelectedChannel),
+  );
 
   //contact states
   const [SelectedContact, setSelectedContact] = useState<string>('');
@@ -102,7 +123,7 @@ const ComposeSocial = ({route}: any) => {
     {
       searchQuery: debounceValue,
       page: 1,
-      channelId: SelectedChannel?.channel_id,
+      channelId: channels[selectedIndex?.row]?.channel_id,
       headers: {
         Auth: token,
         organisationId: organisation?.id,
@@ -140,12 +161,6 @@ const ComposeSocial = ({route}: any) => {
   // console.log('slected channel', JSON.stringify(SelectedChannel, null, 2));
   // console.log('all channels', JSON.stringify(connectedChannels, null, 2));
 
-  const channels = useMemo(() => {
-    return connectedChannels?.filter(
-      (item: any) => item?.channel_id === SelectedChannel?.channel_id,
-    );
-  }, [channel, connectedChannels]);
-
   //send message handler
   const sendMessage = async () => {
     if (!SelectedContact) {
@@ -161,7 +176,7 @@ const ComposeSocial = ({route}: any) => {
         user_nick: SelectedContact,
       },
 
-      credentialId: SelectedChannel?.uuid,
+      credentialId: channels[selectedIndex?.row]?.uuid,
       Auth: token,
       organisationId: organisation?.id,
     };
@@ -176,10 +191,10 @@ const ComposeSocial = ({route}: any) => {
     }
   };
 
-  const handleSelectedChannel = (item: any) => {
-    setSelectedChannel(item);
-    setShowChannels(false);
-  };
+  // const handleSelectedChannel = (item: any) => {
+  //   setSelectedChannel(item);
+  //   setShowChannels(false);
+  // };
 
   const handleSelectedContact = (item: string) => {
     setSelectedContact(item);
@@ -236,7 +251,9 @@ const ComposeSocial = ({route}: any) => {
 
       const data = {type: 'message'};
       const header = {token, organisationId: organisation?.id};
-      const url = buildConversationUrl(`upload/${SelectedChannel?.uuid}`);
+      const url = buildConversationUrl(
+        `upload/${channels[selectedIndex?.row]?.uuid}`,
+      );
       try {
         const attachmentIds = await uploadFile({
           url,
@@ -279,7 +296,7 @@ const ComposeSocial = ({route}: any) => {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{flex: 1}}>
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{flex: 1, backgroundColor: colors?.light}}>
         <View style={[styles.Container, {zIndex: 10}]}>
           {/* header section */}
           <View style={[styles.header, {zIndex: 20}]}>
@@ -304,13 +321,88 @@ const ComposeSocial = ({route}: any) => {
               <View style={[styles.headerSecion, {zIndex: 40}]}>
                 <Text style={styles.labelText}>From:</Text>
 
-                <TouchableOpacity
+                <Select
+                  style={{
+                    width: '85%',
+                    marginLeft: wp(4),
+                    // borderWidth: 0,
+                    // borderColor: 'transparent',
+                    // backgroundColor: 'red',
+                  }}
+                  placeholder={'Default'}
+                  selectedIndex={selectedIndex}
+                  value={() => (
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <ChannelIcon
+                        name={channels[selectedIndex?.row]?.channel_name}
+                        height={23}
+                        width={23}
+                      />
+                      <Text
+                        style={{
+                          marginLeft: wp(3),
+                          fontSize: FontSize.MediumText,
+                          fontFamily: FONTS.TEXT_REGULAR,
+                          color: colors.dark,
+                        }}>
+                        {channels[selectedIndex?.row]?.platform_nick}
+                      </Text>
+                    </View>
+                  )}
+                  //@ts-ignore
+                  onSelect={index => setSelectedIndex(index)}>
+                  {channels?.map((item: any, i: number) => (
+                    <SelectItem
+                      key={`${i}`}
+                      accessoryRight={() => (
+                        <>
+                          {i === selectedIndex?.row && (
+                            <AntDesign
+                              name={'check'}
+                              color={colors.darkGray}
+                              size={hp(16)}
+                            />
+                          )}
+                        </>
+                      )}
+                      title={evaProps => (
+                        <View
+                          style={{flexDirection: 'row', alignItems: 'center'}}>
+                          <ChannelIcon
+                            name={item?.channel_name}
+                            height={25}
+                            width={25}
+                          />
+                          <Text
+                            style={{
+                              marginLeft: wp(3),
+                              fontSize: FontSize.MediumText,
+                              fontFamily: FONTS.TEXT_REGULAR,
+                              color: colors.dark,
+                            }}>
+                            {item?.platform_nick}
+                          </Text>
+                        </View>
+                      )}
+                    />
+                  ))}
+                </Select>
+
+                {/* <TouchableOpacity
                   onPress={() => setShowChannels(prev => !prev)}
                   style={[styles.textInputContainer, {marginLeft: wp(5)}]}>
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <ChannelIcon name={SelectedChannel?.channel_name} />
+                    <ChannelIcon
+                      name={SelectedChannel?.channel_name}
+                      height={25}
+                      width={25}
+                    />
                     <Text
-                      style={{fontSize: FontSize.BigText, color: colors.dark}}>
+                      style={{
+                        fontSize: FontSize.MediumText,
+                        fontFamily: FONTS.TEXT_REGULAR,
+                        color: colors.dark,
+                      }}>
                       {SelectedChannel?.platform_name}
                     </Text>
                   </View>
@@ -335,13 +427,11 @@ const ComposeSocial = ({route}: any) => {
                       position: 'absolute',
                       backgroundColor: colors.light,
                       maxHeight: hp(300),
-
                       width: width * 0.7,
                       top: hp(Platform.OS === 'android' ? 45 : 35),
                       right: wp(20),
                       borderBottomStartRadius: hp(10),
                       borderBottomEndRadius: hp(10),
-                      // zIndex: 40,
                     }}>
                     {channels?.map((item: any, indx: number) => {
                       return (
@@ -356,19 +446,23 @@ const ComposeSocial = ({route}: any) => {
                             paddingHorizontal: wp(10),
                             borderBottomColor: colors.lightGray,
                             borderBottomWidth: 1,
-                            zIndex: 50,
                           }}>
                           <View
                             style={{
                               flexDirection: 'row',
                               alignItems: 'center',
                             }}>
-                            <ChannelIcon name={item?.channel_name} />
+                            <ChannelIcon
+                              name={item?.channel_name}
+                              height={25}
+                              width={25}
+                            />
                             <Text
                               style={{
                                 marginLeft: wp(4),
                                 color: colors.dark,
                                 fontSize: FontSize.MediumText,
+                                fontFamily: FONTS.TEXT_REGULAR,
                               }}>
                               {item?.platform_name ?? item?.platform_nick}
                             </Text>
@@ -384,100 +478,100 @@ const ComposeSocial = ({route}: any) => {
                       );
                     })}
                   </Animated.ScrollView>
-                )}
+                )} */}
               </View>
-              <View style={{backgroundColor: colors.lightGray, height: 1}} />
               <View
-                style={[styles.headerSecion, {zIndex: 20, paddingTop: hp(5)}]}>
-                <Text style={styles.labelText}>To:</Text>
-                <View style={styles.textInputContainer}>
-                  {!SelectedContact && (
-                    <TextInput
-                      ref={contactInputref}
-                      style={styles.searchInput}
-                      value={value}
-                      onChangeText={text => setValue(text)}
-                      placeholder="Search contacts with name or number"
-                    />
-                  )}
+                style={{
+                  backgroundColor: colors.lightGray,
+                  width: '100%',
+                  height: 1,
+                }}
+              />
 
-                  {SelectedContact && (
-                    <View
-                      style={{
-                        marginLeft: wp(4),
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        paddingHorizontal: wp(15),
-                        paddingVertical: hp(4),
-                        backgroundColor: colors.lightGray,
-                        borderRadius: hp(20),
-                      }}>
-                      {/* <UserAvatar
-                        size={hp(24)}
-                        style={{height: hp(24), width: hp(24)}}
-                        borderRadius={hp(24 * 0.5)}
-                        name={removeEmoji(
-                          SelectedContact?.platform_name ??
-                            SelectedContact?.platform_nick,
-                        )}
-                        src={SelectedContact?.image_url}
-                      /> */}
-                      <Text
+              <View>
+                <View style={[styles.headerSecion, {paddingTop: hp(5)}]}>
+                  <Text style={styles.labelText}>To:</Text>
+                  <View style={styles.textInputContainer}>
+                    {!SelectedContact && (
+                      <TextInput
+                        ref={contactInputref}
+                        style={styles.searchInput}
+                        value={value}
+                        onChangeText={text => setValue(text)}
+                        placeholder="Search contacts with name or number"
+                      />
+                    )}
+
+                    {SelectedContact && (
+                      <View
                         style={{
                           marginLeft: wp(4),
-                          color: colors.dark,
-                          fontSize: FontSize.MediumText,
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          paddingHorizontal: wp(10),
+                          paddingVertical: hp(4),
+                          backgroundColor: colors.lightGray,
+                          borderRadius: hp(20),
                         }}>
-                        {SelectedContact}
-                      </Text>
-                    </View>
-                  )}
+                        <Text
+                          style={{
+                            marginLeft: wp(4),
+                            color: colors.dark,
+                            fontSize: FontSize.MediumText,
+                            fontFamily: FONTS.TEXT_REGULAR,
+                          }}>
+                          {SelectedContact}
+                        </Text>
+                      </View>
+                    )}
 
-                  {/* show close button only when there is a selected item */}
-                  {SelectedContact ? (
-                    <TouchableOpacity
-                      onPress={removeSelectedContact}
-                      style={{
-                        position: 'absolute',
-                        right: wp(-10),
-                        padding: hp(5),
-                      }}>
-                      <AntDesign
-                        name="closecircleo"
-                        color={colors.darkGray}
-                        size={hp(18)}
-                      />
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity
-                      onPress={addInput}
-                      style={{
-                        position: 'absolute',
-                        right: wp(-10),
-                        padding: hp(5),
-                      }}>
-                      <AntDesign
-                        name="pluscircleo"
-                        color={colors.darkGray}
-                        size={hp(18)}
-                      />
-                    </TouchableOpacity>
-                  )}
+                    {/* show close button only when there is a selected item */}
+                    {SelectedContact ? (
+                      <TouchableOpacity
+                        onPress={removeSelectedContact}
+                        style={{
+                          position: 'absolute',
+                          right: wp(-10),
+                          padding: hp(5),
+                        }}>
+                        <AntDesign
+                          name="closecircleo"
+                          color={colors.darkGray}
+                          size={hp(18)}
+                        />
+                      </TouchableOpacity>
+                    ) : (
+                      <TouchableOpacity
+                        onPress={addInput}
+                        style={{
+                          position: 'absolute',
+                          right: wp(-10),
+                          padding: hp(5),
+                        }}>
+                        <AntDesign
+                          name="pluscircleo"
+                          color={colors.darkGray}
+                          size={hp(18)}
+                        />
+                      </TouchableOpacity>
+                    )}
+                  </View>
+
+                  {/* show list when searching contact */}
                 </View>
-
-                {/* show list when searching cotact */}
                 {value !== '' && CustomerList?.length > 0 && (
                   <Animated.ScrollView
                     entering={FadeIn.duration(400)}
                     style={{
-                      position: 'absolute',
+                      // position: 'absolute',
                       backgroundColor: colors.light,
-                      maxHeight: hp(300),
-                      width: width * 0.7,
-                      top: hp(Platform.OS === 'android' ? 55 : 45),
-                      right: wp(20),
-                      borderBottomStartRadius: hp(10),
-                      borderBottomEndRadius: hp(10),
+                      maxHeight: hp(400),
+                      paddingHorizontal: wp(10),
+                      // width: width,
+                      // top: hp(Platform.OS === 'android' ? 55 : 45),
+                      // right: wp(20),
+                      // borderBottomStartRadius: hp(10),
+                      // borderBottomEndRadius: hp(10),
                     }}>
                     {CustomerList?.map((item: any, indx) => {
                       return (
@@ -490,11 +584,9 @@ const ComposeSocial = ({route}: any) => {
                             flexDirection: 'row',
                             alignItems: 'center',
                             height: hp(45),
-
                             paddingHorizontal: wp(10),
-                            borderBottomColor: colors.lightGray,
-                            borderBottomWidth: 1,
-                            zIndex: 50,
+                            // borderBottomColor: colors.lightGray,
+                            // borderBottomWidth: 1,
                           }}>
                           <UserAvatar
                             size={hp(24)}
@@ -600,7 +692,7 @@ const styles = StyleSheet.create({
   },
   labelText: {
     fontFamily: FONTS.TEXT_SEMI_BOLD,
-    fontSize: FontSize.BigText,
+    fontSize: FontSize.MediumText,
     color: colors.dark,
     marginVertical: wp(5),
     marginLeft: wp(5),
@@ -617,6 +709,7 @@ const styles = StyleSheet.create({
   searchInput: {
     fontSize: FontSize.MediumText,
     minHeight: hp(30),
+    color: colors?.dark,
     // paddingVertical: hp(8),
   },
 

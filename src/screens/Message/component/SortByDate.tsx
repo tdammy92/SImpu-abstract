@@ -4,6 +4,7 @@ import {
   Dimensions,
   TouchableOpacity,
   KeyboardAvoidingView,
+  ScrollView,
 } from 'react-native';
 import React, {forwardRef, Fragment, useRef, memo} from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -12,7 +13,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import RBSheet, {RBSheetProps} from 'react-native-raw-bottom-sheet';
 import {Divider, Text} from '@ui-kitten/components';
 import {hp, wp} from 'src/utils';
-import {colors, FONTS} from 'src/constants';
+import {colors, FONTS, FontSize} from 'src/constants';
 import {FormatText} from 'src/utils/string-utils/string';
 import {DateBy} from 'src/utils/helper';
 import DateInput from './DateInput';
@@ -24,7 +25,7 @@ type Props = {
   ref: RBSheetProps;
 };
 
-const SheetHeight = Math.floor(height * 0.34);
+const SheetHeight = Math.floor(height * 0.38);
 
 const SortByDate = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
   const {setDateIndex, DateIndex, setFilter, closeSortDateSheet}: any = props;
@@ -94,17 +95,19 @@ const SortByDate = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
           backgroundColor: 'rgba(105,105,105,0.7)',
         },
         draggableIcon: {
-          backgroundColor: '#000',
+          backgroundColor: colors.bootomHeaderBg,
         },
         container: {
           borderTopLeftRadius: hp(15),
           borderTopRightRadius: hp(15),
-          backgroundColor: '#E5E4E2',
+          backgroundColor: colors.light,
           padding: 0,
         },
       }}>
       <KeyboardAvoidingView>
-        <View style={styles.sortContainer}>
+        <ScrollView
+          style={styles.sortContainer}
+          contentContainerStyle={{alignItems: 'center'}}>
           <Text style={styles.sortTitle}>Sort by Date</Text>
           <View style={styles.sortCard}>
             {DateBy.map((sortItem, i) => {
@@ -117,7 +120,7 @@ const SortByDate = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
                     <View style={styles.leftSide}>
                       <MaterialCommunityIcons
                         name={Icon}
-                        size={20}
+                        size={hp(22)}
                         color="#555"
                       />
                       <View>
@@ -141,7 +144,7 @@ const SortByDate = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
               );
             })}
           </View>
-        </View>
+        </ScrollView>
         {/* select date sheet */}
         <DateInput
           ref={DateRef}
@@ -160,11 +163,10 @@ const styles = StyleSheet.create({
   sortContainer: {
     width: '100%',
     height: '100%',
-    alignItems: 'center',
   },
   sortTitle: {
     textAlign: 'center',
-    fontSize: hp(18),
+    fontSize: FontSize.BigText,
     fontFamily: FONTS.TEXT_SEMI_BOLD,
     marginVertical: hp(5),
   },
@@ -172,8 +174,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.light,
     height: '90%',
     width: '97%',
-    borderRadius: hp(10),
-    elevation: 2,
+    // borderRadius: hp(10),
+    // elevation: 2,
   },
 
   listItem: {
@@ -191,13 +193,13 @@ const styles = StyleSheet.create({
 
   sortText: {
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: hp(15),
+    fontSize: FontSize.MediumText,
     color: '#000',
     marginLeft: wp(10),
   },
   sortTextSample: {
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: hp(11),
+    fontSize: FontSize.SmallText,
     color: 'gray',
     marginLeft: wp(10),
   },

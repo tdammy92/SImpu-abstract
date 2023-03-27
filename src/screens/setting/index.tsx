@@ -1,6 +1,13 @@
 import React, {useState, useCallback, useEffect, useRef} from 'react';
 import {Text, Toggle, Button, Avatar} from '@ui-kitten/components';
-import {View, Image, Pressable, Linking, Alert} from 'react-native';
+import {
+  View,
+  Image,
+  Pressable,
+  Linking,
+  Alert,
+  TouchableOpacity,
+} from 'react-native';
 
 import {getApplicationName, getReadableVersion} from 'react-native-device-info';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -31,7 +38,8 @@ import {colors} from 'src/constants';
 import LogoutSheet from './component/LogoutSheet';
 import {pusher, queryClient} from 'src/index';
 import {useMutation} from 'react-query';
-import {removeDeviceNotification} from 'src/services/query/notification';
+import {removeDeviceNotification} from 'src/services/mutations/notification';
+import {showLoader, hideLoader} from 'src/store/Loader';
 interface Props
   extends NativeStackScreenProps<MainStackParamList, SCREEN_NAME.settings> {}
 
@@ -39,6 +47,9 @@ const Setting = (props: Props): JSX.Element => {
   const {navigation} = props;
   const dispatch = useDispatch();
   const {profile, token} = useSelector((state: StoreState) => state.user);
+  const organisationId = useSelector(
+    (state: StoreState) => state?.organisation?.details?.id,
+  );
   const {details} = useSelector((state: StoreState) => state.device);
 
   const [checked, setChecked] = useState(false);
@@ -46,12 +57,10 @@ const Setting = (props: Props): JSX.Element => {
 
   const removeDeviceMutation = useMutation(removeDeviceNotification, {
     onSuccess(data, variables, context) {
-      setTimeout(
-        () => navigation.reset({index: 0, routes: [{name: SCREEN_NAME.auth}]}),
-        300,
-      );
+      goBackToLoginScreen();
     },
     onError(error, variables, context) {
+      goBackToLoginScreen();
       console.log(error);
     },
   });
@@ -90,13 +99,31 @@ const Setting = (props: Props): JSX.Element => {
     navigation.navigate(SCREEN_NAME.quickreplies);
   }, [navigation]);
 
+  const UnsubscribeCurrentPusherChannel = async () => {
+    const orgChannelName = `presence-organisation-${organisationId}`;
+    const liveChatChannelName = `presence-livechat-${organisationId}`;
+    const userChannelName = `private-profile-${profile?.id}`;
+
+    try {
+      await pusher.unsubscribe({channelName: orgChannelName});
+      // await pusher.unsubscribe({channelName: liveChatChannelName});
+      await pusher.unsubscribe({channelName: userChannelName});
+    } catch (e) {
+      console.log('error from pusher unsub', e);
+    }
+  };
+
   //handle logout function
   const handleLogout = async () => {
     closeSheet();
+    dispatch(showLoader());
     dispatch(logOutUser());
 
     //clear all query keys
     queryClient.clear();
+
+    // unsubscribe pusher channels
+    await UnsubscribeCurrentPusherChannel();
 
     //disconnect pusher notifications
     await pusher.disconnect();
@@ -109,6 +136,15 @@ const Setting = (props: Props): JSX.Element => {
     //timeout before routing back to the login screen
   };
 
+  function goBackToLoginScreen() {
+    setTimeout(
+      () => navigation.reset({index: 0, routes: [{name: SCREEN_NAME.auth}]}),
+      300,
+    );
+
+    dispatch(hideLoader());
+  }
+
   return (
     <>
       <View style={styles.container}>
@@ -119,7 +155,7 @@ const Setting = (props: Props): JSX.Element => {
             <MaterialCommunityIcons
               name="circle-edit-outline"
               color="#0A0748"
-              size={25}
+              size={hp(25)}
             />
           </View>
 
@@ -238,6 +274,7 @@ const Setting = (props: Props): JSX.Element => {
           <Text style={styles.infoText2}>Built to empower teams</Text>
         </View>
       </View>
+
       <LogoutSheet
         ref={logoutSheet}
         // closeSheet={closeSheet}

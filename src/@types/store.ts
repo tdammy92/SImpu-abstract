@@ -1,4 +1,10 @@
-import {replyType, messageType, messageOptionType} from './inbox';
+import {
+  replyType,
+  messageType,
+  messageOptionType,
+  filterType,
+  MessageContentType,
+} from './inbox';
 import {organisationStore, deviceStore} from './profile';
 export interface Profile {
   id: string;
@@ -91,7 +97,12 @@ export interface forwardStoreState {
 export interface messageStoreState {
   message?: messageType;
   messageType: messageOptionType;
+  messageContent: MessageContentType;
   receiver: string;
+}
+export interface FilterMesageStore {
+  filterMessageType: filterType[];
+  selectedFilter: filterType | null;
 }
 
 export interface StoreState {
@@ -103,4 +114,5 @@ export interface StoreState {
   reply: replyStoreState;
   forward: forwardStoreState;
   message: messageStoreState;
+  filterMessageBy: FilterMesageStore;
 }

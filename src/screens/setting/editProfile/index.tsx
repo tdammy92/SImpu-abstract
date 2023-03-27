@@ -44,11 +44,6 @@ import {buildAppsURL} from 'src/services/api/api-client';
 import {uploadFile} from 'src/services/upload/attchments';
 import {uploadProfilePicture} from 'src/services/upload/profilePicture';
 
-//@ts-ignore
-import * as mime from 'react-native-mime-types';
-
-// const mime = require('mime');
-
 interface Props
   extends NativeStackScreenProps<MainStackParamList, SCREEN_NAME.settings> {}
 
@@ -70,58 +65,69 @@ const EditProfile = (props: Props): JSX.Element => {
   };
 
   //update user profile
-  const profileUpdate = useMutation(
-    value =>
-      updateProfiles(value, {
-        Auth: token,
-        organisationId: profile.organisation_id,
-      }),
-    {},
-  );
+  const profileUpdateMutation = useMutation(updateProfiles, {
+    onSuccess: (data, variables, context) => {
+      messsageToast({message: 'Profile updated', type: 'success'});
+      dispatch(updateProfile(data?.profile));
+    },
+
+    onError(error, variables, context) {
+      messsageToast({message: "Profile cound'nt be updated", type: 'danger'});
+    },
+  });
 
   //update user profile Image
-  const profileImageUpdate = useMutation(
-    value =>
-      updateProfileImage(value, {
-        Auth: token,
-        organisationId: profile.organisation_id,
-      }),
-    {},
-  );
+  const profileImageUpdate = useMutation(updateProfileImage, {
+    onSuccess: (data, variables, context) => {
+      messsageToast({message: 'Profile Image updated', type: 'success'});
+      dispatch(updateProfile(data?.profile));
+    },
+    onError: (error, variables, context) => {
+      //@ts-ignore
+      messsageToast({
+        message: "Profile Image could'nt be updated",
+        type: 'danger',
+      });
+      // messsageToast({message: 'Update failed', type: 'danger'});
+      console.log('from onError', error);
+    },
+  });
 
   const bottomSheetRef = useRef<any>(null);
 
   //open camera code
   const Snap = async () => {
-    // ImagePicker.openCamera({
-    //   width: 300,
-    //   height: 400,
-    //   cropping: true,
-    //   freeStyleCropEnabled: true,
-    //   includeBase64: false,
-    //   mediaType: 'photo',
-    // })
-    //   .then(image => {
-    //     if (image) {
-    //       updateImage(image);
-    //     }
-    //     closeSheet();
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //     closeSheet();
-    //   });
+    ImagePicker.openCamera({
+      width: 300,
+      height: 400,
+      cropping: true,
+      freeStyleCropEnabled: true,
+      includeBase64: false,
+      mediaType: 'photo',
+      forceJpg: true,
+    })
+      .then(image => {
+        if (image) {
+          updateImage(image);
+        }
+        closeSheet();
+      })
+      .catch(err => {
+        console.log(err);
+        closeSheet();
+      });
   };
 
   //open gallery code
   const Gallery = async () => {
     ImagePicker.openPicker({
-      // width: 300,
-      // height: 400,
-      // cropping: true,
-      // freeStyleCropEnabled: true,
+      width: 300,
+      height: 400,
+      cropping: true,
+      freeStyleCropEnabled: true,
       includeBase64: false,
       mediaType: 'photo',
+      forceJpg: true,
     })
       .then(image => {
         if (image) {
@@ -138,48 +144,22 @@ const EditProfile = (props: Props): JSX.Element => {
 
   //function to handle update image
   const updateImage = async (image: any) => {
-    // console.log('Selected Image', JSON.stringify(image, null, 2));
-
+    //extract image uri type and name
     const imageData = {
       uri: Platform.OS === 'android' ? image?.path : image?.sourceURL,
       type: image?.mime,
       name: Platform.OS === 'android' ? Date.now().toString() : image?.filename,
     };
-    // const url = buildAppsURL(`/profile/save_image`);
-    // const header = {token, organisationId: organisation?.id};
 
-    // setImagePath(Platform.OS === 'android' ? image?.path : image?.sourceURL);
-    // console.log(
-    //   `upload profile picture data  ${Platform.OS}`,
-    //   JSON.stringify(image, null, 2),
-    // );
-
+    //build a form data with image details
     let imageupload = new FormData();
     imageupload.append('image', imageData);
 
     try {
-      // const uploadData = await uploadFile({
-      //   url,
-      //   file: imageData,
-      //   fileName: 'file',
-      //   header,
-      //   onProgress,
-      // });
-
-      // console.log('upllload with xhr', uploadData);
-      // const newPicture = await uploadProfilePicture(imageupload, header);
-      // @ts-ignore
-      await profileImageUpdate.mutateAsync(imageupload, {
-        onSuccess: (data, variables, context) => {
-          messsageToast({message: 'Profile Image updated', type: 'success'});
-          dispatch(updateProfile(data?.profile));
-        },
-        onError: (error, variables, context) => {
-          //@ts-ignore
-          messsageToast({message: error, type: 'danger'});
-          // messsageToast({message: 'Update failed', type: 'danger'});
-          console.log('from onError', error);
-        },
+      profileImageUpdate.mutate({
+        file: imageupload,
+        Auth: token,
+        organisationId: organisation?.id,
       });
     } catch (error) {
       messsageToast({message: `${error}`, type: 'danger'});
@@ -205,12 +185,10 @@ const EditProfile = (props: Props): JSX.Element => {
     });
 
     try {
-      //@ts-ignore
-      await profileUpdate.mutateAsync(payload, {
-        onSuccess: (data, variables, context) => {
-          messsageToast({message: 'Profile updated', type: 'success'});
-          dispatch(updateProfile(data?.profile));
-        },
+      profileUpdateMutation.mutate({
+        data: payload,
+        Auth: token,
+        organisationId: profile.organisation_id,
       });
     } catch (error) {
       messsageToast({message: `${error}`, type: 'danger'});

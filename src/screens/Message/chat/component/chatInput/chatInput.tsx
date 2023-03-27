@@ -11,6 +11,7 @@ import {
   Pressable,
   Linking,
   KeyboardAvoidingView,
+  LayoutChangeEvent,
 } from 'react-native';
 import {
   MentionInput,
@@ -79,6 +80,7 @@ const ChatInput = ({
   members,
   setMessageTrail,
   scrollToChatBottom,
+  setInputLayout,
 }: any) => {
   const {token, profile} = useSelector((state: StoreState) => state.user);
   const organisation = useSelector(
@@ -498,8 +500,13 @@ const ChatInput = ({
     navigation.navigate(SCREEN_NAME.camera, {threadId, credentialId});
   };
 
+  const handleLayout = (e: LayoutChangeEvent) => {
+    // console.log(e?.nativeEvent?.layout);
+    setInputLayout(e?.nativeEvent?.layout);
+  };
+
   return (
-    <Animated.View style={[styles.container]}>
+    <Animated.View style={[styles.container]} onLayout={handleLayout}>
       {replyIsActive && <Reply />}
       <View style={styles.innerContainer}>
         <View style={styles.inputAndMicrophone}>
@@ -522,7 +529,7 @@ const ChatInput = ({
             /> */}
           <MentionInput
             multiline
-            placeholder={'Type something...'}
+            placeholder={'Type message...'}
             placeholderTextColor={colors.dark}
             // autoFocus={true}
             style={{

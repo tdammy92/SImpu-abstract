@@ -22,7 +22,7 @@ import Octicons from 'react-native-vector-icons/Octicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {Divider, Text} from '@ui-kitten/components';
+import {CheckBox, Divider, Text} from '@ui-kitten/components';
 import {colors, FONTS, FontSize} from 'src/constants';
 import {useNavigation} from '@react-navigation/native';
 import {SCREEN_NAME} from 'src/navigation/constants';
@@ -35,7 +35,9 @@ import Modal from 'react-native-modal';
 import {useMutation} from 'react-query';
 import {
   assignConversationThread,
+  tagThread,
   resolveConversation,
+  untagThread,
 } from 'src/services/mutations/inbox';
 import {trimText} from 'src/utils/string-utils/string';
 import {
@@ -53,6 +55,7 @@ import {
 import {queryClient} from 'src/index';
 import TagIcon from 'src/assets/images/TagIcon.svg';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {AxiosError} from 'axios';
 
 type Props = {
   ref: RBSheetProps;
@@ -66,8 +69,10 @@ const Tags = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
 
   const thread: ThreadType = props?.threadDetail;
   const tags: InboxTagType[] = props?.threadDetail?.tags;
+  const tagIds: string[] = tags?.map(i => i?.uuid);
+  // const [tagIds, setTagIds] = useState<string[]>([]);
 
-  // console.log('Taaags', JSON.stringify(tags, null, 2));
+  // console.log('Taaags from info', JSON.stringify(thread?.tags, null, 2));
 
   const {profile, user, token} = useSelector(
     (state: StoreState) => state?.user,
@@ -76,18 +81,128 @@ const Tags = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
     (state: StoreState) => state?.organisation?.details,
   );
 
-  const assignMutations = useMutation(assignConversationThread, {
-    onSuccess(data, variables, context) {
-      console.log('data after assigned', JSON.stringify(data, null, 2));
-      queryClient.invalidateQueries(['Teams']);
-      queryClient.invalidateQueries(['Members']);
-      queryClient.invalidateQueries(['threadInfo', thread?.uuid]);
-      queryClient.invalidateQueries(['conversations', thread?.uuid]);
+  //tagMutations
+  const {mutate: TagThreadMutation} = useMutation<any, AxiosError, any, any>(
+    tagThread,
+    {
+      onMutate: async tag => {
+        await queryClient.cancelQueries([
+          'threadInfo',
+          thread?.uuid,
+          organisation?.id,
+        ]);
+
+        //@ts-ignore
+        const {data: previousData} = await queryClient.getQueryData([
+          'threadInfo',
+          thread?.uuid,
+          organisation?.id,
+        ]);
+
+        queryClient.setQueryData(
+          ['threadInfo', thread?.uuid, organisation?.id],
+          ({data}: any) => {
+            // console.log('previous old query', JSON.stringify(data, null, 2));
+            return {
+              thread: {
+                ...data?.thread,
+                tags: [...data?.thread?.tags, tag],
+              },
+            };
+          },
+        );
+
+        return {previousData};
+      },
+
+      onError: async (error, variables, context) => {
+        // console.log('error from tag', error);
+        await queryClient.setQueryData(
+          ['threadInfo', thread?.uuid, organisation?.id],
+          context?.previousData,
+        );
+
+        //@ts-ignore
+        messsageToast({
+          message: error?.message ?? "conversation could'nt be tagged",
+          type: 'danger',
+        });
+        // queryClient.setQueryData(['tags', variables.uuid], context.previousTag);
+      },
+      onSuccess: async () => {
+        messsageToast({
+          message: 'conversation tagged successfully',
+          type: 'success',
+        });
+        // await queryClient.invalidateQueries(['threadInfo', thread?.uuid]);
+      },
+      onSettled: async (data, error, variables, context) => {
+        closeSheet();
+        await queryClient.invalidateQueries(['Tags']);
+        await queryClient.invalidateQueries(['threadInfo', thread?.uuid]);
+      },
     },
-    onError(error, variables, context) {
-      console.log('error after assigned', error);
+  );
+
+  //UnTagMutations
+  const {mutate: UnTagThreadMutation} = useMutation<any, AxiosError, any, any>(
+    untagThread,
+    {
+      onMutate: async tag => {
+        await queryClient.cancelQueries([
+          'threadInfo',
+          thread?.uuid,
+          organisation?.id,
+        ]);
+
+        //@ts-ignore
+        const {data: previousData} = await queryClient.getQueryData([
+          'threadInfo',
+          thread?.uuid,
+          organisation?.id,
+        ]);
+
+        queryClient.setQueryData(
+          ['threadInfo', thread?.uuid, organisation?.id],
+          ({data}: any) => {
+            // console.log('previous old query', JSON.stringify(data, null, 2));
+            return {
+              thread: {
+                ...data?.thread,
+                tags: data?.thread?.tags.filter(
+                  (tg: any) => tg.uuid !== tag?.uuid,
+                ),
+              },
+            };
+          },
+        );
+
+        return {previousData};
+      },
+
+      onError: async (error, variables, context) => {
+        message: error?.message ?? "conversation could'nt be untagged",
+          await queryClient.setQueryData(
+            ['threadInfo', thread?.uuid, organisation?.id],
+            context?.previousData,
+          );
+        // queryClient.setQueryData(['tags', variables.uuid], context.previousTag);
+      },
+      onSuccess: async () => {
+        messsageToast({
+          message: 'Tag Removed from conversation',
+          type: 'success',
+        });
+
+        // closeSheet();
+      },
+      onSettled: async (data, error, variables, context) => {
+        closeSheet();
+        await queryClient.invalidateQueries(['threadInfo', thread?.uuid]);
+        await queryClient.invalidateQueries(['Tags']);
+      },
     },
-  });
+  );
 
   //hooks to fetch shared tags
   const {data: sharedTagsData} = useTagList(
@@ -129,71 +244,96 @@ const Tags = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
   // console.log('Unfiltered Assignes', JSON.stringify(assignees, null, 2));
 
   // console.log('Unfiltered Tags', JSON.stringify(personalTagsData, null, 2));
+  // console.log('Tagssss', JSON.stringify(tags, null, 2));
 
   //filter out already assigned Teams
-  const personalTagss = useMemo(
-    () =>
-      personalTagsData?.data?.tags?.tags?.filter((tag: InboxTagType) => {
-        return !tags?.find((taged: InboxTagType) => {
-          return tag?.uuid === taged?.uuid;
-        });
-      }),
+  const AllTagss = useMemo(() => {
+    const temp = [
+      ...(sharedTagsData?.data?.tags?.tags ?? []),
+      ...(personalTagsData?.data?.tags?.tags ?? []),
+    ];
 
-    [personalTagsData, tags],
-  );
+    return temp;
 
-  //filter out already assigned Teams
-  const sharedTagss = useMemo(
-    () =>
-      sharedTagsData?.data?.tags?.tags?.filter((tag: InboxTagType) => {
-        return !tags?.find((taged: InboxTagType) => {
-          return tag?.uuid === taged?.uuid;
-        });
-      }),
+    // return temp?.filter((tag: InboxTagType) => {
+    //   return !tags?.find((taged: InboxTagType) => {
+    //     return tag?.uuid === taged?.uuid;
+    //   });
+    // });
+  }, [sharedTagsData, personalTagsData, tags]);
 
-    [sharedTagsData, tags],
-  );
-
-  const addTag = (type: 'user' | 'team', id: string) => {
-    assignMutations.mutate({
-      type,
-      assignee_id: id,
-      Auth: token,
-      organisationId: organisation.id,
-      threadId: thread?.uuid,
-    });
+  //add or remove tag onclick
+  const handleTagClick = async (SelectedtagId: string) => {
+    if (!!tagIds.includes(SelectedtagId)) {
+      UnTagThreadMutation({
+        Auth: token,
+        tagId: SelectedtagId,
+        threadId: thread?.uuid,
+        organisationId: organisation?.id,
+      });
+    } else {
+      TagThreadMutation({
+        Auth: token,
+        tagId: [SelectedtagId],
+        threadId: thread?.uuid,
+        organisationId: organisation?.id,
+      });
+    }
   };
 
-  const closeSheet = () => {
+  // function addTagToList(tagId: string) {
+  //   /*
+  //   checks if the tag is added to array,
+  //   then removes if is added to array els adds to array
+  //   */
+
+  //   if (tagIds.includes(tagId)) {
+  //     const tempTags = tagIds.filter(id => id !== tagId);
+  //     setTagIds(tempTags);
+  //     return;
+  //   }
+  //   setTagIds([...(tagIds ?? []), tagId]);
+  // }
+
+  function closeSheet() {
     //@ts-ignore
     if (ref?.current) {
       //@ts-ignore
       ref?.current.close();
     }
-  };
+  }
 
-  const Tag = (tag: InboxTagType) => {
+  const Tag = ({tag}: {tag: InboxTagType}) => {
+    // console.log('tagList', JSON.stringify(tag, null, 2));
     return (
       <View style={[styles.asigneeContainer]}>
-        <View>
-          <View style={styles.asigneeWrapper}>
-            <TagIcon
-              width={hp(20)}
-              height={hp(20)}
-              color={tag?.color ?? colors.secondaryBg}
-            />
-            <View style={{marginLeft: wp(5)}}>
-              <Text style={[styles.asigneeName]}>{tag?.name}</Text>
-              {/* <Text style={[styles.asigneeName, {fontSize: FontSize.SmallText}]}>
-              {assignee.type}
-            </Text> */}
+        <View style={{width: '100%'}}>
+          <TouchableOpacity
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              // backgroundColor: 'yellow',
+              // width: '100%',
+            }}
+            onPress={() => handleTagClick(tag?.uuid)}>
+            <View style={styles.asigneeWrapper}>
+              <TagIcon
+                width={hp(16)}
+                height={hp(16)}
+                color={tag?.color ?? colors.secondaryBg}
+              />
+              <View style={{marginLeft: wp(5)}}>
+                <Text style={[styles.asigneeName]}>{tag?.name}</Text>
+              </View>
             </View>
-          </View>
+
+            <CheckBox
+              checked={!!tagIds?.includes(tag?.uuid)}
+              onChange={() => {}}></CheckBox>
+          </TouchableOpacity>
           <View
             style={{
-              // flexDirection: 'row',
-              // justifyContent: 'space-evenly',
-              // backgroundColor: 'yellow',
               width: '100%',
             }}>
             {tag?.children?.length > 0 && (
@@ -206,70 +346,50 @@ const Tags = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
               </View>
             )}
             {tag?.children?.map((childTag: InboxTagType, i: number) => (
-              <View
-                key={`${i}`}
+              <TouchableOpacity
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
+                  justifyContent: 'space-between',
                   paddingTop: hp(5),
                   marginLeft: wp(30),
                   marginTop: i === 0 ? hp(8) : hp(5),
-                }}>
-                <TagIcon
-                  width={hp(18)}
-                  height={hp(18)}
-                  color={childTag?.color ?? colors.secondaryBg}
-                />
-                <Text
+                }}
+                onPress={() => handleTagClick(childTag?.uuid)}
+                key={`${i}`}>
+                <View
                   style={{
-                    color: colors.dark,
-                    fontSize: FontSize.MediumText,
-                    marginLeft: wp(4),
+                    flexDirection: 'row',
+                    alignItems: 'center',
                   }}>
-                  {childTag?.name}
-                </Text>
-              </View>
+                  <TagIcon
+                    width={hp(16)}
+                    height={hp(16)}
+                    color={childTag?.color ?? colors.secondaryBg}
+                  />
+                  <Text
+                    style={{
+                      color: colors.dark,
+                      fontSize: FontSize.MediumText,
+                      marginLeft: wp(4),
+                    }}>
+                    {childTag?.name}
+                  </Text>
+                </View>
+                <CheckBox
+                  checked={!!tagIds?.includes(childTag?.uuid)}
+                  onChange={() => {}}></CheckBox>
+              </TouchableOpacity>
             ))}
           </View>
         </View>
-        {/* {selected && (
-          <View>
-            <AntDesign name="checkcircleo" size={hp(18)} color={colors.dark} />
-          </View>
-        )} */}
       </View>
     );
   };
 
-  // const Team = (team: TeamType) => {
-  //   return (
-  //     <TouchableOpacity
-  //       style={styles.asigneeContainer}
-  //       onPress={() => handleAssignTo('team', team?.id)}>
-  //       <View style={[styles.asigneeWrapper]}>
-  //         <UserAvatar
-  //           size={hp(35)}
-  //           style={{height: hp(35), width: hp(35)}}
-  //           borderRadius={hp(35 * 0.5)}
-  //           name={team?.name}
-  //           // url={assignee.image_url}
-  //         />
-  //         <View style={{marginLeft: wp(5)}}>
-  //           <Text style={[styles.asigneeName]}>{team?.name}</Text>
-  //           <Text style={[styles.asigneeName, {fontSize: FontSize.SmallText}]}>
-  //             {team?.members?.length} member(s)
-  //           </Text>
-  //         </View>
-  //       </View>
-  //       <View>
-  //         <Entypo name="circle" size={hp(18)} color={colors.dark} />
-  //       </View>
-  //     </TouchableOpacity>
-  //   );
-  // };
-
   // console.log('Member', JSON.stringify(organisationMember, null, 2));
   // console.log('tread', JSON.stringify(thread?.inbox, null, 2));
+  // console.log('tread', JSON.stringify(tagIds, null, 2));
 
   return (
     <>
@@ -281,7 +401,7 @@ const Tags = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
         // closeOnDragDown={false}
         customStyles={{
           wrapper: {
-            backgroundColor: 'rgba(105,105,105,0.7)',
+            backgroundColor: 'rgba(0,0,0,0.2)',
           },
           draggableIcon: {
             backgroundColor: '#E5E4E2',
@@ -297,53 +417,24 @@ const Tags = forwardRef((props: Props, ref: React.ForwardedRef<any>) => {
         }}>
         <View
           style={{
-            // alignSelf: 'center',
-            // backgroundColor: 'red',
-            // backgroundColor: colors.light,
             width: '100%',
-            // height: '100%',
-            minHeight: hp(300),
 
-            // alignItems: 'center',
-            // padding: hp(10),
+            minHeight: hp(300),
           }}>
           <Text style={styles.TitleText}>Tags</Text>
           <Divider />
 
-          <ScrollView style={{maxHeight: height * 0.57}}>
+          <ScrollView
+            style={{maxHeight: height * 0.57, paddingBottom: hp(10)}}
+            contentInset={{bottom: hp(15)}}>
             <View style={[styles.sectionwrapper]}>
-              {/* <Text style={[styles.sectionTitle]}>Selected Tags</Text> */}
-              {tags &&
-                tags?.map((tag: InboxTagType, i: number) => (
-                  <Tag {...tag} key={`${i}`} />
+              {AllTagss &&
+                AllTagss?.map((tag: InboxTagType, i: number) => (
+                  <Tag tag={tag} key={`${i}`} />
                 ))}
 
-              {tags?.length === 0 && (
-                <Text style={styles.emptyText}>No Selected Tags</Text>
-              )}
-            </View>
-            <Divider />
-            <View style={[styles.sectionwrapper]}>
-              {/* <Text style={[styles.sectionTitle]}>Personal Tags</Text> */}
-              {personalTagss &&
-                personalTagss?.map((tag: InboxTagType, i: number) => (
-                  <Tag {...tag} key={`${i}`} />
-                ))}
-
-              {personalTagss?.length === 0 && (
-                <Text style={styles.emptyText}>No Personal Tags</Text>
-              )}
-            </View>
-            <Divider />
-            <View style={[styles.sectionwrapper]}>
-              {/* <Text style={[styles.sectionTitle]}>Shared Tags</Text> */}
-              {sharedTagss &&
-                sharedTagss?.map((tag: InboxTagType, i: number) => (
-                  <Tag {...tag} key={`${i}`} />
-                ))}
-
-              {sharedTagss?.length === 0 && (
-                <Text style={styles.emptyText}>No Shared Tags</Text>
+              {AllTagss?.length === 0 && (
+                <Text style={styles.emptyText}>No Tags</Text>
               )}
             </View>
           </ScrollView>
@@ -365,7 +456,7 @@ const styles = StyleSheet.create({
   },
   TitleText: {
     fontSize: FontSize.BigText,
-    // marginTop: hp(10),
+
     textAlign: 'center',
     color: colors.dark,
     fontFamily: FONTS.TEXT_SEMI_BOLD,

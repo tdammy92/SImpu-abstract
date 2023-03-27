@@ -1,6 +1,6 @@
 import {StyleService} from '@ui-kitten/components';
 import {ImageStyle, TextStyle, ViewStyle} from 'react-native';
-import {FONTS} from 'src/constants';
+import {FONTS, FontSize, colors} from 'src/constants';
 import {hp, wp} from 'src/utils';
 
 interface Styles {
@@ -15,7 +15,6 @@ interface Styles {
   textStyle: TextStyle;
   nameText: TextStyle;
   save: TextStyle;
-  logOut: TextStyle;
 }
 const styles = StyleService.create<Styles>({
   container: {
@@ -54,11 +53,11 @@ const styles = StyleService.create<Styles>({
     backgroundColor: 'white',
   },
   textStyle: {
-    fontSize: hp(17),
+    fontSize: FontSize.MediumText,
     fontFamily: FONTS.TEXT_REGULAR,
   },
   nameText: {
-    fontSize: hp(17),
+    fontSize: FontSize.MediumText,
     fontFamily: FONTS.TEXT_REGULAR,
     color: '#636366',
     margin: wp(15),
@@ -70,7 +69,7 @@ const styles = StyleService.create<Styles>({
     alignItems: 'center',
   },
   card: {
-    backgroundColor: 'white',
+    backgroundColor: colors.light,
     shadowColor: 'rgba(0,0,0,0.2)',
     shadowOffset: {
       width: 0,
@@ -87,11 +86,6 @@ const styles = StyleService.create<Styles>({
     color: '#0A0748',
     fontSize: hp(17),
     paddingVertical: hp(10),
-  },
-  logOut: {
-    color: '#DA1414',
-    fontSize: hp(18),
-    padding: 15,
   },
 });
 export default styles;

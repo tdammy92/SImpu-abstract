@@ -22,7 +22,7 @@ export type InboxTypeCredentials = {
 
 export type quotedType = {
   type: string;
-  author: {};
+  author: authorType;
   entity: entityType;
   id: number;
   uuid: string;
@@ -142,7 +142,7 @@ export type ThreadType = {
   is_read?: boolean;
 };
 
-export type contentType = {
+export type MessageContentType = {
   body: string | null;
   subject?: string;
 };
@@ -174,7 +174,7 @@ export type recipientsType = {
 };
 
 export type entityType = {
-  content?: contentType;
+  content?: MessageContentType;
   id: number;
   pid: string;
   uuid: string;
@@ -206,6 +206,7 @@ export type authorType = {
   contacts: {};
   meta: {};
   image_url: string | null;
+  user_id: string;
   platform_id: string;
   channel_name: Channel;
   name: string;
@@ -270,7 +271,7 @@ export type messageType = {
   uuid: String;
   account_id?: null;
   show_in_thread?: null;
-  created_datetime?: String;
+  created_datetime?: String | null;
   updated_datetime?: string;
   author_id?: String;
   author_type?: String;
@@ -323,6 +324,15 @@ export type TeamType = {
   members: MemberType[];
 };
 
+export type mentionType = {
+  name: string;
+  id?: number;
+  uuid: string;
+  user_id: string;
+  image_url?: string;
+  type: string;
+};
+
 export type ThreadParticipantType = {
   name: string;
   last_name?: string;
@@ -333,3 +343,19 @@ export type ThreadParticipantType = {
   type: 'user' | 'team';
   role_page_access: string[];
 };
+
+export type uploadFileType = {
+  uri: string;
+  type?: string;
+  name?: string;
+  size?: number;
+};
+
+export type filterType =
+  | 'Email:to'
+  | 'Email:cc'
+  | 'Email:bcc'
+  | 'Email:subject'
+  | 'Conversation ID'
+  | 'Email:from';
+// | 'Recipient';

@@ -18,7 +18,9 @@ const List = ({item}: any) => {
   // console.log('Statusbar height', StatusBar.currentHeight);
   return (
     <View style={[styles.container, {flex: 1}]}>
-      <Text style={[styles.text, {width: width - 40}]}>{item.text}</Text>
+      <Text allowFontScaling={false} style={[styles.text, {width: width - 40}]}>
+        {item.text}
+      </Text>
       <View style={styles.imageContainer}>
         <Image
           style={[

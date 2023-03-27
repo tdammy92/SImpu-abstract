@@ -10,7 +10,7 @@ const initialState: messageStoreState = {
     uuid: '',
     account_id: null,
     show_in_thread: null,
-    created_datetime: '',
+    created_datetime: null,
     updated_datetime: '',
     author_id: '',
     author_type: '',
@@ -18,6 +18,7 @@ const initialState: messageStoreState = {
     content_type: '',
   },
   messageType: 'reply',
+  messageContent: {body: '', subject: ''},
   receiver: '',
 };
 

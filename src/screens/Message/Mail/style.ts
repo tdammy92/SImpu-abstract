@@ -16,6 +16,7 @@ interface Styles {
   container: ViewStyle;
 
   FooterContainer: ViewStyle;
+  membersSugestionContainer: ViewStyle;
 }
 const styles = StyleService.create<Styles>({
   container: {
@@ -40,5 +41,7 @@ const styles = StyleService.create<Styles>({
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
   },
+
+  membersSugestionContainer: {},
 });
 export default styles;

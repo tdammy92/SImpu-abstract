@@ -7,7 +7,7 @@ import {
   Dimensions,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {FONTS} from 'src/constants';
+import {FONTS, FontSize, colors} from 'src/constants';
 import {hp} from 'src/utils';
 import {MainStackParamList, SCREEN_NAME} from 'src/navigation/constants';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -29,7 +29,9 @@ const FooterComponent = ({navigation}: any) => {
           },
         ]}
         onPress={navigateToLogin}>
-        <Text style={[styles.btntxt]}>Skip</Text>
+        <Text allowFontScaling={false} style={[styles.btntxt]}>
+          Skip
+        </Text>
       </TouchableOpacity>
       {/* <View style={{width: hp(25)}} /> */}
 
@@ -77,8 +79,8 @@ const styles = StyleSheet.create({
 
   btntxt: {
     textAlign: 'center',
-    color: '#fff',
+    color: colors.light,
     fontFamily: FONTS.TEXT_SEMI_BOLD,
-    fontSize: 18,
+    fontSize: FontSize.BigText,
   },
 });

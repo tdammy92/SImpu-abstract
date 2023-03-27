@@ -66,6 +66,7 @@ export type MainStackParamList = {
   [SCREEN_NAME.imageView]: {image: any};
   [SCREEN_NAME.mail]: {user: any};
   [SCREEN_NAME.mailBox]: undefined;
+
   // [SCREEN_NAME.chat]: {
   //   name: string;
   //   channel: string;

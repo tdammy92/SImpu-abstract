@@ -137,7 +137,7 @@ const OrganisationSheet = forwardRef(
                       <UserAvatar
                         name={org?.name}
                         size={hp(25)}
-                        borderRadius={!!org?.image ? hp(25) : 5}
+                        borderRadius={hp(25 * 0.5)}
                         src={org?.image}
                       />
                       <Text style={styles.organisationText}>{org?.name}</Text>

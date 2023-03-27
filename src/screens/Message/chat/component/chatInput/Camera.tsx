@@ -108,14 +108,7 @@ const CameraInput = ({route}: any) => {
     CameraRoll.getPhotos({first: 30, assetType: 'Photos'})
       .then(photos => {
         const image = photos?.edges?.map(item => item?.node);
-
-        // console.log(
-        //   `file from camera roll ${Platform.OS}`,
-        //   JSON.stringify(image, null, 2),
-        // );
-        //@ts-ignore
-        setImageGalary(image);
-        // console.log('type of response', typeof image);
+        // setImageGalary(image);
       })
       .catch(err => console.log(err));
   }, []);
@@ -138,7 +131,7 @@ const CameraInput = ({route}: any) => {
   //post image to api
   const postImage = async (file: {
     uri: string | undefined;
-    type: string;
+    type: string | undefined;
     name: string | undefined;
   }) => {
     const data = {type: 'message'};
@@ -257,13 +250,17 @@ const CameraInput = ({route}: any) => {
     getAllImages();
   }, []);
 
+  function Reseter() {
+    setLoading(false);
+    setProgress(0);
+    setSampleImageUrl('');
+  }
+
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', () => {
       // do something
-      setLoading(false);
-      setProgress(0);
-      setSampleImageUrl('');
-      queryClient.invalidateQueries('conversations');
+      Reseter();
+      // queryClient.invalidateQueries('conversations');
     });
 
     return unsubscribe;
@@ -357,8 +354,8 @@ const CameraInput = ({route}: any) => {
             </TouchableOpacity>
             <TouchableOpacity style={styles.CaptureIconWrapper} onPress={snap}>
               <MaterialCommunityIcons
-                name={'camera-iris'}
-                size={hp(50)}
+                name={'circle-slice-8'}
+                size={hp(65)}
                 color={colors.light}
               />
             </TouchableOpacity>

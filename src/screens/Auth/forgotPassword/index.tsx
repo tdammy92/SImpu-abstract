@@ -1,19 +1,71 @@
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React, {useState, useEffect} from 'react';
+import Modal from 'react-native-modal';
+import {useNavigation} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'src/components/common/KeyBoardAvoidingView';
 import {hp, wp} from 'src/utils';
-import {FONTS} from 'src/constants';
+import {FONTS, FontSize, colors} from 'src/constants';
 import {Button} from 'src/components/common/Button';
 import AuthInput from '../component/AuthInput';
 import HeaderBack from 'src/navigation/HeaderBack';
-import AppModal from 'src/components/common/Modal';
+import AppModal from 'src/components/common/AppModal';
+import {useMutation} from 'react-query';
+import {RequestPasswordReset} from 'src/services/mutations/profile';
+import CloseIcon from 'src/assets/images/Close_Icon.svg';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {SCREEN_NAME} from 'src/navigation/constants';
 
 const ForgotPassword = () => {
+  const navigation = useNavigation();
   const [Email, setEmail] = useState('');
-  const [ShoModal, setShoModal] = useState(false);
+  const [ShoModal, setShoModal] = useState<boolean>(false);
 
-  const HandleSubmit = () => {
-    setShoModal(true);
+  const ForgotPasswordMutation = useMutation(RequestPasswordReset, {
+    onSuccess: async (data, variables, context) => {
+      // console.log('response from reset', JSON.stringify(data, null, 2));
+      await openModal();
+      setShoModal(true);
+      // console.log('his got fireddd');
+    },
+    onError(error, variables, context) {
+      console.log('failed');
+      //@ts-ignore
+      messsageToast({message: `${error?.message}`, type: 'danger'});
+    },
+  });
+
+  const HandleSubmit = async () => {
+    const payload = {
+      email: Email,
+      link: 'https://demo.simpu.co/reset-password/{{token}}',
+    };
+
+    ForgotPasswordMutation.mutate(payload);
+  };
+
+  async function openModal() {
+    setEmail('');
+
+    setTimeout(() => {
+      setShoModal(true);
+    }, 200);
+  }
+
+  const handleCloseModal = () => {
+    setEmail('');
+    setShoModal(false);
+
+    setTimeout(
+      //@ts-ignore
+      () => navigation.reset({index: 0, routes: [{name: SCREEN_NAME.auth}]}),
+      300,
+    );
   };
 
   return (
@@ -27,7 +79,8 @@ const ForgotPassword = () => {
             <View style={styles.topContainer}>
               <Text style={styles.headerText}>Forgot Password</Text>
               <Text style={styles.InfoText}>
-                Enter your email address to proceed
+                Enter the email addresss associated with your account and we'll
+                send you a link to reset your password
               </Text>
             </View>
             <View style={styles.btnContainer}>
@@ -58,7 +111,8 @@ const ForgotPassword = () => {
               </TouchableOpacity> */}
               </View>
               <Button
-                title="Reset Password"
+                disabled={Email === ''}
+                title="Reset"
                 onPress={HandleSubmit}
                 style={{marginTop: hp(8)}}
               />
@@ -66,13 +120,66 @@ const ForgotPassword = () => {
           </View>
         </KeyboardAwareScrollView>
       </View>
-      <AppModal
-        showModal={ShoModal}
-        setShoModal={setShoModal}
-        message={
-          'We just sent you an email with a  link to reset your passsword.'
-        }
-      />
+
+      <Modal
+        isVisible={ForgotPasswordMutation?.isLoading}
+        animationIn="zoomIn"
+        backdropOpacity={0.6}
+        style={{}}>
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Text
+            style={{
+              textAlign: 'center',
+              fontSize: FontSize.BigText,
+              fontFamily: FONTS.TEXT_BOLD,
+              color: colors.light,
+              marginVertical: hp(5),
+            }}>
+            Processing...
+          </Text>
+          <ActivityIndicator size="large" color={colors.light} />
+        </View>
+      </Modal>
+
+      <Modal
+        isVisible={ShoModal}
+        animationIn="zoomIn"
+        style={styles.modalStyle}>
+        <View style={styles.modalContainer}>
+          <TouchableOpacity
+            onPress={handleCloseModal}
+            style={{position: 'absolute', top: 15, right: 12}}>
+            <CloseIcon
+              style={{elevation: 2, zIndex: 2}}
+              height={hp(30)}
+              width={hp(30)}
+            />
+          </TouchableOpacity>
+
+          <>
+            <View style={styles.messageContainer}>
+              <View
+                style={{
+                  height: hp(60),
+                  width: hp(60),
+                  borderRadius: hp(60 * 0.5),
+                  backgroundColor: colors.bootomHeaderBg,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <MaterialCommunityIcons
+                  name="email-fast-outline"
+                  size={hp(30)}
+                  color={colors.secondaryBg}
+                />
+              </View>
+              <Text style={styles.messageText}>
+                We just sent you an email with a link to reset your passsword
+              </Text>
+            </View>
+          </>
+        </View>
+      </Modal>
     </>
   );
 };
@@ -85,7 +192,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   content: {
-    //     flex: 0.9,
     marginTop: hp(30),
     paddingVertical: hp(20),
     alignItems: 'center',
@@ -99,16 +205,16 @@ const styles = StyleSheet.create({
   headerText: {
     textAlign: 'left',
     fontFamily: FONTS.TEXT_SEMI_BOLD,
-    fontSize: hp(24),
-    color: '#000',
+    fontSize: FontSize.BigText,
+    color: colors.dark,
     paddingVertical: hp(15),
   },
   InfoText: {
-    color: '#959898',
+    color: colors.darkGray,
     fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: hp(17),
-    textAlign: 'left',
-    width: '80%',
+    fontSize: FontSize.MediumText,
+    textAlign: 'auto',
+    width: '90%',
   },
   btnContainer: {
     marginTop: hp(30),
@@ -119,5 +225,27 @@ const styles = StyleSheet.create({
   },
   inputConatiner: {
     width: '100%',
+  },
+
+  modalStyle: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalContainer: {
+    backgroundColor: colors.light,
+    height: '30%',
+    width: '95%',
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  messageContainer: {paddingVertical: hp(15), alignItems: 'center'},
+  messageText: {
+    fontSize: FontSize.MediumText,
+    fontFamily: FONTS.TEXT_REGULAR,
+    color: colors.dark,
+    paddingHorizontal: wp(15),
+    paddingVertical: hp(10),
   },
 });

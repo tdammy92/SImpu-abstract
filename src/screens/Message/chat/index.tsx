@@ -36,7 +36,7 @@ import {useMutation} from 'react-query';
 import {markThreadAsRead} from 'src/services/mutations/inbox';
 import ChatLoader from 'src/components/Loaders/chatLoader';
 
-const scrollLimit = 80;
+const scrollLimit = 100;
 
 const ChatBox = ({route}: any) => {
   const navigation = useNavigation();
@@ -52,10 +52,10 @@ const ChatBox = ({route}: any) => {
   const [members, setMembers] = useState<any>([]);
   const [showScrollTobottom, setshowScrollTobottom] = useState(false);
 
-  // console.log('organisation ID', organisation.id);
+  const [InputLayout, setInputLayout] = useState(null);
 
   const dispatch = useDispatch();
-  // const chatOptionRef = useRef<any>(null);
+
   const chatListRef = useRef<FlatList>(null);
 
   const myUser = {id: profile?.id};
@@ -111,7 +111,7 @@ const ChatBox = ({route}: any) => {
   } = useMessageListQuery(
     {
       threadID: threadId,
-      type: 'message',
+      type: 'all',
       page: 1,
       Auth: token,
       organisationId: organisation?.id,
@@ -191,11 +191,6 @@ const ChatBox = ({route}: any) => {
 
   const isGroup = threadDetail?.thread?.type === 'group' ? true : false;
 
-  // console.log(
-  //   'thread details++++++++++++++++++++++',
-  //   JSON.stringify(threadDetail?.thread, null, 2),
-  //   '--------------------------------',
-  // );
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -218,11 +213,13 @@ const ChatBox = ({route}: any) => {
               Onscroll={Onscroll}
               fetchNextPage={fetchNextPage}
               isGroup={isGroup}
+              InputLayout={InputLayout}
             />
           )}
           {/* chat input */}
           {!isResolved && (
             <ChatInput
+              setInputLayout={setInputLayout}
               scrollToChatBottom={scrollToChatBottom}
               credentialId={threadDetail?.thread?.receiver_id}
               threadId={threadDetail?.thread?.uuid}

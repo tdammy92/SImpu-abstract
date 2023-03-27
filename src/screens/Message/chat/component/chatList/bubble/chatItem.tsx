@@ -2,7 +2,7 @@ import {StyleSheet, Text, View, Image} from 'react-native';
 import React from 'react';
 import {colors, FONTS} from 'src/constants';
 import {getFileType, hp} from 'src/utils';
-import VideoPlayer from './videoPlayer';
+import VideoView from './videoPlayer';
 import Hyperlink from 'react-native-hyperlink';
 import AudioPlayer from './audioPlayer';
 import ImageViewer from './image';
@@ -13,7 +13,8 @@ import DocView from './docView';
 
 const ChatItem = ({message, isUser}: any) => {
   const {entity} = message;
-  //   console.log('message', JSON.stringify(message, null, 2));
+  // console.log('message', JSON.stringify(message?.type, null, 2));
+
   return (
     <View style={{}}>
       {/* message text */}
@@ -44,8 +45,8 @@ const ChatItem = ({message, isUser}: any) => {
             },
           ]}>
           {entity?.attachments?.map((file: any, index: number) => {
-            const type = getFileType(file?.data?.url);
-            // const type = mime.extension(file?.mimetype);
+            // const type = getFileType(file?.data?.url);
+            const type = mime.extension(file?.mimetype);
 
             // console.log('filetype', type);
             // console.log('filetype', file?.mimetype);
@@ -75,7 +76,7 @@ const ChatItem = ({message, isUser}: any) => {
               );
             } else if (videoType.includes(type)) {
               //render video
-              return <VideoPlayer videoData={file} key={`${index}`} />;
+              return <VideoView videoData={file} key={`${index}`} />;
             } else if (docType.includes(type)) {
               //render file
               return (

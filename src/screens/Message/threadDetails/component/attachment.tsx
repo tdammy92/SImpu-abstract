@@ -52,13 +52,13 @@ const Attachment = ({item, idx, lgt}: any) => {
         {marginRight: idx === lgt - 1 ? hp(20) : hp(2)},
       ]}>
       <View style={{alignItems: 'center', flexDirection: 'row'}}>
-        {imageType.includes(getFileType(data?.url)) && (
+        {imageType.includes(mime.extension(mimetype)) && (
           <Image
             source={{uri: data?.url}}
             style={{
               height: hp(40),
               width: hp(35),
-              borderRadius: hp(5),
+              borderRadius: hp(2),
               borderWidth: 1,
               borderColor: colors.lightGray,
             }}
@@ -69,19 +69,21 @@ const Attachment = ({item, idx, lgt}: any) => {
           mime.extension(mimetype),
         ) && (
           <View style={styles.iconContainer}>
-            {iconName(getFileType(data?.url), 16, colors.darkGray)}
+            {iconName(mime.extension(mimetype), 16, colors.darkGray)}
           </View>
         )}
 
-        <Text style={[styles.downloadText, {marginLeft: wp(4)}]}>
-          {mime.extension(mimetype)}
-        </Text>
+        <View style={{marginLeft: wp(2)}}>
+          <Text style={[styles.downloadText, {textTransform: 'capitalize'}]}>
+            {mime.extension(mimetype)}
+          </Text>
+          <Text style={styles.downloadText}>{prettyBytes(size)}</Text>
+        </View>
       </View>
       <TouchableOpacity style={{alignItems: 'center'}}>
-        <View style={styles.downloadCircle}>
-          <AntDesign name="download" size={hp(14)} color={colors.darkGray} />
-        </View>
-        <Text style={styles.downloadText}>{prettyBytes(size)}</Text>
+        {/* <View style={styles.downloadCircle}> */}
+        <AntDesign name="download" size={hp(14)} color={colors.darkGray} />
+        {/* </View> */}
       </TouchableOpacity>
     </View>
   );
@@ -98,7 +100,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: colors.light,
     marginHorizontal: hp(2),
-    borderRadius: hp(8),
+    borderRadius: hp(4),
     paddingHorizontal: hp(8),
   },
   card: {

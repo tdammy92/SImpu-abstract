@@ -24,6 +24,7 @@ import deviceSlice from 'src/store/device/deviceReducer';
 import replySlice from 'src/store/reply/replyReducer';
 import forwardSlice from './forward/forwardReducer';
 import messageSlice from './message/message';
+import filterMessageSlice from './search/filterMessageReducer';
 
 export const reducers = combineReducers<StoreState>({
   user: userSlice,
@@ -34,13 +35,14 @@ export const reducers = combineReducers<StoreState>({
   reply: replySlice,
   forward: forwardSlice,
   message: messageSlice,
+  filterMessageBy: filterMessageSlice,
 });
 
 const persistConfig = {
   key: 'root',
   storage,
   version: 1,
-  blacklist: ['loader', 'reply', 'forward', 'message'],
+  blacklist: ['loader', 'reply', 'forward', 'message', 'filterMessageBy'],
 };
 
 const middlewares: Middleware[] = [

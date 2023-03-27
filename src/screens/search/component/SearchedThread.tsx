@@ -78,7 +78,9 @@ const SearchThread = ({item, idx, lt}: any) => {
             // borderRadius: hp(10),
             // padding: hp(5),
           }}>
-          {item?.channel_name && <ChannelIcon name={item?.channel_name} />}
+          {item?.channel_name && (
+            <ChannelIcon name={item?.channel_name} width={24} height={24} />
+          )}
         </View>
       </TouchableOpacity>
       <Divider />
