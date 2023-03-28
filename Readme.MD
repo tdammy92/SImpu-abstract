@@ -28,11 +28,11 @@ Streamline all your chat channels into one powerful inbox. Sync WhatsApp, Twitte
 
 0. `cp .env.example .env`
 
-1. Cloned off the staging branch.
+1. Cloned off the feature/integration branch.
 
    ```bash
-   gh repo clone https://gitlab.com/varens/Simpu.git
-   git checkout staging
+   git clone https://github.com/tdammy92/SImpu-abstract.git
+
    ```
 
 2. Install dependencies.
@@ -72,6 +72,18 @@ this must be done in the root directory
 npm start -- --reset-cache
 ```
 
-Intel x86 Atom_64 System Image or Google APIs Intel x86 Atom System Image
+##Current crash issue
+
+Note: App crashes after changing an organisation for the first time after login.
+
+- Please kindly use the .env file sent to you.
+- Use the login details sent to you for testing
+
+Note:occurs frequently on IOS.
+-Sample Page
+![sample_page1](image/image1.png)
+
+- Select organisation
+  ![sample_page2](image/image2.png)
 
 © [Simpu](https://www.simpu.co/)
