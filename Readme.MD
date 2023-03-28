@@ -6,10 +6,6 @@ This repository contains the application source code for the project Simpu Mobil
 
 Streamline all your chat channels into one powerful inbox. Sync WhatsApp, Twitter, Instagram, Messenger, SMS, iMessage, Website Chat, Telegram. Never lose a message again!
 
-## Screenshots
-
-Include logo/demo screenshot etc.
-
 ## Tech used
 
 ### Built with
@@ -20,11 +16,11 @@ Include logo/demo screenshot etc.
 
 `node`
 
-`yarn use 1.22.10`
-
 `gem install cocoapods -v 1.10.1`
 
 ## Installation
+
+`npm install`
 
 ### Setup vars for environment
 
@@ -79,11 +75,7 @@ To run the app during development. you will follow the process listed below
 this must be done in the root directory
 
 ```bash
-yarn start --reset-cache
-```
-
-```sh
-yarn ios
+npm start -- --reset-cache
 ```
 
 **_create a .netrc file in your home ~ directory and add this the keys in it_**
