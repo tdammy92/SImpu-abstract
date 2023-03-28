@@ -57,13 +57,7 @@ Streamline all your chat channels into one powerful inbox. Sync WhatsApp, Twitte
     cd ios && pod install
    ```
 
-5. Create the keystore.properties file, and ask for the content of this file
-
-```bash
-printf 'keyAlias=%s\nkeyPassword=%s\nstoreFile=%s\nstorePassword=%s' $keyAlias $keyPassword $storeFile $storePassword > ./android/keystore.properties
-```
-
-6. Ask for the release.keystore
+5. Ask for the release.keystore
 
 ### Running the Application in development
 
