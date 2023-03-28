@@ -40,7 +40,7 @@ const useDeviceDetails = () => {
   //getuser details
   const getUserDeviceInfo = async () => {
     //get Fcmtoken
-    const fcmToken = await AsyncStorage.getItem('fcmToken');
+    const fcmToken = await AsyncStorage?.getItem('fcmToken');
 
     //@ts-ignore
     deviceRef.current.fcm_token = fcmToken;

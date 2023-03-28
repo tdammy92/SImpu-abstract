@@ -3,7 +3,7 @@ import {AxiosRequestConfig, AxiosResponse} from 'axios';
 import {InboxType} from 'src/@types/inbox';
 import {buildConversationUrl, client} from '../api/api-client';
 
-const perPageFetch = 15;
+const perPageFetch = 20;
 
 // for sidebar to get tags
 export const getTags = async (queryParams: any, pageParams: any) => {

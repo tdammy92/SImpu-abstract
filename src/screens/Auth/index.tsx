@@ -1,17 +1,14 @@
-import {View, Linking, TouchableOpacity} from 'react-native';
-import React, {useState, useEffect, useRef} from 'react';
+import {View} from 'react-native';
+import React, {useState, useRef} from 'react';
 import {Text} from '@ui-kitten/components';
 import {useDispatch, useSelector} from 'react-redux';
 import {Formik} from 'formik';
 import * as yup from 'yup';
 import {useMutation} from 'react-query';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-
 import {KeyboardAwareScrollView} from 'src/components/common/KeyBoardAvoidingView';
 import styles from './styles';
-import Simpu from 'src/assets/images/SimpuIcon.svg';
-import Google from 'src/assets/images/Google.svg';
+
 import {Button} from 'src/components/common/Button';
 import {hp, messsageToast, wp} from 'src/utils';
 import {SCREEN_NAME} from 'src/navigation/constants';
@@ -24,16 +21,13 @@ import {
 } from 'src/store/user/userReducer';
 import {showLoader, hideLoader} from 'src/store/Loader/index';
 import {addOrganisation} from 'src/store/organisation/organisationReducer';
-import {colors, FONTS, FontSize} from 'src/constants';
+import {colors} from 'src/constants';
 import {loginUser} from 'src/services/query/auth';
-import AppModal from 'src/components/common/AppModal';
+
 import {useProfile} from 'src/services/query/queries';
-import Loader from 'src/components/common/Loader';
-import {connect} from 'src/services/notification/pusher';
+
 import {StoreState} from 'src/@types/store';
-import {requestNotificationType} from 'src/@types/inbox';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {resquestFcmPermission} from 'src/services/Firebase/firebase';
+
 import useDeviceDetails from 'src/Hooks/useDeviceDetails';
 import {registerDeviceNotification} from 'src/services/mutations/notification';
 import {addDevice} from 'src/store/device/deviceReducer';
@@ -167,15 +161,6 @@ const Login = ({navigation}: any) => {
     // return <Loader />;
   }
 
-  // const handleKeyDown = (e: any): void => {
-  //   const key = e?.nativeEvent?.key;
-  //   // console.log('key from key press', key);
-
-  //   // if (key === 'Enter') {
-  //   //   console.log('next key was pressed');
-  //   // }
-  // };
-
   const handleNext = () => {
     // console.log('this input filed closed fired');
 
@@ -257,30 +242,6 @@ const Login = ({navigation}: any) => {
                         handleDone={handleDone}
                         enableReturnKeyAutomatically={true}
                       />
-
-                      <View
-                        style={{
-                          width: '100%',
-                          paddingBottom: hp(20),
-                          paddingHorizontal: wp(10),
-                          alignItems: 'flex-end',
-                        }}>
-                        <TouchableOpacity
-                          style={{width: '50%'}}
-                          onPress={() =>
-                            navigation.navigate(SCREEN_NAME.forgotPassword)
-                          }>
-                          <Text
-                            style={{
-                              textAlign: 'right',
-                              color: colors.secondaryBg,
-                              fontFamily: FONTS.TEXT_REGULAR,
-                              fontSize: FontSize.MediumText,
-                            }}>
-                            Forgot Password?
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
 
                       <Button
                         title="Login"

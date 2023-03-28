@@ -1,73 +1,22 @@
-import React, {useEffect, createRef} from 'react';
-import {TouchableOpacity, Text, View, Dimensions, Alert} from 'react-native';
+import React, {useEffect} from 'react';
+
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {createNavigationContainerRef} from '@react-navigation/native';
-import {createDrawerNavigator} from '@react-navigation/drawer';
+
 import {MainStackParamList, SCREEN_NAME} from './constants';
 import {useQueryClient} from 'react-query';
 import messaging from '@react-native-firebase/messaging';
-import Payment from 'src/screens/payment';
 import RNBeep from 'react-native-a-beep';
 
-import Setting from 'src/screens/setting';
-import CustomDrawer from './CustomDrawer';
-
-import FONTS, {FontSize} from 'src/constants/fonts';
-import {Avatar} from '@ui-kitten/components';
-
-//@ts-ignore
-import UserAvatar from 'react-native-user-avatar';
-
+//screens
 import Login from 'src/screens/Auth';
-import ForgotPassword from 'src/screens/Auth/forgotPassword';
-import Social from 'src/screens/Message/PersonalInbox';
-import Assigned from 'src/screens/Message/Assigned';
-import Unassigned from 'src/screens/Message/Unassigned';
-import Mentions from 'src/screens/Message/Mentions';
-import Closed from 'src/screens/Message/Closed';
-import Draft from 'src/screens/Message/draft';
-import Settings from 'src/screens/setting/index';
-import EditProfile from 'src/screens/setting/editProfile';
-import ChatBox from 'src/screens/Message/chat';
-import Search from 'src/screens/search';
-import Camera from 'src/screens/Message/chat/component/chatInput/Camera';
-import CustomerThread from 'src/screens/search/customerThreads';
-import Notification from 'src/screens/Message/notification';
-
-import TeamInbox from 'src/screens/Message/teamInbox';
+import Unassigned from 'src/screens/Message';
 import Onboarding from 'src/screens/onbording';
-import QuickReplies from 'src/screens/setting/quickReplies';
-import Privacy from 'src/screens/setting/privacy';
-import ChangeNumber from 'src/screens/setting/editProfile/changeNumber';
-import ChangeEmail from 'src/screens/setting/editProfile/changeEmail';
-import ResetPassword from 'src/screens/setting/editProfile/resetPassword';
 
-//icons
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-
-import Assign from 'src/assets/images/ssigned.svg';
-import Unassign from 'src/assets/images/unassigned.svg';
-import Close from 'src/assets/images/Closed.svg';
-import Mention from 'src/assets/images/mentions.svg';
-import Draf from 'src/assets/images/Draft.svg';
-
-import {useTheme, useStyleSheet, StyleService} from '@ui-kitten/components';
-
-import {useDispatch, useSelector} from 'react-redux';
-
-import {
-  CardStyleInterpolators,
-  createStackNavigator,
-} from '@react-navigation/stack';
-import {formatNumbers, hp, wp} from 'src/utils';
-import {Avatar as avatar} from 'src/constants/general';
+//redux
+import {useSelector} from 'react-redux';
 import {StoreState} from 'src/@types/store';
-import {colors} from 'src/constants';
-import {
-  useSidebarInboxes,
-  useSidebarUnreadCount,
-} from 'src/services/query/queries';
+
+//pusher imports
 import {
   Pusher,
   PusherMember,
@@ -75,440 +24,17 @@ import {
   PusherEvent,
 } from '@pusher/pusher-websocket-react-native';
 import {buildConversationUrl} from 'src/services/api/api-client';
-
-import HeaderBack from './HeaderBack';
-import About from 'src/screens/setting/about';
-import {pusher} from 'src/index';
-import {PUSHER_APP_CLUSTER, PUSHER_APP_KEY_DEMO} from '@env';
-import Mail from 'src/screens/Message/Mail';
 import useNotification from 'src/Hooks/useNotification';
-import {Notifications} from 'react-native-notifications';
-import ImageScreen from 'src/screens/Message/chat/component/chatList/bubble/imageViewer';
 import Loader from 'src/components/common/Loader';
-import ConversationDetails from 'src/screens/Message/threadDetails';
-import ComposeMail from 'src/screens/Message/compose/compose-mail';
-import ComposeSocial from 'src/screens/Message/compose/compose-social';
-import messageBox from 'src/screens/Message/Mail/components/message-box';
-import {useNavigation, DrawerActions} from '@react-navigation/native';
 
 const Stack = createNativeStackNavigator<MainStackParamList>();
 
-const Drawer = createDrawerNavigator();
+import {pusher} from 'src/index';
+import {PUSHER_APP_CLUSTER, PUSHER_APP_KEY_DEMO} from '@env';
 
-const SettingsStack = createStackNavigator<MainStackParamList>();
-const {width} = Dimensions.get('screen');
-//drawer navigator
-function DrawerMenu() {
-  const styles = useStyleSheet(themedStyles);
-  const {profile, token} = useSelector((state: StoreState) => state.user);
-  const organisation = useSelector(
-    (state: StoreState) => state.organisation.details,
-  );
-
-  const {
-    data: count,
-    isError,
-    isLoading,
-    error,
-    status,
-  } = useSidebarUnreadCount({
-    Auth: token,
-    organisationId: organisation?.id,
-  });
-
-  //get personal inbox
-  const {
-    data: PersonalInbox,
-    isFetching: isFecthingPersonal,
-    isLoading: isLoadingPersonal,
-    error: errorPersonal,
-    isError: isErrorPersonal,
-  } = useSidebarInboxes(
-    {
-      is_pinned: false,
-      type: 'personal',
-      Auth: token,
-      organisationId: organisation?.id,
-    },
-    {},
-  );
-
-  const personal = PersonalInbox?.inboxes[0];
-
-  // console.log('Personaall', personal);
-  // console.log('Count', typeof count.assigned);
-
-  return (
-    <Drawer.Navigator
-      drawerContent={props => <CustomDrawer {...props} count={count} />}
-      screenOptions={{
-        headerShown: false,
-        drawerLabelStyle: {marginLeft: hp(-22)},
-        drawerActiveBackgroundColor: colors.light,
-        drawerActiveTintColor: colors.dark,
-        drawerInactiveTintColor: 'gray',
-        drawerType: 'front',
-        drawerStyle: {width: width * 0.75},
-      }}>
-      {!isLoadingPersonal && personal && (
-        <Drawer.Screen
-          options={{
-            title: 'Personal Inbox',
-            drawerItemStyle: [
-              styles.drawItemStyle,
-              {marginTop: 0, paddingTop: 0},
-            ],
-            drawerLabel: ({color, focused}) => {
-              return (
-                <View
-                  style={[styles.selectedMenu, {marginTop: 0, paddingTop: 0}]}>
-                  <View style={styles.menuLeft}>
-                    <UserAvatar
-                      size={hp(22)}
-                      style={{height: hp(22), width: hp(22)}}
-                      borderRadius={hp(22 * 0.5)}
-                      name={`${profile?.first_name} ${profile?.last_name}`}
-                      src={profile.image}
-                    />
-                    <Text
-                      style={[
-                        styles.titleText,
-                        // {color: focused ? colors.dark : ''},
-                      ]}>
-                      {personal?.name}
-                    </Text>
-                  </View>
-
-                  <View style={styles.menuRight}>
-                    {count && (
-                      <Text
-                        style={[
-                          styles.badgeText,
-                          {color: focused ? colors.dark : ''},
-                        ]}>
-                        {count[personal?.uuid] > 0 &&
-                          formatNumbers(count[personal?.uuid])}
-                      </Text>
-                    )}
-                  </View>
-                </View>
-              );
-            },
-          }}
-          name={SCREEN_NAME.social}
-          component={Social}
-        />
-      )}
-
-      <Drawer.Screen
-        options={{
-          title: 'Unassigned',
-
-          drawerItemStyle: styles.drawItemStyle,
-          drawerLabel: ({color, focused}) => {
-            return (
-              <View style={styles.selectedMenu}>
-                <View style={styles.menuLeft}>
-                  <Unassign width={20} height={20} color={color} />
-                  <Text style={styles.titleText}>Unassigned</Text>
-                </View>
-
-                <View style={styles.menuRight}>
-                  {count && (
-                    <Text style={styles.badgeText}>
-                      {count['queued'] > 0 && formatNumbers(count['queued'])}
-                    </Text>
-                  )}
-                </View>
-              </View>
-            );
-          },
-        }}
-        name={SCREEN_NAME.unassigned}
-        component={Unassigned}
-      />
-      <Drawer.Screen
-        options={{
-          title: 'Assigned',
-          drawerItemStyle: styles.drawItemStyle,
-          drawerLabel: ({color, focused}) => {
-            return (
-              <View style={styles.selectedMenu}>
-                <View style={styles.menuLeft}>
-                  <Assign width={20} height={20} color={color} />
-                  <Text style={styles.titleText}>Assigned</Text>
-                </View>
-
-                <View style={styles.menuRight}>
-                  {count && (
-                    <Text style={styles.badgeText}>
-                      {count['assigned'] > 0 &&
-                        formatNumbers(count['assigned'])}
-                    </Text>
-                  )}
-                </View>
-              </View>
-            );
-          },
-        }}
-        name={SCREEN_NAME.assigned}
-        component={Assigned}
-      />
-      <Drawer.Screen
-        options={{
-          title: 'Mentions',
-
-          drawerItemStyle: styles.drawItemStyle,
-          drawerLabel: ({color, focused}) => {
-            return (
-              <View style={styles.selectedMenu}>
-                <View style={styles.menuLeft}>
-                  <Mention width={20} height={20} color={color} />
-                  <Text style={styles.titleText}>Mentions</Text>
-                </View>
-
-                <View style={styles.menuRight}>
-                  {count && (
-                    <Text style={styles.badgeText}>
-                      {count['mentioned'] > 0 &&
-                        formatNumbers(count['mentioned'])}
-                    </Text>
-                  )}
-                </View>
-              </View>
-            );
-          },
-        }}
-        name={SCREEN_NAME.mentions}
-        component={Mentions}
-      />
-      <Drawer.Screen
-        options={{
-          title: 'Closed',
-          drawerItemStyle: styles.drawItemStyle,
-          drawerLabel: ({color, focused}) => {
-            return (
-              <View style={styles.selectedMenu}>
-                <View style={styles.menuLeft}>
-                  <Close width={20} height={20} color={color} />
-                  <Text style={styles.titleText}>Closed</Text>
-                </View>
-
-                <View style={styles.menuRight}>
-                  {count && (
-                    <Text style={styles.badgeText}>
-                      {count['closed'] > 0 && formatNumbers(count['closed'])}
-                    </Text>
-                  )}
-                </View>
-              </View>
-            );
-          },
-        }}
-        name={SCREEN_NAME.closed}
-        component={Closed}
-      />
-      <Drawer.Screen
-        options={{
-          title: 'Draft',
-
-          drawerItemStyle: styles.drawItemStyle,
-          drawerLabel: ({color, focused}) => {
-            return (
-              <View style={styles.selectedMenu}>
-                <View style={styles.menuLeft}>
-                  <Draf width={18} height={18} color={color} />
-                  <Text style={styles.titleText}>Draft</Text>
-                </View>
-
-                <View style={styles.menuRight}>
-                  {count && (
-                    <Text style={styles.badgeText}>
-                      {count['drafts'] > 0 && formatNumbers(count['drafts'])}
-                    </Text>
-                  )}
-                </View>
-              </View>
-            );
-          },
-        }}
-        name={SCREEN_NAME.draft}
-        component={Draft}
-      />
-      <Drawer.Screen
-        options={{
-          title: 'team',
-          drawerItemStyle: styles.dHiddenDrawItemStyle,
-          drawerLabel: ({color}) => {
-            return (
-              <View style={styles.selectedMenu}>
-                <View style={styles.menuLeft}>
-                  <Draf width={18} height={18} color={color} />
-                  <Text style={styles.titleText}>Draft</Text>
-                </View>
-
-                <View style={styles.menuRight}>
-                  {count && (
-                    <Text style={styles.badgeText}>
-                      {count['drafts'] > 0 && formatNumbers(count['drafts'])}
-                    </Text>
-                  )}
-                </View>
-              </View>
-            );
-          },
-        }}
-        name={SCREEN_NAME.teaminbox}
-        component={TeamInbox}
-      />
-    </Drawer.Navigator>
-  );
-}
-
-//settings navigator
-const SettingsStackNavigator = (): JSX.Element => {
-  return (
-    <SettingsStack.Navigator
-      screenOptions={() => ({
-        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-      })}>
-      <SettingsStack.Screen
-        name={SCREEN_NAME.settings}
-        options={{
-          title: 'Settings',
-          headerTitleAlign: 'center',
-          headerTitleStyle: {
-            textAlign: 'center',
-            color: colors.dark,
-            fontFamily: FONTS.TEXT_SEMI_BOLD,
-            fontSize: hp(18),
-          },
-
-          headerLeft: HeaderBack,
-          headerBackTitle: '',
-          headerBackTitleVisible: false,
-        }}
-        component={Settings}
-      />
-      <SettingsStack.Screen
-        //@ts-ignore
-        name={SCREEN_NAME.editprofile}
-        options={{
-          title: 'Edit Profile',
-          headerTitleAlign: 'center',
-          headerTitleStyle: {
-            textAlign: 'center',
-            color: colors.dark,
-            fontFamily: FONTS.TEXT_SEMI_BOLD,
-            fontSize: FontSize.MediumText,
-          },
-          headerLeft: HeaderBack,
-          headerBackTitle: '',
-          headerBackTitleVisible: false,
-        }}
-        component={EditProfile}
-      />
-      <SettingsStack.Screen
-        //@ts-ignore
-        name={SCREEN_NAME.about}
-        options={{
-          headerShown: false,
-        }}
-        component={About}
-      />
-      <SettingsStack.Screen
-        //@ts-ignore
-        name={SCREEN_NAME.changePhoneNumber}
-        options={{
-          title: 'Change Number',
-          headerTitleAlign: 'center',
-          headerTitleStyle: {
-            textAlign: 'center',
-            color: colors.dark,
-            fontFamily: FONTS.TEXT_SEMI_BOLD,
-            fontSize: FontSize.MediumText,
-          },
-          headerLeft: HeaderBack,
-          headerBackTitle: '',
-          headerBackTitleVisible: false,
-        }}
-        component={ChangeNumber}
-      />
-      <SettingsStack.Screen
-        //@ts-ignore
-        name={SCREEN_NAME.changeEmail}
-        options={{
-          title: 'Change Email',
-          headerTitleAlign: 'center',
-          headerTitleStyle: {
-            textAlign: 'center',
-            color: colors.dark,
-            fontFamily: FONTS.TEXT_SEMI_BOLD,
-            fontSize: FontSize.MediumText,
-          },
-          headerLeft: HeaderBack,
-          headerBackTitle: '',
-          headerBackTitleVisible: false,
-        }}
-        component={ChangeEmail}
-      />
-      <SettingsStack.Screen
-        //@ts-ignore
-        name={SCREEN_NAME.resetPassword}
-        options={{
-          title: 'Reset Password',
-          headerTitleAlign: 'center',
-          headerTitleStyle: {
-            textAlign: 'center',
-            color: colors.dark,
-            fontFamily: FONTS.TEXT_SEMI_BOLD,
-            fontSize: FontSize.MediumText,
-          },
-          headerLeft: HeaderBack,
-          headerBackTitle: '',
-          headerBackTitleVisible: false,
-        }}
-        component={ResetPassword}
-      />
-      <SettingsStack.Screen
-        //@ts-ignore
-        name={SCREEN_NAME.quickreplies}
-        options={{
-          title: 'Quick Replies',
-          headerLeft: HeaderBack,
-          headerBackTitle: '',
-          headerBackTitleVisible: false,
-          headerTitleStyle: {
-            textAlign: 'center',
-            color: colors.dark,
-            fontFamily: FONTS.TEXT_SEMI_BOLD,
-            fontSize: FontSize.MediumText,
-          },
-          headerBackTitleStyle: {
-            color: colors.dark,
-            fontFamily: FONTS.TEXT_SEMI_BOLD,
-            fontSize: FontSize.MediumText,
-          },
-        }}
-        component={QuickReplies}
-      />
-      <SettingsStack.Screen
-        //@ts-ignore
-        name={SCREEN_NAME.privacy}
-        options={{
-          title: '',
-          headerLeft: HeaderBack,
-          headerBackTitle: '',
-          headerBackTitleVisible: false,
-        }}
-        component={Privacy}
-      />
-    </SettingsStack.Navigator>
-  );
-};
-
-//Root navihgators
+//Root navigators
 export const RootStack = (): JSX.Element => {
+  //store
   const organisation = useSelector(
     (state: StoreState) => state.organisation.details,
   );
@@ -516,10 +42,9 @@ export const RootStack = (): JSX.Element => {
     (state: StoreState) => state.user,
   );
   const queryClient = useQueryClient();
-
   useNotification();
 
-  //pusher configurations
+  //pusher configurations starts here
   const connect = async () => {
     try {
       await pusher.init({
@@ -540,31 +65,32 @@ export const RootStack = (): JSX.Element => {
       const organisationChannel = await pusher.subscribe({
         channelName: orgChannelName,
         onEvent: event => {
-          // console.log(`org channel event:`, JSON.stringify(event, null, 2));
+          console.log(`org channel event:`, JSON.stringify(event, null, 2));
         },
       });
 
       // subscribe to live chat
-      // const liveChatChannelName = `presence-livechat-${organisation?.id}`;
-      // const LiveChatChannel = await pusher.subscribe({
-      //   channelName: liveChatChannelName,
-      //   onEvent: event => {
-      //     // console.log(
-      //     //   `liveChat channel event:`,
-      //     //   JSON.stringify(event, null, 2),
-      //     // );
-      //   },
-      // });
+      const liveChatChannelName = `presence-livechat-${organisation?.id}`;
+
+      const LiveChatChannel = await pusher.subscribe({
+        channelName: liveChatChannelName,
+        onEvent: event => {
+          console.log(
+            `liveChat channel event:`,
+            JSON.stringify(event, null, 2),
+          );
+        },
+      });
 
       //subscribe to profile
       const userChannelName = `private-profile-${profile?.id}`;
       const userChannel = await pusher.subscribe({
         channelName: userChannelName,
         onEvent: event => {
-          // console.log(
-          //   `userChanel channel event:`,
-          //   JSON.stringify(event, null, 2),
-          // );
+          console.log(
+            `userChanel channel event:`,
+            JSON.stringify(event, null, 2),
+          );
         },
       });
 
@@ -578,48 +104,40 @@ export const RootStack = (): JSX.Element => {
     currentState: string,
     previousState: string,
   ) => {
-    // console.log(
-    //   `onConnectionStateChange. previousState=${previousState} newState=${currentState}`,
-    // );
+    console.log(
+      `onConnectionStateChange. previousState=${previousState} newState=${currentState}`,
+    );
   };
 
-  const onError = (message: string, code: Number, error: any) => {
-    // console.log(`onError: ${message} code: ${code} exception: ${error}`);
-  };
+  const onError = (message: string, code: Number, error: any) => {};
 
   const onEvent = async (event: any) => {
     const data = await JSON.parse(event?.data);
     const eventName = await event?.eventName;
-    // console.log('eventName fired', JSON.stringify(eventName, null, 2));
-    // console.log('event fired', JSON.stringify(data, null, 2));
 
     if (eventName === 'message_new') {
       RNBeep?.beep();
+      // RNBeep.PlaySysSound(1);
       await queryClient.invalidateQueries('conversations');
       await queryClient.invalidateQueries('threads');
       await queryClient.invalidateQueries('filters-unread-count');
     }
 
-    // const thread_id = JSON.parse(event?.data)?.thread_id;
     await queryClient.invalidateQueries('notifications-outline');
   };
 
   const onSubscriptionSucceeded = async (channelName: string, data: any) => {
-    // console.log(
-    //   `onSubscriptionSucceeded: ${channelName} data: ${JSON.stringify(
-    //     data,
-    //     null,
-    //     2,
-    //   )}`,
-    // );
+    console.log(
+      `onSubscriptionSucceeded: ${channelName} data: ${JSON.stringify(
+        data,
+        null,
+        2,
+      )}`,
+    );
 
     const channel: PusherChannel = pusher.getChannel(channelName);
     const me = channel.me;
-
-    // console.log('Me from chaneel', JSON.stringify(me, null, 2));
   };
-
-  // const handleNotificationNavigation = async (data: any) => {};
 
   useEffect(() => {
     messaging().onNotificationOpenedApp(remoteMessage => {
@@ -627,7 +145,6 @@ export const RootStack = (): JSX.Element => {
         'Notification caused app to open from background state:',
         remoteMessage.notification,
       );
-      // navigation.navigate(remoteMessage.data.type);
     });
 
     // Check whether an initial notification is available
@@ -639,17 +156,12 @@ export const RootStack = (): JSX.Element => {
             'Notification caused app to open from quit state:',
             remoteMessage.notification,
           );
-          // setInitialRoute(remoteMessage.data.type); // e.g. "Settings"
         }
-        // setLoading(false);
       });
-
-    // return () => {};
   }, []);
 
+  //effect to connect to pusher only when user login or changes organisation
   useEffect(() => {
-    // registerNotification();
-
     if (!!token && !!organisation?.id && isloggedIn) {
       connect();
     }
@@ -683,168 +195,13 @@ export const RootStack = (): JSX.Element => {
         />
 
         <Stack.Screen
-          name={SCREEN_NAME.forgotPassword}
-          component={ForgotPassword}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
           name={SCREEN_NAME.main}
-          component={DrawerMenu}
+          component={Unassigned}
           options={{
             headerShown: false,
           }}
         />
-
-        <Stack.Screen
-          name={SCREEN_NAME.chat}
-          component={ChatBox}
-          options={{
-            headerShown: false,
-          }}
-        />
-
-        <Stack.Group screenOptions={{presentation: 'containedModal'}}>
-          <Stack.Screen
-            name={SCREEN_NAME.conversationDetails}
-            component={ConversationDetails}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name={SCREEN_NAME.camera}
-            component={Camera}
-            options={{
-              headerShown: false,
-            }}
-          />
-        </Stack.Group>
-
-        <Stack.Group screenOptions={{presentation: 'containedModal'}}>
-          <Stack.Screen
-            name={SCREEN_NAME.imageView}
-            component={ImageScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-        </Stack.Group>
-
-        <Stack.Screen
-          name={SCREEN_NAME.mail}
-          component={Mail}
-          options={{
-            headerShown: false,
-          }}
-        />
-
-        <Stack.Screen
-          name={SCREEN_NAME.mailBox}
-          component={messageBox}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name={SCREEN_NAME.config}
-          component={SettingsStackNavigator}
-          options={{
-            headerShown: false,
-          }}
-        />
-
-        <Stack.Screen
-          name={SCREEN_NAME.search}
-          component={Search}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name={SCREEN_NAME.customerThreads}
-          component={CustomerThread}
-          options={{
-            headerShown: false,
-          }}
-        />
-
-        <Stack.Screen
-          name={SCREEN_NAME.notification}
-          component={Notification}
-          options={{
-            headerShown: false,
-          }}
-        />
-
-        <Stack.Screen
-          name={SCREEN_NAME.composeMail}
-          component={ComposeMail}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name={SCREEN_NAME.composeSocial}
-          component={ComposeSocial}
-          options={{
-            headerShown: false,
-          }}
-        />
-        {/* </Stack.Group> */}
-        {/* <Stack.Screen
-          name={SCREEN_NAME.teaminbox}
-          component={TeamInbox}
-          options={{
-            headerShown: false,
-          }}
-        /> */}
       </Stack.Navigator>
     </>
   );
 };
-
-//naviagtiion styling
-const themedStyles = StyleService.create({
-  drawItemStyle: {
-    borderRadius: 18,
-    height: hp(40),
-    justifyContent: 'center',
-    widthe: '100%',
-  },
-  dHiddenDrawItemStyle: {
-    borderRadius: 18,
-    height: 0,
-    justifyContent: 'center',
-    widthe: '100%',
-  },
-  selectedMenu: {
-    width: '100%',
-    height: hp(40),
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  menuRight: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'absolute',
-    right: wp(-18),
-    top: '25%',
-  },
-  menuLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  titleText: {
-    paddingLeft: 5,
-    fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: FontSize.MediumText,
-    color: colors.dark,
-  },
-  badgeText: {
-    fontFamily: FONTS.TEXT_REGULAR,
-    fontSize: FontSize.MediumText,
-    color: colors.secondaryBg,
-  },
-});
