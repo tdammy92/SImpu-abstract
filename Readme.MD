@@ -1,6 +1,91 @@
-# Simpu Mobile
+# Simpu Mobile (Sample for pusher intgration)
 
-This repository contains the application source code for the project Simpu Mobile customer platform.
+This repository contains the sample source code for the project Simpu Mobile customer platform, This repo is to test and debugg crashes caused by pusherJS
+
+##Platform
+Occurs on both android and ios.
+
+1. An instance of pusher was created and exported on line 37 of [index.tsx](src/index.tsx)
+
+   ```
+   export const pusher = Pusher.getInstance();
+
+   ```
+
+2. Pusher connection was created and Initialized on line 48 of [src/navigation/index.tsx](src/navigation/index.tsx)
+
+```
+export const pusher = Pusher.getInstance();
+```
+
+3. Channels are subscribed to on line 64 to line 86 of [src/navigation/index.tsx](src/navigation/index.tsx)
+
+```
+      // //subscribe to organisation
+      const orgChannelName = `presence-organisation-${organisation?.id}`;
+      const organisationChannel = await pusher.subscribe({
+        channelName: orgChannelName,
+        onEvent: event => {
+          console.log(`org channel event:`, JSON.stringify(event, null, 2));
+        },
+      });
+
+      // subscribe to live chat
+      const liveChatChannelName = `presence-livechat-${organisation?.id}`;
+
+      const LiveChatChannel = await pusher.subscribe({
+        channelName: liveChatChannelName,
+        onEvent: event => {
+          console.log(
+            `liveChat channel event:`,
+            JSON.stringify(event, null, 2),
+          );
+        },
+      });
+
+      //subscribe to profile
+      const userChannelName = `private-profile-${profile?.id}`;
+      const userChannel = await pusher.subscribe({
+        channelName: userChannelName,
+        onEvent: event => {
+          console.log(
+            `userChanel channel event:`,
+            JSON.stringify(event, null, 2),
+          );
+        },
+      });
+```
+
+4. Events are listened for on line 114 of [src/navigation/index.tsx](src/navigation/index.tsx)
+
+```
+  const onEvent = async (event: any) => {
+    const data = await JSON.parse(event?.data);
+    const eventName = await event?.eventName;
+
+    if (eventName === 'message_new') {
+      RNBeep?.beep();
+      // RNBeep.PlaySysSound(1);
+      await queryClient.invalidateQueries('conversations');
+      await queryClient.invalidateQueries('threads');
+      await queryClient.invalidateQueries('filters-unread-count');
+    }
+
+    await queryClient.invalidateQueries('notifications-outline');
+  };
+```
+
+5. organisation are re-subscribed to when user changes organisation(channel) line 136 of [src/screens/Message/index.tsx](src/screens/Message/index.tsx)
+
+```
+   //change organisaion
+  const changeOrganisations = async (index: any) => {
+    await UnsubscribeCurrentPusherChannel();
+    dispatch(updateOrganisation(organisations[index]));
+    setfetchProfile(true);
+    closeSheet();
+  };
+```
 
 ## Motivation
 
