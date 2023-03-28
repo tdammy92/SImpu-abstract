@@ -2,7 +2,8 @@
 
 This repository contains the sample source code for the project Simpu Mobile customer platform, This repo is to test and debugg crashes caused by pusherJS
 
-##Platform
+## Platform
+
 Occurs on both android and ios.
 
 1. An instance of pusher was created and exported on line 37 of [index.tsx](src/index.tsx)
@@ -65,7 +66,7 @@ export const pusher = Pusher.getInstance();
 
     if (eventName === 'message_new') {
       RNBeep?.beep();
-      // RNBeep.PlaySysSound(1);
+
       await queryClient.invalidateQueries('conversations');
       await queryClient.invalidateQueries('threads');
       await queryClient.invalidateQueries('filters-unread-count');
