@@ -78,23 +78,6 @@ this must be done in the root directory
 npm start -- --reset-cache
 ```
 
-**_create a .netrc file in your home ~ directory and add this the keys in it_**
-
-3.2. Android Studio configuration
-
-3.2.1. Open android studio and install the following dependencies
-
-Android 10 (Q)
-
-Android SDK Platform 29.0.2
-
 Intel x86 Atom_64 System Image or Google APIs Intel x86 Atom System Image
-
-## Debugging
-
-To fulfill this task we will use Flipper you would install installed from
-[here](https://fbflipper.com/) and add the plugin to work with redux
-
-`Manage Plugins > Install Plugins > search "redux-debugger" > Install`
 
 © [Simpu](https://www.simpu.co/)
